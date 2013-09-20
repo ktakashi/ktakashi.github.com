@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section720.html">(rfc uuid) - UUID generate library</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section722.html">(rfc zlib) - zlib compression library</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="rfc.x.509"><span class="section-number">7.21</span>(rfc x.509) - X.509 certificate utility library</a>
+  </h3>
+<p />This library does not support whole feature of X.509, it just parse and verify
+a message and signature. So it can not verify certificate itself.
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rfc x.509)1585">
+      <span class="name" name="(rfc x.509)">(rfc x.509)</span>
+    </a>
+  </div>
+<div class="desc">Exports X.509 utility procedures.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate1586">
+    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
+  </a> <span class="args">(in &lt;port&gt;)</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate1587">
+    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
+  </a>
+ <span class="args">(sequence &lt;asn.1-sequence&gt;)</span></div>
+<div class="desc">Creates an X.509 certificate object from given binary input port or ASN.1
+sequence object (second form).
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate?1588">
+    <span class="name" name="x509-certificate?">x509-certificate?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Return #t if the <var>o</var> is X.509 certificate object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-version1589">
+    <span class="name" name="x509-certificate-get-version">x509-certificate-get-version</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return version of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-serial-number1590">
+    <span class="name" name="x509-certificate-get-serial-number">x509-certificate-get-serial-number</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return serial number of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-issuer-dn1591">
+    <span class="name" name="x509-certificate-get-issuer-dn">x509-certificate-get-issuer-dn</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return issuer DN of given X.509 certificate object as X.509 principal.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-subject-dn1592">
+    <span class="name" name="x509-certificate-get-subject-dn">x509-certificate-get-subject-dn</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return subject DN of given X.509 certificate object as X.509 principal.
+<p />NOTE: These Issuer DN and Subject DN getters return &lt;x.509-principal&gt; object,
+however I did not implement any utility for this class, so it's just useless
+for now.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-before1593">
+    <span class="name" name="x509-certificate-get-not-before">x509-certificate-get-not-before</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return start date of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-after1594">
+    <span class="name" name="x509-certificate-get-not-after">x509-certificate-get-not-after</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return end date of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature1595">
+    <span class="name" name="x509-certificate-get-signature">x509-certificate-get-signature</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return signature of given X.509 certificate object. 
+<p />NOTE: This signature is not for <code>verify</code> described below.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature-algorithm1596">
+    <span class="name" name="x509-certificate-get-signature-algorithm">x509-certificate-get-signature-algorithm</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return signature algorithm of given X.509 certificate object as an OID
+string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-public-key1597">
+    <span class="name" name="x509-certificate-get-public-key">x509-certificate-get-public-key</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return public key of given X.509 certificate object. The return value is
+<code>&lt;public-key&gt;</code> described in the section
+<a href="section74.html#crypto">(crypto) - Cryptographic library</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="verify1598">
+    <span class="name" name="verify">verify</span>
+  </a> <span class="args">x509 message signature
+  :key (verify pkcs1-emsa-v1.5-verify) (hash SHA-1)</span></div>
+<div class="desc"><var>message</var> and <var>signature</var> must be bytevector.
+<p />Verify given <var>message</var> with <var>signature</var> and <var>x509</var> certificate.
+<p />This procedure uses the <code>verify</code> procedure in <code>(crypto)</code> library. The
+keyword arguments will be passed to it. For more detail, see
+<a href="section74.html#crypto">(crypto) - Cryptographic library</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="check-validity1599">
+    <span class="name" name="check-validity">check-validity</span>
+  </a>
+ <span class="args">x509 :optional (date (current-date))</span></div>
+<div class="desc">Validate if the given certificate is valid in given <var>date</var>. Return #t
+if it's valid, otherwise raises <code>&amp;assertion</code>.
+</div>
+
+</section>
+  <div class="prev-next">
+    <a class="prev" href="section720.html">(rfc uuid) - UUID generate library</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section722.html">(rfc zlib) - zlib compression library</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+  </div>
+</html>

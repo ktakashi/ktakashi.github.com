@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section316.html">Command-line access and exit values</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section318.html">Syntax-case</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="G625"><span class="section-number">3.17</span>Arithmetic libraries</a>
+  </h3>
+<p />This section describes Scheme's libraries for more specialized numerical
+operations: fixnum and flonum arithmetic, as well as bitwise operations on exact
+integer objects. 
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G626"><span class="section-number">3.17.1</span>Bitwise operations</a>
+  </h4>
+<p />A number of procedures operate on the binary two's-complement representations of
+exact integer objects: Bit positions within an exact integer object are counted
+from the right, i.e. bit 0 is the least significant bit. Some procedures allow
+extracting bit fields, i.e., number objects representing subsequences of the
+binary representation of an exact integer object. Bit fields are always positive,
+and always defined using a finite number of bits.
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="rnrs.arithmetic.fixnums.6"><span class="section-number">3.17.2</span>Fixnums</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rnrs arithmetic fixnums (6))627">
+      <span class="name" name="(rnrs arithmetic fixnums (6))">(rnrs arithmetic fixnums (6))</span>
+    </a>
+  </div>
+<div class="desc">On Sagittarius Scheme, fixnum is 30 bits or 62 bits depending on platform.
+On 32 bits platform it fixnum is 30 bits, and 64 bits platform it is 62 bits.
+However, non 32 bits platform is not well tested so if you find a bug please send
+a report.
+<p />This section uses <var>fx</var>, <var>fx1</var> <var>fx2</var>, etc., as parameter names for
+arguments that must be fixnums.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fixnum?628">
+    <span class="name" name="fixnum?">fixnum?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">[R6RS] Returns #t if <var>obj</var> is an exact integer object within the fixnum
+range, #f otherwise.</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="fixnum-width629">
+      <span class="name" name="fixnum-width">fixnum-width</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Function</span>
+    <a name="least-fixnum630">
+      <span class="name" name="least-fixnum">least-fixnum</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Function</span>
+    <a name="greatest-fixnum631">
+      <span class="name" name="greatest-fixnum">greatest-fixnum</span>
+    </a>
+  </div>
+<div class="desc">[R6RS] These procedures returns bit size of fixnum, minimum and maximum
+value of the fixnum range, respectively.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fx=?632">
+    <span class="name" name="fx=?">fx=?</span>
+  </a> <span class="args">fx1 fx2 fx3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fx&gt;?633">
+    <span class="name" name="fx&gt;?">fx&gt;?</span>
+  </a> <span class="args">fx1 fx2 fx3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fx<?634">
+    <span class="name" name="fx<?">fx&lt;?</span>
+  </a> <span class="args">fx1 fx2 fx3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fx&gt;=?635">
+    <span class="name" name="fx&gt;=?">fx&gt;=?</span>
+  </a> <span class="args">fx1 fx2 fx3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fx<=?636">
+    <span class="name" name="fx<=?">fx&lt;=?</span>
+  </a> <span class="args">fx1 fx2 fx3 ...</span></div>
+<div class="desc">[R6RS] These procedures return #t if their arguments are: equal,
+monotonically increasing, monotonically decreasing, monotonically nondecreasing,
+or monotonically nonincreasing, #f otherwise.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxzero?637">
+    <span class="name" name="fxzero?">fxzero?</span>
+  </a> <span class="args">fx</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxpositive?638">
+    <span class="name" name="fxpositive?">fxpositive?</span>
+  </a> <span class="args">fx</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxnegative?639">
+    <span class="name" name="fxnegative?">fxnegative?</span>
+  </a> <span class="args">fx</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxodd?640">
+    <span class="name" name="fxodd?">fxodd?</span>
+  </a> <span class="args">fx</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxeven?641">
+    <span class="name" name="fxeven?">fxeven?</span>
+  </a> <span class="args">fx</span></div>
+<div class="desc">[R6RS] These numerical predicates test a fixnum for a particular property,
+returning #t or #f. The five properties tested by these procedures are: whether
+the number object is zero, greater than zero, less than zero, odd, or even.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxmax642">
+    <span class="name" name="fxmax">fxmax</span>
+  </a> <span class="args">fx1 fx2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxmin643">
+    <span class="name" name="fxmin">fxmin</span>
+  </a> <span class="args">fx1 fx2 ...</span></div>
+<div class="desc">[R6RS] These procedures return the maximum or minimum of their arguments.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fx+644">
+    <span class="name" name="fx+">fx+</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fx*645">
+    <span class="name" name="fx*">fx*</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="desc">[R6RS] These procedures return the sum or product of their arguments,
+provided that sum or product is a fixnum. An exception with condition type 
+<code>&amp;implementation-restriction</code> is raised if that sum or product is not a
+fixnum.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fx-646">
+    <span class="name" name="fx-">fx-</span>
+  </a> <span class="args">fx1 :optional fx2</span></div>
+<div class="desc">[R6RS] With two arguments, this procedure returns the difference <var>fx1</var>
+- <var>fx2</var>, provided that difference is a fixnum.
+<p />With one argument, this procedure returns the additive inverse of its argument,
+provided that integer object is a fixnum.
+<p />An exception with condition type <code>&amp;implementation-restriction</code> is raised if
+the mathematically correct result of this procedure is not a fixnum.
+<p />NOTE: R6RS says it raises <code>&amp;assertion</code> if the result is not fixnum, however
+Sagittarius raises <code>&amp;implementation-restriction</code> for consistency with
+<code>fx+</code> and <code>fx*</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxdiv-and-mod647">
+    <span class="name" name="fxdiv-and-mod">fxdiv-and-mod</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxdiv648">
+    <span class="name" name="fxdiv">fxdiv</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxmod649">
+    <span class="name" name="fxmod">fxmod</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxdiv0-and-mod0650">
+    <span class="name" name="fxdiv0-and-mod0">fxdiv0-and-mod0</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxdiv0651">
+    <span class="name" name="fxdiv0">fxdiv0</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxmod0652">
+    <span class="name" name="fxmod0">fxmod0</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="desc">[R6RS] <var>Fx2</var> must be nonzero. These procedures implement number-theoretic
+integer division and return the results of the corresponding mathematical operations
+specified in <a href="section33.html#rnrs.base.6">
+    <code>(rnrs base (6))</code>
+  </a> section.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fx+/carry653">
+    <span class="name" name="fx+/carry">fx+/carry</span>
+  </a> <span class="args">fx1 fx2 fx3</span></div>
+<div class="desc">[R6RS] Returns the two fixnum results of the following computation:
+<pre class="codeblock">(let* ((s (+ <var>fx1</var> <var>fx2</var> <var>fx3</var>))
+       (s0 (mod0 s (expt 2 (fixnum-width))))
+       (s1 (div0 s (expt 2 (fixnum-width)))))
+  (values s0 s1))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fx-/carry654">
+    <span class="name" name="fx-/carry">fx-/carry</span>
+  </a> <span class="args">fx1 fx2 fx3</span></div>
+<div class="desc">[R6RS] Returns the two fixnum results of the following computation:
+<pre class="codeblock">(let* ((d (- <var>fx1</var> <var>fx2</var> <var>fx3</var>))
+       (d0 (mod0 d (expt 2 (fixnum-width))))
+       (d1 (div0 d (expt 2 (fixnum-width)))))
+  (values d0 d1))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fx*/carry655">
+    <span class="name" name="fx*/carry">fx*/carry</span>
+  </a> <span class="args">fx1 fx2 fx3</span></div>
+<div class="desc">[R6RS] Returns the two fixnum results of the following computation:
+<pre class="codeblock">(let* ((s (+ (* <var>fx1</var> <var>fx2</var>) <var>fx3</var>))
+       (s0 (mod0 s (expt 2 (fixnum-width))))
+       (s1 (div0 s (expt 2 (fixnum-width)))))
+  (values s0 s1))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxnot656">
+    <span class="name" name="fxnot">fxnot</span>
+  </a> <span class="args">fx</span></div>
+<div class="desc">[R6RS] Returns bitwise not of fixnum <var>fx</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxand657">
+    <span class="name" name="fxand">fxand</span>
+  </a> <span class="args">fx1 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxior658">
+    <span class="name" name="fxior">fxior</span>
+  </a> <span class="args">fx1 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxxor659">
+    <span class="name" name="fxxor">fxxor</span>
+  </a> <span class="args">fx1 ...</span></div>
+<div class="desc">[R6RS] These procedures return the fixnum that is the bit-wise "and",
+"inclusive or", or "exclusive or" of the two's complement representations of
+their arguments. If they are passed only one argument, they return that
+argument. If they are passed no arguments, they return the fixnum 
+(either - 1 or 0) that acts as identity for the operation.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxif660">
+    <span class="name" name="fxif">fxif</span>
+  </a> <span class="args">fx1 fx2 fx3</span></div>
+<div class="desc">[R6RS] Returns the fixnum that is the bit-wise "if" of the two's
+complement representations of its arguments, i.e. for each bit, if it is 1 in
+<var>fx1</var>, the corresponding bit in <var>fx2</var> becomes the value of the
+corresponding bit in the result, and if it is 0, the corresponding bit in
+<var>fx3</var> becomes the corresponding bit in the value of the result. This is the
+fixnum result of the following computation:
+<p /><pre class="codeblock">(fxior (fxand <var>fx1</var> <var>fx2</var>)
+       (fxand (fxnot <var>fx1</var>) <var>fx3</var>))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxbit-count661">
+    <span class="name" name="fxbit-count">fxbit-count</span>
+  </a> <span class="args">fx</span></div>
+<div class="desc">[R6RS] If <var>fx</var> is non-negative, this procedure returns the number of 1
+bits in the two's complement representation of <var>fx</var>. Otherwise it returns the
+result of the following computation:
+<p /><pre class="snipet"><span class="snipet-code">(fxnot (fxbit-count (fxnot <var>ei</var>)))</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxlength662">
+    <span class="name" name="fxlength">fxlength</span>
+  </a> <span class="args">fx</span></div>
+<div class="desc">[R6RS] Returns the number of bits needed to represent <var>fx</var> if it is
+positive, and the number of bits needed to represent <code>(fxnot <var>fx</var>)</code> if
+it is negative, which is the fixnum result of the following computation:
+<p /><pre class="codeblock">(do ((result 0 (+ result 1))
+     (bits (if (fxnegative? <var>fx</var>)
+               (fxnot <var>fx</var>)
+               <var>fx</var>)
+           (fxarithmetic-shift-right bits 1)))
+    ((fxzero? bits)
+     result))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxfirst-bit-set663">
+    <span class="name" name="fxfirst-bit-set">fxfirst-bit-set</span>
+  </a> <span class="args">fx</span></div>
+<div class="desc">[R6RS] Returns the index of the least significant 1 bit in the two's
+complement representation of <var>fx</var>. If fx is 0, then - 1 is returned.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxbit-set?664">
+    <span class="name" name="fxbit-set?">fxbit-set?</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="desc">[R6RS] <var>Fx2</var> must be non-negative and less than <code>(fixnum-width)</code>.
+The <code>fxbit-set?</code> procedure returns #t if the <var>fx2</var>th bit is 1 in the
+two's complement representation of <var>fx1</var>, and #f otherwise. This is the
+fixnum result of the following computation:
+<pre class="codeblock">(not
+  (fxzero?
+    (fxand <var>fx1</var>
+           (fxarithmetic-shift-left 1 <var>fx2</var>))))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxcopy-bit665">
+    <span class="name" name="fxcopy-bit">fxcopy-bit</span>
+  </a> <span class="args">fx1 fx2 fx3</span></div>
+<div class="desc">[R6RS] <var>Fx2</var> must be non-negative and less than <code>(fixnum-width)</code>.
+<var>Fx3</var> must be 0 or 1. The <code>fxcopy-bit</code> procedure returns the result of
+replacing the <var>fx2</var>th bit of <var>fx1</var> by <var>fx3</var>, which is the result of
+the following computation:
+<pre class="codeblock">(let* ((mask (fxarithmetic-shift-left 1 <var>fx2</var>)))
+  (fxif mask
+        (fxarithmetic-shift-left <var>fx3</var> <var>fx2</var>)
+        <var>fx1</var>))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxbit-field666">
+    <span class="name" name="fxbit-field">fxbit-field</span>
+  </a> <span class="args">fx1 fx2 fx3</span></div>
+<div class="desc">[R6RS] <var>Fx2</var> and <var>fx3</var> must be non-negative and less than
+<code>(fixnum-width)</code>. Moreover, <var>fx2</var> must be less than or equal to
+<var>fx3</var>. The <code>fxbit-field</code> procedure returns the number represented by
+the bits at the positions from <var>fx2</var> (inclusive) to <var>fx3</var> (exclusive),
+which is the fixnum result of the following computation:
+<pre class="codeblock">(let* ((mask (fxnot
+              (fxarithmetic-shift-left -1 <var>fx3</var>))))
+  (fxarithmetic-shift-right (fxand <var>fx1</var> mask)
+                            <var>fx2</var>))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxcopy-bit-field667">
+    <span class="name" name="fxcopy-bit-field">fxcopy-bit-field</span>
+  </a> <span class="args">fx1 fx2 fx3 fx4</span></div>
+<div class="desc">[R6RS] <var>Fx2</var> and <var>fx3</var> must be non-negative and less than
+<code>(fixnum-width)</code>. Moreover, <var>fx2</var> must be less than or equal to
+<var>fx3</var>. The <code>fxcopy-bit-field</code> procedure returns the result of replacing
+in <var>fx1</var> the bits at positions from <var>fx2</var> (inclusive) to <var>fx3</var>
+(exclusive) by the corresponding bits in <var>fx4</var>, which is the fixnum result
+of the following computation:
+<pre class="codeblock">(let* ((to    <var>fx1</var>)
+       (start <var>fx2</var>)
+       (end   <var>fx3</var>)
+       (from  <var>fx4</var>)
+       (mask1 (fxarithmetic-shift-left -1 start))
+       (mask2 (fxnot
+               (fxarithmetic-shift-left -1 end)))
+       (mask (fxand mask1 mask2)))
+  (fxif mask
+        (fxarithmetic-shift-left from start)
+        to))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxarithmetic-shift668">
+    <span class="name" name="fxarithmetic-shift">fxarithmetic-shift</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="desc">[R6RS] The absolute value of <var>fx2</var> must be less than
+<code>(fixnum-width)</code>. If 
+<p /><pre class="snipet"><span class="snipet-code">(floor (* <var>fx1</var> (expt 2 <var>fx2</var>)))</span></pre>
+<p />is a fixnum, then that fixnum is returned. Otherwise an exception with condition
+type <code>&amp;implementation-restriction</code> is raised. 
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxarithmetic-shift-left669">
+    <span class="name" name="fxarithmetic-shift-left">fxarithmetic-shift-left</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fxarithmetic-shift-right670">
+    <span class="name" name="fxarithmetic-shift-right">fxarithmetic-shift-right</span>
+  </a> <span class="args">fx1 fx2</span></div>
+<div class="desc">[R6RS] <var>Fx2</var> must be non-negative, and less than <code>(fixnum-width)</code>.
+The <code>fxarithmetic-shift-left</code> procedure behaves the same as 
+<code>fxarithmetic-shift</code>, and <code>(fxarithmetic-shift-right <var>fx1</var> <var>fx2</var>)</code>
+behaves the same as <code>(fxarithmetic-shift <var>fx1</var> (fx- <var>fx2</var>))</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxrotate-bit-field671">
+    <span class="name" name="fxrotate-bit-field">fxrotate-bit-field</span>
+  </a> <span class="args">fx1 fx2 fx3 fx4</span></div>
+<div class="desc">[R6RS] <var>Fx2</var>, <var>fx3</var>, and <var>fx4</var> must be non-negative and less
+than <code>(fixnum-width)</code>. <var>Fx2</var> must be less than or equal to <var>fx3</var>.
+<var>Fx4</var> must be less than the difference between <var>fx3</var> and <var>fx2</var>. The
+<code>fxrotate-bit-field</code> procedure returns the result of cyclically permuting
+in <var>fx1</var> the bits at positions from <var>fx2</var> (inclusive) to <var>fx3</var>
+(exclusive) by <var>fx4</var> bits towards the more significant bits, which is the
+result of the following computation:
+<pre class="codeblock">(let* ((n     <var>fx1</var>)
+       (start <var>fx2</var>)
+       (end   <var>fx3</var>)
+       (count <var>fx4</var>)
+       (width (fx- end start)))
+  (if (fxpositive? width)
+      (let* ((count (fxmod count width))
+             (field0
+               (fxbit-field n start end))
+             (field1
+               (fxarithmetic-shift-left
+                 field0 count))
+             (field2
+               (fxarithmetic-shift-right
+                 field0 (fx- width count)))
+             (field (fxior field1 field2)))
+        (fxcopy-bit-field n start end field))
+      n))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fxreverse-bit-field672">
+    <span class="name" name="fxreverse-bit-field">fxreverse-bit-field</span>
+  </a> <span class="args">fx1 fx2 fx3</span></div>
+<div class="desc">[R6RS] <var>Fx2</var> and <var>fx3</var> must be non-negative and less than
+<code>(fixnum-width)</code>. Moreover, <var>fx2</var> must be less than or equal to <var>fx3</var>.
+The <code>fxreverse-bit-field</code> procedure returns the fixnum obtained from
+<var>fx1</var> by reversing the order of the bits at positions from <var>fx2</var>
+(inclusive) to <var>fx3</var> (exclusive). 
+</div>
+
+</section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="rnrs.arithmetic.flonums.6"><span class="section-number">3.17.3</span>Flonums</a>
+  </h4>
+<p />This section describes the <code>(rnrs arithmetic flonums (6))</code>library.
+<p />This section uses <var>fl</var>, <var>fl1</var>, <var>fl2</var>, etc., as parameter names for
+arguments that must be flonums, and <var>ifl</var> as a name for arguments that must
+be integer-valued flonums, i.e., flonums for which the <code>integer-valued?</code>
+predicate returns true.
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rnrs arithmetic flonums (6))673">
+      <span class="name" name="(rnrs arithmetic flonums (6))">(rnrs arithmetic flonums (6))</span>
+    </a>
+  </div>
+<div class="desc">[R6RS] This library exports procedures for flonum operations.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="flonum?674">
+    <span class="name" name="flonum?">flonum?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">[R6RS] Returns #t if <var>obj</var> is a flonum, #f otherwise.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fl=?675">
+    <span class="name" name="fl=?">fl=?</span>
+  </a> <span class="args">fl1 fl2 fl3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fl&gt;?676">
+    <span class="name" name="fl&gt;?">fl&gt;?</span>
+  </a> <span class="args">fl1 fl2 fl3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fl<?677">
+    <span class="name" name="fl<?">fl&lt;?</span>
+  </a> <span class="args">fl1 fl2 fl3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fl&gt;=?678">
+    <span class="name" name="fl&gt;=?">fl&gt;=?</span>
+  </a> <span class="args">fl1 fl2 fl3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fl<=?679">
+    <span class="name" name="fl<=?">fl&lt;=?</span>
+  </a> <span class="args">fl1 fl2 fl3 ...</span></div>
+<div class="desc">[R6RS] These procedures return #t if their arguments are (respectively):
+equal, monotonically increasing, monotonically decreasing, monotonically
+nondecreasing, or monotonically nonincreasing, #f otherwise.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="flinteger?680">
+    <span class="name" name="flinteger?">flinteger?</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flzero?681">
+    <span class="name" name="flzero?">flzero?</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flpositive?682">
+    <span class="name" name="flpositive?">flpositive?</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flnegative?683">
+    <span class="name" name="flnegative?">flnegative?</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flodd?684">
+    <span class="name" name="flodd?">flodd?</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fleven?685">
+    <span class="name" name="fleven?">fleven?</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flfinite?686">
+    <span class="name" name="flfinite?">flfinite?</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flinfinite?687">
+    <span class="name" name="flinfinite?">flinfinite?</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flnan?688">
+    <span class="name" name="flnan?">flnan?</span>
+  </a> <span class="args">fl</span></div>
+<div class="desc">[R6RS] These numerical predicates test a flonum for a particular property,
+returning #t or #f. The <code>flinteger?</code> procedure tests whether the number
+object is an integer, <code>flzero?</code> tests whether it is <code>fl=?</code> to zero,
+<code>flpositive?</code> tests whether it is greater than zero, <code>flnegative?</code>
+tests whether it is less than <code>zero</code>, <code>flodd?</code> tests whether it is
+odd, <code>fleven?</code> tests whether it is even, <code>flfinite?</code> tests whether
+it is not an infinity and not a NaN, <code>flinfinite?</code> tests whether it is
+an infinity, and <code>flnan?</code> tests whether it is a NaN.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="flmax689">
+    <span class="name" name="flmax">flmax</span>
+  </a> <span class="args">fl1 fl2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flmin690">
+    <span class="name" name="flmin">flmin</span>
+  </a> <span class="args">fl1 fl2 ...</span></div>
+<div class="desc">[R6RS] These procedures return the maximum or minimum of their arguments.
+They always return a NaN when one or more of the arguments is a NaN.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fl+691">
+    <span class="name" name="fl+">fl+</span>
+  </a> <span class="args">fl1 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fl*692">
+    <span class="name" name="fl*">fl*</span>
+  </a> <span class="args">fl1 ...</span></div>
+<div class="desc">[R6RS] These procedures return the flonum sum or product of their flonum
+arguments. In general, they should return the flonum that best approximates the
+mathematical sum or product.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="flabs693">
+    <span class="name" name="flabs">flabs</span>
+  </a> <span class="args">fl</span></div>
+<div class="desc">[R6RS] Returns the absolute value of <var>fl.</var></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fldiv-and-mod694">
+    <span class="name" name="fldiv-and-mod">fldiv-and-mod</span>
+  </a> <span class="args">fl1 fl2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fldiv695">
+    <span class="name" name="fldiv">fldiv</span>
+  </a> <span class="args">fl1 fl2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flmod696">
+    <span class="name" name="flmod">flmod</span>
+  </a> <span class="args">fl1 fl2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fldiv0-and-mod0697">
+    <span class="name" name="fldiv0-and-mod0">fldiv0-and-mod0</span>
+  </a> <span class="args">fl1 fl2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fldiv0698">
+    <span class="name" name="fldiv0">fldiv0</span>
+  </a> <span class="args">fl1 fl2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flmod0699">
+    <span class="name" name="flmod0">flmod0</span>
+  </a> <span class="args">fl1 fl2</span></div>
+<div class="desc">[R6RS] These procedures implement number-theoretic integer division and
+return the results of the corresponding mathematical operations (see
+<a href="section33.html#rnrs.base.6">
+    <code>(rnrs base (6))</code>
+  </a>. For zero divisors, these
+procedures may return a NaN or some unspecified flonum.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="flnumerator700">
+    <span class="name" name="flnumerator">flnumerator</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fldenominator701">
+    <span class="name" name="fldenominator">fldenominator</span>
+  </a> <span class="args">fl</span></div>
+<div class="desc">[R6RS] These procedures return the numerator or denominator of <var>fl</var> as
+a flonum; the result is computed as if <var>fl</var> was represented as a fraction in
+lowest terms. The denominator is always positive. The denominator of 0.0 is
+defined to be 1.0.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="flfloor702">
+    <span class="name" name="flfloor">flfloor</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flceiling703">
+    <span class="name" name="flceiling">flceiling</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fltruncate704">
+    <span class="name" name="fltruncate">fltruncate</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flround705">
+    <span class="name" name="flround">flround</span>
+  </a> <span class="args">fl</span></div>
+<div class="desc">[R6RS] These procedures return integral flonums for flonum arguments that
+are not infinities or NaNs. For such arguments, <code>flfloor</code> returns the largest
+integral flonum not larger than <var>fl</var>. The <code>flceiling</code> procedure returns
+the smallest integral flonum not smaller than <var>fl</var>. The <code>fltruncate</code>
+procedure returns the integral flonum closest to <var>fl</var> whose absolute value
+is not larger than the absolute value of <var>fl</var>. The <code>flround</code> procedure
+returns the closest integral flonum to <var>fl</var>, rounding to even when <var>fl</var>
+represents a number halfway between two integers.
+<p />Although infinities and NaNs are not integer objects, these procedures return an
+infinity when given an infinity as an argument, and a NaN when given a NaN.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="flexp706">
+    <span class="name" name="flexp">flexp</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fllog707">
+    <span class="name" name="fllog">fllog</span>
+  </a> <span class="args">fl1 :optional fl2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flsin708">
+    <span class="name" name="flsin">flsin</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flcos709">
+    <span class="name" name="flcos">flcos</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fltan710">
+    <span class="name" name="fltan">fltan</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flasin711">
+    <span class="name" name="flasin">flasin</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flacos712">
+    <span class="name" name="flacos">flacos</span>
+  </a> <span class="args">fl</span></div>
+<div class="define"><span class="define-category">Function</span><a name="flatan713">
+    <span class="name" name="flatan">flatan</span>
+  </a> <span class="args">fl1 :optional fl2</span></div>
+<div class="desc">[R6RS] These procedures compute the usual transcendental functions. The <code>flexp</code>
+procedure computes the base-e exponential of <var>fl</var>. The <code>fllog</code> procedure
+with a single argument computes the natural logarithm of <code>fl1</code> (not the base
+ten logarithm); <code>(fllog <var>fl1</var> <var>fl2</var>)</code> computes the base-<var>fl2</var>
+logarithm of <var>fl1</var>. The <code>flasin</code>, <code>flacos</code>, and <code>flatan</code>
+procedures compute arcsine, arccosine, and arctangent, respectively.
+<code>(flatan <var>fl1</var> <var>fl2</var>)</code> computes the arc tangent of <var>fl1</var>/<var>fl2</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="flsqrt714">
+    <span class="name" name="flsqrt">flsqrt</span>
+  </a> <span class="args">fl</span></div>
+<div class="desc">[R6RS] Returns the principal square root of <var>fl</var>. For - 0.0, <code>flsqrt</code>
+returns 0.0; for other negative arguments, the result unspecified flonum.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="flexpt715">
+    <span class="name" name="flexpt">flexpt</span>
+  </a> <span class="args">fl1 fl2</span></div>
+<div class="desc">[R6RS] Either <var>fl1</var> should be non-negative, or, if <var>fl1</var> is negative,
+<var>fl2</var> should be an integer object. The <code>flexpt</code> procedure returns <var>fl1</var>
+raised to the power <var>fl2</var>. If <var>fl1</var> is negative and <var>fl2</var> is not an
+integer object, the result is a NaN. If <var>fl1</var> is zero, then the result is zero. 
+</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;no-infinities716">
+      <span class="name" name="&amp;no-infinities">&amp;no-infinities</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="make-no-infinities-violation717">
+    <span class="name" name="make-no-infinities-violation">make-no-infinities-violation</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="no-invinities-violation?718">
+    <span class="name" name="no-invinities-violation?">no-invinities-violation?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;no-nans719">
+      <span class="name" name="&amp;no-nans">&amp;no-nans</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="make-no-nans-violation720">
+    <span class="name" name="make-no-nans-violation">make-no-nans-violation</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="no-nans-violation?721">
+    <span class="name" name="no-nans-violation?">no-nans-violation?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">[R6RS] These types describe that a program has executed an arithmetic operations
+that is specified to return an infinity or a NaN, respectively.
+<p />Here is the hierarchy of these conditions.
+<pre class="codeblock">+ &amp;implementation-restriction (see <a href="section313.html#rnrs.conditions.6">"Conditions"</a>)
+    + &amp;no-infinities
+    + &amp;no-nans
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fixnum-&gt;flonum722">
+    <span class="name" name="fixnum-&gt;flonum">fixnum-&gt;flonum</span>
+  </a> <span class="args">fx</span></div>
+<div class="desc">[R6RS] Returns a flonum that is numerically closest to <var>fx</var>.</div>
+</section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="rnrs.arithmetic.bitwise.6"><span class="section-number">3.17.4</span>Exact bitwise arithmetic</a>
+  </h4>
+<p />This section describes the <code>(rnrs arithmetic bitwise (6))</code>library. The exact
+bitwise arithmetic provides generic operations on exact integer objects. This
+section uses <var>ei</var>, <var>ei1</var>, <var>ei2</var>, etc., as parameter names that must
+be exact integer objects.
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rnrs arithmetic bitwise (6))723">
+      <span class="name" name="(rnrs arithmetic bitwise (6))">(rnrs arithmetic bitwise (6))</span>
+    </a>
+  </div>
+<div class="desc">[R6RS] This library exports procedures for exact bitwise arithmetic
+operations.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-not724">
+    <span class="name" name="bitwise-not">bitwise-not</span>
+  </a> <span class="args">ei</span></div>
+<div class="desc">[R6RS] Returns the exact integer object whose two's complement representation
+is the one's complement of the two's complement representation of <var>ei</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-and725">
+    <span class="name" name="bitwise-and">bitwise-and</span>
+  </a> <span class="args">ei1 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bitwise-ior726">
+    <span class="name" name="bitwise-ior">bitwise-ior</span>
+  </a> <span class="args">ei1 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bitwise-xor727">
+    <span class="name" name="bitwise-xor">bitwise-xor</span>
+  </a> <span class="args">ei1 ...</span></div>
+<div class="desc">[R6RS] These procedures return the exact integer object that is the bit-wise
+"and", "inclusive or", or "exclusive or" of the two's complement representations
+of their arguments. If they are passed only one argument, they return that argument.
+If they are passed no arguments, they return the integer object (either - 1 or 0)
+that acts as identity for the operation. 
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-if728">
+    <span class="name" name="bitwise-if">bitwise-if</span>
+  </a> <span class="args">ei1 ei2 ei3</span></div>
+<div class="desc">[R6RS] Returns the exact integer object that is the bit-wise "if" of the
+two's complement representations of its arguments, i.e. for each bit, if it is 1
+in <var>ei1</var>, the corresponding bit in <var>ei2</var> becomes the value of the
+corresponding bit in the result, and if it is 0, the corresponding bit in <var>ei3</var>
+becomes the corresponding bit in the value of the result. This is the result of
+the following computation:
+<pre class="codeblock">(bitwise-ior (bitwise-and <var>ei1</var> <var>ei2</var>)
+             (bitwise-and (bitwise-not <var>ei1</var>) <var>ei3</var>))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-bit-count729">
+    <span class="name" name="bitwise-bit-count">bitwise-bit-count</span>
+  </a> <span class="args">ei</span></div>
+<div class="desc">[R6RS] If <var>ei</var> is non-negative, this procedure returns the number of 1
+bits in the two's complement representation of <var>ei</var>. Otherwise it returns the
+result of the following computation:
+<p /><pre class="snipet"><span class="snipet-code">(bitwise-not (bitwise-bit-count (bitwise-not <var>ei</var>)))</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-length730">
+    <span class="name" name="bitwise-length">bitwise-length</span>
+  </a> <span class="args">ei</span></div>
+<div class="desc">[R6RS] Returns the number of bits needed to represent <var>ei</var> if it is
+positive, and the number of bits needed to represent <code>(bitwise-not <var>ei</var>)</code>
+if it is negative, which is the exact integer object that is the result of the
+following computation:
+<p /><pre class="codeblock">(do ((result 0 (+ result 1))
+     (bits (if (negative? <var>ei</var>)
+               (bitwise-not <var>ei</var>)
+               <var>ei</var>)
+           (bitwise-arithmetic-shift bits -1)))
+    ((zero? bits)
+     result))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-first-bit-set731">
+    <span class="name" name="bitwise-first-bit-set">bitwise-first-bit-set</span>
+  </a> <span class="args">ei</span></div>
+<div class="desc">[R6RS] Returns the index of the least significant 1 bit in the two's
+complement representation of <var>ei</var>. If ei is 0, then - 1 is returned.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-bit-set?732">
+    <span class="name" name="bitwise-bit-set?">bitwise-bit-set?</span>
+  </a> <span class="args">ei1 ei2</span></div>
+<div class="desc">[R6RS] <var>Ei2</var> must be non-negative. The <code>bitwise-bit-set?</code> procedure
+returns #t if the <var>ei2</var>th bit is 1 in the two's complement representation
+of <var>ei1</var>, and #f otherwise. This is the result of the following computation:
+<p /><pre class="codeblock">(not (zero?
+       (bitwise-and
+         (bitwise-arithmetic-shift-left 1 <var>ei2</var>)
+         <var>ei1</var>)))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-copy-bit733">
+    <span class="name" name="bitwise-copy-bit">bitwise-copy-bit</span>
+  </a> <span class="args">ei1 ei2 ei3</span></div>
+<div class="desc">[R6RS] <var>Ei2</var> must be non-negative, and <var>ei3</var> must be either 0 or 1.
+The <code>bitwise-copy-bit</code> procedure returns the result of replacing the
+<var>ei2</var>th bit of <var>ei1</var> by the <var>ei2</var>th bit of <var>ei3</var>, which is the
+result of the following computation:
+<p /><pre class="codeblock">(let* ((mask (bitwise-arithmetic-shift-left 1 <var>ei2</var>)))
+  (bitwise-if mask
+            (bitwise-arithmetic-shift-left <var>ei3</var> <var>ei2</var>)
+            <var>ei1</var>))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-bit-field734">
+    <span class="name" name="bitwise-bit-field">bitwise-bit-field</span>
+  </a> <span class="args">ei1 ei2 ei3</span></div>
+<div class="desc">[R6RS] <var>Ei2</var> and <var>ei3</var> must be non-negative, and <var>ei2</var> must be
+less than or equal to <var>ei3</var>. The <code>bitwise-bit-field</code> procedure returns 
+he number represented by the bits at the positions from <var>ei2</var> (inclusive) to
+<var>ei3</var> (exclusive), which is the result of the following computation:
+<p /><pre class="codeblock">(let ((mask
+       (bitwise-not
+        (bitwise-arithmetic-shift-left -1 <var>ei3</var>))))
+  (bitwise-arithmetic-shift-right
+    (bitwise-and <var>ei1</var> mask)
+    <var>ei2</var>))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-copy-bit-field735">
+    <span class="name" name="bitwise-copy-bit-field">bitwise-copy-bit-field</span>
+  </a> <span class="args">ei1 ei2 ei3 ei4</span></div>
+<div class="desc">[R6RS] <var>Ei2</var> and <var>ei3</var> must be non-negative, and <var>ei2</var> must be
+less than or equal to <var>ei3</var>. The <code>bitwise-copy-bit-field</code> procedure
+returns the result of replacing in <var>ei1</var> the bits at positions from <var>ei2</var>
+(inclusive) to <var>ei3</var> (exclusive) by the corresponding bits in <var>ei4</var>, which
+is the fixnum result of the following computation:
+<p /><pre class="codeblock">(let* ((to    <var>ei1</var>)
+       (start <var>ei2</var>)
+       (end   <var>ei3</var>)
+       (from  <var>ei4</var>)
+       (mask1
+         (bitwise-arithmetic-shift-left -1 start))
+       (mask2
+         (bitwise-not
+           (bitwise-arithmetic-shift-left -1 end)))
+       (mask (bitwise-and mask1 mask2)))
+  (bitwise-if mask
+              (bitwise-arithmetic-shift-left from
+                                             start)
+              to))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-arithmetic-shift736">
+    <span class="name" name="bitwise-arithmetic-shift">bitwise-arithmetic-shift</span>
+  </a> <span class="args">ei1 ei2</span></div>
+<div class="desc">[R6RS] Returns the result of the following computation:
+<p /><pre class="snipet"><span class="snipet-code">(floor (* <var>ei1</var> (expt 2 <var>ei2</var>)))</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-arithmetic-shift-left737">
+    <span class="name" name="bitwise-arithmetic-shift-left">bitwise-arithmetic-shift-left</span>
+  </a> <span class="args">ei1 ei2</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bitwise-arithmetic-shift-right738">
+    <span class="name" name="bitwise-arithmetic-shift-right">bitwise-arithmetic-shift-right</span>
+  </a> <span class="args">ei1 ei2</span></div>
+<div class="desc">[R6RS] <var>Ei2</var> must be non-negative. The <code>bitwise-arithmetic-shift-left</code>
+procedure returns the same result as <code>bitwise-arithmetic-shift</code>, and
+<p /><pre class="snipet"><span class="snipet-code">(bitwise-arithmetic-shift-right <var>ei1</var> <var>ei2</var>)</span></pre>
+<p />returns the same result as
+<p /><pre class="snipet"><span class="snipet-code">(bitwise-arithmetic-shift <var>ei1</var> (- <var>ei2</var>))</span></pre>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-rotate-bit-field739">
+    <span class="name" name="bitwise-rotate-bit-field">bitwise-rotate-bit-field</span>
+  </a> <span class="args">ei1 ei2 ei3 ei4</span></div>
+<div class="desc">[R6RS] <var>Ei2</var>, <var>ei3</var>, <var>ei4</var> must be non-negative, <var>ei2</var>
+must be less than or equal to <var>ei3</var>, and <var>ei4</var> must be non-negative.
+The <code>bitwise-rotate-bit-field</code> procedure returns the result of cyclically
+permuting in <var>ei1</var> the bits at positions from <var>ei2</var> (inclusive) to
+<var>ei3</var> (exclusive) by <var>ei4</var> bits towards the more significant bits,
+which is the result of the following computation:
+<p /><pre class="codeblock">(let* ((n     <var>ei1</var>)
+       (start <var>ei2</var>)
+       (end   <var>ei3</var>)
+       (count <var>ei4</var>)
+       (width (- end start)))
+  (if (positive? width)
+      (let* ((count (mod count width))
+             (field0
+               (bitwise-bit-field n start end))
+             (field1 (bitwise-arithmetic-shift-left
+                       field0 count))
+             (field2 (bitwise-arithmetic-shift-right
+                       field0
+                       (- width count)))
+             (field (bitwise-ior field1 field2)))
+        (bitwise-copy-bit-field n start end field))
+      n))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bitwise-reverse-bit-field740">
+    <span class="name" name="bitwise-reverse-bit-field">bitwise-reverse-bit-field</span>
+  </a> <span class="args">ei1 ei2 ei3</span></div>
+<div class="desc">[R6RS] <var>Ei2</var> and <var>ei3</var> must be non-negative, and <var>ei2</var> must be
+less than or equal to <var>ei3</var>. The <code>bitwise-reverse-bit-field</code> procedure
+returns the result obtained from <var>ei1</var> by reversing the order of the bits at
+positions from <var>ei2</var> (inclusive) to <var>ei3</var> (exclusive). 
+</div>
+</section></section>
+  <div class="prev-next">
+    <a class="prev" href="section316.html">Command-line access and exit values</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section318.html">Syntax-case</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+  </div>
+</html>

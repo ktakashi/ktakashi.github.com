@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section718.html">(rfc tls) - TLS protocol library</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section720.html">(rfc uuid) - UUID generate library</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="rfc.uri"><span class="section-number">7.19</span>(rfc uri) - Parse and construct URIs</a>
+  </h3>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rfc uri)1548">
+      <span class="name" name="(rfc uri)">(rfc uri)</span>
+    </a>
+  </div>
+<div class="desc">This library provides RFC3986 'URI Generic Syntax' procedures.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-parse1549">
+    <span class="name" name="uri-parse">uri-parse</span>
+  </a> <span class="args">uri</span></div>
+<div class="desc"><var>uri</var> must be string.
+<p />Parses given <var>uri</var> and returns following 7 values;
+<ul class="itemlist"><li class="itemlist-item">
+    <var>scheme</var>
+  </li>
+<li class="itemlist-item">
+    <var>user-info</var>
+  </li>
+<li class="itemlist-item">
+    <var>host</var>
+  </li>
+<li class="itemlist-item">
+    <var>port</var>
+  </li>
+<li class="itemlist-item">
+    <var>path</var>
+  </li>
+<li class="itemlist-item">
+    <var>query</var>
+  </li>
+<li class="itemlist-item">
+    <var>fragment</var>
+  </li>
+</ul>
+<p />Following examples are from RFC3986 text;
+<pre class="codeblock">   foo://example.com:8042/over/there?name=ferret#nose
+   \_/   \______________/\_________/ \_________/ \__/
+    |           |            |            |        |
+ scheme     authority       path        query   fragment
+    |   _____________________|__
+   / \ /                        \
+   urn:example:animal:ferret:nose
+</pre>
+<p />authority = [ <var>user-info</var> "@" ] <var>host</var> [ ":" <var>port</var> ]
+<p />If given <var>uri</var> does not contain the part described above, it will be #f.
+ex)
+<pre class="snipet"><span class="snipet-code">(uri-parse "http://localhost")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(values http #f localhost #f #f #f #f)</span></pre>
+<p /></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-scheme&amp;specific1550">
+    <span class="name" name="uri-scheme&amp;specific">uri-scheme&amp;specific</span>
+  </a> <span class="args">uri</span></div>
+<div class="desc"><var>uri</var> must be string.
+<p />Parse given <var>uri</var> into scheme and rest. Returns the 2 values.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decompose-hierarchical1551">
+    <span class="name" name="uri-decompose-hierarchical">uri-decompose-hierarchical</span>
+  </a> <span class="args">specific</span></div>
+<div class="desc"><var>specific</var> must be string.
+<p /><var>specific</var> is a URI without scheme. For example, the specific of following 
+URI 'http://localhost/foo.html' if '//localhost/foo.html'.
+<p />Parse given <var>specific</var> into 4 values <var>authority</var>, <var>path</var>,
+<var>query</var> and <var>fragment</var>.
+<p />If the <var>specific</var> does not contain the part, it will be #f.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decompose-authority1552">
+    <span class="name" name="uri-decompose-authority">uri-decompose-authority</span>
+  </a> <span class="args">authority</span></div>
+<div class="desc"><var>authority</var> must be string.
+<p />Parse given <var>authority</var> into  3 values, <var>user-info</var>, <var>host</var> and
+<var>post</var>.
+<p />If the <var>authority</var> does not contain the part, it will be #f.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decode1553">
+    <span class="name" name="uri-decode">uri-decode</span>
+  </a> <span class="args">in out :key (cgi-decode #f)</span></div>
+<div class="desc"><var>in</var> must be binary input port.
+<p /><var>out</var> must binary output port.
+<p />Reads and decodes given <var>in</var> and put the result into <var>out</var>.
+<p />If the keyword argument <var>cgi-decode</var> is #t, the procedure decodes
+<code>#x2b</code>('+') to <code>#x20</code>('#\space').
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decode-string1554">
+    <span class="name" name="uri-decode-string">uri-decode-string</span>
+  </a>
+ <span class="args">string :key (encoding 'utf-8) (cgi-decode #f)</span></div>
+<div class="desc">Decodes given <var>string</var> and returns decoded string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-encode1555">
+    <span class="name" name="uri-encode">uri-encode</span>
+  </a>
+ <span class="args">in out :key (noescape *rfc3986-unreserved-char-set*)</span></div>
+<div class="desc"><var>in</var> must be binary input port.
+<p /><var>out</var> must binary output port.
+<p />Reads and encodes given <var>in</var> and put the result into <var>out</var>.
+<p />The keyword argument <var>noescape</var> specifies which character must be escaped.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-encode-string1556">
+    <span class="name" name="uri-encode-string">uri-encode-string</span>
+  </a>
+ <span class="args">string :key (encoding 'utf-8) :allow-other-keys</span></div>
+<div class="desc">Encodes given <var>string</var> and returns encoded string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-compose1557">
+    <span class="name" name="uri-compose">uri-compose</span>
+  </a>
+ <span class="args">:key (scheme #f) (userinfo #f) (host #f) (port #f) (authority #f)
+            (path #f) (path* #f) (query #f) (fragment #f) (specific #f)</span></div>
+<div class="desc">Composes URI from given arguments.
+<p />If all keyword arguments are #f, the procedure returns empty string.
+<p />The procedure put priority on bigger chunk of URI part. For example, if keyword
+argument <var>specific</var> is specified, the procedure uses only <var>scheme</var> and
+<var>specific</var>. Following describes the priority hierarchy;
+<pre class="codeblock"><var>scheme</var>
+<var>specific</var>
+  +- <var>authority</var>
+       +- <var>userinfo</var>
+       +- <var>host</var>
+       +- <var>port</var>
+  +- <var>path*</var>
+       +- <var>path</var>
+       +- <var>query</var>
+       +- <var>fragment</var>
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-merge1558">
+    <span class="name" name="uri-merge">uri-merge</span>
+  </a>
+ <span class="args">base-uri relative-uri1 relative-uri2 ...</span></div>
+<div class="desc">Merges given <var>relative-uris</var> to <var>base-uri</var> according to RFC 3986
+section 5.
+</div>
+<p /><div class="define">
+    <span class="define-category">Variable</span>
+    <a name="*rfc3986-unreserved-char-set*1559">
+      <span class="name" name="*rfc3986-unreserved-char-set*">*rfc3986-unreserved-char-set*</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="*rfc2396-unreserved-char-set*1560">
+      <span class="name" name="*rfc2396-unreserved-char-set*">*rfc2396-unreserved-char-set*</span>
+    </a>
+  </div>
+<div class="desc">Charsets which contains no escape needed characters.
+<p />There is slight difference between RFC2396 and RFC3986. This library uses
+RFC3986 charset by default to encode.
+</div>
+
+</section>
+  <div class="prev-next">
+    <a class="prev" href="section718.html">(rfc tls) - TLS protocol library</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section720.html">(rfc uuid) - UUID generate library</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+  </div>
+</html>

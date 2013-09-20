@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section33.html">Base Library</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section35.html">Bytevectors</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="rnrs.unicode.6"><span class="section-number">3.4</span>Unicode</a>
+  </h3>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rnrs unicode (6))258">
+      <span class="name" name="(rnrs unicode (6))">(rnrs unicode (6))</span>
+    </a>
+  </div>
+<div class="desc">[R6RS] The procedures exported by the <code>(rnrs unicode (6))</code>library
+provide access to some aspects of the Unicode semantics for characters and strings:
+category information, case-independent comparisons, case mappings, and normalization.
+<p />Some of the procedures that operate on characters or strings ignore the difference
+between upper case and lower case. These procedures have "-ci"
+(for "case insensitive") embedded in their names.
+</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G259"><span class="section-number">3.4.1</span>Characters</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="char-upcase260">
+    <span class="name" name="char-upcase">char-upcase</span>
+  </a> <span class="args">char</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-downcase261">
+    <span class="name" name="char-downcase">char-downcase</span>
+  </a> <span class="args">char</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-titlecase262">
+    <span class="name" name="char-titlecase">char-titlecase</span>
+  </a> <span class="args">char</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-foldcase263">
+    <span class="name" name="char-foldcase">char-foldcase</span>
+  </a> <span class="args">char</span></div>
+<div class="desc">[R6RS] These procedures take a character argument and return a character
+result. If the argument is an upper-case or title-case character, and if there
+is a single character that is its lower-case form, then <code>char-downcase</code>
+returns that character. If the argument is a lower-case or title-case character,
+and there is a single character that is its upper-case form, then <code>char-upcase</code>
+returns that character. If the argument is a lower-case or upper-case character,
+and there is a single character that is its title-case form, then <code>char-titlecase</code>
+returns that character. If the argument is not a title-case character and there
+is no single character that is its title-case form, then <code>char-titlecase</code>
+returns the upper-case form of the argument. Finally, if the character has a
+case-folded character, then <code>char-foldcase</code> returns that character. Otherwise
+the character returned is the same as the argument. For Turkic characters İ (#\x130)
+and ı (#\x131), <code>char-foldcase</code> behaves as the identity function; otherwise
+<code>char-foldcase</code> is the same as <code>char-downcase</code> composed with 
+<code>char-upcase</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="char-ci=?264">
+    <span class="name" name="char-ci=?">char-ci=?</span>
+  </a> <span class="args">char1 char2 char3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-ci&gt;?265">
+    <span class="name" name="char-ci&gt;?">char-ci&gt;?</span>
+  </a> <span class="args">char1 char2 char3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-ci<?266">
+    <span class="name" name="char-ci<?">char-ci&lt;?</span>
+  </a> <span class="args">char1 char2 char3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-ci&gt;=?267">
+    <span class="name" name="char-ci&gt;=?">char-ci&gt;=?</span>
+  </a> <span class="args">char1 char2 char3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-ci<=?268">
+    <span class="name" name="char-ci<=?">char-ci&lt;=?</span>
+  </a> <span class="args">char1 char2 char3 ...</span></div>
+<div class="desc">[R6RS] These procedures are similar to <code>char=?</code>, etc., but operate on
+the case-folded versions of the characters.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="char-alphabetic?269">
+    <span class="name" name="char-alphabetic?">char-alphabetic?</span>
+  </a> <span class="args">char</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-numeric?270">
+    <span class="name" name="char-numeric?">char-numeric?</span>
+  </a> <span class="args">char</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-whitespace?271">
+    <span class="name" name="char-whitespace?">char-whitespace?</span>
+  </a> <span class="args">char</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-upper-case?272">
+    <span class="name" name="char-upper-case?">char-upper-case?</span>
+  </a> <span class="args">char</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-lower-case?273">
+    <span class="name" name="char-lower-case?">char-lower-case?</span>
+  </a> <span class="args">char</span></div>
+<div class="define"><span class="define-category">Function</span><a name="char-title-case?274">
+    <span class="name" name="char-title-case?">char-title-case?</span>
+  </a> <span class="args">char</span></div>
+<div class="desc">[R6RS] These procedures return #t if their arguments are alphabetic, numeric,
+whitespace, upper-case, lower-case, or title-case characters, respectively;
+otherwise they return #f.
+<p />A character is alphabetic if it has the Unicode "Alphabetic" property. A character
+is numeric if it has the Unicode "Numeric" property. A character is whitespace if
+has the Unicode "White_Space" property. A character is upper case if it has the
+Unicode "Uppercase" property, lower case if it has the "Lowercase" property, and
+title case if it is in the Lt general category.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="char-general-category275">
+    <span class="name" name="char-general-category">char-general-category</span>
+  </a> <span class="args">char</span></div>
+<div class="desc">[R6RS] Returns a symbol representing the Unicode general category of char,
+one of Lu, Ll, Lt, Lm, Lo, Mn, Mc, Me, Nd, Nl, No, Ps, Pe, Pi, Pf, Pd, Pc, Po,
+Sc, Sm, Sk, So, Zs, Zp, Zl, Cc, Cf, Cs, Co, or Cn.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G276"><span class="section-number">3.4.2</span>Strings</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-upcase277">
+    <span class="name" name="string-upcase">string-upcase</span>
+  </a> <span class="args">string start end</span></div>
+<div class="define"><span class="define-category">Function</span><a name="string-downcase278">
+    <span class="name" name="string-downcase">string-downcase</span>
+  </a> <span class="args">string start end</span></div>
+<div class="define"><span class="define-category">Function</span><a name="string-titlecase279">
+    <span class="name" name="string-titlecase">string-titlecase</span>
+  </a> <span class="args">string start end</span></div>
+<div class="define"><span class="define-category">Function</span><a name="string-foldcase280">
+    <span class="name" name="string-foldcase">string-foldcase</span>
+  </a> <span class="args">string start end</span></div>
+<div class="desc">[R6RS+][SRFI-13] These procedures take a string argument and return a
+string result. They are defined in terms of Unicode's locale-independent case
+mappings from Unicode scalar-value sequences to scalar-value sequences. In
+particular, the length of the result string can be different from the length of 
+the input string. When the specified result is equal in the sense of
+<code>string=?</code> to the argument, these procedures may return the argument
+instead of a newly allocated string.
+<p />The <code>string-upcase</code> procedure converts a string to upper case;
+<code>string-downcase</code> converts a string to lower case.
+<p />The <code>string-foldcase</code> procedure converts the string to its case-folded
+counterpart, using the full case-folding mapping, but without the special
+mappings for Turkic languages.
+<p />The <code>string-titlecase</code> procedure converts the first cased character of each
+word via <code>char-titlecase</code>, and downcases all other cased characters.
+<p />If the optional argument <var>start</var> and <var>end</var> are given, these must be
+exact integer and the procedures will first substring the given string with 
+range <var>start</var> and <var>end</var> then convert it.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-ci=?281">
+    <span class="name" name="string-ci=?">string-ci=?</span>
+  </a> <span class="args">string1 string2 string3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="string-ci&gt;?282">
+    <span class="name" name="string-ci&gt;?">string-ci&gt;?</span>
+  </a> <span class="args">string1 string2 string3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="string-ci<?283">
+    <span class="name" name="string-ci<?">string-ci&lt;?</span>
+  </a> <span class="args">string1 string2 string3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="string-ci&gt;=?284">
+    <span class="name" name="string-ci&gt;=?">string-ci&gt;=?</span>
+  </a> <span class="args">string1 string2 string3 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="string-ci<=?285">
+    <span class="name" name="string-ci<=?">string-ci&lt;=?</span>
+  </a> <span class="args">string1 string2 string3 ...</span></div>
+<div class="desc">[R6RS] These procedures are similar to <code>string=?</code>, etc., but operate
+on the case-folded versions of the strings.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-nfd286">
+    <span class="name" name="string-nfd">string-nfd</span>
+  </a> <span class="args">string</span></div>
+<div class="define"><span class="define-category">Function</span><a name="string-nfkd287">
+    <span class="name" name="string-nfkd">string-nfkd</span>
+  </a> <span class="args">string</span></div>
+<div class="define"><span class="define-category">Function</span><a name="string-nfc288">
+    <span class="name" name="string-nfc">string-nfc</span>
+  </a> <span class="args">string</span></div>
+<div class="define"><span class="define-category">Function</span><a name="string-nfkc289">
+    <span class="name" name="string-nfkc">string-nfkc</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">[R6RS] These procedures take a string argument and return a string result,
+which is the input string normalized to Unicode normalization form D, KD, C, or KC,
+respectively. When the specified result is equal in the sense of <code>string=?</code>
+to the argument, these procedures may return the argument instead of a newly
+allocated string.
+</div>
+
+</section></section>
+  <div class="prev-next">
+    <a class="prev" href="section33.html">Base Library</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section35.html">Bytevectors</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+  </div>
+</html>

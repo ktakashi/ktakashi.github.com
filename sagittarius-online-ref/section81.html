@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section8.html">Ported libraries</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section82.html">(text parse) - Parsing input stream</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="ported.match"><span class="section-number">8.1</span>(match) -- Pattern matching</a>
+  </h3>
+<p />The <code>match</code> is originally from Alex Shin's `portable hygineic pattern matcher'
+The documents below are derived from his source code.
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(match)1657">
+      <span class="name" name="(match)">(match)</span>
+    </a>
+  </div>
+<div class="desc">This is a full superset of the popular<a href="http://www.cs.indiana.edu/scheme-repository/code.match.html">match</a>
+package by Andrew Wright, written in fully portable <code>syntax-rules</code>
+and thus preserving hygiene.
+<p />The most notable extensions are the ability to use <var>non-linear</var>
+patterns - patterns in which the same identifier occurs multiple
+times, tail patterns after ellipsis, and the experimental tree patterns.
+</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1658"><span class="section-number">8.1.1</span>Patterns</a>
+  </h4>
+<p />Patterns are written to look like the printed representation of
+the objects they match.  The basic usage is
+<p /><pre class="snipet"><span class="snipet-code">(match expr (pat body ...) ...)</span></pre>
+<p />where the result of <var>expr</var> is matched against each pattern in
+turn, and the corresponding body is evaluated for the first to
+succeed.  Thus, a list of three elements matches a list of three
+elements.
+<p /><pre class="snipet"><span class="snipet-code">(let ((ls (list 1 2 3))) (match ls ((1 2 3) #t)))</span></pre>
+<p />If no patterns match an error is signalled.
+<p />Identifiers will match anything, and make the corresponding
+binding available in the body.
+<p /><pre class="snipet"><span class="snipet-code">(match (list 1 2 3) ((a b c) b))</span></pre>
+<p />If the same identifier occurs multiple times, the first instance
+will match anything, but subsequent instances must match a value
+which is <code>equal?</code> to the first.
+<p /><pre class="snipet"><span class="snipet-code">(match (list 1 2 1) ((a a b) 1) ((a b a) 2))</span></pre>
+<p />The special identifier <code>_</code> matches anything, no matter how
+many times it is used, and does not bind the result in the body.
+<p /><pre class="snipet"><span class="snipet-code">(match (list 1 2 1) ((_ _ b) 1) ((a b a) 2))</span></pre>
+<p />To match a literal identifier (or list or any other literal), use
+<code>quote</code>.
+<p /><pre class="snipet"><span class="snipet-code">(match 'a ('b 1) ('a 2))</span></pre>
+<p />Analogous to its normal usage in scheme, <code>quasiquote</code> can
+be used to quote a mostly literally matching object with selected
+parts unquoted.
+<p /><pre class="snipet"><span class="snipet-code">(match (list 1 2 3) (`(1 ,b ,c) (list b c)))</span></pre>
+<p />Often you want to match any number of a repeated pattern.  Inside
+a list pattern you can append <code>...</code> after an element to
+match zero or more of that pattern (like a regexp Kleene star).
+<p /><pre class="snipet"><span class="snipet-code">(match (list 1 2) ((1 2 3 ...) #t))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match (list 1 2 3) ((1 2 3 ...) #t))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match (list 1 2 3 3 3) ((1 2 3 ...) #t))</span></pre>
+<p />Pattern variables matched inside the repeated pattern are bound to
+a list of each matching instance in the body.
+<p /><pre class="snipet"><span class="snipet-code">(match (list 1 2) ((a b c ...) c))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match (list 1 2 3) ((a b c ...) c))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match (list 1 2 3 4 5) ((a b c ...) c))</span></pre>
+<p />More than one <code>...</code> may not be used in the same list, since
+this would require exponential backtracking in the general case.
+However, <code>...</code> need not be the final element in the list,
+and may be succeeded by a fixed number of patterns.
+<p /><pre class="snipet"><span class="snipet-code">(match (list 1 2 3 4) ((a b c ... d e) c))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match (list 1 2 3 4 5) ((a b c ... d e) c))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match (list 1 2 3 4 5 6 7) ((a b c ... d e) c))</span></pre>
+<p /><code>___</code> is provided as an alias for <code>...</code> when it is
+inconvenient to use the ellipsis (as in a <code>syntax-rules</code> template).
+<p />The <code>..1</code> syntax is exactly like the <code>...</code> except
+that it matches one or more repetitions (like a regexp "+").
+<p /><pre class="snipet"><span class="snipet-code">(match (list 1 2) ((a b c ..1) c))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match (list 1 2 3) ((a b c ..1) c))</span></pre>
+<p />The boolean operators <code>and</code>, <code>or</code> and <code>not</code>
+can be used to group and negate patterns analogously to their
+Scheme counterparts.
+<p />The <code>and</code> operator ensures that all subpatterns match.
+This operator is often used with the idiom <code>(and x pat)</code> to
+bind <var>x</var> to the entire value that matches <var>pat</var>
+(c.f. "as-patterns" in ML or Haskell).  Another common use is in
+conjunction with <code>not</code> patterns to match a general case
+with certain exceptions.
+<p /><pre class="snipet"><span class="snipet-code">(match 1 ((and) #t))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match 1 ((and x) x))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match 1 ((and x 1) x))</span></pre>
+<p />The <code>or</code> operator ensures that at least one subpattern
+matches.  If the same identifier occurs in different subpatterns,
+it is matched independently.  All identifiers from all subpatterns
+are bound if the <code>or</code> operator matches, but the binding is
+only defined for identifiers from the subpattern which matched.
+<p /><pre class="snipet"><span class="snipet-code">(match 1 ((or) #t) (else #f))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match 1 ((or x) x))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match 1 ((or x 2) x))</span></pre>
+<p />The <code>not</code> operator succeeds if the given pattern doesn't
+match.  None of the identifiers used are available in the body.
+<p /><pre class="snipet"><span class="snipet-code">(match 1 ((not 2) #t))</span></pre>
+<p />The more general operator <code>?</code> can be used to provide a
+predicate.  The usage is <code>(? predicate pat ...)</code> where
+<var>predicate</var> is a Scheme expression evaluating to a predicate
+called on the value to match, and any optional patterns after the
+predicate are then matched as in an <code>and</code> pattern.
+<p /><pre class="snipet"><span class="snipet-code">(match 1 ((? odd? x) x))</span></pre>
+<p />The field operator <code>=</code> is used to extract an arbitrary
+field and match against it.  It is useful for more complex or
+conditional destructuring that can't be more directly expressed in
+the pattern syntax.  The usage is <code>(= field pat)</code>, where
+<var>field</var> can be any expression, and should result in a
+procedure of one argument, which is applied to the value to match
+to generate a new value to match against <var>pat</var>.
+<p />Thus the pattern <code>(and (= car x) (= cdr y))</code> is equivalent
+to <code>(x . y)</code>, except it will result in an immediate error
+if the value isn't a pair.
+<p /><pre class="snipet"><span class="snipet-code">(match '(1 . 2) ((= car x) x))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match 4 ((= sqrt x) x))</span></pre>
+<p />The record operator <code>$</code> is used as a concise way to match
+records defined by SRFI-9 (or SRFI-99).  The usage is
+<code>($ rtd field ...)</code>, where <var>rtd</var> should be the record
+type descriptor specified as the first argument to
+<code>define-record-type</code>, and each <var>field</var> is a subpattern
+matched against the fields of the record in order.  Not all fields
+must be present.
+<p /><pre class="codeblock">(let ()
+  (define-record-type employee
+    (make-employee name title)
+    employee?
+    (name get-name)
+    (title get-title))
+  (match (make-employee "Bob" "Doctor")
+    (($ employee n t) (list t n))))
+</pre>
+<p />The <code>set!</code> and <code>get!</code> operators are used to bind an
+identifier to the setter and getter of a field, respectively.  The
+setter is a procedure of one argument, which mutates the field to
+that argument.  The getter is a procedure of no arguments which
+returns the current value of the field.
+<p /><pre class="snipet"><span class="snipet-code">(let ((x (cons 1 2))) (match x ((1 . (set! s)) (s 3) x)))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match '(1 . 2) ((1 . (get! g)) (g)))</span></pre>
+<p />The new operator <code>***</code> can be used to search a tree for
+subpatterns.  A pattern of the form <code>(x *** y)</code> represents
+the subpattern <var>y</var> located somewhere in a tree where the path
+from the current object to <var>y</var> can be seen as a list of the
+form <code>(x ...)</code>.  <var>y</var> can immediately match the current
+object in which case the path is the empty list.  In a sense it's
+a 2-dimensional version of the <code>...</code> pattern.
+<p />As a common case the pattern <code>(_ *** y)</code> can be used to
+search for <var>y</var> anywhere in a tree, regardless of the path
+used.
+<p /><pre class="snipet"><span class="snipet-code">(match '(a (a (a b))) ((x *** 'b) x))</span></pre>
+<pre class="snipet"><span class="snipet-code">(match '(a (b) (c (d e) (f g))) ((x *** 'g) x))</span></pre>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1659"><span class="section-number">8.1.2</span>Syntax</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Macro</span><a name="match1660">
+    <span class="name" name="match">match</span>
+  </a> <span class="args">expr (pattern . body) ...</span></div>
+<div class="define"><span class="define-category">Macro</span><a name="match1661">
+    <span class="name" name="match">match</span>
+  </a> <span class="args">expr (pattern (=&gt; failure) . body) ...</span></div>
+<div class="desc">turn, according to the pattern rules described in the previous
+section, until the the first <var>pattern</var> matches.  When a match is
+found, the corresponding <var>body</var>s are evaluated in order,
+and the result of the last expression is returned as the result
+of the entire <scheme>match</scheme>.  If a <var>failure</var> is provided,
+then it is bound to a procedure of no arguments which continues,
+processing at the next <var>pattern</var>.  If no <var>pattern</var> matches,
+an error is signalled.
+</div>
+<p />
+<div class="define"><span class="define-category">Macro</span><a name="match-lambda1662">
+    <span class="name" name="match-lambda">match-lambda</span>
+  </a> <span class="args">clause ...</span></div>
+<div class="desc">Shortcut for <code>lambda</code> + <code>match</code>.  Creates a
+procedure of one argument, and matches that argument against each
+clause.
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="match-lambda*1663">
+    <span class="name" name="match-lambda*">match-lambda*</span>
+  </a> <span class="args">clause ...</span></div>
+<div class="desc">Similar to <code>match-lambda</code>.  Creates a procedure of any
+number of arguments, and matches the argument list against each
+clause.
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="match-let1664">
+    <span class="name" name="match-let">match-let</span>
+  </a> <span class="args">((pat expr) ...) body-expr ...</span></div>
+<div class="define"><span class="define-category">Macro</span><a name="match-let1665">
+    <span class="name" name="match-let">match-let</span>
+  </a> <span class="args">name ((pat expr) ...) body-expr ...</span></div>
+<div class="desc">Matches each var to the corresponding expression, and evaluates
+the body with all match variables in scope.  Raises an error if
+any of the expressions fail to match.  Syntax analogous to named
+let can also be used for recursive functions which match on their
+arguments as in <scheme>match-lambda*</scheme>.
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="match-letrec1666">
+    <span class="name" name="match-letrec">match-letrec</span>
+  </a> <span class="args">((pat expr) ...) body-expr ...</span></div>
+<div class="desc">Similar to <code>match-let</code>, but analogously to <code>letrec</code>
+matches and binds the variables with all match variables in scope.
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="match-let*1667">
+    <span class="name" name="match-let*">match-let*</span>
+  </a> <span class="args">((pat expr) ...) body-expr ...</span></div>
+<div class="desc">Similar to <scheme>match-let</scheme>, but analogously to <scheme>let*</scheme>
+matches and binds the variables in sequence, with preceding match
+variables in scope.
+</div>
+</section></section>
+  <div class="prev-next">
+    <a class="prev" href="section8.html">Ported libraries</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section82.html">(text parse) - Parsing input stream</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+  </div>
+</html>

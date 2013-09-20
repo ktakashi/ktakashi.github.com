@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section72.html">(binary pack) - Packing binary data</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section74.html">(crypto) - Cryptographic library</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="util.bytevector"><span class="section-number">7.3</span>(util bytevector) - Bytevector utility library</a>
+  </h3>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(util bytevector)1202">
+      <span class="name" name="(util bytevector)">(util bytevector)</span>
+    </a>
+  </div>
+<div class="desc">This library provides bytevector utilities which are not provided as
+builtin procedures such as <code>bytevector-&gt;integer</code>.
+<p />All procedures take bytevector as its arguments.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-xor1203">
+    <span class="name" name="bytevector-xor">bytevector-xor</span>
+  </a> <span class="args">bv1 bv2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-xor!1204">
+    <span class="name" name="bytevector-xor!">bytevector-xor!</span>
+  </a> <span class="args">out bv1 bv2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-ior1205">
+    <span class="name" name="bytevector-ior">bytevector-ior</span>
+  </a> <span class="args">bv1 bv2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-ior!1206">
+    <span class="name" name="bytevector-ior!">bytevector-ior!</span>
+  </a> <span class="args">out bv1 bv2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-and1207">
+    <span class="name" name="bytevector-and">bytevector-and</span>
+  </a> <span class="args">bv1 bv2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-and!1208">
+    <span class="name" name="bytevector-and!">bytevector-and!</span>
+  </a> <span class="args">out bv1 bv2 ...</span></div>
+<div class="desc">Compute exclusive or, logical or and logical and for each given
+bytevectors, respectively.
+<p />The procedures without <code>!</code> freshly allocate a new bytevector as it's return
+value. If the given bytevectors are not the same sized, then the smallest 
+size will be allocated.
+<p />The procedures with <code>!</code> takes first argument as the storage of the result
+and return it.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-slices1209">
+    <span class="name" name="bytevector-slices">bytevector-slices</span>
+  </a> <span class="args">bv k :key (padding #f)</span></div>
+<div class="desc">Slices the given bytevector <var>bv</var> into <var>k</var> size and returns
+a list of bytevectors.
+<p />The keyword argument <var>padding</var> is given and it must be a procedure accept
+one argument, then it will be called when the last chunk of bytevector is not
+size of <var>k</var>. The procedure should return padded bytevector and it doesn't
+check the returned value nor it's size so it is caller's responsibility to
+make sure the returned value is a bytevector and the size is <var>k</var>.
+<p /><pre class="snipet"><span class="snipet-code">(bytevector-slices #vu8(1 2 3 4 5 6) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(#vu8(1 2 3) #vu8(4 5 6))</span></pre>
+<pre class="snipet"><span class="snipet-code">(bytevector-slices #vu8(1 2 3 4) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(#vu8(1 2 3) #vu8(4))</span></pre>
+<pre class="codeblock">;; the given bytevector bv is #vu8(4)
+(bytevector-slices #vu8(1 2 3 4) 3 :padding (lambda (bv) #vu8(4 5 6)))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(#vu8(1 2 3) #vu8(4 5 6))</span></pre>
+<pre class="codeblock">;; this is valid as well so that bytevector-slices doesn't check the 
+;; return value
+(bytevector-slices #vu8(1 2 3 4) 3 :padding (lambda (bv) #f))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(#vu8(1 2 3) #f)</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-split-at*1210">
+    <span class="name" name="bytevector-split-at*">bytevector-split-at*</span>
+  </a> <span class="args">bv k :key (padding #f)</span></div>w
+<div class="desc">Splits bytevector into 2 bytevectors and returns 2 values of bytevectors.
+<p />The first returned bytevector size will be <var>k</var> and its content is given
+bytevector's value starting from 0 to <var>k</var> - 1. The second returned value
+is the rest of values of <var>bv</var>.
+<p />If size of the given bytevector <var>bv</var> is less than <var>k</var> then the second
+value of returned bytevector will be empty bytevector.
+<p />The keyword argument <var>padding</var> is given and it must be a procedure accept
+one argument, then it will be called when given bytevector's size is less than
+<var>k</var> and first returned value will the result of <var>padding</var>.
+<p /><pre class="snipet"><span class="snipet-code">(bytevector-split-at* #vu8(1 2 3 4 5) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3) and #vu8(4 5)</span></pre>
+<pre class="codeblock">(bytevector-split-at* #vu8(1 2) 3 :padding (lambda (bv) #vu8(1 2 3)))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">#vu8(1 2 3) and #vu8()</span></pre>
+<pre class="codeblock">(bytevector-split-at* #vu8(1 2) 3 :padding (lambda (bv) #f))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">#f and #vu8()</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="-&gt;odd-parity1211">
+    <span class="name" name="-&gt;odd-parity">-&gt;odd-parity</span>
+  </a>
+ <span class="args">bv :optional (start 0) (end (bytevector-length bv))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="-&gt;odd-parity!1212">
+    <span class="name" name="-&gt;odd-parity!">-&gt;odd-parity!</span>
+  </a>
+ <span class="args">bv :optional (start 0) (end (bytevector-length bv))</span></div>
+<div class="desc">Compute odd parity of the given bytevector <var>bv</var> and return the
+result of bytevector.
+<p />If the second procedure is used, then <var>bv</var> will be modified.
+</div>
+
+</section>
+  <div class="prev-next">
+    <a class="prev" href="section72.html">(binary pack) - Packing binary data</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section74.html">(crypto) - Cryptographic library</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+  </div>
+</html>

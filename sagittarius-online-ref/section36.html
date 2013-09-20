@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section35.html">Bytevectors</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section37.html">Sorting</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="rnrs.lists.6"><span class="section-number">3.6</span>List utilities</a>
+  </h3>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rnrs lists (6))360">
+      <span class="name" name="(rnrs lists (6))">(rnrs lists (6))</span>
+    </a>
+  </div>
+<div class="desc">[R6RS] The <code>(rnrs lists (6))</code>library, which contains various useful
+procedures that operate on lists.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="find361">
+    <span class="name" name="find">find</span>
+  </a> <span class="args">proc list</span></div>
+<div class="desc">[R6RS] <var>Proc</var> should accept one argument and return a single value.
+<var>Proc</var> should not mutate list. The <code>find</code> procedure applies <var>proc</var>
+to the elements of <var>list</var> in order. If <var>proc</var> returns a true value for
+an element, find immediately returns that element. If <var>proc</var> returns #f for
+all elements of the <var>list</var>, find returns #f.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="for-all362">
+    <span class="name" name="for-all">for-all</span>
+  </a> <span class="args">pred list1 list2 ...</span></div>
+<div class="desc">[R6RS+] Applies <var>pred</var> across each element of <var>lists</var>, and returns
+#f as soon as <var>pred</var> returns #f. If all application of <var>pred</var> return a
+non-false value, <code>for-all</code> returns the last result of the applications.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="exists363">
+    <span class="name" name="exists">exists</span>
+  </a> <span class="args">pred list1 list2 ...</span></div>
+<div class="desc">[R6RS+] Applies <var>pred</var> across each element of <var>lists</var>, and returns
+as soon as <var>pred</var> returns a non-false value. The return value of any is the
+non-false value <var>pred</var> returned. If lists are exhausted before <var>pred</var>
+returns a non-false value, #f is returned.
+<p />Note: R6RS requires the same length list for <code>for-all</code> and <code>exists</code>.
+On Sagittarius, however, these can accept different length list and it will
+finish to process when the shortest list is finish to process.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="filter364">
+    <span class="name" name="filter">filter</span>
+  </a> <span class="args">proc list</span></div>
+<div class="define"><span class="define-category">Function</span><a name="partition365">
+    <span class="name" name="partition">partition</span>
+  </a> <span class="args">proc list</span></div>
+<div class="desc">[R6RS] <var>Proc</var> should accept one argument and return a single value.
+<p />The <code>filter</code> procedure applies <var>proc</var> to each element of <var>list</var> and
+returns a list of the elements of <var>list</var> for which <var>proc</var> returned a true
+value. The <code>partition</code> procedure also applies <var>proc</var> to each element of
+<var>list</var>, but returns two values, the first one a list of the elements of <var>list</var>
+for which <var>proc</var> returned a true value, and the second a list of the elements
+of <var>list</var> for which <var>proc</var> returned #f. In both cases, the elements of the
+result list(s) are in the same order as they appear in the input list. If multiple
+returns occur from <code>filter</code> or <code>partitions</code>, the return values returned
+by earlier returns are not mutated.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fold-left366">
+    <span class="name" name="fold-left">fold-left</span>
+  </a> <span class="args">combine nil list1 list2 ...</span></div>
+<div class="desc">[R6RS+] <var>Combine</var> must be a procedure. It should accept one more argument
+than there are <var>lists</var> and return a single value. It should not mutate the
+<var>list</var> arguments. The <code>fold-left</code> procedure iterates the <var>combine</var>
+procedure over an accumulator value and the elements of the <var>lists</var> from left
+to right, starting with an accumulator value of <var>nil</var>. More specifically,
+<code>fold-left</code> returns <var>nil</var> if the <var>lists</var> are empty. If they are not
+empty, <var>combine</var> is first applied to <var>nil</var> and the respective first
+elements of the <var>lists</var> in order. The result becomes the new accumulator
+value, and <var>combine</var> is applied to the new accumulator value and the respective
+next elements of the <var>list</var>. This step is repeated until the end of the
+<var>list</var> is reached; then the accumulator value is returned.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="fold-right367">
+    <span class="name" name="fold-right">fold-right</span>
+  </a> <span class="args">combine nil list1 list2 ...</span></div>
+<div class="desc">[R6RS+] <var>Combine</var> must be a procedure. It should accept one more argument
+than there are <var>lists</var> and return a single value. <var>Combine</var> should not
+mutate the <var>list</var> arguments. The <code>fold-right</code> procedure iterates the
+<var>combine</var> procedure over the elements of the <var>lists</var> from right to left
+and an accumulator value, starting with an accumulator value of <var>nil</var>. More
+specifically, <code>fold-right</code> returns <var>nil</var> if the lists are empty. If they
+are not empty, <var>combine</var> is first applied to the respective last elements of
+the <var>lists</var> in order and <var>nil</var>. The result becomes the new accumulator
+value, and <var>combine</var> is applied to the respective previous elements of the
+<var>lists</var> and the new accumulator value. This step is repeated until the beginning
+of the <var>list</var> is reached; then the accumulator value is returned.
+<p />Note: R6RS requires the same length list for <code>fold-left</code> and <code>fold-right</code>.
+On Sagittarius, however, these can accept different length list and it will finish
+to process when the shortest list is finish to process.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="remp368">
+    <span class="name" name="remp">remp</span>
+  </a> <span class="args">proc list</span></div>
+<div class="define"><span class="define-category">Function</span><a name="remove369">
+    <span class="name" name="remove">remove</span>
+  </a> <span class="args">obj list</span></div>
+<div class="define"><span class="define-category">Function</span><a name="remv370">
+    <span class="name" name="remv">remv</span>
+  </a> <span class="args">obj list</span></div>
+<div class="define"><span class="define-category">Function</span><a name="remq371">
+    <span class="name" name="remq">remq</span>
+  </a> <span class="args">obj list</span></div>
+<div class="desc">[R6RS] Proc should accept one argument and return a single value. <var>Proc</var>
+should not mutate <var>list</var>.
+<p />Each of these procedures returns a list of the elements of <var>list</var> that do not
+satisfy a given condition. The <code>remp</code> procedure applies <var>proc</var> to each
+element of <var>list</var> and returns a list of the elements of <var>list</var> for which
+<var>proc</var> returned #f. The <code>remove</code>, <cpde>remv</cpde>, and <code>remq</code> procedures
+return a list of the elements that are not <var>obj</var>. The <code>remq</code> procedure
+uses <code>eq?</code> to compare <var>obj</var> with the elements of <var>list</var>, while
+<code>remv</code> uses <code>eqv?</code> and <code>remove</code> uses <code>equal?</code>. The elements
+of the result list are in the same order as they appear in the input list. If
+multiple returns occur from <code>remp</code>, the return values returned by earlier
+returns are not mutated.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="memp372">
+    <span class="name" name="memp">memp</span>
+  </a> <span class="args">proc list</span></div>
+<div class="define"><span class="define-category">Function</span><a name="member373">
+    <span class="name" name="member">member</span>
+  </a> <span class="args">obj list :optional =</span></div>
+<div class="define"><span class="define-category">Function</span><a name="memv374">
+    <span class="name" name="memv">memv</span>
+  </a> <span class="args">obj list</span></div>
+<div class="define"><span class="define-category">Function</span><a name="memq375">
+    <span class="name" name="memq">memq</span>
+  </a> <span class="args">obj list</span></div>
+<div class="desc">[R6RS+] <var>Proc</var> should accept one argument and return a single value.
+<var>Proc</var> should not mutate <var>list</var>.
+<p />These procedures return the first sublist of <var>list</var> whose car satisfies a
+given condition, where the sublists of <var>lists</var> are the lists returned by
+<code>(list-tail <var>list</var> <var>k</var>)</code> for <var>k</var> less than the length of <var>list</var>.
+The <code>memp</code> procedure applies <var>proc</var> to the cars of the sublists of 
+<var>list</var> until it finds one for which <var>proc</var> returns a true value. The
+<code>member</code>, <code>memv</code>, and <code>memq</code> procedures look for the first
+occurrence of <var>obj</var>. If list does not contain an element satisfying the
+condition, then #f (not the empty list) is returned. The <code>member</code> procedure
+uses <code>equal?</code> or if <var>=</var> is given use it to compare <var>obj</var> with the
+elements of <var>list</var>, while <code>memv</code> uses <code>eqv?</code> and <code>memq</code> uses
+<code>eq?</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="assp376">
+    <span class="name" name="assp">assp</span>
+  </a> <span class="args">proc alist</span></div>
+<div class="define"><span class="define-category">Function</span><a name="assc377">
+    <span class="name" name="assc">assc</span>
+  </a> <span class="args">obj alist :optional =</span></div>
+<div class="define"><span class="define-category">Function</span><a name="assv378">
+    <span class="name" name="assv">assv</span>
+  </a> <span class="args">obj alist</span></div>
+<div class="define"><span class="define-category">Function</span><a name="assq379">
+    <span class="name" name="assq">assq</span>
+  </a> <span class="args">obj alist</span></div>
+<div class="desc">[R6RS+] <var>Alist</var> (for "association list") should be a list of pairs.
+<var>Proc</var> should accept one argument and return a single value. <var>Proc</var>
+should not mutate <var>alist</var>.
+<p />These procedures find the first pair in <var>alist</var> whose car field satisfies
+a given condition, and returns that pair without traversing <var>alist</var> further.
+If no pair in <var>alist</var> satisfies the condition, then #f is returned. The 
+<code>assp</code> procedure successively applies <var>proc</var> to the car fields of
+<var>alist</var> and looks for a pair for which it returns a true value. The
+<code>assoc</code>, <code>assv</code>, and <code>assq</code> procedures look for a pair that has
+<var>obj</var> as its car. The <code>assoc</code> procedure uses <code>equal?</code> or if <var>=</var>
+is given use it to compare <var>obj</var> with the car fields of the pairs in <var>alist</var>,
+while <code>assv</code> uses <code>eqv?</code> and <code>assq</code> uses <cpde>eq?</cpde>.
+<p />Note: <code>member</code> and <code>assoc</code> procedures are the same behaviour as SRFI-1.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="cons*380">
+    <span class="name" name="cons*">cons*</span>
+  </a> <span class="args">obj1 obj2 ...</span></div>
+<div class="desc">[R6RS] Like <code>list</code>, but the last argument provides the tail of the
+constructed list.</div>
+
+</section>
+  <div class="prev-next">
+    <a class="prev" href="section35.html">Bytevectors</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section37.html">Sorting</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+  </div>
+</html>

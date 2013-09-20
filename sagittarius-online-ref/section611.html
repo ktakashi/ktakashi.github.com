@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section610.html">(sagittarius regex) - regular expression library</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section7.html">Utility libraries</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="lib.sagittarius.socket"><span class="section-number">6.11</span>(sagittarius socket) - socket library</a>
+  </h3>
+<p />This section describes low level socket API on Sagittarius. The APIs are mostly
+the same signature as Ypsilon and mosh. The following example is simple echo
+server, it receives input from a client and just returns it to the client.
+<p />The example program is from example/socket/echo.scm.
+<p /><pre class="codeblock">(import (rnrs) (sagittarius socket))
+;; creates echo server socket with port number 5000
+(define echo-server-socket (make-server-socket "5000"))
+;; addr is client socket
+(let loop ((addr (socket-accept echo-server-socket)))
+  (call-with-socket addr
+   (lambda (sock)
+     ;; socket-port creates binary input/output port
+     ;; make it transcoded port for convenience.
+     (let ((p (transcoded-port (socket-port sock)
+			       ;; on Sagittarius Scheme native-transcoder
+			       ;; uses utf8 codec for ASCII compatibility.
+			       ;; For socket programming it might be better
+			       ;; to specify eol-style with crlf.
+			       ;; But this sample just shows how it goes.
+			       (native-transcoder))))
+       (call-with-port p
+	(lambda (p)
+	  (put-string p "please type something\n\r")
+	  (put-string p "&gt; ")
+	  ;; gets line from client.
+	  (let lp2 ((r (get-line p)))
+	    (unless (eof-object? r)
+	      (print "received: " r)
+	      ;; just returns message from client.
+	      ;; NB: If client type nothing, it'll throw assertion-violation.
+	      (put-string p r)
+	      (put-string p "\r\n&gt; ")
+	      ;; waits for next input.
+	      (lp2 (get-line p)))))))))
+  ;; echo server waits next connection.
+  (loop (socket-accept echo-server-socket)))
+</pre>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(sagittarius socket)1102">
+      <span class="name" name="(sagittarius socket)">(sagittarius socket)</span>
+    </a>
+  </div>
+<div class="desc">This library provides procedures for socket programming.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-client-socket1103">
+    <span class="name" name="make-client-socket">make-client-socket</span>
+  </a>
+ <span class="args">node srvice :opational (ai_family <code>AF_INET</code>)
+ (ai_socktype <code>SOCK_STREAM</code>)
+ (ai_flags (+ <code>AI_V4MAPPED</code> <code>AI_ADDRCONFIG</code>)) (ai_protocol 0)</span></div>
+<div class="desc"><var>Node</var> and <var>service</var> must be string or #f. Other optional arguments
+must be exact integer.
+<p />Returns a client socket connected to an Internet address. The Internet address
+is identified by <var>node</var> and <var>service</var>. The <code>make-client-socket</code>
+uses <code>getaddrinfo(3)</code> to look it up. The arguments <var>node</var>, <var>service</var>,
+<var>ai-family</var>, <var>ai-socktype</var>, <var>ai-flags</var> and <var>ai-protocol</var> are
+passed to <code>getaddrinfo(3)</code> as corresponding parameters. For more detail,
+see reference of <code>getaddrinfo(3)</code>.
+<p /><var>Node</var> is a network address, ex) "www.w3.org", "localhost", "192.168.1.1". 
+<p /><var>Service</var> is a network service, ex) "http", "ssh", "80", "22".
+<p /><var>Ai-family</var> is an address family specifier. Predefined specifiers are listed
+below.
+<ul class="itemlist">
+    <li class="itemlist-item">AF_INET</li>
+    <li class="itemlist-item">AF_INET6</li>
+    <li class="itemlist-item">AF_UNSPEC</li>
+  </ul>
+<p /><var>Ai-sockettype</var> is a socket type specifier. Predefined specifiers are listed
+below.
+<ul class="itemlist">
+    <li class="itemlist-item">SOCK_STREAM</li>
+    <li class="itemlist-item">SOCK_DGRAM</li>
+    <li class="itemlist-item">SOCK_RAW</li>
+  </ul>
+<p /><var>Ai-flags</var> is an additional options specifier. Predefined specifiers are listed
+below.
+<ul class="itemlist">
+    <li class="itemlist-item">AI_ADDRCONFIG</li>
+    <li class="itemlist-item">AI_ALL</li>
+    <li class="itemlist-item">AI_CANONNAME</li>
+    <li class="itemlist-item">AI_NUMERICHOST</li>
+    <li class="itemlist-item">AI_NUMERICSERV</li>
+    <li class="itemlist-item">AI_PASSIVE</li>
+    <li class="itemlist-item">AI_V4MAPPED</li>
+  </ul>
+<p /><var>Ai-protocol</var> is a protocol specifier. Predefined specifiers are listed below.
+<ul class="itemlist">
+    <li class="itemlist-item">IPPROTO_TCP</li>
+    <li class="itemlist-item">IPPROTO_UDP</li>
+    <li class="itemlist-item">IPPROTO_RAW</li>
+  </ul>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-server-socket1104">
+    <span class="name" name="make-server-socket">make-server-socket</span>
+  </a>
+ <span class="args">service :optional (ai_family <code>AF_INET</code>)
+ (ai_socktype <code>SOCK_STREAM</code>)
+ (ai_protocol 0)</span></div>
+<div class="desc"><var>Service</var> must be string or #f. Other optional arguments must be exact
+integer. Returns a server socket waiting for connections. The argument details
+are the same as the <code>make-client-socket</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket?1105">
+    <span class="name" name="socket?">socket?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is socket object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-port1106">
+    <span class="name" name="socket-port">socket-port</span>
+  </a> <span class="args">socket :optional (close? #t)</span></div>
+<div class="desc"><var>Socket</var> must be a socket object. Returns a binary input/output port
+associated with <var>socket</var>.
+<p />If optional argument <var>close?</var> is #f then the port won't close socket
+when port is closing or being GCed.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-input-port1107">
+    <span class="name" name="socket-input-port">socket-input-port</span>
+  </a> <span class="args">socket</span></div>
+<div class="define"><span class="define-category">Function</span><a name="socket-output-port1108">
+    <span class="name" name="socket-output-port">socket-output-port</span>
+  </a> <span class="args">socket</span></div>
+<div class="desc">[SRFI-106] <var>Socket</var> must be a socket object. Returns a binary input
+and output port associated with <var>socket</var>, respectively.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-socket1109">
+    <span class="name" name="call-with-socket">call-with-socket</span>
+  </a> <span class="args">socket proc</span></div>
+<div class="desc"><var>Socket</var> must be a socket object. <var>Proc</var> must accept one argument.
+<p />The <code>call-with-socket</code> calls a procedure with socket as an argument.
+<p />This procedure is analogy with <code>call-with-port</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="shutdown-port1110">
+    <span class="name" name="shutdown-port">shutdown-port</span>
+  </a> <span class="args">port how</span></div>
+<div class="desc"><var>Port</var> must be associated with a socket.
+<p />Shutdowns associated port according to <var>how</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="shutdown-input-port1111">
+    <span class="name" name="shutdown-input-port">shutdown-input-port</span>
+  </a> <span class="args">port</span></div>
+<div class="define"><span class="define-category">Function</span><a name="shutdown-output-port1112">
+    <span class="name" name="shutdown-output-port">shutdown-output-port</span>
+  </a> <span class="args">port</span></div>
+<div class="desc"><var>Port</var> must be associated with a socket.
+<p />The <code>shutdown-output-port</code> and <code>shutdown-input-port</code> shutdown
+output or input connection of a socket associated with <var>port</var> respectively.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-accept1113">
+    <span class="name" name="socket-accept">socket-accept</span>
+  </a> <span class="args">socket</span></div>
+<div class="desc"><var>Socket</var> must be a socket object created by <code>make-server-socket</code>.
+<p />Wait for an incoming connection request and returns a fresh connected client
+socket.
+<p />This procedures is a thin wrapper of POSIX's <code>accept(2)</code>.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="socket-recv1114">
+    <span class="name" name="socket-recv">socket-recv</span>
+  </a> <span class="args">socket size :optional (flags 0)</span></div>
+<div class="desc"><var>Socket</var> must be a socket object.
+<p />Receives a binary data block from given socket. If zero length bytevector is
+returned, it means the peer connection is closed.
+<p />This procedures is a thin wrapper of POSIX's <code>recv(2)</code>.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="socket-send1115">
+    <span class="name" name="socket-send">socket-send</span>
+  </a>
+ <span class="args">socket bytevector :optional (flags 0)</span></div>
+<div class="desc"><var>Socket</var> must be a socket object.
+<p />Sends a binary data block to given socket and returns the sent data size.
+<p />This procedures is a thin wrapper of POSIX's <code>send(2)</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-shutdown1116">
+    <span class="name" name="socket-shutdown">socket-shutdown</span>
+  </a> <span class="args">socket how</span></div>
+<div class="desc"><var>Socket</var> must be a socket object. <var>How</var> must be one of the
+<code>SHUT_RD</code>, <code>SHUT_WR</code> or <code>SHUT_RDWR</code>.
+<p />The <code>socket-shutdown</code> shutdowns socket.
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">SHUT_RD</dt>
+      <dd class="dl-item-desc">shutdowns input.</dd>
+      <dt class="dl-item-title">SHUT_WR</dt>
+      <dd class="dl-item-desc">shutdowns output.</dd>
+      <dt class="dl-item-title">SHUT_RDWR</dt>
+      <dd class="dl-item-desc">shutdowns input and output.</dd>
+    </dl>
+  </div>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-close1117">
+    <span class="name" name="socket-close">socket-close</span>
+  </a> <span class="args">socket</span></div>
+<div class="desc"><var>Socket</var> must be a socket object. Closes <var>socket</var>.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1118"><span class="section-number">6.11.1</span>Socket information</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-peer1119">
+    <span class="name" name="socket-peer">socket-peer</span>
+  </a> <span class="args">socket</span></div>
+<div class="desc"><var>Socket</var> must be a socket object.
+<p />Returns socket info object or #f. The socket info object contains hostname,
+IP address and port number. These information is retrieved from getpeername(2).
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-name1120">
+    <span class="name" name="socket-name">socket-name</span>
+  </a> <span class="args">socket</span></div>
+<div class="desc"><var>Socket</var> must be a socket object.
+<p />Returns the name string of socket or #f if the socket doesn't have name.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-info1121">
+    <span class="name" name="socket-info">socket-info</span>
+  </a> <span class="args">socket</span></div>
+<div class="desc"><var>Socket</var> must be a socket object.
+<p />Returns socket info object or #f. The socket info object contains hostname,
+IP address and port number. These information is retrieved from getsockname(2).
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-info-values1122">
+    <span class="name" name="socket-info-values">socket-info-values</span>
+  </a> <span class="args">socket</span></div>
+<div class="desc"><var>Socket</var> must be a socket object.
+<p />Returns 3 values; hostname, IP address and port number. This procedures is
+for convenience to handle socket info object.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1123"><span class="section-number">6.11.2</span>IP address operations</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="ip-address-&gt;string1124">
+    <span class="name" name="ip-address-&gt;string">ip-address-&gt;string</span>
+  </a> <span class="args">ip</span></div>
+<div class="desc"><var>ip</var> must be an IP address object returned from the second value 
+of <code>socket-info-values</code>.
+<p />Converts given IP address object to human readable string.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="ip-address-&gt;bytevector1125">
+    <span class="name" name="ip-address-&gt;bytevector">ip-address-&gt;bytevector</span>
+  </a> <span class="args">ip</span></div>
+<div class="desc"><var>ip</var> must be an IP address object returned from the second value 
+of <code>socket-info-values</code>.
+<p />Converts given IP address object to bytevector.
+</div>
+
+
+</section></section>
+  <div class="prev-next">
+    <a class="prev" href="section610.html">(sagittarius regex) - regular expression library</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section7.html">Utility libraries</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+  </div>
+</html>

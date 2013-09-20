@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section34.html">Unicode</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section36.html">List utilities</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="rnrs.bytevectors.6"><span class="section-number">3.5</span>Bytevectors</a>
+  </h3>
+<p />Many applications deal with blocks of binary data by accessing them in various
+ways-extracting signed or unsigned numbers of various sizes. Therefore, the 
+<code>(rnrs bytevectors (6))</code>library provides a single type for blocks of binary
+data with multiple ways to access that data. It deals with integers and
+floating-point representations in various sizes with specified endianness.
+<p />Bytevectorsare objects of a disjoint type. Conceptually, a bytevector represents
+a sequence of 8-bit bytes. The description of bytevectors uses the term byte for
+an exact integer object in the interval { - 128, ..., 127} and the term octet for
+an exact integer object in the interval {0, ..., 255}. A byte corresponds to its
+two's complement representation as an octet.
+<p />The length of a bytevector is the number of bytes it contains. This number is
+fixed. A valid index into a bytevector is an exact, non-negative integer object
+less than the length of the bytevector. The first byte of a bytevector has index
+0; the last byte has an index one less than the length of the bytevector.
+<p />Generally, the access procedures come in different flavors according to the size
+of the represented integer and the endianness of the representation. The procedures
+also distinguish signed and unsigned representations. The signed representations
+all use two's complement.
+<p />Like string literals, literals representing bytevectors do not need to be quoted:
+<pre class="snipet"><span class="snipet-code">#vu8(12 23 123)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(12 23 123)</span></pre>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rnrs bytevectors (6))290">
+      <span class="name" name="(rnrs bytevectors (6))">(rnrs bytevectors (6))</span>
+    </a>
+  </div>
+<div class="desc">[R6RS] This library provides a single type for blocks of binary data with
+multiple ways to access that data.
+</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G291"><span class="section-number">3.5.1</span>General operations</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Macro</span><a name="endianness292">
+    <span class="name" name="endianness">endianness</span>
+  </a> <span class="args">symbol</span></div>
+<div class="desc">[R6RS] The name of <var>symbol</var> must be a symbol describing an endianness.
+<code>(endianness <var>symbol</var>)</code> evaluates to the symbol named <var>symbol</var>.
+Whenever one of the procedures operating on bytevectors accepts an endianness as
+an argument, that argument must be one of these symbols. It is a syntax violation
+for symbol to be anything other than an endianness symbol supported by the Sagittarius.
+<p />Currently, Sagittarius supports these symbols; <code>big</code>, <code>little</code>
+and <code>native</code>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="native-endianness293">
+      <span class="name" name="native-endianness">native-endianness</span>
+    </a>
+  </div>
+<div class="desc">[R6RS] Returns the endianness symbol associated platform endianness.
+This may be a symbol either big or little.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector?294">
+    <span class="name" name="bytevector?">bytevector?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">[R6RS] Returns #t if <var>obj</var> is a bytevector, otherwise returns #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-bytevector295">
+    <span class="name" name="make-bytevector">make-bytevector</span>
+  </a> <span class="args">k :optional fill</span></div>
+<div class="desc">[R6RS] Returns a newly allocated bytevector of <var>k</var> bytes.
+<p />If the <var>fill</var> argument is missing, the initial contents of the returned
+bytevector are 0.
+<p />If the <var>fill</var> argument is present, it must be an exact integer object in the
+interval {-128, ..., 255} that specifies the initial value for the bytes of the
+bytevector: If <var>fill</var> is positive, it is interpreted as an octet; if it is
+negative, it is interpreted as a byte.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-length296">
+    <span class="name" name="bytevector-length">bytevector-length</span>
+  </a> <span class="args">bytevector</span></div>
+<div class="desc">[R6RS] Returns, as an exact integer object, the number of bytes in
+<var>bytevector</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector=?297">
+    <span class="name" name="bytevector=?">bytevector=?</span>
+  </a> <span class="args">bytevector1 bytevector2</span></div>
+<div class="desc">[R6RS] Returns #t if <var>bytevector1</var> and <var>bytevector2</var> are
+equal-that is, if they have the same length and equal bytes at all valid
+indices. It returns #f otherwise.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-fill!298">
+    <span class="name" name="bytevector-fill!">bytevector-fill!</span>
+  </a>
+ <span class="args">bytevector fill :optional start end</span></div>
+<div class="desc">[R6RS+] The <var>fill</var> argument is as in the description of the
+<code>make-bytevector</code> procedure. The <code>bytevector-fill!</code> procedure stores
+<var>fill</var> in every element of <var>bytevector</var> and returns unspecified values.
+Analogous to <code>vector-fill!</code>.
+<p />If optional arguments <var>start</var> or <var>end</var> is given, then the procedure
+restricts the range of filling from <var>start</var> to <var>end</var> (exclusive) index
+of <var>bytevector</var>. When <var>end</var> is omitted then it uses the length of the
+given bytevector.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-copy!299">
+    <span class="name" name="bytevector-copy!">bytevector-copy!</span>
+  </a> <span class="args">source source-start target target-start k</span></div>
+<div class="desc">[R6RS] <var>Source</var> and <var>target</var> must be bytevectors. <var>Source-start</var>,
+<var>target-start</var>, and <var>k</var> must be non-negative exact integer objects that satisfy
+<p />0 &lt;= <var>source-start</var> &lt;= <var>source-start</var> + <var>k</var> &lt;= <var>source-length</var>
+0 &lt;= <var>target-start</var> &lt;= <var>target-start</var> + <var>k</var> &lt;= <var>target-length</var>
+<p />where <var>source-length</var> is the length of <var>source</var> and <var>target-length</var>
+is the length of <var>target</var>.
+<p />The <code>bytevector-copy!</code> procedure copies the bytes from <var>source</var> at indices
+<p /><var>source-start</var>, ... <var>source-start</var> + <var>k</var> - 1
+<p />to consecutive indices in <var>target</var> starting at <var>target-index</var>.
+<p />This returns unspecified values.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-copy300">
+    <span class="name" name="bytevector-copy">bytevector-copy</span>
+  </a> <span class="args">bytevector
+ :optional (start 0)  (end -1)</span></div>
+<div class="desc">[R6RS+] Returns a newly allocated copy of <var>bytevector</var>.
+<p />If optional argument <var>start</var> was given, the procedure copies from the given
+<var>start</var> index.
+<p />If optional argument <var>end</var> was given, the procedure copies to the given
+<var>end</var> index (exclusive).
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G301"><span class="section-number">3.5.2</span>Operation on bytes and octets</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-u8-ref302">
+    <span class="name" name="bytevector-u8-ref">bytevector-u8-ref</span>
+  </a> <span class="args">bytevector k</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s8-ref303">
+    <span class="name" name="bytevector-s8-ref">bytevector-s8-ref</span>
+  </a> <span class="args">bytevector k</span></div>
+<div class="desc">[R6RS] <var>K</var> must be a valid index of <var>bytevector</var>.
+<p />The <code>bytevector-u8-ref</code> procedure returns the byte at index <var>k</var> of
+<var>bytevector</var>, as an octet.
+<p />The <code>bytevector-s8-ref</code> procedure returns the byte at index <var>k</var> of
+<var>bytevector</var>, as a (signed) byte.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-u8-set!304">
+    <span class="name" name="bytevector-u8-set!">bytevector-u8-set!</span>
+  </a> <span class="args">bytevector k octet</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s8-set!305">
+    <span class="name" name="bytevector-s8-set!">bytevector-s8-set!</span>
+  </a> <span class="args">bytevector k byte</span></div>
+<div class="desc">[R6RS] <var>K</var> must be a valid index of <var>bytevector</var>.
+<p />The <code>bytevector-u8-set!</code> procedure stores <var>octet</var> in element <var>k</var>
+of <var>bytevector</var>.
+<p />The <code>bytevector-s8-set!</code> procedure stores the two's-complement
+representation of <var>byte</var> in element <var>k</var> of <var>bytevector</var>.
+<p />Both procedures return unspecified values.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;u8-list306">
+    <span class="name" name="bytevector-&gt;u8-list">bytevector-&gt;u8-list</span>
+  </a> <span class="args">bytevector</span></div>
+<div class="define"><span class="define-category">Function</span><a name="u8-list-&gt;bytevector307">
+    <span class="name" name="u8-list-&gt;bytevector">u8-list-&gt;bytevector</span>
+  </a> <span class="args">bytevector</span></div>
+<div class="desc">[R6RS] <var>List</var> must be a list of octets.
+<p />The <code>bytevector-&gt;u8-list</code> procedure returns a newly allocated list of the
+octets of <var>bytevector</var> in the same order.
+<p />The <code>u8-list-&gt;bytevector</code> procedure returns a newly allocated bytevector
+whose elements are the elements of list <var>list</var>, in the same order. It is
+analogous to <code>list-&gt;vector</code>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G308"><span class="section-number">3.5.3</span>Operations on integers of arbitary size</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-uint-ref309">
+    <span class="name" name="bytevector-uint-ref">bytevector-uint-ref</span>
+  </a> <span class="args">bytevector k endianness size</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-sint-ref310">
+    <span class="name" name="bytevector-sint-ref">bytevector-sint-ref</span>
+  </a> <span class="args">bytevector k endianness size</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-uint-set!311">
+    <span class="name" name="bytevector-uint-set!">bytevector-uint-set!</span>
+  </a> <span class="args">bytevector k n endianness size</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-sint-set!312">
+    <span class="name" name="bytevector-sint-set!">bytevector-sint-set!</span>
+  </a> <span class="args">bytevector k n endianness size</span></div>
+<div class="desc">[R6RS] <var>Size</var> must be a positive exact integer object.
+<var>K</var>, ..., <var>k</var> + <var>size</var> - 1 must be valid indices of <var>bytevector</var>.
+<p />The <code>bytevector-uint-ref</code> procedure retrieves the exact integer object
+corresponding to the unsigned representation of size <var>size</var> and specified
+by <var>endianness</var> at indices <var>k</var>, ..., <var>k</var> + <var>size</var> - 1.
+<p />The <code>bytevector-sint-ref</code> procedure retrieves the exact integer object
+corresponding to the two's-complement representation of size <var>size</var> and
+specified by <var>endianness</var> at indices <var>k</var>, ..., <var>k</var> + <var>size</var> - 1.
+<p />For <code>bytevector-uint-set!</code>, <var>n</var> must be an exact integer object in the
+interval <math>{0, ..., 256 ^ "size" - 1}</math>
+<p />The <code>bytevector-uint-set!</code> procedure stores the unsigned representation of
+size <var>size</var> and specified by <var>endianness</var> into <var>bytevector</var> at indices
+<var>k</var>, ..., <var>k</var> + <var>size</var> - 1.
+<p />For <code>bytevector-sint-set!</code>, <var>n</var> must be an exact integer object in the
+interval <math>{-256 ^ "size" / 2, ..., 256 ^ "size" / 2 - 1}</math>.
+<code>bytevector-sint-set!</code> stores the two's-complement representation of size
+<var>size</var> and specified by <var>endianness</var> into <var>bytevector</var> at indices
+<var>k</var>, ..., <var>k</var> + <var>size</var> - 1.
+<p />The <code>...-set!</code> procedures return unspecified values.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;uint-list313">
+    <span class="name" name="bytevector-&gt;uint-list">bytevector-&gt;uint-list</span>
+  </a> <span class="args">bytevector endianness size</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;sint-list314">
+    <span class="name" name="bytevector-&gt;sint-list">bytevector-&gt;sint-list</span>
+  </a> <span class="args">bytevector endianness size</span></div>
+<div class="define"><span class="define-category">Function</span><a name="uint-list-&gt;bytevector315">
+    <span class="name" name="uint-list-&gt;bytevector">uint-list-&gt;bytevector</span>
+  </a> <span class="args">list endianness size</span></div>
+<div class="define"><span class="define-category">Function</span><a name="sint-list-&gt;bytevector316">
+    <span class="name" name="sint-list-&gt;bytevector">sint-list-&gt;bytevector</span>
+  </a> <span class="args">list endianness size</span></div>
+<div class="desc">[R6RS] <var>Size</var> must be a positive exact integer object. For 
+<code>uint-list-&gt;bytevector</code>, <var>list</var> must be a list of exact integer objects
+in the interval <math>{0, ..., 256 ^ "size" - 1}</math>. For <code>sint-list-&gt;bytevector</code>,
+<var>list</var> must be a list of exact integer objects in the interval
+<math>{-256 ^ "size"/2, ..., 256 ^ "size"/2 - 1}</math>. The length of <var>bytevector</var>
+or, respectively, of <var>list</var> must be divisible by <var>size</var>.
+<p />These procedures convert between lists of integer objects and their consecutive
+representations according to <var>size</var> and <var>endianness</var> in the <var>bytevector</var>
+objects in the same way as <code>bytevector-&gt;u8-list</code> and <code>u8-list-&gt;bytevector</code>
+do for one-byte representations.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G317"><span class="section-number">3.5.4</span>Operation on 16-bit integers</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-u16-ref318">
+    <span class="name" name="bytevector-u16-ref">bytevector-u16-ref</span>
+  </a> <span class="args">bytevector k endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s16-ref319">
+    <span class="name" name="bytevector-s16-ref">bytevector-s16-ref</span>
+  </a> <span class="args">bytevector k endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-u16-native-ref320">
+    <span class="name" name="bytevector-u16-native-ref">bytevector-u16-native-ref</span>
+  </a> <span class="args">bytevector k</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s16-native-ref321">
+    <span class="name" name="bytevector-s16-native-ref">bytevector-s16-native-ref</span>
+  </a> <span class="args">bytevector k</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-u16-set!322">
+    <span class="name" name="bytevector-u16-set!">bytevector-u16-set!</span>
+  </a> <span class="args">bytevector k n endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s16-set!323">
+    <span class="name" name="bytevector-s16-set!">bytevector-s16-set!</span>
+  </a> <span class="args">bytevector k n endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-u16-native-set!324">
+    <span class="name" name="bytevector-u16-native-set!">bytevector-u16-native-set!</span>
+  </a> <span class="args">bytevector k n</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s16-native-set!325">
+    <span class="name" name="bytevector-s16-native-set!">bytevector-s16-native-set!</span>
+  </a> <span class="args">bytevector k n</span></div>
+<div class="desc">[R6RS] <var>K</var> must be a valid index of <var>bytevector</var>; so must <var>k</var> + 1.
+For <code>bytevector-u16-set!</code> and <code>bytevector-u16-native-set!</code>, <var>n</var>
+must be an exact integer object in the interval <math>{0, ..., 2 ^ 16 - 1}</math>.
+For <code>bytevector-s16-set!</code> and <code>bytevector-s16-native-set!</code>, <var>n</var>
+must be an exact integer object in the interval <math>{-2 ^ 15, ..., 2 ^ 15 - 1}</math>.
+<p />These retrieve and set two-byte representations of numbers at indices <var>k</var>
+and <var>k</var> + 1, according to the endianness specified by <var>endianness</var>.
+The procedures with <code>u16</code> in their names deal with the unsigned representation;
+those with <code>s16</code> in their names deal with the two's-complement representation.
+<p />The procedures with <code>native</code> in their names employ the native endianness,
+and work only at aligned indices: <var>k</var> must be a multiple of 2.
+<p />The <code>...-set!</code> procedures return unspecified values.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G326"><span class="section-number">3.5.5</span>Operation on 32-bit integers</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-u32-ref327">
+    <span class="name" name="bytevector-u32-ref">bytevector-u32-ref</span>
+  </a> <span class="args">bytevector k endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s32-ref328">
+    <span class="name" name="bytevector-s32-ref">bytevector-s32-ref</span>
+  </a> <span class="args">bytevector k endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-u32-native-ref329">
+    <span class="name" name="bytevector-u32-native-ref">bytevector-u32-native-ref</span>
+  </a> <span class="args">bytevector k</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s32-native-ref330">
+    <span class="name" name="bytevector-s32-native-ref">bytevector-s32-native-ref</span>
+  </a> <span class="args">bytevector k</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-u32-set!331">
+    <span class="name" name="bytevector-u32-set!">bytevector-u32-set!</span>
+  </a> <span class="args">bytevector k n endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s32-set!332">
+    <span class="name" name="bytevector-s32-set!">bytevector-s32-set!</span>
+  </a> <span class="args">bytevector k n endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-u32-native-set!333">
+    <span class="name" name="bytevector-u32-native-set!">bytevector-u32-native-set!</span>
+  </a> <span class="args">bytevector k n</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s32-native-set!334">
+    <span class="name" name="bytevector-s32-native-set!">bytevector-s32-native-set!</span>
+  </a> <span class="args">bytevector k n</span></div>
+<div class="desc">[R6RS] <var>K</var> must be a valid index of <var>bytevector</var>; so must <var>k</var> + 3.
+For <code>bytevector-u32-set!</code> and <code>bytevector-u32-native-set!</code>, <var>n</var>
+must be an exact integer object in the interval <math>{0, ..., 2 ^ 32 - 1}</math>.
+For <code>bytevector-s32-set!</code> and <code>bytevector-s32-native-set!</code>, <var>n</var>
+must be an exact integer object in the interval <math>{-2 ^ 31, ..., 2 ^ 32 - 1}</math>.
+<p />These retrieve and set two-byte representations of numbers at indices <var>k</var>
+and <var>k</var> + 3, according to the endianness specified by <var>endianness</var>.
+The procedures with <code>u32</code> in their names deal with the unsigned representation;
+those with <code>s32</code> in their names deal with the two's-complement representation.
+<p />The procedures with <code>native</code> in their names employ the native endianness,
+and work only at aligned indices: <var>k</var> must be a multiple of 4.
+<p />The <code>...-set!</code> procedures return unspecified values.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G335"><span class="section-number">3.5.6</span>Operation on 64-bit integers</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-u64-ref336">
+    <span class="name" name="bytevector-u64-ref">bytevector-u64-ref</span>
+  </a> <span class="args">bytevector k endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s64-ref337">
+    <span class="name" name="bytevector-s64-ref">bytevector-s64-ref</span>
+  </a> <span class="args">bytevector k endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-u64-native-ref338">
+    <span class="name" name="bytevector-u64-native-ref">bytevector-u64-native-ref</span>
+  </a> <span class="args">bytevector k</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s64-native-ref339">
+    <span class="name" name="bytevector-s64-native-ref">bytevector-s64-native-ref</span>
+  </a> <span class="args">bytevector k</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-u64-set!340">
+    <span class="name" name="bytevector-u64-set!">bytevector-u64-set!</span>
+  </a> <span class="args">bytevector k n endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s64-set!341">
+    <span class="name" name="bytevector-s64-set!">bytevector-s64-set!</span>
+  </a> <span class="args">bytevector k n endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-u64-native-set!342">
+    <span class="name" name="bytevector-u64-native-set!">bytevector-u64-native-set!</span>
+  </a> <span class="args">bytevector k n</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-s64-native-set!343">
+    <span class="name" name="bytevector-s64-native-set!">bytevector-s64-native-set!</span>
+  </a> <span class="args">bytevector k n</span></div>
+<div class="desc">[R6RS] <var>K</var> must be a valid index of <var>bytevector</var>; so must <var>k</var> + 7.
+For <code>bytevector-u64-set!</code> and <code>bytevector-u64-native-set!</code>, <var>n</var>
+must be an exact integer object in the interval <math>{0, ..., 2 ^ 64 - 1}</math>.
+For <code>bytevector-s64-set!</code> and <code>bytevector-s64-native-set!</code>, <var>n</var>
+must be an exact integer object in the interval <math>{-2 ^ 63, ..., 2 ^ 64 - 1}</math>.
+<p />These retrieve and set two-byte representations of numbers at indices <var>k</var>
+and <var>k</var> + 7, according to the endianness specified by <var>endianness</var>.
+The procedures with <code>u64</code> in their names deal with the unsigned representation;
+those with <code>s64</code> in their names deal with the two's-complement representation.
+<p />The procedures with <code>native</code> in their names employ the native endianness,
+and work only at aligned indices: <var>k</var> must be a multiple of 8.
+<p />The <code>...-set!</code> procedures return unspecified values.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G344"><span class="section-number">3.5.7</span>Operation on IEEE-754 representations</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-ieee-single-native-ref345">
+    <span class="name" name="bytevector-ieee-single-native-ref">bytevector-ieee-single-native-ref</span>
+  </a> <span class="args">bytevector k</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-ieee-single-ref346">
+    <span class="name" name="bytevector-ieee-single-ref">bytevector-ieee-single-ref</span>
+  </a> <span class="args">bytevector k endianness</span></div>
+<div class="desc">[R6RS] <var>K</var>, …, <var>k</var> + 3 must be valid indices of <var>bytevector</var>.
+For <code>bytevector-ieee-single-native-ref</code>, <var>k</var> must be a multiple of 4.
+<p />These procedures return the inexact real number object that best represents the
+IEEE-754 single-precision number represented by the four bytes beginning at index
+<var>k</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-ieee-double-native-ref347">
+    <span class="name" name="bytevector-ieee-double-native-ref">bytevector-ieee-double-native-ref</span>
+  </a> <span class="args">bytevector k</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-ieee-double-ref348">
+    <span class="name" name="bytevector-ieee-double-ref">bytevector-ieee-double-ref</span>
+  </a> <span class="args">bytevector k endianness</span></div>
+<div class="desc">[R6RS] <var>K</var>, …, <var>k</var> + 7 must be valid indices of <var>bytevector</var>.
+For <code>bytevector-ieee-double-native-ref</code>, <var>k</var> must be a multiple of 8.
+<p />These procedures return the inexact real number object that best represents the
+IEEE-754 double-precision number represented by the four bytes beginning at index
+<var>k</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-ieee-single-native-set!349">
+    <span class="name" name="bytevector-ieee-single-native-set!">bytevector-ieee-single-native-set!</span>
+  </a> <span class="args">bytevector k x</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-ieee-single-set!350">
+    <span class="name" name="bytevector-ieee-single-set!">bytevector-ieee-single-set!</span>
+  </a> <span class="args">bytevector k x endianness</span></div>
+<div class="desc">[R6RS] <var>K</var>, …, <var>k</var> + 3 must be valid indices of <var>bytevector</var>.
+For <code>bytevector-ieee-single-native-set!</code>, <var>k</var> must be a multiple of 4.
+<p />These procedures store an IEEE-754 single-precision representation of <var>x</var>
+into elements <var>k</var> through <var>k</var> + 3 of <var>bytevector</var>, and return
+unspecified values.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-ieee-double-native-set!351">
+    <span class="name" name="bytevector-ieee-double-native-set!">bytevector-ieee-double-native-set!</span>
+  </a> <span class="args">bytevector k x</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-ieee-double-set!352">
+    <span class="name" name="bytevector-ieee-double-set!">bytevector-ieee-double-set!</span>
+  </a> <span class="args">bytevector k x endianness</span></div>
+<div class="desc">[R6RS] <var>K</var>, …, <var>k</var> + 7 must be valid indices of <var>bytevector</var>.
+For <code>bytevector-ieee-double-native-set!</code>, <var>k</var> must be a multiple of 8.
+<p />These procedures store an IEEE-754 double-precision representation of <var>x</var>
+into elements <var>k</var> through <var>k</var> + 7 of <var>bytevector</var>, and return
+unspecified values.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G353"><span class="section-number">3.5.8</span>Operation on strings</a>
+  </h4>
+<p />This section describes procedures that convert between strings and bytevectors
+containing Unicode encodings of those strings. When decoding bytevectors,
+encoding errors are handled as with the replace semantics of textual I/O: If an
+invalid or incomplete character encoding is encountered, then the replacement
+character U+FFFD is appended to the string being generated, an appropriate number
+of bytes are ignored, and decoding continues with the following bytes.
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;utf8354">
+    <span class="name" name="string-&gt;utf8">string-&gt;utf8</span>
+  </a> <span class="args">string :optional start end</span>
+<div class="desc">[R6RS+] [R7RS] Returns a newly allocated (unless empty) bytevector that
+contains the UTF-8 encoding of the given <var>string</var>.
+<p />If the optional argument <var>start</var> is given, the procedure converts given
+string from <var>start</var> index (inclusive).
+<p />If the optional argument <var>end</var> is given, the procedure converts given
+string to <var>end</var> index (exclusive).
+<p />These optional arguments must be fixnum if it's given.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;utf16355">
+    <span class="name" name="string-&gt;utf16">string-&gt;utf16</span>
+  </a> <span class="args">string :optional endianness</span></div>
+<div class="desc">[R6RS] If <var>endianness</var> is specified, it must be the symbol <code>big</code>
+or the symbol <code>little</code>. The <code>string-&gt;utf16</code> procedure returns a newly
+allocated (unless empty) bytevector that contains the UTF-16BE or UTF-16LE
+encoding of the given <var>string</var> (with no byte-order mark). If <var>endianness</var>
+is not specified or is <code>big</code>, then UTF-16BE is used. If <var>endianness</var> is
+<code>little</code>, then UTF-16LE is used.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;utf32356">
+    <span class="name" name="string-&gt;utf32">string-&gt;utf32</span>
+  </a> <span class="args">string :optional endianness</span></div>
+<div class="desc">[R6RS] If <var>endianness</var> is specified, it must be the symbol <code>big</code>
+or the symbol <code>little</code>. The <code>string-&gt;utf32</code> procedure returns a newly
+allocated (unless empty) bytevector that contains the UTF-32BE or UTF-32LE
+encoding of the given <var>string</var> (with no byte-order mark). If <var>endianness</var>
+is not specified or is <code>big</code>, then UTF-32BE is used. If <var>endianness</var> is
+<code>little</code>, then UTF-32LE is used.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="utf8-&gt;string357">
+    <span class="name" name="utf8-&gt;string">utf8-&gt;string</span>
+  </a> <span class="args">bytevector</span> :optional start end</div>
+<div class="desc">[R6RS] Returns a newly allocated (unless empty) string whose character
+sequence is encoded by the given <var>bytevector</var>.
+<p />If the optional argument <var>start</var> is given, the procedure converts given
+string from <var>start</var> index (inclusive).
+<p />If the optional argument <var>end</var> is given, the procedure converts given
+string to <var>end</var> index (exclusive).
+<p />These optional arguments must be fixnum if it's given.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="utf16-&gt;string358">
+    <span class="name" name="utf16-&gt;string">utf16-&gt;string</span>
+  </a> <span class="args">bytevector endianness :optional endianness-mandatory?</span></div>
+<div class="desc">[R6RS] <var>Endianness</var> must be the symbol <code>big</code> or the symbol
+<code>little</code>. The <code>utf16-&gt;string</code> procedure returns a newly allocated
+(unless empty) string whose character sequence is encoded by the given
+<var>bytevector</var>. <var>Bytevector</var> is decoded according to UTF-16BE or UTF-16LE:
+If <var>endianness-mandatory?</var> is absent or #f, <code>utf16-&gt;string</code> determines
+the endianness according to a UTF-16 BOM at the beginning of <var>bytevector</var>
+if a BOM is present; in this case, the BOM is not decoded as a character. Also
+in this case, if no UTF-16 BOM is present, <var>endianness</var> specifies the endianness
+of the encoding. If <var>endianness-mandatory?</var> is a true value, <var>endianness</var>
+specifies the endianness of the encoding, and any UTF-16 BOM in the encoding is
+decoded as a regular character.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="utf32-&gt;string359">
+    <span class="name" name="utf32-&gt;string">utf32-&gt;string</span>
+  </a> <span class="args">bytevector endianness :optional endianness-mandatory?</span></div>
+<div class="desc">[R6RS] <var>Endianness</var> must be the symbol <code>big</code> or the symbol
+<code>little</code>. The <code>utf32-&gt;string</code> procedure returns a newly allocated
+(unless empty) string whose character sequence is encoded by the given
+<var>bytevector</var>. <var>Bytevector</var> is decoded according to UTF-32BE or UTF-32LE:
+If <var>endianness-mandatory?</var> is absent or #f, <code>utf32-&gt;string</code> determines
+the endianness according to a UTF-32 BOM at the beginning of <var>bytevector</var>
+if a BOM is present; in this case, the BOM is not decoded as a character. Also
+in this case, if no UTF-32 BOM is present, <var>endianness</var> specifies the endianness
+of the encoding. If <var>endianness-mandatory?</var> is a true value, <var>endianness</var>
+specifies the endianness of the encoding, and any UTF-32 BOM in the encoding is
+decoded as a regular character.
+</div>
+</div>
+</section></section>
+  <div class="prev-next">
+    <a class="prev" href="section34.html">Unicode</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section36.html">List utilities</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+  </div>
+</html>

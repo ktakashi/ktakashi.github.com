@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section64.html">(sagittarius io) - Extra IO library</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section66.html">(sagittarius object) - Convenient refs and coercion procedures</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="sagittarius.mop"><span class="section-number">6.5</span>Sagittarius MOP</a>
+  </h3>
+<p />MOP is "meta object protocol". As far as I know, there is no standard
+specification even the name is really famous and most of CLOS is implemented
+on MOP.
+<p />Then we decided to take the APIs and its behaviour from Tiny CLOS. The following
+libraries are implemented with the APIs and can be examples for Sagittarius'
+MOP.
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="sagittarius.mop.allocation"><span class="section-number">6.5.1</span>(sagittarius mop allocation)</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(sagittarius mop allocation)1028">
+      <span class="name" name="(sagittarius mop allocation)">(sagittarius mop allocation)</span>
+    </a>
+  </div>
+<div class="desc">Supporting <code>:allocation</code> option for <code>define-class</code>.</div>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<allocation-meta&gt;1029">
+      <span class="name" name="<allocation-meta&gt;">&lt;allocation-meta&gt;</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Class</span>
+    <a name="<allocation-mixin&gt;1030">
+      <span class="name" name="<allocation-mixin&gt;">&lt;allocation-mixin&gt;</span>
+    </a>
+  </div>
+<div class="desc">Meta class and mixin class to support <code>:allocation</code> option for
+class slot definition, respectively.
+<p />The meta class must be used with <code>:metaclass</code> option of
+<code>define-class</code>.
+<p />The mixin class must be a parent class.
+<p />Currently, we only support <code>:instance</code> and <code>:class</code> keywords.
+<p />The following code is the whole definition of this classes.
+<p /><pre class="codeblock">(define-class &lt;allocation-meta&gt; (&lt;class&gt;) ())
+(define-method compute-getters-and-setters ((class &lt;allocation-meta&gt;) slots)
+  (let ((r (call-next-method)))
+    (for-each
+     (lambda (acc slot)
+	(cond ((slot-definition-option slot :allocation :instance)
+		=&gt; (lambda (type)
+		     (case type
+		       ((:instance))
+		       ((:class)
+			(let* ((init-value (slot-definition-option
+					    slot :init-value #f))
+			       (init-thunk (slot-definition-option 
+					    slot :init-thunk #f))
+			       (def (if init-thunk (init-thunk) init-value)))
+			  (slot-set! acc 'setter (lambda (o v) (set! def v)))
+			  (slot-set! acc 'getter (lambda (o) def))))
+		       (else
+			(assertion-violation '&lt;allocation-meta&gt;
+					     "unknown :allocation type"
+					     type)))))))
+		r slots)
+    r))
+<p />(define-class &lt;allocation-mixin&gt; () () :metaclass &lt;allocation-meta&gt;)
+</pre>
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1031"><span class="section-number">6.5.2</span>(sagittarius mop validator)</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(sagittarius mop validator)1032">
+      <span class="name" name="(sagittarius mop validator)">(sagittarius mop validator)</span>
+    </a>
+  </div>
+<div class="desc">Supporting <code>:validator</code> and <code>observer</code> options for
+<code>define-class</code>.</div>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<validator-meta&gt;1033">
+      <span class="name" name="<validator-meta&gt;">&lt;validator-meta&gt;</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Class</span>
+    <a name="<validator-mixin&gt;1034">
+      <span class="name" name="<validator-mixin&gt;">&lt;validator-mixin&gt;</span>
+    </a>
+  </div>
+<div class="desc">Make user be able to add own validation mechanism to slots.
+<p /><code>:validator</code> is for before set the value to the slot so that user can check
+the value if it's correct or not.
+<p /><code>:observer</code> is for after set the value to the slot so that user can check
+which value is set to the slot.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1035"><span class="section-number">6.5.3</span>(sagittarius mop eql)</a>
+  </h4>
+<p />The eql specializer is now builtin so this library is only for backward
+compatibility.
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(sagittarius mop eql)1036">
+      <span class="name" name="(sagittarius mop eql)">(sagittarius mop eql)</span>
+    </a>
+  </div>
+<div class="desc">Supporting eql specializer methods.
+<p />The following code describes how to use;
+<pre class="codeblock">(import (clos user) (sagittarius mop eql))
+(define-generic eql-fact :class &lt;eql-specializable-generic&gt;)
+(define-method eql-fact ((n (eql 0))) 1)
+(define-method eql-fact ((n &lt;integer&gt;)) (* n (eql-fact (- n 1))))
+(eql-fact 10)
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">3628800</span></pre>
+<p />Note: The eql specializer is really slow approximately 200 time slower than
+usual procedure call.
+</div>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<eql-specializable-generic&gt;1037">
+      <span class="name" name="<eql-specializable-generic&gt;">&lt;eql-specializable-generic&gt;</span>
+    </a>
+  </div>
+<div class="desc">Subclass of <code>&lt;generic&gt;</code>.
+<p />To use eql specializer, generic functions must have this class as a metaclass.
+</div>
+</section></section>
+  <div class="prev-next">
+    <a class="prev" href="section64.html">(sagittarius io) - Extra IO library</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section66.html">(sagittarius object) - Convenient refs and coercion procedures</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+  </div>
+</html>
