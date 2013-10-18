@@ -6,447 +6,139 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section77.html">(util list) - Extra list utility library</a>
+    <a class="prev" href="section77.html">(getopt) - Parsing command-line options</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section79.html">(net oauth) - OAuth library</a>
+    <a class="next" href="section79.html">(math) - Mathematics library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="math"><span class="section-number">7.8</span>(math) - Mathematics library</a>
+    <a class="section.anchor" name="util.list"><span class="section-number">7.8</span>(util list) - Extra list utility library</a>
   </h3>
-<p />This section describes matheatics operations which are used by <code>(crypto)</code>
-library.
-<p />This library also uses <code>libtomcrypt</code> as its implemention except prime
-number operations.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(math)1369">
-      <span class="name" name="(math)">(math)</span>
+    <a name="(util list)1328">
+      <span class="name" name="(util list)">(util list)</span>
     </a>
   </div>
-<div class="desc">The top most level library of mathematics. It exports all of procedures
-from <code>(math random)</code>, <code>(math hash)</code>, <code>(math prime)</code> and
-<code>(math helper)</code>
+<div class="desc">This library provides extra list utility procedures.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1370"><span class="section-number">7.8.1</span>Random number operations</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(math random)1371">
-      <span class="name" name="(math random)">(math random)</span>
-    </a>
-  </div>
-<div class="desc">This library exports procedures for random numbers.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pseudo-random1372">
-    <span class="name" name="pseudo-random">pseudo-random</span>
-  </a> <span class="args">type :key (seed #f) (reader #f)</span></div>
-<div class="desc"><var>type</var> must be a string.
-<p />Creates a pseudo random object (prng). If keyword argument <var>reader</var> is given
-it creates a custom prng. The <var>reader</var> must be a procedure which accepts two
-argument, a bytevector and integer. It must fill the given bytevector with
-random numbers.
-<p /><var>type</var> is used to specify the builtin pseudo random algorithm. The possible
-algorithms are below:
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Yarrow1373">
-      <span class="name" name="Yarrow">Yarrow</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Fortuna1374">
-      <span class="name" name="Fortuna">Fortuna</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RC41375">
-      <span class="name" name="RC4">RC4</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SOBER-1281376">
-      <span class="name" name="SOBER-128">SOBER-128</span>
-    </a>
-  </div>
-<p /><var>seed</var> is entropy of the pseudo random.
-<p />Note: each time if you create pseudo random, it returns exactly the same value.
-For example:
-<pre class="codeblock">(do ((i 0 (+ i 1)) (r '() (cons (random (pseudo-random RC4) 10) r)))
-    ((= i 10) r))
-<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">'(0 0 0 0 0 0 0 0 0 0)</span></pre>
-So if you need different number as I believe, you need to reuse the prng object
-like this
-<pre class="codeblock">(let ((rc (pseudo-random RC4)))
-  (do ((i 0 (+ i 1)) (r '() (cons (random rc 10) r)))
-      ((= i 10) r)))
-<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">'(3 4 0 6 7 4 3 4 2 0)</span></pre>
-If you don't want to care this behaviour, use <code>secure-random</code> below.
+<p /><div class="define"><span class="define-category">Function</span><a name="for-each-with-index1329">
+    <span class="name" name="for-each-with-index">for-each-with-index</span>
+  </a> <span class="args">proc list1 list2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="map-with-index1330">
+    <span class="name" name="map-with-index">map-with-index</span>
+  </a> <span class="args">proc list1 list2 ...</span></div>
+<div class="desc">Like <code>for-each</code> and <code>map</code>, expect <var>proc</var> receives the index
+as the first argument.
+<p /><pre class="snipet"><span class="snipet-code">(map-with-index list '(a b c) '(e f g))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((0 a e) (1 b f) (2 c g))</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="secure-random1377">
-    <span class="name" name="secure-random">secure-random</span>
-  </a> <span class="args">type :key (bits 128)</span></div>
-<div class="desc"><var>type</var> must be one of the pseudo random algorithms.
-<p />Creates secure random object. 
-<p /><var>bit</var> is initial entropy of the pseudo random. It must be in between 64 to
-1028.
+<p /><div class="define"><span class="define-category">Function</span><a name="intersperse1331">
+    <span class="name" name="intersperse">intersperse</span>
+  </a> <span class="args">item list</span></div>
+<div class="desc">Inserts <var>item</var> between elements in the <var>list</var>.
+<p /><pre class="snipet"><span class="snipet-code">(intersperse '+ '(1 2 3))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(1 + 2 + 3)</span></pre>
+<pre class="snipet"><span class="snipet-code">(intersperse '+ '(1))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(1)</span></pre>
+<pre class="snipet"><span class="snipet-code">(intersperse '+ '())</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">()</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="prng?1378">
-    <span class="name" name="prng?">prng?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="pseudo-random?1379">
-    <span class="name" name="pseudo-random?">pseudo-random?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="secure-random?1380">
-    <span class="name" name="secure-random?">secure-random?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is prng object, builtin pseudo random objcet,
-custom random object or secure random object respectively.
+<p /><div class="define"><span class="define-category">Function</span><a name="slices1332">
+    <span class="name" name="slices">slices</span>
+  </a> <span class="args">list k :optional fill? padding</span></div>
+<div class="desc">Splits <var>list</var> into the sublists (slices) where the length of each
+slice is <var>k</var>. If the length of <var>list</var> is not multiple of <var>k</var>, the
+last slice is dealt in the same way as <code>take*</code>; this is, it is shorter than
+<var>k</var> by default, or added <var>padding</var> if <var>fill?</var> is true.
+<p /><pre class="snipet"><span class="snipet-code">(slices '(a b c d e f g) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((a b c) (d e f) (g))</span></pre>
+<pre class="snipet"><span class="snipet-code">(slices '(a b c d e f g) 3 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((a b c) (d e f) (g z z))</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="random-seed-set!1381">
-    <span class="name" name="random-seed-set!">random-seed-set!</span>
-  </a> <span class="args">prng seed</span></div>
-<div class="desc"><var>seed</var> must be a bytevector or integer.
-<p />Add entropy to given <var>prng</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="random1382">
-    <span class="name" name="random">random</span>
-  </a> <span class="args">prng size :key (read-size 100)</span></div>
-<div class="desc">Returns random number according to given <var>prng</var> algorithm. The result
-number will be less than <var>size</var>.
-<p />Keyword argument <var>read-size</var> will be passed to <code>read-random-bytes</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="random1383">
-    <span class="name" name="random">random</span>
-  </a> <span class="args">prng size</span></div>
-<div class="desc"><var>size</var> must a positive fixnum.
-<p />Reads <var>size</var> bytes of random byte from <var>prng</var>.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="prng-state1384">
-    <span class="name" name="prng-state">prng-state</span>
-  </a> <span class="args">(prng &lt;prng&gt;)</span></div>
-<div class="desc">Returns given <var>prng</var>'s state if the pseudo random implementation
-allows.
-<p />For default built in pseudo randoms return #f.
-<p />NOTE: if &lt;secure-random&gt; is implemented, then the pseudo random implementation
-should not return the state.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="read-random-bytes1385">
-    <span class="name" name="read-random-bytes">read-random-bytes</span>
-  </a> <span class="args">prng size</span></div>
-<div class="define"><span class="define-category">Function</span><a name="read-random-bytes!1386">
-    <span class="name" name="read-random-bytes!">read-random-bytes!</span>
-  </a> <span class="args">prng bv size</span></div>
-<div class="desc">Reads random bytes from given <var>prng</var>.
-<p />The first form creates fresh bytevector with size <var>size</var>.
-<p />The second form reads random bytes from <var>prng</var> and sets the result into the
-given <var>bv</var> destructively.
-<p />If the second form is used, <var>bv</var> must have the length at least <var>size</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="read-sys-random1387">
-    <span class="name" name="read-sys-random">read-sys-random</span>
-  </a> <span class="args">bis</span></div>
-<div class="desc">Returns given <var>bits</var> bits of random bytevector.</div>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1388"><span class="section-number">7.8.1.1</span>Custom pseudo random operations</a>
-  </h5>
-<p />Since version 0.3.2, pseudo random also has custom operations. Similar with
-cipher spi or hash algorithm.
-<p />The following example describes how to make it.
-<p /><pre class="codeblock">;; the code snipet is from math/mt-random
-(define-class &lt;mersenne-twister&gt; (&lt;user-prng&gt;)
-  (;; The array for the state vector
-   ;; using bytevector, it needs to be 64 bit aligned.
-   (state :init-keyword :state :init-form (make-bytevector (* NN 8)))
-   ;; mti==NN+1 means MT[NN] is not initialized
-   (mti   :init-keyword :mti   :init-form (+ NN 1))))
-(define-method initialize ((o &lt;mersenne-twister&gt;) initargs)
-  (call-next-method)
-  (let ((seed (get-keyword :seed initargs #f)))
-    (slot-set! o 'set-seed! mt-set-seed)
-    (slot-set! o 'read-random! mt-read-random!)
-    (when seed
-      (mt-set-seed o seed))))
-</pre>
-<p />User just need to set the slots <code>set-seed!</code> and <code>read-random!</code>. Then
-other process is done by lower layer.
-<p />Following describes the meaning of these slots.
-<p />The slot <code>set-seed!</code> requires a procedure which accepts 2 arguments,
-target pseudo random and <var>seed</var>. <var>seed</var> must be bytevector.
-<p />The slot <code>read-random!</code> requires a pseudo which accepts 3 arguments,
-target pseudo random <var>buffer</var> and <var>bytes</var>. <var>buffer</var> must be a
-bytevector and have bigger size than given <var>bytes</var>. <var>bytes</var> must be
-a non negative fixnum.
-<p />NOTE: The custom pseudo random interface has been changed since version 0.3.6.
-Make sure which version of Sagittarius your application using.
-<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="math.hash"><span class="section-number">7.8.2</span>Hash operations</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(math hash)1389">
-      <span class="name" name="(math hash)">(math hash)</span>
-    </a>
-  </div>
-<div class="desc">This library exports procedures for hash (digest) operations.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-algorithm1390">
-    <span class="name" name="hash-algorithm">hash-algorithm</span>
-  </a> <span class="args">name . options</span></div>
-<div class="desc"><var>name</var> must be a string.
-<p />Creates a hash-algorithm object. <var>name</var> specifies its algorithm. The
-predefined algorithms are blow:
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="WHIRLPOOL1391">
-      <span class="name" name="WHIRLPOOL">WHIRLPOOL</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SHA-5121392">
-      <span class="name" name="SHA-512">SHA-512</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SHA-3841393">
-      <span class="name" name="SHA-384">SHA-384</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RIPEMD-3201394">
-      <span class="name" name="RIPEMD-320">RIPEMD-320</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SHA-2561395">
-      <span class="name" name="SHA-256">SHA-256</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RIPEMD-2561396">
-      <span class="name" name="RIPEMD-256">RIPEMD-256</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SHA-2241397">
-      <span class="name" name="SHA-224">SHA-224</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SHA-2241398">
-      <span class="name" name="SHA-224">SHA-224</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Tiger-1921399">
-      <span class="name" name="Tiger-192">Tiger-192</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SHA-11400">
-      <span class="name" name="SHA-1">SHA-1</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RIPEMD-1601401">
-      <span class="name" name="RIPEMD-160">RIPEMD-160</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RIPEMD-1281402">
-      <span class="name" name="RIPEMD-128">RIPEMD-128</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MD51403">
-      <span class="name" name="MD5">MD5</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MD41404">
-      <span class="name" name="MD4">MD4</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MD21405">
-      <span class="name" name="MD2">MD2</span>
-    </a>
-  </div>
-<p />If you want to use other hash algorithm, you can also create a new hash
-algorithm. It is described the section
-<a href="section78.html#custom.hash">Custom hash algorithm</a>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-algorithm?1406">
-    <span class="name" name="hash-algorithm?">hash-algorithm?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Return #t if <var>obj</var> is hash-algorithm object otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-oid1407">
-    <span class="name" name="hash-oid">hash-oid</span>
-  </a> <span class="args">hash-algorithm</span></div>
-<div class="desc">Return OID of given <var>hash-algorithm</var> if it has otherwise #f.</div>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1408"><span class="section-number">7.8.2.1</span>User level APIs of hash operations</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash1409">
-    <span class="name" name="hash">hash</span>
-  </a> <span class="args">type bv . options</span></div>
-<div class="desc"><var>type</var> must be a string which specifies hash algorithms or
-hash-algorithm object.
-<p />The <code>hash</code> procedure generates digest from given bytevector <var>bv</var>
-according to the given algorithm. The result digest will be a bytevector.
-<p />If <var>type</var> is not a hash algorithm object nor predefined hash algorithm,
-then <var>options</var> will be passed to the custom hash algorithm creation.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-size1410">
-    <span class="name" name="hash-size">hash-size</span>
-  </a> <span class="args">hash-algorithm</span></div>
-<div class="desc">Returns hash size of given <var>hash-algorithm</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-block-size1411">
-    <span class="name" name="hash-block-size">hash-block-size</span>
-  </a> <span class="args">hash-algorithm</span></div>
-<div class="desc">Returns hash block size of given <var>hash-algorithm</var>.</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1412"><span class="section-number">7.8.2.2</span>Low level APIs of hash operations</a>
-  </h5>
-<p />Most of the time User level APIs are sufficient enough, however for some cases,
-for example multiple input datas, you might need to use these low leve APIs.
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-init!1413">
-    <span class="name" name="hash-init!">hash-init!</span>
-  </a> <span class="args">hash-algorithm</span></div>
-<div class="desc">Initialise given <var>hash-algorithm</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-process!1414">
-    <span class="name" name="hash-process!">hash-process!</span>
-  </a> <span class="args">hash-algorithm bv</span></div>
-<div class="desc"><var>bv</var> must be a bytevector.
-<p />Process hash process with input data <var>bv</var>. The result will be stored in the
-<var>hash-algorithm</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-done!1415">
-    <span class="name" name="hash-done!">hash-done!</span>
-  </a> <span class="args">hash-algorithm out</span></div>
-<div class="desc"><var>out</var> must be a bytevector and must have hash size which the
-<code>hash-size</code> procedure returns.
-<p />Flushes stored hash result in <var>hash-algorithm</var> into <var>out</var>.
-<p />Once this procedure is called <var>hash-algorithm</var>'s state will be changed. If
-you want to reuse it, you need to call <code>hash-init!</code>.
-</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="custom.hash"><span class="section-number">7.8.2.3</span>Custom hash algorithm</a>
-  </h5>
-<p />Since version 0.3.1, user can create a custom hash algorithm. Similar with
-cipher spi described section <a href="section74.html#custom.cipher">Creating own cipher</a>.
-<p />The following example describes how to make it.
-<p /><pre class="codeblock">(import (rnrs) (sagittarius) (math) (clos user))
-;; hash operations
-(define (foo-init hash) #t)
-(define (foo-process hash bv)
-  (let ((len (bytevector-length bv)))
-    (bytevector-copy! bv 0 (slot-ref hash 'buffer) 0 (min len 16))))
-(define (foo-done hash out)
-  (let ((v (integer-&gt;bytevector (equal-hash (slot-ref hash 'buffer)))))
-    (bytevector-copy! v 0 out 0 (min 8 (bytevector-length v)))))
-<p />(define-class &lt;foo-hash&gt; (&lt;user-hash-algorithm&gt;)
-  ((buffer :init-form (make-bytevector 16))))
-(define-method initialize ((o &lt;foo-hash&gt;) initargs)
-  (call-next-method)
-  (slot-set! o 'init foo-init)
-  (slot-set! o 'process foo-process)
-  (slot-set! o 'done foo-done)
-  (slot-set! o 'block-size 16)
-  (slot-set! o 'hash-size 8)
-  (slot-set! o 'oid #f)
-  (slot-set! o 'state #f))
-;; marker
-(define-class &lt;foo-marker&gt; () ())
-(define FOO (make &lt;foo-marker&gt;))
-(register-hash FOO &lt;foo-hash&gt;)
-<p />;; use with APIs
-(hash FOO (string-&gt;utf8 "hash")) ;; -&gt; #vu8(245 221 54 232 0 0 0 0)
-</pre>
-<p />The slots <code>init</code>, <code>process</code> and <code>done</code> must be set with a
-procedure which will be called by <code>hash-init!</code>, <code>hash-process!</code> and
-<code>hash-done!</code> respectively.
-<p />The slots <code>block-size</code> and <code>hash-size</code> must be non negative exact
-integer and will be returned by <code>hash-block-size</code> and <code>hash-size</code>
-procedures respectively.
-<p />The slot <code>oid</code> must be set #f or string which represent OID of the custom
-hash algorithm. If you don't have it, it's better to set #f.
-<p />The slot <code>state</code> can be anything, this slot is for storing the hash state
-if you need.
-<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1416"><span class="section-number">7.8.3</span>Prime number operations</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(math prime)1417">
-      <span class="name" name="(math prime)">(math prime)</span>
-    </a>
-  </div>
-<div class="desc">This library exports procedures for prime number operations.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="is-prime?1418">
-    <span class="name" name="is-prime?">is-prime?</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="split-at*1333">
+    <span class="name" name="split-at*">split-at*</span>
   </a>
- <span class="args">q :optional (k 50) (rand (secure-random RC4))</span></div>
-<div class="desc">Tests if given <var>q</var> is a prime number or not.
-<p />This procedure uses Miller Rabin primality test. So there is slight possibility
-to pass non prim number.
-<p />The optional argument <var>k</var> is the test times. The default 50 makes failure
-ratio very low. And <var>rand</var> specifies whith pseudo random algorithm uses in
-the test.
+ <span class="args">list k :optional (fill? #t) (padding #f)</span></div>
+<div class="desc">Splits the list <var>list</var> at index <var>k</var>. This is more tolerant version
+of <code>split-at</code> defined in SRFI-1 library. Returns the results of
+<code>take*</code> and <code>drop*</code>.
+<p /><pre class="snipet"><span class="snipet-code">(split-at* '(a b c d) 6 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d z z) and ()</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="random-prime1419">
-    <span class="name" name="random-prime">random-prime</span>
-  </a>
- <span class="args">size :key (prng (secure-random RC4))</span></div>
-<div class="desc">Find a prime number from <var>size</var> bytes. So the minimum range will be
-<code>1 &lt;= p &lt;= 251</code>.
-<p />Keyword argument <var>prng</var> specifies which pseudo random uses to find a prime
-number.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1420"><span class="section-number">7.8.4</span>Misc arithmetic operations</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(math helper)1421">
-      <span class="name" name="(math helper)">(math helper)</span>
-    </a>
+<p />
+<div class="define"><span class="define-category">Function</span><a name="take*1334">
+    <span class="name" name="take*">take*</span>
+  </a> <span class="args">list k :optional (fill? #f) (padding #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="drop*1335">
+    <span class="name" name="drop*">drop*</span>
+  </a> <span class="args">list k</span></div>
+<div class="desc">More tolerant version of <code>take</code> and <code>drop</code> defined in SRFI-1
+library. These won't raise an error when <var>k</var> is larger than the size of the
+given list.
+<p />If the list is shorter than <var>k</var> elements, <code>take*</code> returns a copy of
+<var>list</var> by default. If <var>fill?</var> is true, <var>padding</var> is added to the
+result to make its length <var>k</var>.
+<p />On the other hand, <code>drop*</code> just returns as empty list when the input list
+is shorter than <var>k</var> elements.
+<p /><pre class="snipet"><span class="snipet-code">(take* '(a b c d) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c)</span></pre>
+<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d)</span></pre>
+<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6 #t)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d #f #f)</span></pre>
+<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d z z)</span></pre>
+<pre class="snipet"><span class="snipet-code">(drop* '(a b c d) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(d)</span></pre>
+<pre class="snipet"><span class="snipet-code">(drop* '(a b c d) 5)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">()</span></pre>
+<p /></div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="cond-list1336">
+    <span class="name" name="cond-list">cond-list</span>
+  </a> <span class="args">clause ...</span></div>
+<div class="desc">Construct a list by conditionally adding entries. Each <var>clause</var> must
+have a test and expressions. When its test yields true, then result of
+associated expression is used to construct the resulting list. When the test 
+yields false, nothing is inserted.
+<p /><var>Clause</var> must either one of the following form:
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <var>(test expr ...)</var>
+      </dt>
+      <dd class="dl-item-desc">	<var>Test</var> is evaluated, and when it is true, <var>expr ...</var> are
+	evaluated, and the return value becomes a part of the result. If no
+	<var>expr</var> is given, the result of test is used if it is not false.
+</dd>
+      <dt class="dl-item-title">
+        <var>(test =&gt; proc)</var>
+      </dt>
+      <dd class="dl-item-desc">	<var>Test</var> is evaluated, and if it is true, <var>proc</var> is called with
+	the value, and the return value is used to construct the result
+</dd>
+      <dt class="dl-item-title">
+        <var>(test   expr ...)</var>
+      </dt>
+      <dd class="dl-item-desc">	Like <code>(test expr ...)</code>, except that the result of the last
+	<var>expr</var> must be a list, and it is spliced into the resulting list,
+	like unquote-splicing.
+</dd>
+      <dt class="dl-item-title">
+        <var>(test =&gt;   proc)</var>
+      </dt>
+      <dd class="dl-item-desc">	Like <code>(test =&gt; proc)</code>, except that the result of the last
+	<var>proc</var> must be a list, and it is spliced into the resulting list,
+	like unquote-splicing.
+</dd>
+    </dl>
   </div>
-<div class="desc">This library exports procedures for misc arithmetic operations.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mod-inverse1422">
-    <span class="name" name="mod-inverse">mod-inverse</span>
-  </a> <span class="args">x m</span></div>
-<div class="desc">Re exporting <code>mod-inverse</code> defined in <code>(sagittarius)</code> library.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mod-expt1423">
-    <span class="name" name="mod-expt">mod-expt</span>
-  </a> <span class="args">x e m</span></div>
-<div class="desc">Re exporting <code>mod-expt</code> defined in <code>(sagittarius)</code> library.</div>
-
-</section></section>
+<p /><pre class="codeblock">(let ((alist '((x 3) (y -1) (z 6))))
+ (cond-list ((assoc 'x alist) 'have-x)
+            ((assoc 'w alist) 'have-w)
+            ((assoc 'z alist) =&gt; cadr)))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(have-x 6)</span></pre>
+<p /><pre class="codeblock">(let ((x 2) (y #f) (z 5))
+  (cond-list (x   `(:x ,x))
+             (y   `(:y ,y))
+             (z   `(:z ,z))))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(:x 2 :z 5)</span></pre>
+</div>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section77.html">(util list) - Extra list utility library</a>
+    <a class="prev" href="section77.html">(getopt) - Parsing command-line options</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section79.html">(net oauth) - OAuth library</a>
+    <a class="next" href="section79.html">(math) - Mathematics library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-10-18T07:30:59+0100</i></div>
   </div>
 </html>

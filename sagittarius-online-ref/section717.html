@@ -6,74 +6,108 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section716.html">(rfc pem) - PEM format  library</a>
+    <a class="prev" href="section716.html">(rfc hmac) - HMAC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section718.html">(rfc tls) - TLS protocol library</a>
+    <a class="next" href="section718.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.quoted-printable"><span class="section-number">7.17</span>(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="section.anchor" name="rfc.pem"><span class="section-number">7.17</span>(rfc pem) - PEM format  library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc quoted-printable)1508">
-      <span class="name" name="(rfc quoted-printable)">(rfc quoted-printable)</span>
+    <a name="(rfc pem)1468">
+      <span class="name" name="(rfc pem)">(rfc pem)</span>
     </a>
   </div>
-<div class="desc">This library provides quoted printable encoding and decoding procedures.</div>
+<div class="desc">This library provides PEM format file parser.
+<p />Currently only supports RFC 1421 format.
+</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1509"><span class="section-number">7.17.1</span>Encoding procedures</a>
+    <a class="section.anchor" name="G1469"><span class="section-number">7.17.1</span>Conditions</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-encode1510">
-    <span class="name" name="quoted-printable-encode">quoted-printable-encode</span>
-  </a>
- <span class="args">bv :key (line-width 76) (binary? #f)</span></div>
-<div class="desc"><var>bv</var> must be a bytevector.
-<p />Encodes given bytevector to quoted printable encoded bytevector.
-<p />The keyword argument <var>line-width</var> specifies where the encode procedure
-should put linefeed. If this is less than 1 or #f, encoder does not put
-linefeed.
-<p />If the keyword argument <var>binary?</var> is not #f, then the procedure encodes
-#x0a and #x0b to <code>=0A</code> and <code>=0D</code> respectively.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-encode-string string1511">
-    <span class="name" name="quoted-printable-encode-string string">quoted-printable-encode-string string</span>
-  </a>
- <span class="args">:key (line-width 76) transcoder (binary? #f)</span></div>
-<div class="desc">Convenient procedure for string.
-<p />Encodes given <var>string</var> to quoted printable encoded string.
-<p />The keyword argument <var>transcoder</var> is used to convert given string to
-bytevector. The converted bytevector will be passed to the
-<code>quoted-printable-encode</code> procedure. The default is utf-8 codec with
-NONE eol style.
-</div>
+<p />This library defines these conditions.
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;pem-error1470">
+      <span class="name" name="&amp;pem-error">&amp;pem-error</span>
+    </a>
+  </div>
+<div class="desc">Super condition of all PEM file process related conditions.</div>
+<div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;invalid-pem-format1471">
+      <span class="name" name="&amp;invalid-pem-format">&amp;invalid-pem-format</span>
+    </a>
+  </div>
+<div class="desc">This condition indicates, given PEM file contains invalid format.</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1512"><span class="section-number">7.17.2</span>Decoding procedures</a>
+    <a class="section.anchor" name="G1472"><span class="section-number">7.17.2</span>Operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-decode1513">
-    <span class="name" name="quoted-printable-decode">quoted-printable-decode</span>
-  </a> <span class="args">bv</span></div>
-<div class="desc"><var>bv</var> must be a bytevector.
-<p />Decode quoted printable encoded bytevector to original bytevector.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-decode-string1514">
-    <span class="name" name="quoted-printable-decode-string">quoted-printable-decode-string</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem1473">
+    <span class="name" name="parse-pem">parse-pem</span>
   </a>
- <span class="args">string :key (transcoder (native-transcoder))</span></div>
-<div class="desc">Convenient procedure.
-<p />Decode quoted printable encoded string to original string. The procedure is
-using <code>quoted-printable-decode</code>.
-<p />The keyword argument specifies how to convert the decoded bytevector to string.
-If this is #f, the procedure returns raw bytevector.
+ <span class="args">in :key (multiple #f) (builder #f) (asn1 #f)</span></div>
+<div class="desc"><var>in</var> must be textual input port.
+<p />Parses given input port <var>in</var> and returns 2 values, parameter alist and
+decoded bytevector.
+<p />Keyword arguments
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>multiple</code>
+      </dt>
+      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure returns a list which
+    contains alist of parameter and content.
+<p />    This parameter is useful for the PEM files which contains multiple contents.
+  </dd>
+      <dt class="dl-item-title">
+        <code>builder</code>
+      </dt>
+      <dd class="dl-item-desc">    This keyword argument must take a procedure which accept one argument or
+    #f. If <var>builder</var> is specified then the given procedure will be called
+    to build then contents of the PEM.
+<p />    This argument is not correspond with <var>asn1</var> keyword argument and has
+    higher priority. So if both arguments are specified, then <var>builder</var>
+    will be used.
+  </dd>
+      <dt class="dl-item-title">
+        <code>asn1</code>
+      </dt>
+      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure converts BASE64
+    bytevector to ASN.1 object defined in <code>(asn.1)</code> library.
+  </dd>
+    </dl>
+  </div>
+<p />The procedure may raise following condition.
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>&amp;invalid-pem-format</code>
+      </dt>
+      <dd class="dl-item-desc">    When given <var>in</var> contains invalid PEM format.
+  </dd>
+    </dl>
+  </div>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem-file1474">
+    <span class="name" name="parse-pem-file">parse-pem-file</span>
+  </a> <span class="args">file :rest options</span></div>
+<div class="define"><span class="define-category">Function</span><a name="parse-pem-string1475">
+    <span class="name" name="parse-pem-string">parse-pem-string</span>
+  </a> <span class="args">pem-string :rest options</span></div>
+<div class="desc">Convenient procedures.
+<p />Parse given file and PEM string, respectively.
+<p /><var>option</var> will be passed to the <code>parse-pem</code>.
 </div>
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section716.html">(rfc pem) - PEM format  library</a>
+    <a class="prev" href="section716.html">(rfc hmac) - HMAC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section718.html">(rfc tls) - TLS protocol library</a>
+    <a class="next" href="section718.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-10-18T07:30:59+0100</i></div>
   </div>
 </html>

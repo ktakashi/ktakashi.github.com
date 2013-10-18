@@ -6,97 +6,51 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section715.html">(rfc hmac) - HMAC library</a>
+    <a class="prev" href="section715.html">(rfc cmac) - CMAC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section717.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="next" href="section717.html">(rfc pem) - PEM format  library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.pem"><span class="section-number">7.16</span>(rfc pem) - PEM format  library</a>
+    <a class="section.anchor" name="rfc.hmac"><span class="section-number">7.16</span>(rfc hmac) - HMAC library</a>
   </h3>
+<p />This section describes the HMAC extension of hash algorithm. The HMAC itself
+is described <a href="http://tools.ietf.org/html/rfc2104">RFC 2104</a>.
+The provided library make user be able to use the algorithm with the APIs of
+math library's hash algorithm APIs. For the APIs detail, see
+<a href="section79.html#math.hash">Hash operations</a>.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc pem)1500">
-      <span class="name" name="(rfc pem)">(rfc pem)</span>
+    <a name="(rfc hmac)1466">
+      <span class="name" name="(rfc hmac)">(rfc hmac)</span>
     </a>
   </div>
-<div class="desc">This library provides PEM format file parser.
-<p />Currently only supports RFC 1421 format.
-</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1501"><span class="section-number">7.16.1</span>Conditions</a>
-  </h4>
-<p />This library defines these conditions.
+<div class="desc">Provides HMAC hash algorithm.</div>
 <p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;pem-error1502">
-      <span class="name" name="&amp;pem-error">&amp;pem-error</span>
+    <span class="define-category">Variable</span>
+    <a name="HMAC1467">
+      <span class="name" name="HMAC">HMAC</span>
     </a>
   </div>
-<div class="desc">Super condition of all PEM file process related conditions.</div>
-<div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;invalid-pem-format1503">
-      <span class="name" name="&amp;invalid-pem-format">&amp;invalid-pem-format</span>
-    </a>
-  </div>
-<div class="desc">This condition indicates, given PEM file contains invalid format.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1504"><span class="section-number">7.16.2</span>Operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem1505">
-    <span class="name" name="parse-pem">parse-pem</span>
-  </a> <span class="args">in :key (multiple #f) (ans1 #f)</span></div>
-<div class="desc"><var>in</var> must be textual input port.
-<p />Parses given input port <var>in</var> and returns 2 values, parameter alist and
-decoded bytevector.
-<p />Keyword arguments
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>multiple</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure returns a list which
-    contains alist of parameter and content.
-<p />    This parameter is useful for the PEM files which contains multiple contents.
-  </dd>
-      <dt class="dl-item-title">
-        <code>ans1</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure converts BASE64
-    bytevector to ASN.1 object defined in <code>(asn.1)</code> library.
-  </dd>
-    </dl>
-  </div>
-<p />The procedure may raise following condition.
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>&amp;invalid-pem-format</code>
-      </dt>
-      <dd class="dl-item-desc">    When given <var>in</var> contains invalid PEM format.
-  </dd>
-    </dl>
-  </div>
+<div class="desc">The name for HMAC hash algorithm.
+<p />The following example explains, how to use it.
+<p /><pre class="codeblock">(import (rnrs) (rfc hmac) (math))
+;; the keyword arguments can be omitted, then it will use an empty bytevector
+;; as HMAC key and SHA-1 algorithm as digest algorithm.
+(define hmac (hash-algorithm HMAC :key (string-&gt;utf8 "hmac key") :hash SHA-1))
+(hash hmac (string-&gt;utf8 "test"))
+;; -&gt; #vu8(57 255 153 118 15 133 255 73 12 199 199 115 185 32 43 225 61 254 159 94)
+</pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem-file1506">
-    <span class="name" name="parse-pem-file">parse-pem-file</span>
-  </a> <span class="args">file :rest options</span></div>
-<div class="define"><span class="define-category">Function</span><a name="parse-pem-string1507">
-    <span class="name" name="parse-pem-string">parse-pem-string</span>
-  </a> <span class="args">pem-string :rest options</span></div>
-<div class="desc">Convenient procedures.
-<p />Parse given file and PEM string, respectively.
-<p /><var>option</var> will be passed to the <code>parse-pem</code>.
-</div>
-</section></section>
+
+</section>
   <div class="prev-next">
-    <a class="prev" href="section715.html">(rfc hmac) - HMAC library</a>
+    <a class="prev" href="section715.html">(rfc cmac) - CMAC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section717.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="next" href="section717.html">(rfc pem) - PEM format  library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-09-20T08:06:49+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-10-18T07:30:59+0100</i></div>
   </div>
 </html>
