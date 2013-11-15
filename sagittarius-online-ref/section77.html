@@ -6,61 +6,234 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section76.html">(util file) - File operation utility library</a>
+    <a class="prev" href="section76.html">(dbi) - Database independent access layer</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section78.html">(util list) - Extra list utility library</a>
+    <a class="next" href="section78.html">(util file) - File operation utility library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="getopt"><span class="section-number">7.7</span>(getopt) - Parsing command-line options</a>
+    <a class="section.anchor" name="dbm"><span class="section-number">7.7</span>(dbm) - Generic DBM interface</a>
   </h3>
-<p /><div class="define">
+<p />
+<div class="define">
     <span class="define-category">Library</span>
-    <a name="(getopt)1326">
-      <span class="name" name="(getopt)">(getopt)</span>
+    <a name="(dbm)1334">
+      <span class="name" name="(dbm)">(dbm)</span>
     </a>
   </div>
-<div class="desc">This library defines a convenient way to parse command-line options.
-<p />The library exports a thin wrapper of <a href="section9.html#srfi">SRFI-37: args-fold</a>.
+<div class="desc">The library provides the generic interface to access DBM.
+<p />Sagittarius currently supports following DBM implementation;
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">(dbm dumb)</dt>
+      <dd class="dl-item-desc"> DBM-like library. Inspired by Python's dbm.dumb. This library must be used
+ as the last resort. It has poor performance and memory usage.
+</dd>
+    </dl>
+  </div>
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="with-args1327">
-    <span class="name" name="with-args">with-args</span>
-  </a>
- <span class="args">args (bind-spec ... [. rest]) body ...</span></div>
-<div class="desc">This macro wraps <code>args-fold</code> provided by SRFI-37. It takes a list
-of arguments, <var>args</var>, and scans it to find Unix-style command-line
-options and binds their values to local variables according to <var>bind-spec</var>,
-then executes <var>body</var>.
-<p />Following is the example how to use;
-<p /><pre class="codeblock">(define (usage args) ...)
-<p />(define (main args)
-  (with-args args
-     ((verbose (#\v "verbose") #f #f)
-      (file    (#\f "file") #t (usage args))
-      (debug-level   (#\d "debug-level") #t "0")
-      . rest)
-    ...))
+<p />The following code shows a typical usage;
+<p /><pre class="codeblock">(import (dbm))
+<p />;; Open the database
+(define *db* (dbm-open (dbm-type-&gt;class 'dumb) :path "dumb.db"))
+<p />;; Put the value to the database
+(dbm-put! *db* "key1" "value1")
+<p />;; Get the value from the database
+(dbm-get *db* "key1")
+<p />;; Iterate over the database
+(dbm-for-each *db* (lambda (key val) #| do something useful |#))
+<p />;; Close the database
+(dbm-close *db*)
 </pre>
-<p />The <var>bind-spec</var> must be following form;
-<p /><var>(var (short long) value-required? default)</var>
-<p /><var>var</var> is variable name. <var>short</var> must be a character represents the
-short argument name. <var>long</var> must be a string represents the long argument
-name. <var>value-required?</var> specifies whether or not the optional argument
-has the value. <var>default</var> is the default form of the variable so it will
-be evaluated when the input <var>args</var> didn't have the specified option.
-<p />If <var>rest</var> is not presented and <var>args</var> contains non listed argument,
-then it raises an <code>&amp;assertion</code>. If it is, then it will pack the rest of
-non listed argument as a list.
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1335"><span class="section-number">7.7.1</span>Opening and closing a dbm database</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<dbm&gt;1336">
+      <span class="name" name="<dbm&gt;">&lt;dbm&gt;</span>
+    </a>
+  </div>
+<div class="desc">An abstract class for DBM-like database. The class has the following
+slots. It must be filled by <code>dbm-open</code>.
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">path</dt>
+      <dd class="dl-item-desc"> Pathname of the dbm database. </dd>
+      <dt class="dl-item-title">rw-mode</dt>
+      <dd class="dl-item-desc">    Specifies read/write mode. Can be one of the following keywords:
+    <div class="dl-list-wrapper">
+        <dl class="dl-list">
+          <dt class="dl-item-title">:read</dt>
+          <dd class="dl-item-desc"> The database will be opened in read-only mode.</dd>
+          <dt class="dl-item-title">:write</dt>
+          <dd class="dl-item-desc">        The database will be opened in read-write mode. If the database file
+	does not exist, <code>dbm-open</code> creates one.
+      </dd>
+          <dt class="dl-item-title">:write</dt>
+          <dd class="dl-item-desc">        The database will be opened in read-write mode. If the database file
+	exists, <code>dbm-open</code> truncates it.
+      </dd>
+        </dl>
+      </div>
+    The keywords are indication so actual implementation may not behave as it
+    described.
+  </dd>
+      <dt class="dl-item-title">key-convert</dt>
+      <dt class="dl-item-title">value-convert</dt>
+      <dd class="dl-item-desc">    By default, you can use only strings for both key and values. With
+    this option, however, you can specify how to convert other Scheme
+    values to/from string to be stored in the database. The possible values
+    are the followings: 
+    <div class="dl-list-wrapper">
+        <dl class="dl-list">
+          <dt class="dl-item-title">#f</dt>
+          <dd class="dl-item-desc">       The default value. Keys (values) are not converted.
+       They must be a string.
+      </dd>
+          <dt class="dl-item-title">#t</dt>
+          <dd class="dl-item-desc">       Keys (values) are converted to its string representation, using
+       <code>write/ss</code>, to store in the database and convert back Scheme
+       values, using <code>read/ss</code>, to retrieve from the database.
+      </dd>
+          <dt class="dl-item-title">a list of two procedures</dt>
+          <dd class="dl-item-desc">       Both procedure must take a single argument. The first procedure must
+       receive a Scheme object and returns a string. It is used to convert 
+       the keys (values) to store in the database. The second procedure must
+       receive a string and returns a Scheme object. It is used to convert
+       the stored data in the database to a Scheme object.
+      </dd>
+        </dl>
+      </div>
+  </dd>
+    </dl>
+  </div>
 <p /></div>
-
-</section>
+<p /><div class="define">
+    <span class="define-category">Metaclass</span>
+    <a name="<dbm-meta&gt;1337">
+      <span class="name" name="<dbm-meta&gt;">&lt;dbm-meta&gt;</span>
+    </a>
+  </div>
+<div class="desc">A metaclass of <code>&lt;dbm&gt;</code> and its subclasses.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-open1338">
+    <span class="name" name="dbm-open">dbm-open</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
+<div class="desc">Opens a dbm database. <var>dbm</var> must be an instance of one of the
+concrete classes derived from the <code>&lt;dbm&gt;</code>.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-open1339">
+    <span class="name" name="dbm-open">dbm-open</span>
+  </a> <span class="args">(dbm-class &lt;dbm-meta&gt;) options ...</span></div>
+<div class="desc">A convenient method that creates dbm instance and opens it.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-close1340">
+    <span class="name" name="dbm-close">dbm-close</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
+<div class="desc">Closes a dbm database <var>dbm</var>. If the database is not closed, then
+the database file may not be synchronised properly. So it is user's
+responsibility to close it.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-closed?1341">
+    <span class="name" name="dbm-closed?">dbm-closed?</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
+<div class="desc">Returns true if the dbm database <var>dbm</var> is closed, otherwise #f.
+<p />The returned value may be non boolean value.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="dbm-type-&gt;class1342">
+    <span class="name" name="dbm-type-&gt;class">dbm-type-&gt;class</span>
+  </a> <span class="args">dbmtype</span></div>
+<div class="desc">Returns DBM class if DBM implementation <var>dbmtype</var> exists, otherwise
+#f.
+<p />The <var>dbmtype</var> must be a symbol that names the type of dbm implementation,
+and the implementation library name must be <code>(dbm <var>dbmtype</var>)</code>. For
+example, to get the <var>foo</var> DBM then the library name must be 
+<code>(dbm foo)</code>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1343"><span class="section-number">7.7.2</span>Accessing a dbm database</a>
+  </h4>
+<p />Once a database is opened, you can use the following methods to access
+individual key/value pairs. 
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-put!1344">
+    <span class="name" name="dbm-put!">dbm-put!</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key value</span></div>
+<div class="desc">Put a <var>value</var> with <var>key</var></div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-get1345">
+    <span class="name" name="dbm-get">dbm-get</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key :optional default</span></div>
+<div class="desc">Get a value associated with <var>key</var>. If no value exists for <var>key</var>
+and <var>default</var> is specified, it will be returned. If no value exists for 
+<var>key</var> and <var>default</var> is not specified, then an error will be raised.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-exists?1346">
+    <span class="name" name="dbm-exists?">dbm-exists?</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key</span></div>
+<div class="desc">Return true value if a value exists for <var>key</var>, #f otherwise.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-delete!1347">
+    <span class="name" name="dbm-delete!">dbm-delete!</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key</span></div>
+<div class="desc">Delete a value associated with <var>key</var>.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1348"><span class="section-number">7.7.3</span>Iterating on a dbm database</a>
+  </h4>
+<p />To walk over the entire database, following methods are provided. 
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-fold1349">
+    <span class="name" name="dbm-fold">dbm-fold</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) procedure knil</span></div>
+<div class="desc">The basic iterator. For each key/value pair, <var>procedure</var> is called
+as <code><var>procedure</var> key value r</code>, where <var>r</var> is <var>knil</var> for the
+first call of <var>procedure</var>, and the return value of the previous call for
+subsequent calls. Returns the result of the last call of <var>procedure</var>.
+If no data is in the database, <var>knil</var> is returned.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-for-each1350">
+    <span class="name" name="dbm-for-each">dbm-for-each</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) procedure</span></div>
+<div class="desc">For each key/value pair in the database <var>dbm</var>, <var>procedure</var> is
+called. The <var>procedure</var> must accept 2 arguments, a key and a value
+respectively. The result of <var>procedure</var> is discarded.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-map1351">
+    <span class="name" name="dbm-map">dbm-map</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) procedure</span></div>
+<div class="desc">For each key/value pair in the database <var>dbm</var>, <var>procedure</var> is
+called. The <var>procedure</var> must accept 2 arguments, a key and a value
+respectively. The result of <var>procedure</var> is accumulated to a list which
+is returned as a result of <code>dbm-map</code>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1352"><span class="section-number">7.7.4</span>Managing dbm database instance</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-exists?1353">
+    <span class="name" name="dbm-db-exists?">dbm-db-exists?</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) name</span></div>
+<div class="desc">Returns #t if a database of class <var>class</var> specified by <var>name</var>
+exists.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-remove1354">
+    <span class="name" name="dbm-db-remove">dbm-db-remove</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) name</span></div>
+<div class="desc">Removes an entire database of class <var>class</var> specified by <var>name</var>.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-copy1355">
+    <span class="name" name="dbm-db-copy">dbm-db-copy</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) from to</span></div>
+<div class="desc">Copy a database of <var>class</var> specified by <var>from</var> to <var>to</var>.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-move1356">
+    <span class="name" name="dbm-db-move">dbm-db-move</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) from to</span></div>
+<div class="desc">Moves or renames a database of <var>class</var> specified by <var>from</var>
+to <var>to</var>.
+</div>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section76.html">(util file) - File operation utility library</a>
+    <a class="prev" href="section76.html">(dbi) - Database independent access layer</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section78.html">(util list) - Extra list utility library</a>
+    <a class="next" href="section78.html">(util file) - File operation utility library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-10-18T07:30:59+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
   </div>
 </html>

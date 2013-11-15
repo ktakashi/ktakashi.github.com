@@ -8,307 +8,288 @@
   <div class="prev-next">
     <a class="prev" href="section7.html">Utility libraries</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section72.html">(binary pack) - Packing binary data</a>
+    <a class="next" href="section72.html">(asn.1) - Abstract Syntas Notation One library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="asn.1"><span class="section-number">7.1</span>(asn.1) - Abstract Syntas Notation One library</a>
+    <a class="section.anchor" name="archive"><span class="section-number">7.1</span>(archive) - Generic archive interface</a>
   </h3>
-<p />This section describes <code>(asn.1)</code> library. The library supports DER and BER
-formats. We do not describe DER or BER format here.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(asn.1)1091">
-      <span class="name" name="(asn.1)">(asn.1)</span>
+    <a name="archive1091">
+      <span class="name" name="archive">archive</span>
     </a>
   </div>
-<div class="desc">Top most library of asn.1 procedure collection libraries. There are
-multiple of related libraries, however we do not mention those because it might
-be changed in future. So do not use the child libraries directly, use this.</div>
+<div class="desc">This library provides generic interface to access archive libraries.
+Sagittarius supports <code>tar</code> and <code>zip</code>.
+</div>
+<p />Following code describes a typical use of the library;
+<p /><pre class="codeblock">(import (rnrs) (archive))
+<p />;; extract file "bar.txt" from "foo.zip"
+(call-with-input-archive-file 'zip "foo.zip"
+  (lambda (zip-in)
+    (do-entry (e zip-in)
+      (when (string=? (archive-entry-name e) "bar.txt")
+        (call-with-output-file "bar.txt"
+          (lambda (out) (extract-entry e out))
+           :transcoder #f)))))
+<p />;; archive "bar.txt" into foo.tar
+(call-with-output-archive-file 'tar "foo.tar"
+  (lambda (tar-out)
+    (append-entry! tar-out (create-entry tar-out "bar.txt"))))
+<p /></pre>
+<p />Following sections use <var>type</var> as a supported archive type. More precisely,
+if it's a supported archive type then there must be a library named
+<code>(archive <var>type</var>)</code>.
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1092"><span class="section-number">7.1.1</span>High level user APIs</a>
+    <a class="section.anchor" name="G1092"><span class="section-number">7.1.1</span>Archive input</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="encode1093">
-    <span class="name" name="encode">encode</span>
-  </a> <span class="args">obj :key (encoder der-encode)</span></div>
-<div class="desc"><var>obj</var> must be asn.1-object which described below sections.
-<p />If you specify keyword argument <var>encoder</var>, it must be generic function
-which accepts an object and a binary output port respectively.
-<p />Encodes given <var>obj</var> to bytevector. If <var>obj</var> contains BER object, the
-procedure encodes it to BER. This might be changed in future to configure which
-format this should encode.
-<p />If you want to encode to other format such as CER or XER, then you need to
-implement an encoder. This procedure does not check given arguments type, just
-pass <var>obj</var> to <var>encoder</var> with binary output port.
+<p /><div class="define"><span class="define-category">Function</span><a name="make-input-archive1093">
+    <span class="name" name="make-input-archive">make-input-archive</span>
+  </a> <span class="args">type input-port</span></div>
+<div class="desc"><var>type</var> must be a symbol and supported archive type.
+<var>input-port</var> must be a binary input port.
+<p />Creates an archive input which represents the specified type of archive.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="read-asn.1-object1094">
-    <span class="name" name="read-asn.1-object">read-asn.1-object</span>
-  </a> <span class="args">in</span></div>
-<div class="desc"><var>in</var> must be binary input port.
-<p />Reads asn.1-object from given port. The port must be DER or BER encoded stream
-otherwise it raises <code>&amp;assertion</code>
+<p /><div class="define"><span class="define-category">Method</span><a name="next-entry!1094">
+    <span class="name" name="next-entry!">next-entry!</span>
+  </a> <span class="args">archive-input</span></div>
+<div class="desc">Retrieves next entry of the given archive input. If there is no entry,
+then it returns #f.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1095"><span class="section-number">7.1.2</span>Middle level user APIs</a>
+<p /><div class="define"><span class="define-category">Macro</span><a name="do-entry1095">
+    <span class="name" name="do-entry">do-entry</span>
+  </a> <span class="args">(entry archive-input) body ...</span>
+<div class="define"><span class="define-category">Macro</span><a name="do-entry1096">
+    <span class="name" name="do-entry">do-entry</span>
+  </a> <span class="args">(entry archive-input result) body ...</span>
+<div class="desc">Convenient macro. Iterates the given <var>archive-input</var>'s entries.
+<p />The macro is expanded like this;
+<p /><pre class="codeblock">(do ((<var>entry</var> (next-entry! <var>archive-input</var>) (next-entry! <var>archive-input</var>)))
+    ((not <var>entry</var>) <var>result</var>)
+  <var>body</var> ...)
+</pre>
+<p />If the first form is used, then <var>result</var> is #t.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="extract-entry1097">
+    <span class="name" name="extract-entry">extract-entry</span>
+  </a> <span class="args">entry output-port</span></div>
+<div class="desc">Extract the given archive entry <var>entry</var> to binary output port
+<var>output-port</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="extract-all-entries1098">
+    <span class="name" name="extract-all-entries">extract-all-entries</span>
+  </a>
+ <span class="args">archive-input :key (destinator archive-entry-name) (overwrite #f)</span></div>
+<div class="desc">Convenient function. Extracts all entries in the given
+<var>archive-input</var> to the file specified by <var>destinator</var>.
+<p />The keyword argument <var>destinator</var> must be a procedure which accepts
+one argument, archive entry, and return a string represents the 
+file/directory path.
+<p />The keyword argument <var>overwrite</var> is #t, then it overwrites the file.
+If it is #f and there is a file, then it raises an error.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="finish!1099">
+    <span class="name" name="finish!">finish!</span>
+  </a> <span class="args">archive-input</span></div>
+<div class="desc">Finalize the given archive input.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-input-archive1100">
+    <span class="name" name="call-with-input-archive">call-with-input-archive</span>
+  </a> <span class="args">archive-input proc</span></div>
+<div class="desc"><var>archive-input</var> must be an archive input.
+<var>proc</var> must be a procedure which accepts one argument.
+<p />Call the <var>proc</var> with archive input and returns the result of the
+<var>proc</var>.
+<p />The <var>archive-input</var> is finalized by <code>finish!</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-input-archive-port1101">
+    <span class="name" name="call-with-input-archive-port">call-with-input-archive-port</span>
+  </a>
+ <span class="args">type input-port proc</span></div>
+<div class="desc">Creates an archive input with <var>type</var> and <var>input-port</var>, then
+call <code>call-with-input-archive</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-input-archive-file1102">
+    <span class="name" name="call-with-input-archive-file">call-with-input-archive-file</span>
+  </a>
+ <span class="args">type file proc</span></div>
+<div class="desc">Open file binary input port with given <var>file</var> and call
+<code>call-with-input-archive-port</code>.
+</div>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G1103"><span class="section-number">7.1.2</span>Archive output</a>
   </h4>
-<p />This section is incompleted.
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-application-specific1096">
-    <span class="name" name="make-der-application-specific">make-der-application-specific</span>
-  </a>
- <span class="args">&lt;boolean&gt; &lt;integer&gt; &lt;bytevector&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-application-specific1097">
-    <span class="name" name="make-der-application-specific">make-der-application-specific</span>
-  </a>
- <span class="args">&lt;integer&gt; &lt;bytevector&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-application-specific1098">
-    <span class="name" name="make-der-application-specific">make-der-application-specific</span>
-  </a>
- <span class="args">&lt;boolean&gt; &lt;integer&gt; &lt;der-encodable&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-application-specific1099">
-    <span class="name" name="make-der-application-specific">make-der-application-specific</span>
-  </a>
- <span class="args">&lt;integer&gt; &lt;der-encodable&gt;</span></div>
-<div class="desc">Creates a DER application specific object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-bit-string1100">
-    <span class="name" name="make-der-bit-string">make-der-bit-string</span>
-  </a> <span class="args">&lt;bytevector&gt; &lt;integer&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-bit-string1101">
-    <span class="name" name="make-der-bit-string">make-der-bit-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER bit string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-bmp-string1102">
-    <span class="name" name="make-der-bmp-string">make-der-bmp-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-bmp-string1103">
-    <span class="name" name="make-der-bmp-string">make-der-bmp-string</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="desc">Creates a DER bmp string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-octet-string1104">
-    <span class="name" name="make-der-octet-string">make-der-octet-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-octet-string1105">
-    <span class="name" name="make-der-octet-string">make-der-octet-string</span>
-  </a> <span class="args">&lt;der-encodable&gt;</span></div>
-<div class="desc">Creates a DER octet string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-general-string1106">
-    <span class="name" name="make-der-general-string">make-der-general-string</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-general-string1107">
-    <span class="name" name="make-der-general-string">make-der-general-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER general string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-ia5-string1108">
-    <span class="name" name="make-der-ia5-string">make-der-ia5-string</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-ia5-string1109">
-    <span class="name" name="make-der-ia5-string">make-der-ia5-string</span>
-  </a> <span class="args">&lt;string&gt; &lt;boolean&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-ia5-string1110">
-    <span class="name" name="make-der-ia5-string">make-der-ia5-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER IA5 string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-numeric-string1111">
-    <span class="name" name="make-der-numeric-string">make-der-numeric-string</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-numeric-string1112">
-    <span class="name" name="make-der-numeric-string">make-der-numeric-string</span>
-  </a> <span class="args">&lt;string&gt; &lt;boolean&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-numeric-string1113">
-    <span class="name" name="make-der-numeric-string">make-der-numeric-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER numeric string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-printable-string1114">
-    <span class="name" name="make-der-printable-string">make-der-printable-string</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-printable-string1115">
-    <span class="name" name="make-der-printable-string">make-der-printable-string</span>
-  </a> <span class="args">&lt;string&gt; &lt;boolean&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-printable-string1116">
-    <span class="name" name="make-der-printable-string">make-der-printable-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER printable string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-t61-string1117">
-    <span class="name" name="make-der-t61-string">make-der-t61-string</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-t61-string1118">
-    <span class="name" name="make-der-t61-string">make-der-t61-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER T61 string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-universal-string1119">
-    <span class="name" name="make-der-universal-string">make-der-universal-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER universal string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-utf8-string1120">
-    <span class="name" name="make-der-utf8-string">make-der-utf8-string</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-utf8-string1121">
-    <span class="name" name="make-der-utf8-string">make-der-utf8-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER UTF8 string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-visible-string1122">
-    <span class="name" name="make-der-visible-string">make-der-visible-string</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-visible-string1123">
-    <span class="name" name="make-der-visible-string">make-der-visible-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER visible string object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-boolean1124">
-    <span class="name" name="make-der-boolean">make-der-boolean</span>
-  </a> <span class="args">&lt;boolean&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-boolean1125">
-    <span class="name" name="make-der-boolean">make-der-boolean</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER boolean object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-enumerated1126">
-    <span class="name" name="make-der-enumerated">make-der-enumerated</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-enumerated1127">
-    <span class="name" name="make-der-enumerated">make-der-enumerated</span>
-  </a> <span class="args">&lt;integer&gt;</span></div>
-<div class="desc">Creates a DER enumerated object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-integer1128">
-    <span class="name" name="make-der-integer">make-der-integer</span>
-  </a> <span class="args">&lt;integer&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-integer1129">
-    <span class="name" name="make-der-integer">make-der-integer</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER integer object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-object-identifier1130">
-    <span class="name" name="make-der-object-identifier">make-der-object-identifier</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-object-identifier1131">
-    <span class="name" name="make-der-object-identifier">make-der-object-identifier</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="desc">Creates a DER OID object.</div>
-<p /><div class="define">
-    <span class="define-category">Generic</span>
-    <a name="make-der-sequence1132">
-      <span class="name" name="make-der-sequence">make-der-sequence</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-sequence1133">
-    <span class="name" name="make-der-sequence">make-der-sequence</span>
-  </a> <span class="args">&lt;der-encodable&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-sequence1134">
-    <span class="name" name="make-der-sequence">make-der-sequence</span>
-  </a> <span class="args">o ...</span></div>
-<div class="desc">Creates a DER sequence object.
-<p />If the third form is used, <var>o</var>s must be list of <code>&lt;der-encodable&gt;</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="make-output-archive1104">
+    <span class="name" name="make-output-archive">make-output-archive</span>
+  </a> <span class="args">type output-port</span></div>
+<div class="desc"><var>type</var> must be a symbol.
+<var>output-port</var> must be a output port.
+<p />Creates an archive output which represents the specified type of archive.
 </div>
-<p /><div class="define">
-    <span class="define-category">Generic</span>
-    <a name="make-der-set1135">
-      <span class="name" name="make-der-set">make-der-set</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-set1136">
-    <span class="name" name="make-der-set">make-der-set</span>
-  </a> <span class="args">&lt;der-encodable&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-set1137">
-    <span class="name" name="make-der-set">make-der-set</span>
-  </a> <span class="args">o ...</span></div>
-<div class="desc">Creates a DER set object.
-<p />If the third form is used, <var>o</var>s must be list of <code>&lt;der-encodable&gt;</code>.
+<p /><div class="define"><span class="define-category">Method</span><a name="create-entry1105">
+    <span class="name" name="create-entry">create-entry</span>
+  </a> <span class="args">archive-output file</span></div>
+<div class="desc">Creates an archive entry from the given <var>file</var>.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="append-entry1106">
+    <span class="name" name="append-entry">append-entry</span>
+  </a> <span class="args">archive-output entry</span></div>
+<div class="desc">Appends the given <var>entry</var> to <var>archive-output</var>.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="finish!1107">
+    <span class="name" name="finish!">finish!</span>
+  </a> <span class="args">archive-output</span></div>
+<div class="desc">Finalize the given archive output.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-output-archive1108">
+    <span class="name" name="call-with-output-archive">call-with-output-archive</span>
+  </a> <span class="args">archive-output proc</span></div>
+<div class="desc"><var>archive-output</var> must be an archive output.
+<var>proc</var> must be a procedure which accepts one argument.
+<p />Call the <var>proc</var> with archive input and returns the result of the 
+<var>proc</var>.
+<p />The <var>archive-output</var> is finalized by <code>finish!</code>.
 </div>
-<p /><div class="define">
-    <span class="define-category">Generic</span>
-    <a name="make-der-null1138">
-      <span class="name" name="make-der-null">make-der-null</span>
-    </a>
-  </div>
-<div class="desc">Creates a DER null object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-generalized-time1139">
-    <span class="name" name="make-der-generalized-time">make-der-generalized-time</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-generalized-time1140">
-    <span class="name" name="make-der-generalized-time">make-der-generalized-time</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-generalized-time1141">
-    <span class="name" name="make-der-generalized-time">make-der-generalized-time</span>
-  </a> <span class="args">&lt;date&gt;</span></div>
-<div class="desc">Creates a DER generalized time object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-utc-time1142">
-    <span class="name" name="make-der-utc-time">make-der-utc-time</span>
-  </a> <span class="args">&lt;string&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-utc-time1143">
-    <span class="name" name="make-der-utc-time">make-der-utc-time</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-utc-time1144">
-    <span class="name" name="make-der-utc-time">make-der-utc-time</span>
-  </a> <span class="args">&lt;date&gt;</span></div>
-<div class="desc">Creates a DER UTC time object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-tagged-object1145">
-    <span class="name" name="make-der-tagged-object">make-der-tagged-object</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-output-archive-port1109">
+    <span class="name" name="call-with-output-archive-port">call-with-output-archive-port</span>
   </a>
- <span class="args">&lt;boolean&gt; &lt;integer&gt; &lt;der-encodable&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-tagged-object1146">
-    <span class="name" name="make-der-tagged-object">make-der-tagged-object</span>
-  </a>
- <span class="args">&lt;integer&gt; &lt;der-encodable&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-tagged-object1147">
-    <span class="name" name="make-der-tagged-object">make-der-tagged-object</span>
-  </a> <span class="args">&lt;integer&gt;</span></div>
-<div class="desc">Creates a DER tagged object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-external1148">
-    <span class="name" name="make-der-external">make-der-external</span>
-  </a>
- <span class="args">&lt;der-object-identifier&gt; &lt;der-integer&gt;
-       &lt;asn.1-object&gt; &lt;der-tagged-object&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-der-external1149">
-    <span class="name" name="make-der-external">make-der-external</span>
-  </a>
- <span class="args">&lt;der-object-identifier&gt; &lt;der-integer&gt;
-       &lt;asn.1-object&gt; &lt;integer&gt; &lt;der-object&gt;</span></div>
-<div class="desc">Creates a DER external object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-ber-constructed-octet-string1150">
-    <span class="name" name="make-ber-constructed-octet-string">make-ber-constructed-octet-string</span>
-  </a> <span class="args">&lt;bytevector&gt;</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-ber-constructed-octet-string1151">
-    <span class="name" name="make-ber-constructed-octet-string">make-ber-constructed-octet-string</span>
-  </a> <span class="args">l ...</span></div>
-<div class="desc">Creates a BER constructed object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-ber-application-specific1152">
-    <span class="name" name="make-ber-application-specific">make-ber-application-specific</span>
-  </a>
- <span class="args">&lt;integer&gt; l ...</span></div>
-<div class="desc">Creates a BER application specific object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-ber-tagged-object1153">
-    <span class="name" name="make-ber-tagged-object">make-ber-tagged-object</span>
-  </a>
- <span class="args">&lt;boolean&gt; &lt;integer&gt; &lt;der-encodable&gt;</span></div>
-<div class="desc">Creates a BER tagged object.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-ber-sequence1154">
-    <span class="name" name="make-ber-sequence">make-ber-sequence</span>
-  </a> <span class="args">l ...</span></div>
-<div class="desc">Creates a BER sequence object.
-<p /><var>l</var>s must be list of <code>&lt;der-encodable&gt;</code>.
+ <span class="args">type output-port proc</span></div>
+<div class="desc">Creates an archive output with <var>type</var> and <var>output-port</var>, then
+call <code>call-with-output-archive</code>.
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-ber-set1155">
-    <span class="name" name="make-ber-set">make-ber-set</span>
-  </a> <span class="args">l ...</span></div>
-<div class="desc">Creates a BER set object.
-<p /><var>l</var>s must be list of <code>&lt;der-encodable&gt;</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-output-archive-file1110">
+    <span class="name" name="call-with-output-archive-file">call-with-output-archive-file</span>
+  </a>
+ <span class="args">type file proc</span></div>
+<div class="desc">Open file binary output port with given <var>file</var> and call
+<code>call-with-output-archive-port</code>.
 </div>
-<p /><div class="define">
-    <span class="define-category">Generic</span>
-    <a name="make-ber-null1156">
-      <span class="name" name="make-ber-null">make-ber-null</span>
-    </a>
-  </div>
-<div class="desc">Creates a BER null object.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1157"><span class="section-number">7.1.3</span>Low level User APIs</a>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G1111"><span class="section-number">7.1.3</span>Entry accessor</a>
   </h4>
-<p />This section is incompleted. Here must desribe classes defined in <code>(asn.1)</code>
+<p /><div class="define"><span class="define-category">Function</span><a name="archive-entry-name1112">
+    <span class="name" name="archive-entry-name">archive-entry-name</span>
+  </a> <span class="args">entry</span></div>
+<div class="desc">Returns the name of <var>entry</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="archive-entry-type1113">
+    <span class="name" name="archive-entry-type">archive-entry-type</span>
+  </a> <span class="args">entry</span></div>
+<div class="desc">Returns the type of <var>entry</var>. It is either <code>file</code> or 
+<code>directory</code>.
+</div>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G1114"><span class="section-number">7.1.4</span>Implementing archive implementation library</a>
+  </h4>
+<p />To support other archive such as RAR, then you need to create a implementation
 library.
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(archive interface1115">
+      <span class="name" name="(archive interface">(archive interface</span>
+    </a>
+  </div>
+<div class="desc">The library defines all abstract class and method for the generic
+archive access.
+</div>
+<p />To support <var>foo</var> archive, then the library name must be 
+code{(archive <var>foo</var>)} and it must import <code>(archive interface)</code>.
+So the library code should look like this;
+<p /><pre class="codeblock">(library (archive foo)
+  (export) ;; no export procedure is needed
+  (import (rnrs)
+          (close user)
+          (archive interface)
+          ;; so on
+          ...)
+  ;; class and method definitions
+  ...
+)
+</pre>
+<p />
+For archiving, the implementation needs to implement following methods and
+extends following classes;
+<pre class="codeblock">make-archive-input, next-entry, extract-entry</pre>
+<pre class="codeblock">&lt;archive-input&gt; &lt;archive-entry&gt;</pre>
+<p />For extracting, the implementation needs to implement following methods and
+extends following classes;
+<pre class="codeblock">make-archive-output, create-entry, append-entry!, finish!</pre>
+<pre class="codeblock">&lt;archive-output&gt; &lt;archive-entry&gt;</pre>
+<p />NOTE: <code>&lt;archive-entry&gt;</code> may be shared between archiving and extracting.
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<archive-input&gt;1116">
+      <span class="name" name="<archive-input&gt;">&lt;archive-input&gt;</span>
+    </a>
+  </div>
+<div class="desc">Abstract class of the archive input. This class has the following
+slot;
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">source</dt>
+      <dd class="dl-item-desc">   Source of the archive. For compatibility of other archive, this should be
+   a binary input port.
+  </dd>
+    </dl>
+  </div>
+</div>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<archive-output&gt;1117">
+      <span class="name" name="<archive-output&gt;">&lt;archive-output&gt;</span>
+    </a>
+  </div>
+<div class="desc">Abstract class of the archive output. This class has the following
+slot;
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">sink</dt>
+      <dd class="dl-item-desc">   Destination of the archive. For compatibility of other archive, this
+   should be a binary output port.
+  </dd>
+    </dl>
+  </div>
+</div>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<archive-entry&gt;1118">
+      <span class="name" name="<archive-entry&gt;">&lt;archive-entry&gt;</span>
+    </a>
+  </div>
+<div class="desc">Abstract class of the archive entry. This class has the following
+slots;
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">name</dt>
+      <dd class="dl-item-desc"> Entry name. </dd>
+      <dt class="dl-item-title">type</dt>
+      <dd class="dl-item-desc">   Entry type. For compatibility of other archive, this must be <code>file</code> or
+   <code>directory</code>.
+  </dd>
+    </dl>
+  </div>
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="make-archive-input1119">
+    <span class="name" name="make-archive-input">make-archive-input</span>
+  </a> <span class="args">type (source &lt;port&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="make-archive-output1120">
+    <span class="name" name="make-archive-output">make-archive-output</span>
+  </a> <span class="args">type (sink &lt;port&gt;)</span></div>
+<div class="desc">Creates an archive input or output. <var>type</var> specifies the
+archive type. It is recommended to use <code>eql</code> specializer to specify.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="finish!1121">
+    <span class="name" name="finish!">finish!</span>
+  </a> <span class="args">(in &lt;archive-input&gt;)</span></div>
+<div class="desc">The <code>finish!</code> method for archive input has a default
+implementation and it does nothing.
+<p />Users can specialize the method for own archive input.
+</div>
+<p />The other methods must implemented as it's described in above section.</div></div>
 </section></section>
   <div class="prev-next">
     <a class="prev" href="section7.html">Utility libraries</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section72.html">(binary pack) - Packing binary data</a>
+    <a class="next" href="section72.html">(asn.1) - Abstract Syntas Notation One library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-10-18T07:30:59+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
   </div>
 </html>

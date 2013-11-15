@@ -6,129 +6,226 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section724.html">(text csv) - Comma separated values parser library</a>
+    <a class="prev" href="section724.html">(rfc x.509) - X.509 certificate utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section726.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section726.html">(text csv) - Comma separated values parser library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.html-lite"><span class="section-number">7.25</span>(text html-lite) - Simple HTML document builder library</a>
+    <a class="section.anchor" name="rfc.zlib"><span class="section-number">7.25</span>(rfc zlib) - zlib compression library</a>
   </h3>
-<p />
-<div class="define">
+<p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text html-lite)1605">
-      <span class="name" name="(text html-lite)">(text html-lite)</span>
+    <a name="(rfc zlib)1622">
+      <span class="name" name="(rfc zlib)">(rfc zlib)</span>
     </a>
   </div>
-<div class="desc">This library provides simple HTML builder procedures based on HTML5.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-escape1606">
-    <span class="name" name="html-escape">html-escape</span>
-  </a> <span class="args">:optional (in (current-input-port))</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-escape-string1607">
-    <span class="name" name="html-escape-string">html-escape-string</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Escapes the unsafe characters in HTML and returns escaped string.
-<p />The <code>html-escape</code> reads the string from optional argument <var>in</var> which
-must be an textual input port and returns an escaped string.
-<p />The <code>html-escape-string</code> takes a string and returns an escaped string.
+<div class="desc">This library provides the binding for zlib compression library. For now,
+it only provides the highest level APIs.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-doctype1608">
-    <span class="name" name="html-doctype">html-doctype</span>
-  </a> <span class="args">:key (type :html-4.01-strict)</span></div>
-<div class="desc">Returns a doctype declaration for an HTML document. <var>type</var> can be one
-of the followings;
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;zlib-error1623">
+      <span class="name" name="&amp;zlib-error">&amp;zlib-error</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="zlib-error?1624">
+    <span class="name" name="zlib-error?">zlib-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="condition-zlib-stream1625">
+    <span class="name" name="condition-zlib-stream">condition-zlib-stream</span>
+  </a> <span class="args">zlib-error</span></div>
+<div class="desc">Subcondition of <code>&amp;error</code>.
+<p />This condition is raised when zlib process is finished unsuccessfully. You can
+obtain the cause z-stream with the <code>condition-zlib-stream</code> procedure and
+get the detail message with the <code>zlib-error-message</code> procedure. When error
+occurred, however, it is raised with <code>message-condition</code> and it has the
+error message with. So you can simply get it with <code>condition-message</code>
+procedure.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="zlib-error-message1626">
+    <span class="name" name="zlib-error-message">zlib-error-message</span>
+  </a> <span class="args">z-stream</span></div>
+<div class="desc"><var>Z-stream</var> must be z-stream object.
+<p />Retrieve error message from <var>z-stream</var>. If <var>z-stream</var> does not have any
+error message and this procedure is called, the behaviour is unspecified.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-deflating-output-port1627">
+    <span class="name" name="open-deflating-output-port">open-deflating-output-port</span>
+  </a>
+ <span class="args">sink :key compression-level buffer-size window-bits memory-level
+ strategy dictionary owner?</span></div>
+<div class="desc"><var>Sink</var> must be binary output port. Creates a custom binary output
+port. The port deflates its input and put the result to <var>sink</var>. With the
+optional keys, you can specify the following conditions:
 <p /><div class="dl-list-wrapper">
     <dl class="dl-list">
       <dt class="dl-item-title">
-        <code>:html-5</code>
+        <var>compression-level</var>
       </dt>
-      <dd class="dl-item-desc">    HTML 5
-  </dd>
+      <dd class="dl-item-desc">You can specify an exact integer between 1 and 9 (inclusive) to
+<var>compression-level</var>. When it is omitted, a default compression level is
+used, which is usually 6.
+<p />The following constants are defined to specify <var>compression-level</var>
+conveniently:
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_NO_COMPRESSION1628">
+          <span class="name" name="Z_NO_COMPRESSION">Z_NO_COMPRESSION</span>
+        </a>
+      </div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_BEST_SPEED1629">
+          <span class="name" name="Z_BEST_SPEED">Z_BEST_SPEED</span>
+        </a>
+      </div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_BEST_COMPRESSION1630">
+          <span class="name" name="Z_BEST_COMPRESSION">Z_BEST_COMPRESSION</span>
+        </a>
+      </div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_DEFAULT_COMPRESSION1631">
+          <span class="name" name="Z_DEFAULT_COMPRESSION">Z_DEFAULT_COMPRESSION</span>
+        </a>
+      </div>
+</dd>
       <dt class="dl-item-title">
-        <code>:html-4.01-strict :html-4.01, :strict, :html-strict</code>
+        <var>buffer-size</var>
       </dt>
-      <dd class="dl-item-desc">    HTML 4.01 Strict DTD
-  </dd>
+      <dd class="dl-item-desc">It specifies the buffer size of the port in bytes.
+The default is 4096.
+</dd>
       <dt class="dl-item-title">
-        <code>:html-4.01-transitional :html-transitional, :transitional</code>
+        <var>window-bits</var>
       </dt>
-      <dd class="dl-item-desc">    HTML 4.01 Transitional DTD
-  </dd>
+      <dd class="dl-item-desc">It specifies the size of the window in exact
+integer. Typically the value should be between 8 and 15, inclusive, and it
+specifies the base two logarithm of the window size used in compression. Larger
+number yields better compression ratio, but more memory usage. The default value
+is 15.
+</dd>
       <dt class="dl-item-title">
-        <code>:xhtml-1.0-strict :xhtml-1.0</code>
+        <var>memory-level</var>
       </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Strict DTD
-  </dd>
+      <dd class="dl-item-desc">It specifies how much memory should be allocated to
+keep the internal state during compression. 1 means smallest memory which causes
+slow and less compression. 9 means fastest and best compression with the largest
+amount of memory. The default value is 8.
+</dd>
       <dt class="dl-item-title">
-        <code>:xhtml-1.0-transitional</code>
+        <var>strategy</var>
       </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Transitional DTD
-  </dd>
+      <dd class="dl-item-desc">To fine tune compression algorithm, you can use the
+<var>strategy</var> argument. The following constants are defined as the valid value
+as <var>strategy</var>.
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_DEFAULT_STRATEGY1632">
+          <span class="name" name="Z_DEFAULT_STRATEGY">Z_DEFAULT_STRATEGY</span>
+        </a>
+      </div>
+<div class="desc">The default strategy, suitable for most ordinary data.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_FILTERED1633">
+          <span class="name" name="Z_FILTERED">Z_FILTERED</span>
+        </a>
+      </div>
+<div class="desc">Suitable for data generated by filters (or predictors). Filtered data
+consists mostly of small values with a somewhat compress them better. The
+effect of this is to force more huffman coding and less string matching.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_HUFFMAN_ONLY1634">
+          <span class="name" name="Z_HUFFMAN_ONLY">Z_HUFFMAN_ONLY</span>
+        </a>
+      </div>
+<div class="desc">Force to use huffman encoding only.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_RLE1635">
+          <span class="name" name="Z_RLE">Z_RLE</span>
+        </a>
+      </div>
+<div class="desc">This is designed to be almost as fast as Z_HUFFMAN_ONLY, but gives better
+compression for PNG image data.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_FIXED1636">
+          <span class="name" name="Z_FIXED">Z_FIXED</span>
+        </a>
+      </div>
+<div class="desc">This prevents the use of dynamic huffman codes, allowing for a simpler
+decoder for special applications.</div>
+The choice of <var>strategy</var> only affects compression ratio and speed. Any
+choice produces correct and decompressable data.
+</dd>
       <dt class="dl-item-title">
-        <code>:xhtml-1.0-frameset</code>
+        <var>dictionary</var>
       </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Frameset DTD
-  </dd>
+      <dd class="dl-item-desc">You can give an initial dictionary to the
+<var>dictionary</var> argument to be used in compression. The compressor and
+decompressor must use exactly the same dictionary.
+</dd>
       <dt class="dl-item-title">
-        <code>:xhtml-1.1</code>
+        <var>owner?</var>
       </dt>
-      <dd class="dl-item-desc">    XHTML 1.1 DTD
-  </dd>
+      <dd class="dl-item-desc">If this argument is specified true value, the created
+port automatically closes the given output port <var>sink</var> when it is closed.
+</dd>
     </dl>
   </div>
+<p /></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-inflating-input-port1637">
+    <span class="name" name="open-inflating-input-port">open-inflating-input-port</span>
+  </a>
+ <span class="args">source :key buffer-size window-bits dictionary owner?</span></div>
+<div class="desc"><var>Source</var> must be a binary input port.
+<p />The <code>open-inflating-input-port</code> creates a custom binary input port, which
+reads compressed binary data from the given port <var>source</var> and decompresses
+the read data.
+<p />The meaning of <var>buffer-size</var> is the same as
+ <code>open-deflating-output-port</code>.
+<p />The meaning of <var>window-bits</var> is almost the same, except if a value increased
+by 32 is given, the inflating port automatically detecs whether the source
+stream is zlib or gzip by its header.
+<p />If the input data is compressed with specified dictionary, the same dictionary
+must be given to <var>dictionary</var> argument. Otherwise &amp;zlib-error condition is
+raised.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html:element1609">
-    <span class="name" name="html:element">html:<var>element</var></span>
-  </a> <span class="args">args ...</span></div>
-<div class="desc">Construct an HTML element <var>element</var>. Currently following elements are
-provided. 
-<p /><pre class="codeblock">   a       abbr    address  area       article  aside
-   audio   b       base     bdi        bdo      blockquote
-   body    br      button   canvas     caption  cite
-   code    col     colgroup command    datalist dd
-   del     details dfn      div        dl       dt
-   em      embed   fieldset figcaption figure   footer
-   form
-   h1      h2      h3       h4         h5       h6
-   head    header  hgroup   hr         html
-   i       iframe  img      input      ins      kbd
-   keygen  label   legend   li         link     map
-   mark    menu    meta     meter      nav      noscript
-   object  ol      optgroup option     output   p
-   param   pre     progress q          rp       rt
-   ruby    s       samp     script     section  select
-   small   source  span     strong     style    sub
-   summary sup     table    tbody      td       textarea
-   tfoot   th      thead    time       title    tr
-   track   u       ul       var        video    wbr
-</pre>
-<p />The result of these functions is a tree of text segments, which can be written
-out to a port by <code>write-tree</code> or can be converted to a string by
-<code>tree-&gt;string</code> <a href="section726.html#text.tree">(text tree) - Lightweight text generation</a>.
-<p />You can specify attributes of the element by using a keyword-value notation
-before the actual content.
-<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:a :href "http://example.com" "example"))
-</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;a href="http://example.com"&gt;example&lt;/a&gt;</span></pre>
-<p />The boolean value given to the attribute has special meaning. If #t is given,
-the attribute is rendered without a value. If #f is given, the attribute is not
-rendered.
-<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:table :border #t))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;table border&gt;&lt;/table&gt;</span></pre>
-<pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:table :border #f))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;table&gt;&lt;/table&gt;</span></pre>
-<p />Special characters in attribute values are escaped by the function, but the
-ones in the content are not.
-<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:div :foo "&lt;&gt;&amp;\"" "&lt;not escaped&gt;"))
-</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;div foo="&amp;lt;&amp;gt;&amp;amp;&amp;quot;"&gt;&lt;not escaped&gt;&lt;/div&gt;</span></pre>
-<p />
+<p /><div class="define"><span class="define-category">Function</span><a name="inflate-bytevector1638">
+    <span class="name" name="inflate-bytevector">inflate-bytevector</span>
+  </a> <span class="args">bv opts ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="deflate-bytevector1639">
+    <span class="name" name="deflate-bytevector">deflate-bytevector</span>
+  </a> <span class="args">bv opts ...</span></div>
+<div class="desc">Inflate/deflate given bytevector <var>bv</var> respectively.
+<p />These are convenient procedures. It uses <code>open-inflating-input-port</code> or
+<code>open-deflating-output-port</code> to inflate/deflate.
+<p />The <var>opts</var> will be passed to underlying procedures.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="crc321640">
+    <span class="name" name="crc32">crc32</span>
+  </a> <span class="args">bv :optional (checksum 0)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="adler321641">
+    <span class="name" name="adler32">adler32</span>
+  </a> <span class="args">bv :optional (checksum 0)</span></div>
+<div class="desc">Returns CSC32/Adler32 checksum of bytevector <var>bv</var>, respectively.
+<p />If optional <var>checksum</var> is given, then returned checksum is an update of
+<var>checksum</var> by <var>bv</var>.
 </div>
 </section>
   <div class="prev-next">
-    <a class="prev" href="section724.html">(text csv) - Comma separated values parser library</a>
+    <a class="prev" href="section724.html">(rfc x.509) - X.509 certificate utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section726.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section726.html">(text csv) - Comma separated values parser library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-10-18T07:30:59+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
   </div>
 </html>

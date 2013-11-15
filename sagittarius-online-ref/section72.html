@@ -6,126 +6,309 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section71.html">(asn.1) - Abstract Syntas Notation One library</a>
+    <a class="prev" href="section71.html">(archive) - Generic archive interface</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section73.html">(util bytevector) - Bytevector utility library</a>
+    <a class="next" href="section73.html">(binary pack) - Packing binary data</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.binary.pack"><span class="section-number">7.2</span>(binary pack) - Packing binary data</a>
+    <a class="section.anchor" name="asn.1"><span class="section-number">7.2</span>(asn.1) - Abstract Syntas Notation One library</a>
   </h3>
+<p />This section describes <code>(asn.1)</code> library. The library supports DER and BER
+formats. We do not describe DER or BER format here.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(binary pack)1158">
-      <span class="name" name="(binary pack)">(binary pack)</span>
+    <a name="(asn.1)1122">
+      <span class="name" name="(asn.1)">(asn.1)</span>
     </a>
   </div>
-<div class="desc">This library provides an interface for packing and unpacking (writing
-and reading) binary data with template. The functionality is inspired by
-<a href="https://weinholt.se/industria/">Industria</a>'s
-<code>(weinholt struct pack)</code> library.
+<div class="desc">Top most library of asn.1 procedure collection libraries. There are
+multiple of related libraries, however we do not mention those because it might
+be changed in future. So do not use the child libraries directly, use this.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1123"><span class="section-number">7.2.1</span>High level user APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="encode1124">
+    <span class="name" name="encode">encode</span>
+  </a> <span class="args">obj :key (encoder der-encode)</span></div>
+<div class="desc"><var>obj</var> must be asn.1-object which described below sections.
+<p />If you specify keyword argument <var>encoder</var>, it must be generic function
+which accepts an object and a binary output port respectively.
+<p />Encodes given <var>obj</var> to bytevector. If <var>obj</var> contains BER object, the
+procedure encodes it to BER. This might be changed in future to configure which
+format this should encode.
+<p />If you want to encode to other format such as CER or XER, then you need to
+implement an encoder. This procedure does not check given arguments type, just
+pass <var>obj</var> to <var>encoder</var> with binary output port.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="pack1159">
-    <span class="name" name="pack">pack</span>
-  </a> <span class="args">template args ...</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Construct a bytevector with given <var>args</var> according to the given
-<var>template</var>. Template characters are described below.
+<p /><div class="define"><span class="define-category">Function</span><a name="read-asn.1-object1125">
+    <span class="name" name="read-asn.1-object">read-asn.1-object</span>
+  </a> <span class="args">in</span></div>
+<div class="desc"><var>in</var> must be binary input port.
+<p />Reads asn.1-object from given port. The port must be DER or BER encoded stream
+otherwise it raises <code>&amp;assertion</code>
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="pack!1160">
-    <span class="name" name="pack!">pack!</span>
-  </a> <span class="args">template bv offset args ...</span></div>
-<div class="desc"><var>template</var> must be a string. 
-<p /><var>bv</var> must be a bytevector.
-<p /><var>offset</var> must a non-negative exact integer.
-<p />Converts given <var>args</var> and put it into <var>bv</var> starting from <var>offset</var>.
-The conversion is done according to the <var>template</var> string.
-<p />The template characters are extensible so following description can only cover
-predefined characters.
-<p />x: padding; c: s8; C: u8; s: s16; S: u16; l: s32; L: u32; q: s64; Q: u64;
-f: ieee-single; d: ieee-double; ! or &gt;: big-endian; &lt;: little-endian;
-=: native-endian; u: disable natural alignment; a: enable natural alignment.
-Whitespace is ignored.
-<p /><pre class="snipet"><span class="snipet-code">(pack "!c" 128)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(128)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "s" 100)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(100 0)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!s" 100)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 100)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!d" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(64 9 30 184 81 235 133 31)</span></pre>
-<p />Fields are by default aligned to their natural alignment and NUL bytes are
-inserted as necessary to have a field's index to be aligned to its size.
-<p /><pre class="snipet"><span class="snipet-code">(pack "!xd" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 0 0 0 0 0 0 0 64 9 30 184 81 235 133 31)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!uxd" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 64 9 30 184 81 235 133 31)</span></pre>
-<p />Digits in front of the syntax characters means repetition. And <code>#\*</code> means
-indefinite length repetition.
-<p /><pre class="snipet"><span class="snipet-code">(pack "3c" 1 2 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "*c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3 4)</span></pre>
-<p />When the macro detects the given template is string, then it tries to expand
-as much as possible. So it might raises the different condition even if the
-template strings are the same.
-<p /><pre class="snipet"><span class="snipet-code">(pack "3c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&amp;syntax</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack (car '("3c")) 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&amp;error</span></pre>
-<p /></div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="unpack1161">
-    <span class="name" name="unpack">unpack</span>
-  </a> <span class="args">template bv</span></div>
-<div class="define"><span class="define-category">Macro</span><a name="unpack1162">
-    <span class="name" name="unpack">unpack</span>
-  </a> <span class="args">template bv offset</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Unpack the given bytevector according to the given <var>template</var> and returns
-the values. The template syntax are the same as <code>pack!</code>.
-<p />If the second form is used, then unpacking is done from the given <var>offset</var>.
-<p /><pre class="snipet"><span class="snipet-code">(unpack "!SS" #vu8(0 1 0 2))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">1 2</span></pre>
-<pre class="snipet"><span class="snipet-code">(unpack "!SS" #vu8(0 1 0 2 0 3) 1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">2 3</span></pre>
-<pre class="snipet"><span class="snipet-code">(unpack "!uSS" #vu8(0 1 0 2 0 3) 1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">256 512</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="get-unpack1163">
-    <span class="name" name="get-unpack">get-unpack</span>
-  </a> <span class="args">port template</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Utility unpacking macro for binary port.
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="format-size1164">
-    <span class="name" name="format-size">format-size</span>
-  </a> <span class="args">template</span></div>
-<div class="define"><span class="define-category">Macro</span><a name="format-size1165">
-    <span class="name" name="format-size">format-size</span>
-  </a> <span class="args">template args ...</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Calculate the size of the result bytevector. If the second form is used, then
-macro can calculate even if the template contains indefinite length syntax
-<code>#\*</code>, otherwise #f is returned.
-<p /><pre class="snipet"><span class="snipet-code">(format-size "!xd")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">16</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "!uxd")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">9</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "*c")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "*c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">4</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="define-**-packer1166">
-    <span class="name" name="define-**-packer">define-<var>**</var>-packer</span>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1126"><span class="section-number">7.2.2</span>Middle level user APIs</a>
+  </h4>
+<p />This section is incompleted.
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-application-specific1127">
+    <span class="name" name="make-der-application-specific">make-der-application-specific</span>
   </a>
- <span class="args">(char arg) (<code>pack</code> expr1 ...) (<code>unpack</code> expr2 ...)</span></div>
-<div class="desc"><var>char</var> must character.
-<p /><code>pack</code> and <code>unpack</code> are syntactic keywords.
-<p />Defines packing extension to given <var>char</var>. This macro can not overwrite
-the predefined characters. <var>**</var> can be followings;
-<p /><code>s8</code>, <code>u8</code>, <code>s16</code>, <code>u16</code>, <code>s32</code>, <code>u32</code>,
-<code>s64</code>, <code>u64</code>, <code>f32</code>, and <code>f64</code>.
-<p /><pre class="codeblock">;; defining char to u8 converter
-(define-u8-packer (#\A v)
-  (pack (char-&gt;integer v))
-  (unpack (integer-&gt;char v)))
-(pack "AA" #\a #\b)       ;; =&gt; #vu8(97 98)
-(unpack "AA" #vu8(97 98)) ;; =&gt; #\a #\b
-</pre>
-<p /></div>
-
-</section>
+ <span class="args">&lt;boolean&gt; &lt;integer&gt; &lt;bytevector&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-application-specific1128">
+    <span class="name" name="make-der-application-specific">make-der-application-specific</span>
+  </a>
+ <span class="args">&lt;integer&gt; &lt;bytevector&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-application-specific1129">
+    <span class="name" name="make-der-application-specific">make-der-application-specific</span>
+  </a>
+ <span class="args">&lt;boolean&gt; &lt;integer&gt; &lt;der-encodable&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-application-specific1130">
+    <span class="name" name="make-der-application-specific">make-der-application-specific</span>
+  </a>
+ <span class="args">&lt;integer&gt; &lt;der-encodable&gt;</span></div>
+<div class="desc">Creates a DER application specific object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-bit-string1131">
+    <span class="name" name="make-der-bit-string">make-der-bit-string</span>
+  </a> <span class="args">&lt;bytevector&gt; &lt;integer&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-bit-string1132">
+    <span class="name" name="make-der-bit-string">make-der-bit-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER bit string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-bmp-string1133">
+    <span class="name" name="make-der-bmp-string">make-der-bmp-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-bmp-string1134">
+    <span class="name" name="make-der-bmp-string">make-der-bmp-string</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="desc">Creates a DER bmp string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-octet-string1135">
+    <span class="name" name="make-der-octet-string">make-der-octet-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-octet-string1136">
+    <span class="name" name="make-der-octet-string">make-der-octet-string</span>
+  </a> <span class="args">&lt;der-encodable&gt;</span></div>
+<div class="desc">Creates a DER octet string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-general-string1137">
+    <span class="name" name="make-der-general-string">make-der-general-string</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-general-string1138">
+    <span class="name" name="make-der-general-string">make-der-general-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER general string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-ia5-string1139">
+    <span class="name" name="make-der-ia5-string">make-der-ia5-string</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-ia5-string1140">
+    <span class="name" name="make-der-ia5-string">make-der-ia5-string</span>
+  </a> <span class="args">&lt;string&gt; &lt;boolean&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-ia5-string1141">
+    <span class="name" name="make-der-ia5-string">make-der-ia5-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER IA5 string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-numeric-string1142">
+    <span class="name" name="make-der-numeric-string">make-der-numeric-string</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-numeric-string1143">
+    <span class="name" name="make-der-numeric-string">make-der-numeric-string</span>
+  </a> <span class="args">&lt;string&gt; &lt;boolean&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-numeric-string1144">
+    <span class="name" name="make-der-numeric-string">make-der-numeric-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER numeric string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-printable-string1145">
+    <span class="name" name="make-der-printable-string">make-der-printable-string</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-printable-string1146">
+    <span class="name" name="make-der-printable-string">make-der-printable-string</span>
+  </a> <span class="args">&lt;string&gt; &lt;boolean&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-printable-string1147">
+    <span class="name" name="make-der-printable-string">make-der-printable-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER printable string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-t61-string1148">
+    <span class="name" name="make-der-t61-string">make-der-t61-string</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-t61-string1149">
+    <span class="name" name="make-der-t61-string">make-der-t61-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER T61 string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-universal-string1150">
+    <span class="name" name="make-der-universal-string">make-der-universal-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER universal string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-utf8-string1151">
+    <span class="name" name="make-der-utf8-string">make-der-utf8-string</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-utf8-string1152">
+    <span class="name" name="make-der-utf8-string">make-der-utf8-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER UTF8 string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-visible-string1153">
+    <span class="name" name="make-der-visible-string">make-der-visible-string</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-visible-string1154">
+    <span class="name" name="make-der-visible-string">make-der-visible-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER visible string object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-boolean1155">
+    <span class="name" name="make-der-boolean">make-der-boolean</span>
+  </a> <span class="args">&lt;boolean&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-boolean1156">
+    <span class="name" name="make-der-boolean">make-der-boolean</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER boolean object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-enumerated1157">
+    <span class="name" name="make-der-enumerated">make-der-enumerated</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-enumerated1158">
+    <span class="name" name="make-der-enumerated">make-der-enumerated</span>
+  </a> <span class="args">&lt;integer&gt;</span></div>
+<div class="desc">Creates a DER enumerated object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-integer1159">
+    <span class="name" name="make-der-integer">make-der-integer</span>
+  </a> <span class="args">&lt;integer&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-integer1160">
+    <span class="name" name="make-der-integer">make-der-integer</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER integer object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-object-identifier1161">
+    <span class="name" name="make-der-object-identifier">make-der-object-identifier</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-object-identifier1162">
+    <span class="name" name="make-der-object-identifier">make-der-object-identifier</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="desc">Creates a DER OID object.</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="make-der-sequence1163">
+      <span class="name" name="make-der-sequence">make-der-sequence</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-sequence1164">
+    <span class="name" name="make-der-sequence">make-der-sequence</span>
+  </a> <span class="args">&lt;der-encodable&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-sequence1165">
+    <span class="name" name="make-der-sequence">make-der-sequence</span>
+  </a> <span class="args">o ...</span></div>
+<div class="desc">Creates a DER sequence object.
+<p />If the third form is used, <var>o</var>s must be list of <code>&lt;der-encodable&gt;</code>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="make-der-set1166">
+      <span class="name" name="make-der-set">make-der-set</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-set1167">
+    <span class="name" name="make-der-set">make-der-set</span>
+  </a> <span class="args">&lt;der-encodable&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-set1168">
+    <span class="name" name="make-der-set">make-der-set</span>
+  </a> <span class="args">o ...</span></div>
+<div class="desc">Creates a DER set object.
+<p />If the third form is used, <var>o</var>s must be list of <code>&lt;der-encodable&gt;</code>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="make-der-null1169">
+      <span class="name" name="make-der-null">make-der-null</span>
+    </a>
+  </div>
+<div class="desc">Creates a DER null object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-generalized-time1170">
+    <span class="name" name="make-der-generalized-time">make-der-generalized-time</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-generalized-time1171">
+    <span class="name" name="make-der-generalized-time">make-der-generalized-time</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-generalized-time1172">
+    <span class="name" name="make-der-generalized-time">make-der-generalized-time</span>
+  </a> <span class="args">&lt;date&gt;</span></div>
+<div class="desc">Creates a DER generalized time object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-utc-time1173">
+    <span class="name" name="make-der-utc-time">make-der-utc-time</span>
+  </a> <span class="args">&lt;string&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-utc-time1174">
+    <span class="name" name="make-der-utc-time">make-der-utc-time</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-utc-time1175">
+    <span class="name" name="make-der-utc-time">make-der-utc-time</span>
+  </a> <span class="args">&lt;date&gt;</span></div>
+<div class="desc">Creates a DER UTC time object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-tagged-object1176">
+    <span class="name" name="make-der-tagged-object">make-der-tagged-object</span>
+  </a>
+ <span class="args">&lt;boolean&gt; &lt;integer&gt; &lt;der-encodable&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-tagged-object1177">
+    <span class="name" name="make-der-tagged-object">make-der-tagged-object</span>
+  </a>
+ <span class="args">&lt;integer&gt; &lt;der-encodable&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-tagged-object1178">
+    <span class="name" name="make-der-tagged-object">make-der-tagged-object</span>
+  </a> <span class="args">&lt;integer&gt;</span></div>
+<div class="desc">Creates a DER tagged object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-der-external1179">
+    <span class="name" name="make-der-external">make-der-external</span>
+  </a>
+ <span class="args">&lt;der-object-identifier&gt; &lt;der-integer&gt;
+       &lt;asn.1-object&gt; &lt;der-tagged-object&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-der-external1180">
+    <span class="name" name="make-der-external">make-der-external</span>
+  </a>
+ <span class="args">&lt;der-object-identifier&gt; &lt;der-integer&gt;
+       &lt;asn.1-object&gt; &lt;integer&gt; &lt;der-object&gt;</span></div>
+<div class="desc">Creates a DER external object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-ber-constructed-octet-string1181">
+    <span class="name" name="make-ber-constructed-octet-string">make-ber-constructed-octet-string</span>
+  </a> <span class="args">&lt;bytevector&gt;</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-ber-constructed-octet-string1182">
+    <span class="name" name="make-ber-constructed-octet-string">make-ber-constructed-octet-string</span>
+  </a> <span class="args">l ...</span></div>
+<div class="desc">Creates a BER constructed object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-ber-application-specific1183">
+    <span class="name" name="make-ber-application-specific">make-ber-application-specific</span>
+  </a>
+ <span class="args">&lt;integer&gt; l ...</span></div>
+<div class="desc">Creates a BER application specific object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-ber-tagged-object1184">
+    <span class="name" name="make-ber-tagged-object">make-ber-tagged-object</span>
+  </a>
+ <span class="args">&lt;boolean&gt; &lt;integer&gt; &lt;der-encodable&gt;</span></div>
+<div class="desc">Creates a BER tagged object.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-ber-sequence1185">
+    <span class="name" name="make-ber-sequence">make-ber-sequence</span>
+  </a> <span class="args">l ...</span></div>
+<div class="desc">Creates a BER sequence object.
+<p /><var>l</var>s must be list of <code>&lt;der-encodable&gt;</code>.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-ber-set1186">
+    <span class="name" name="make-ber-set">make-ber-set</span>
+  </a> <span class="args">l ...</span></div>
+<div class="desc">Creates a BER set object.
+<p /><var>l</var>s must be list of <code>&lt;der-encodable&gt;</code>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="make-ber-null1187">
+      <span class="name" name="make-ber-null">make-ber-null</span>
+    </a>
+  </div>
+<div class="desc">Creates a BER null object.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1188"><span class="section-number">7.2.3</span>Low level User APIs</a>
+  </h4>
+<p />This section is incompleted. Here must desribe classes defined in <code>(asn.1)</code>
+library.
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section71.html">(asn.1) - Abstract Syntas Notation One library</a>
+    <a class="prev" href="section71.html">(archive) - Generic archive interface</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section73.html">(util bytevector) - Bytevector utility library</a>
+    <a class="next" href="section73.html">(binary pack) - Packing binary data</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-10-18T07:30:59+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
   </div>
 </html>

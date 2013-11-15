@@ -6,161 +6,276 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section720.html">(rfc uri) - Parse and construct URIs</a>
+    <a class="prev" href="section720.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section722.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="next" href="section722.html">(rfc uri) - Parse and construct URIs</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.uuid"><span class="section-number">7.21</span>(rfc uuid) - UUID generate library</a>
+    <a class="section.anchor" name="rfc.tls"><span class="section-number">7.21</span>(rfc tls) - TLS protocol library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc uuid)1529">
-      <span class="name" name="(rfc uuid)">(rfc uuid)</span>
+    <a name="(rfc tls)1537">
+      <span class="name" name="(rfc tls)">(rfc tls)</span>
     </a>
   </div>
-<div class="desc">This library provides RFC 4122 a Universally Unique IDentifier (UUID)
-URN Namespace procedures.</div>
+<div class="desc">This library provides TLS protocol socket APIs.
+<p />CAUTION: This library is not well tested. So it may have security hole or
+incompatible behaviour. If you find such bugs, please let me know.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-client-tls-socket1538">
+    <span class="name" name="make-client-tls-socket">make-client-tls-socket</span>
+  </a>
+ <span class="args">node service :key (prng (secure-randome RC4))
+ (version *tls-version-1.2*) (session #f) (handshake #t)
+  (certificates '()) (private-key #f)
+ :allow-other-keys opt</span></div>
+<div class="desc"><var>node</var> and <var>service</var> must be string.
+<p />Creates a client TLS socket. <var>node</var>, <var>service</var> and <var>opt</var> will be
+passed to <code>make-client-socket</code> described in
+<a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+<p />The keyword argument <var>prng</var> specifies which pseudo random algorithm will
+be used for generating security parameters.
+<p />The keyword argument <var>version</var> specifies which TLS protocol version will be
+used for negotiation. However the real version will be decided by target server.
+<p />The keyword argument <var>session</var> is for future extension, so do not specify.
+<p />If the keyword argument <var>handshake</var> #f then the procedure won't do
+TLS handshake after the socket creation so users must do it manually with
+<code>tls-client-handshake</code> procedure described below.
 <p />
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<uuid&gt;1530">
-      <span class="name" name="<uuid&gt;">&lt;uuid&gt;</span>
+The keyword argument <var>certificates</var> is for certificate request message.
+The value must be a list of x509 certificates. If the certificates argument
+is null, then the procedures send empty certificate list to the server as
+a response of certificate request message.
+<p />The keyword argument <var>private-key</var> specifies which private key is used.
+The value must be private key object described in <a href="section75.html#crypto">"(crypto)"</a>.
+This is needed if the target server only supports RSA key exchange protocol.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="tls-client-handshake tls-socket1539">
+      <span class="name" name="tls-client-handshake tls-socket">tls-client-handshake <span class="args">tls-socket</span></span>
     </a>
   </div>
-<div class="desc">The class representing UUID.</div>
+<div class="desc">Do client side handshake and return a TLS socket. The procedure must
+*NOT* be called if the socket is created with <var>handshake</var> keyword argument
+#t.
+<p />CAUTION: This procedure needs to be called only once and calling more than once
+might cause infinite loop or raise an error.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-server-tls-socket1540">
+    <span class="name" name="make-server-tls-socket">make-server-tls-socket</span>
+  </a>
+ <span class="args">service certificates :key (prng (secure-randome RC4))
+ (version *tls-version-1.2*)
+ (private-key #f) (authorities '())
+ :allow-other-keys opt</span></div>
+<div class="desc"><var>service</var> must be string. <var>certificates</var> must be a
+list of x509 certificate.
+<p />Creates a server TLS socket. <var>service</var> and <var>opt</var> will be passed to
+<code>make-server-socket</code> described in 
+<a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+<p />The keyword arguments <var>prng</var> and <var>version</var> are the same meaning as
+<code>make-client-tls-socket</code>.
+<p />The keyword argument <var>private-key</var> is used the same as client socket
+the difference is that it is used if the client side only supports RSA key
+exchange.
+<p />The keyword argument <var>authorities</var> must be a list of x509 certificate and
+if this is not empty list then the server socket will send certificate request
+message to the client. 
+<p />CAUTION: the <var>authorities</var> keyword argument currently doesn't check
+the certificate signature but only issuer DN.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="tls-socket-send tls-socket bytevector flags1541">
+      <span class="name" name="tls-socket-send tls-socket bytevector flags">tls-socket-send <span class="args">tls-socket bytevector flags</span></span>
+    </a>
+  </div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p /><var>flags</var> must be non negative exact integer.
+<p />Sends given bytevector to <var>tls-socket</var>. <var>flags</var> are described in
+the section <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>. The packet
+will be encrypted by <var>tls-socket</var>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="tls-socket-recv tls-socket size flags1542">
+      <span class="name" name="tls-socket-recv tls-socket size flags">tls-socket-recv <span class="args">tls-socket size flags</span></span>
+    </a>
+  </div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p /><var>size</var> and <var>flags</var> must be non negative exact integer.
+<p />Receives decrypted packet from <var>tls-socket</var>. <var>size</var> indicates how many
+octets the procedure should receive, however it might return less octet.
+<var>flags</var> will be passed to <code>socket-recv</code>.
+<p />NOTE: <var>tls-socket</var> have its own buffer to return the value, so that the
+procedure can take <var>size</var> argument.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-close1543">
+    <span class="name" name="tls-socket-close">tls-socket-close</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Sends close notify alert to the socket and close it.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-closed?1544">
+    <span class="name" name="tls-socket-closed?">tls-socket-closed?</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Returns #t if the given socket is closed, otherwise #f.
+<p />NOTE: this procedure checks if session is closed. So the real socket might not
+be closed yet.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-accept1545">
+    <span class="name" name="tls-socket-accept">tls-socket-accept</span>
+  </a>
+ <span class="args">tls-socket :key (handshake #t) (raise-error #t)</span></div>
+<div class="desc"><var>tls-socket</var> must be a server TLS socket created by
+<code>make-server-tls-socket</code>.
+<p />Wait for an incoming connection request and returns a fresh connected client
+socket.
+<p />If the keyword argument <var>handshake</var> is #f then the handshake must be done
+by manually with <code>tls-server-handshake</code> described blow.
+<p />The keyword argument <var>raise-error</var> will be passed to
+<code>tls-server-handshake</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-server-handshake1546">
+    <span class="name" name="tls-server-handshake">tls-server-handshake</span>
+  </a>
+ <span class="args">tls-socket :key (raise-error #t)</span></div>
+<div class="desc">Do server side TLS handshake and returns a TLS socket. The procedure must
+*NOT* be called if the socket is created with <var>handshake</var> keyword argument
+#t.
+<p />If the keyword argument <var>raise-error</var> is #f then it won't raise an error
+when something happens.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1547">
+    <span class="name" name="tls-socket-peer">tls-socket-peer</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1548">
+    <span class="name" name="tls-socket-peer">tls-socket-peer</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-peer</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-name1549">
+    <span class="name" name="tls-socket-name">tls-socket-name</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-name</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-info-values1550">
+    <span class="name" name="tls-socket-info-values">tls-socket-info-values</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-info-values</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.2*1551">
+      <span class="name" name="*tls-version-1.2*">*tls-version-1.2*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0303</code> for TLS 1.2</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.1*1552">
+      <span class="name" name="*tls-version-1.1*">*tls-version-1.1*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0302</code> for TLS 1.1</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.0*1553">
+      <span class="name" name="*tls-version-1.0*">*tls-version-1.0*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0301</code> for TLS 1.0</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-port1554">
+    <span class="name" name="tls-socket-port">tls-socket-port</span>
+  </a>
+ <span class="args">tls-socket :optional (close? #t)</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Returns input/output-port of given <var>tls-socket</var>.
+<p />If optional argument <var>close?</var> is #f then it won't close the socket when the
+port is closed or GCed.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-input-port1555">
+    <span class="name" name="tls-socket-input-port">tls-socket-input-port</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="define"><span class="define-category">Function</span><a name="tls-socket-output-port1556">
+    <span class="name" name="tls-socket-output-port">tls-socket-output-port</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Convert the given TLS socket to input and output port, respectively.
+<p />The given socket won't be closed when the port is closed or GCed. So it is the
+users responsibility to close.
+</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1531"><span class="section-number">7.21.1</span>Predicates</a>
+    <a class="section.anchor" name="G1557"><span class="section-number">7.21.1</span>Integration methods</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="uuid?1532">
-    <span class="name" name="uuid?">uuid?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;uuid&gt;</code>, otherwise
- #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uuid=?1533">
-    <span class="name" name="uuid=?">uuid=?</span>
-  </a> <span class="args">uuid1 uuid2</span></div>
-<div class="desc">Compares given 2 uuids and return #t if both have the same values,
-otherwise #f.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1534"><span class="section-number">7.21.2</span>Constructors</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="make-null-uuid1535">
-      <span class="name" name="make-null-uuid">make-null-uuid</span>
-    </a>
-  </div>
-<div class="desc">Creates a null (empty) uuid.
-<p />The returning object will be represented like this UUID;
-<p /><code>00000000-0000-0000-0000-000000000000</code>.
-</div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="make-v1-uuid1536">
-      <span class="name" name="make-v1-uuid">make-v1-uuid</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Function</span><a name="make-v3-uuid1537">
-    <span class="name" name="make-v3-uuid">make-v3-uuid</span>
-  </a> <span class="args">namespace name</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-v4-uuid1538">
-    <span class="name" name="make-v4-uuid">make-v4-uuid</span>
-  </a> <span class="args">:optional prng</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-v5-uuid1539">
-    <span class="name" name="make-v5-uuid">make-v5-uuid</span>
-  </a> <span class="args">namespace name</span></div>
-<div class="desc">Creates version 1, 3, 4 and 5 UUIDs respectively.
-<p />For version 3 and 5, procedures need to take 2 arguments, <var>namespace</var>
-and <var>name</var>. <var>namespace</var> must be a UUID object, and <var>name</var> must be a
-string.
-<p />For version 4, it can take an optional argument <var>prng</var> which specifies
-pseudo random generator. The default value is <code>(*uuid-random-state*)</code>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1540"><span class="section-number">7.21.3</span>Predefined namespaces and parameters</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+namespace-dns+1541">
-      <span class="name" name="+namespace-dns+">+namespace-dns+</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+namespace-url+1542">
-      <span class="name" name="+namespace-url+">+namespace-url+</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+namespace-oid+1543">
-      <span class="name" name="+namespace-oid+">+namespace-oid+</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+namespace-x500+1544">
-      <span class="name" name="+namespace-x500+">+namespace-x500+</span>
-    </a>
-  </div>
-<div class="desc">Constant predefined namespace of UUIDs.</div>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="*uuid-random-state*1545">
-      <span class="name" name="*uuid-random-state*">*uuid-random-state*</span>
-    </a>
-  </div>
-<div class="desc">Pseudo random generator used by version 4 UUID.</div>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="*uuids-per-tick*1546">
-      <span class="name" name="*uuids-per-tick*">*uuids-per-tick*</span>
-    </a>
-  </div>
-<div class="desc">The number of allowed UUIDs in the same time. Used by version 1 UUID.
-<p />The default value is 1000.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1547"><span class="section-number">7.21.4</span>Converters</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;bytevector1548">
-    <span class="name" name="uuid-&gt;bytevector">uuid-&gt;bytevector</span>
-  </a> <span class="args">uuid</span></div>
-<div class="desc">Returns bytevector converted from given <var>uuid</var>.
-<p /><pre class="snipet"><span class="snipet-code">(uuid-&gt;bytevector (make-null-uuid))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;string1549">
-    <span class="name" name="uuid-&gt;string">uuid-&gt;string</span>
-  </a> <span class="args">uuid</span></div>
-<div class="desc">Returns string represented uuid converted from given <var>uuid</var>.
-<p /><pre class="snipet"><span class="snipet-code">(uuid-&gt;string (make-null-uuid))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">00000000-0000-0000-0000-000000000000</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;uuid1550">
-    <span class="name" name="bytevector-&gt;uuid">bytevector-&gt;uuid</span>
-  </a> <span class="args">bv</span></div>
-<div class="desc">Returns uuid object generated from <var>bv</var>.
-<p />Given bytevector must have length at least 16.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;uuid1551">
-    <span class="name" name="string-&gt;uuid">string-&gt;uuid</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Returns uuid object generated from <var>string</var>.
-<p />Given <var>string</var> must be proper format of UUID defined in RFC 4122.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;urn-format1552">
-    <span class="name" name="uuid-&gt;urn-format">uuid-&gt;urn-format</span>
-  </a> <span class="args">uuid</span></div>
-<div class="desc">Returns URN formatted string of given <var>uuid</var>.
-</div>
+<p />The methods listed below are convenience methods to use TLS socket and
+usual socket without changing code.
+<p /><div class="define"><span class="define-category">Method</span><a name="socket-close1558">
+    <span class="name" name="socket-close">socket-close</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-send1559">
+    <span class="name" name="socket-send">socket-send</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) data :optional (flags 0)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-recv1560">
+    <span class="name" name="socket-recv">socket-recv</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) size :optional (flags 0)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-accept1561">
+    <span class="name" name="socket-accept">socket-accept</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;) . opt</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-accept1562">
+    <span class="name" name="socket-accept">socket-accept</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) (key &lt;keyword&gt;) . dummy</span></div>
+<div class="define"><span class="define-category">Method</span><a name="call-with-socket1563">
+    <span class="name" name="call-with-socket">call-with-socket</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;) proc</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-peer1564">
+    <span class="name" name="socket-peer">socket-peer</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-name1565">
+    <span class="name" name="socket-name">socket-name</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-info-values1566">
+    <span class="name" name="socket-info-values">socket-info-values</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-port1567">
+    <span class="name" name="socket-port">socket-port</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) :optional (close? #t)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-input-port1568">
+    <span class="name" name="socket-input-port">socket-input-port</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-output-port1569">
+    <span class="name" name="socket-output-port">socket-output-port</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section720.html">(rfc uri) - Parse and construct URIs</a>
+    <a class="prev" href="section720.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section722.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="next" href="section722.html">(rfc uri) - Parse and construct URIs</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-10-18T07:30:59+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
   </div>
 </html>
