@@ -6,746 +6,109 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section74.html">(util bytevector) - Bytevector utility library</a>
+    <a class="prev" href="section74.html">(binary pack) - Packing binary data</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section76.html">(dbi) - Database independent access layer</a>
+    <a class="next" href="section76.html">(crypto) - Cryptographic library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="crypto"><span class="section-number">7.5</span>(crypto) - Cryptographic library</a>
+    <a class="section.anchor" name="util.bytevector"><span class="section-number">7.5</span>(util bytevector) - Bytevector utility library</a>
   </h3>
-<p />This documentation does not describe cryptography itself. For example, it does
-not describe what initial vector is and how long it must be. So users must know
-about cryptography's this library supports.
-<p />This library uses <code>libtomcrypt</code>'s functionalities. The library is public
-domain. Thank you for the great library.
-<p />Note: the <code>libtomcrypt</code> is a huge cryptographic library and I am not so 
-good with cryptographics, so the <code>(crypto)</code> library is not totally tested.
-Just the functionalities which I usually use are tested. If you find a bug or
-wrong documentation, pleas report it.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(crypto)1209">
-      <span class="name" name="(crypto)">(crypto)</span>
+    <a name="(util bytevector)1380">
+      <span class="name" name="(util bytevector)">(util bytevector)</span>
     </a>
   </div>
-<div class="desc">This library is the top most library, it exports all the other libraries
-procedures. Users must import only this and not to use the others.
-<p /><code>(crypto)</code> library supports both symmetric cryptography and public/private
-key mechanism. For public/private key, it only supports RSA for now.
+<div class="desc">This library provides bytevector utilities which are not provided as
+builtin procedures such as <code>bytevector-&gt;integer</code>.
+<p />All procedures take bytevector as its arguments.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="crypto-object?1210">
-    <span class="name" name="crypto-object?">crypto-object?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is <code>crypto-object</code>.
-<p /><code>crypto-object</code> can be either <code>cipher</code> or <code>key</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-xor1381">
+    <span class="name" name="bytevector-xor">bytevector-xor</span>
+  </a> <span class="args">bv1 bv2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-xor!1382">
+    <span class="name" name="bytevector-xor!">bytevector-xor!</span>
+  </a> <span class="args">out bv1 bv2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-ior1383">
+    <span class="name" name="bytevector-ior">bytevector-ior</span>
+  </a> <span class="args">bv1 bv2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-ior!1384">
+    <span class="name" name="bytevector-ior!">bytevector-ior!</span>
+  </a> <span class="args">out bv1 bv2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-and1385">
+    <span class="name" name="bytevector-and">bytevector-and</span>
+  </a> <span class="args">bv1 bv2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="bytevector-and!1386">
+    <span class="name" name="bytevector-and!">bytevector-and!</span>
+  </a> <span class="args">out bv1 bv2 ...</span></div>
+<div class="desc">Compute exclusive or, logical or and logical and for each given
+bytevectors, respectively.
+<p />The procedures without <code>!</code> freshly allocate a new bytevector as it's return
+value. If the given bytevectors are not the same sized, then the smallest 
+size will be allocated.
+<p />The procedures with <code>!</code> takes first argument as the storage of the result
+and return it.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1211"><span class="section-number">7.5.1</span>Cipher operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="cipher1212">
-    <span class="name" name="cipher">cipher</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-slices1387">
+    <span class="name" name="bytevector-slices">bytevector-slices</span>
+  </a> <span class="args">bv k :key (padding #f)</span></div>
+<div class="desc">Slices the given bytevector <var>bv</var> into <var>k</var> size and returns
+a list of bytevectors.
+<p />The keyword argument <var>padding</var> is given and it must be a procedure accept
+one argument, then it will be called when the last chunk of bytevector is not
+size of <var>k</var>. The procedure should return padded bytevector and it doesn't
+check the returned value nor it's size so it is caller's responsibility to
+make sure the returned value is a bytevector and the size is <var>k</var>.
+<p /><pre class="snipet"><span class="snipet-code">(bytevector-slices #vu8(1 2 3 4 5 6) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(#vu8(1 2 3) #vu8(4 5 6))</span></pre>
+<pre class="snipet"><span class="snipet-code">(bytevector-slices #vu8(1 2 3 4) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(#vu8(1 2 3) #vu8(4))</span></pre>
+<pre class="codeblock">;; the given bytevector bv is #vu8(4)
+(bytevector-slices #vu8(1 2 3 4) 3 :padding (lambda (bv) #vu8(4 5 6)))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(#vu8(1 2 3) #vu8(4 5 6))</span></pre>
+<pre class="codeblock">;; this is valid as well so that bytevector-slices doesn't check the 
+;; return value
+(bytevector-slices #vu8(1 2 3 4) 3 :padding (lambda (bv) #f))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(#vu8(1 2 3) #f)</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-split-at*1388">
+    <span class="name" name="bytevector-split-at*">bytevector-split-at*</span>
+  </a> <span class="args">bv k :key (padding #f)</span></div>w
+<div class="desc">Splits bytevector into 2 bytevectors and returns 2 values of bytevectors.
+<p />The first returned bytevector size will be <var>k</var> and its content is given
+bytevector's value starting from 0 to <var>k</var> - 1. The second returned value
+is the rest of values of <var>bv</var>.
+<p />If size of the given bytevector <var>bv</var> is less than <var>k</var> then the second
+value of returned bytevector will be empty bytevector.
+<p />The keyword argument <var>padding</var> is given and it must be a procedure accept
+one argument, then it will be called when given bytevector's size is less than
+<var>k</var> and first returned value will the result of <var>padding</var>.
+<p /><pre class="snipet"><span class="snipet-code">(bytevector-split-at* #vu8(1 2 3 4 5) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3) and #vu8(4 5)</span></pre>
+<pre class="codeblock">(bytevector-split-at* #vu8(1 2) 3 :padding (lambda (bv) #vu8(1 2 3)))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">#vu8(1 2 3) and #vu8()</span></pre>
+<pre class="codeblock">(bytevector-split-at* #vu8(1 2) 3 :padding (lambda (bv) #f))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">#f and #vu8()</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="-&gt;odd-parity1389">
+    <span class="name" name="-&gt;odd-parity">-&gt;odd-parity</span>
   </a>
- <span class="args">type key
- :key (mode MODE_ECB) (iv #f) (padder pkcs5-padder)
-      (rounds 0) (ctr-mode CTR_COUNTER_LITTLE_ENDIAN)
- :rest options</span></div>
-<div class="desc">Creates a cipher object.
-<p /><var>type</var> must be known cryptographic algorithm. Currently, <code>(crypto)</code>
-library exports the algorithm below.
-<p />The symmetric key algorithms.
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Blowfish1213">
-      <span class="name" name="Blowfish">Blowfish</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="X-Tea1214">
-      <span class="name" name="X-Tea">X-Tea</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RC21215">
-      <span class="name" name="RC2">RC2</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RC5-32/12/b1216">
-      <span class="name" name="RC5-32/12/b">RC5-32/12/b</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RC6-32/20/b1217">
-      <span class="name" name="RC6-32/20/b">RC6-32/20/b</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SAFER+1218">
-      <span class="name" name="SAFER+">SAFER+</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SAFER-K641219">
-      <span class="name" name="SAFER-K64">SAFER-K64</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SAFER-SK641220">
-      <span class="name" name="SAFER-SK64">SAFER-SK64</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SAFER-K1281221">
-      <span class="name" name="SAFER-K128">SAFER-K128</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SAFER-SK1281222">
-      <span class="name" name="SAFER-SK128">SAFER-SK128</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="AES1223">
-      <span class="name" name="AES">AES</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Twofish1224">
-      <span class="name" name="Twofish">Twofish</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="DES1225">
-      <span class="name" name="DES">DES</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="DES31226">
-      <span class="name" name="DES3">DES3</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="DESede1227">
-      <span class="name" name="DESede">DESede</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="CAST51228">
-      <span class="name" name="CAST5">CAST5</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="CAST-1281229">
-      <span class="name" name="CAST-128">CAST-128</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Noekeon1230">
-      <span class="name" name="Noekeon">Noekeon</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Skipjack1231">
-      <span class="name" name="Skipjack">Skipjack</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Khazad1232">
-      <span class="name" name="Khazad">Khazad</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SEED1233">
-      <span class="name" name="SEED">SEED</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="KASUMI1234">
-      <span class="name" name="KASUMI">KASUMI</span>
-    </a>
-  </div>
-<p />The public key algorithm
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RSA1235">
-      <span class="name" name="RSA">RSA</span>
-    </a>
-  </div>
-<p /><var>key</var> must be a key object which will be created by key generate procedures
-described below.
-<p /><var>mode</var> specifies the <bold>symmetric cipher</bold>'s encryption and description
-mode. If the cipher type is public key cipher, it will be ignored. Some modes
-require initial vector <var>iv</var>. The possible mods are below.
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MODE_ECB1236">
-      <span class="name" name="MODE_ECB">MODE_ECB</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MODE_CBC1237">
-      <span class="name" name="MODE_CBC">MODE_CBC</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MODE_CFB1238">
-      <span class="name" name="MODE_CFB">MODE_CFB</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MODE_OFB1239">
-      <span class="name" name="MODE_OFB">MODE_OFB</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MODE_CTR1240">
-      <span class="name" name="MODE_CTR">MODE_CTR</span>
-    </a>
-  </div>
-<p /><var>iv</var> must be a bytevector or #f. This is an initial vector which some modes
-require. cf) <code>MODE_CBC</code>.
-<p /><var>rounds</var> specify how many times the cipher rounds the key.
-<p /><var>ctr-mode</var> specifies counter mode. The possible mode is blow.
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="CTR_COUNTER_LITTLE_ENDIAN1241">
-      <span class="name" name="CTR_COUNTER_LITTLE_ENDIAN">CTR_COUNTER_LITTLE_ENDIAN</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="CTR_COUNTER_BIG_ENDIAN1242">
-      <span class="name" name="CTR_COUNTER_BIG_ENDIAN">CTR_COUNTER_BIG_ENDIAN</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="LTC_CTR_RFC36861243">
-      <span class="name" name="LTC_CTR_RFC3686">LTC_CTR_RFC3686</span>
-    </a>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="cipher-keysize1244">
-    <span class="name" name="cipher-keysize">cipher-keysize</span>
-  </a> <span class="args">cipher test</span></div>
-<div class="desc">Returns given cipher type's recommended keysize.
-<p /><var>cipher</var> must cipher object created by <code>cipher</code> procedure.
-<p /><var>test</var> must be fixnum.
-<p />If <var>test</var> is too small for the cipher, it will raise an error.
-<p />Note: this procedure is for helper. It is designed to use check keysize you want
-to use.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="cipher?1245">
-    <span class="name" name="cipher?">cipher?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the <var>obj</var> is cipher object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="encrypt1246">
-    <span class="name" name="encrypt">encrypt</span>
-  </a> <span class="args">cipher pt</span></div>
-<div class="desc"><var>cipher</var> must be a cipher object.
-<p /><var>pt</var> must be a bytevector.
-<p /><code>encrypt</code> encrypts given plain text <var>pt</var> according to the given
-<var>cipher</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="decrypt1247">
-    <span class="name" name="decrypt">decrypt</span>
-  </a> <span class="args">cipher ct</span></div>
-<div class="desc"><var>cipher</var> must be a cipher object.
-<p /><var>ct</var> must be a bytevector.
-<p /><code>decrypt</code> decrypts given encrypted text <var>ct</var> according to the given
-<var>cipher</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sign1248">
-    <span class="name" name="sign">sign</span>
-  </a> <span class="args">public-cipher data :optional opt</span></div>
-<div class="desc"><var>public-cipher</var> must be a cipher object created with public/private
-key algorithm.
-<p /><var>data</var> must be a bytevector.
-<p />Signs given <var>data</var>. This procedure is just a wrapper for the real
-implementations. Currently Sagittarius supports only RSA sign.
-<p /><var>opt</var> can specify the signer behaviour. Default supported RSA cipher can
-accept keyword argument <var>encode</var>.
-<p /><var>encode</var> specifies the encoder. The default encoder is
-<code>pkcs1-emsa-pss-encode</code>. And the rest keyword arguments will be passed to
-encoder. Supported encoders are described below.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="verify1249">
-    <span class="name" name="verify">verify</span>
-  </a> <span class="args">public-cipher M S :optional opt</span></div>
-<div class="desc"><var>public-cipher</var> must be a cipher object created with public/private
-key algorithm.
-<p /><var>M</var> and <var>S</var> must be bytevectors.
-<p /><var>M</var> is master message which will be compared with encoded message.
-<p /><var>S</var> is signed message.
-<p />The <cod>verity</cod> procedure verifies two messages.
-<p /><var>opt</var> can specify the verifier behaviour. Default supported RSA cipher can
-accept keyword argument <var>verify</var>.
-<p /><var>verify</var> specifies the verifier. The defaule verifier is
-<code>pkcs1-emsa-pss-verify</code>. And the rest keyword arguments will be passed to
-verifier. Supported verifiers are described below.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1250"><span class="section-number">7.5.2</span>Key operations</a>
-  </h4>
-<p />
-<div class="define"><span class="define-category">Generic</span><a name="generate-secret-key1251">
-    <span class="name" name="generate-secret-key">generate-secret-key</span>
+ <span class="args">bv :optional (start 0) (end (bytevector-length bv))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="-&gt;odd-parity!1390">
+    <span class="name" name="-&gt;odd-parity!">-&gt;odd-parity!</span>
   </a>
- <span class="args">(type &lt;string&gt;) (key &lt;bytevector&gt;)</span></div>
-<div class="desc"><var>type</var> must be one of the supported symmetric algorithm.
-<p /><var>key</var> must be a bytevector and its length must satisfy the keysize which
-the given algorithm requires.
-<p />Returns a sercret key object.
+ <span class="args">bv :optional (start 0) (end (bytevector-length bv))</span></div>
+<div class="desc">Compute odd parity of the given bytevector <var>bv</var> and return the
+result of bytevector.
+<p />If the second procedure is used, then <var>bv</var> will be modified.
 </div>
-<div class="define"><span class="define-category">Generic</span><a name="generate-key-pair1252">
-    <span class="name" name="generate-key-pair">generate-key-pair</span>
-  </a>
- <span class="args">(type &lt;top&gt;) . options</span></div>
-<div class="desc"><var>type</var> is for despatch. For default implementation, it must be
-<code>RSA</code>.
-<p />Generates a key pair object.
-<p />Default implementation supports RSA key geneartion and <var>options</var> can be
-keyword arguments described below.
-<p /><var>size</var> keyword argument is decides key length. Default value is 1024.
-<p /><var>prng</var> keyword argument is given, it will be passed to <code>random-prime</code>.
-For more detail, see <a href="#math.random">(math random)</a> library. Default
-value is <code>(secure-random RC4)</code>.
-<p /><var>e</var> keyword argument is an exponent. Usually it does not have to be
-specified with other number. Default value is 65537.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="generate-private-key1253">
-    <span class="name" name="generate-private-key">generate-private-key</span>
-  </a>
- <span class="args">type . options</span></div>
-<div class="desc"><var>type</var> is for despatch. For default implementation, it must be
-<code>RSA</code>.
-<p />Returns private key object.
-<p />Default RSA implementation <var>options</var> can be these arguments.
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">modulus</dt>
-      <dd class="dl-item-desc">The private key's modulus</dd>
-      <dt class="dl-item-title">private-exponent</dt>
-      <dd class="dl-item-desc">The private key's exponent</dd>
-      <dt class="dl-item-title">public-exponent</dt>
-      <dd class="dl-item-desc">keyword argument. Used for CRT private key object.</dd>
-      <dt class="dl-item-title">p</dt>
-      <dd class="dl-item-desc">keyword argument. Used for CRT private key object.</dd>
-      <dt class="dl-item-title">q</dt>
-      <dd class="dl-item-desc">keyword argument. Used for CRT private key object.</dd>
-    </dl>
-  </div>
-<p /></div>
-<div class="define"><span class="define-category">Function</span><a name="generate-public-key1254">
-    <span class="name" name="generate-public-key">generate-public-key</span>
-  </a> <span class="args">type :optional opt</span></div>
-<div class="desc"><var>type</var> is for despatch. For default implementation, it must be
-<code>RSA</code>.
-<p />Returns public key object.
-<p />Default RSA implementation <var>opt</var> can be these arguments.
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">modulus</dt>
-      <dd class="dl-item-desc">The public key's modulus</dd>
-      <dt class="dl-item-title">exponent</dt>
-      <dd class="dl-item-desc">The public key's exponent</dd>
-    </dl>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="keypair?1255">
-    <span class="name" name="keypair?">keypair?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is keypair object, otherwise #f</div>
-<div class="define"><span class="define-category">Function</span><a name="keypair-private1256">
-    <span class="name" name="keypair-private">keypair-private</span>
-  </a> <span class="args">keypair</span></div>
-<div class="desc">Returns private key from <var>keypair</var></div>
-<div class="define"><span class="define-category">Function</span><a name="keypair-public1257">
-    <span class="name" name="keypair-public">keypair-public</span>
-  </a> <span class="args">keypair</span></div>
-<div class="desc">Returns public key from <var>keypair</var></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="key?1258">
-    <span class="name" name="key?">key?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is key object, otherwise #f</div>
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<private-key&gt;1259">
-      <span class="name" name="<private-key&gt;">&lt;private-key&gt;</span>
-    </a>
-  </div>
-<div class="desc">CLOS class of private key object.</div>
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<public-key&gt;1260">
-      <span class="name" name="<public-key&gt;">&lt;public-key&gt;</span>
-    </a>
-  </div>
-<div class="desc">CLOS class of public key object.</div>
-<div class="define"><span class="define-category">Function</span><a name="private-key?1261">
-    <span class="name" name="private-key?">private-key?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is private key object, otherwise #f</div>
-<div class="define"><span class="define-category">Function</span><a name="public-key?1262">
-    <span class="name" name="public-key?">public-key?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is public key object, otherwise #f</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="split-key1263">
-    <span class="name" name="split-key">split-key</span>
-  </a>
- <span class="args">key :optional (count 3) (prng (secure-random RC4))</span></div>
-<div class="desc"><var>key</var> must be a bytevector and plain key.
-<p />Splits the given <var>key</var> to <var>count</var> components and returns <var>count</var>
-values as key components.
-<p />The return values might be different each time.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="combine-key-components1264">
-    <span class="name" name="combine-key-components">combine-key-components</span>
-  </a>
- <span class="args">component1 components ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="combine-key-components!1265">
-    <span class="name" name="combine-key-components!">combine-key-components!</span>
-  </a>
- <span class="args">result component1 components ...</span></div>
-<div class="desc">Renaming export of <code>bytevector-xor</code> and <code>bytevector-xor!</code>
-respectively.
-<p />For more detail, see <a href="section74.html#util.bytevector">(util bytevector)</a>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1266"><span class="section-number">7.5.3</span>PKCS operations</a>
-  </h4>
-<p />The procedures described in this section is implemented according to PKCS#1. I
-don't have any intend to describe functionality. If you need to know what
-exactly these procedures do, please see the PKCS#1 document.
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs5-padder1267">
-    <span class="name" name="pkcs5-padder">pkcs5-padder</span>
-  </a> <span class="args">bv block-size padding?</span></div>
-<div class="desc"><var>bv</var> must be a bytevector.
-<p /><var>block-size</var> must be a non negative exact integer.
-<p /><var>padding?</var> must be a boolean.
-<p />Pads or Unpads paddings from <var>bv</var> according to PKCS#5.
-<p />If <var>padding?</var> is #t, the procedure will pad. otherwise it will unpad.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs-v1.5-padding1268">
-    <span class="name" name="pkcs-v1.5-padding">pkcs-v1.5-padding</span>
-  </a> <span class="args">prng key block-type</span></div>
-<div class="desc"><var>prng</var> must be prng object. See <a href="#math.random">(math random)</a>.
-<p /><var>key</var> must be either private or public key object.
-<p /><var>block-type</var> must be one of these.
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="PKCS-1-EME1269">
-      <span class="name" name="PKCS-1-EME">PKCS-1-EME</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="PKCS-1-EMSA1270">
-      <span class="name" name="PKCS-1-EMSA">PKCS-1-EMSA</span>
-    </a>
-  </div>
-<p />Returns a padding procedure. The procedure signature is the same as
-<var>pkcs5-padder</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-pss-encode1271">
-    <span class="name" name="pkcs1-emsa-pss-encode">pkcs1-emsa-pss-encode</span>
-  </a>
- <span class="args">m em-bits
-      :key (hash <code>(hash-algorithm SHA-1)</code>) (mgf mgf-1) (salt-length #f)
-           (prng <code>(secure-random RC4)</code>)</span></div>
-<div class="desc"><var>m</var> must be a bytevector.
-<p /><var>em-bits</var> must be non negative exact integer.
-<p />Encodes given message <var>m</var> according to the PKCS#1 section 9.1.1.
-<p />The keyword arguments specified some behaviour.
-<p /><var>hash</var> specifies the hash algorithm. For more detail, see
-<a href="section711.html#math.hash">(math hash)</a> library.
-<p /><var>mgf</var> specifies mask generation procedure. 
-<p />Note: PKCS#1 only specifies MGF-1.
-<p /><var>salt-length</var> specifies salt's length. If it's #f encoder does not use salt.
-<p /><var>prng</var> is a pseudo random see <a href="#math.random">(math random)</a>.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-pss-verify1272">
-    <span class="name" name="pkcs1-emsa-pss-verify">pkcs1-emsa-pss-verify</span>
-  </a>
- <span class="args">m em-bits
-      :key (hash <code>(hash-algorithm SHA-1)</code>) (mgf mgf-1)
-           (prng <code>(secure-random RC4)</code>)</span></div>
-<div class="desc"><var>m</var> must be a bytevector.
-<p /><var>em-bits</var> must be non negative exact integer.
-<p />Verify given message <var>m</var> according to the PKCS#1 section 9.1.1.
-<p />Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="mgf-11273">
-    <span class="name" name="mgf-1">mgf-1</span>
-  </a> <span class="args">mgf-seed mask-length hasher</span></div>
-<div class="desc"><var>mgf-seed</var> must be a bytevector.
-<p /><var>mask-length</var> must be a non negative exact integer.
-<p /><var>hasher</var> must be a hash algorithm. See
-<a href="#math.random">(math random)</a>.
-<p />Creates a mask bytevector, according to PKCS#1 MGF-1.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-v1.5-encode1274">
-    <span class="name" name="pkcs1-emsa-v1.5-encode">pkcs1-emsa-v1.5-encode</span>
-  </a>
- <span class="args">m em-bits :key (hash <code>(hash-algorithm SHA-1)</code>)</span></div>
-<div class="desc"><var>m</var> must be a bytevector.
-<p /><var>em-bits</var> must be non negative exact integer.
-<p />Encodes given message <var>m</var> according to the PKCS#1 section 9.2.
-<p />Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-v1.5-verify1275">
-    <span class="name" name="pkcs1-emsa-v1.5-verify">pkcs1-emsa-v1.5-verify</span>
-  </a>
- <span class="args">m em-bits :key (hash <code>(hash-algorithm SHA-1)</code>)</span></div>
-<div class="desc"><var>m</var> must be a bytevector.
-<p /><var>em-bits</var> must be non negative exact integer.
-<p />Verify given message <var>m</var> according to the PKCS#1 section 9.2.
-Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1276"><span class="section-number">7.5.4</span>Cryptographic conditions</a>
-  </h4>
-<div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;crypto-error1277">
-      <span class="name" name="&amp;crypto-error">&amp;crypto-error</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Function</span><a name="crypto-error?1278">
-    <span class="name" name="crypto-error?">crypto-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Subcondition of <code>&amp;error</code>.
-<p />Base condition type of all cryptographic conditions.</div>
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;encrypt-error1279">
-      <span class="name" name="&amp;encrypt-error">&amp;encrypt-error</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Function</span><a name="encrypt-error?1280">
-    <span class="name" name="encrypt-error?">encrypt-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-encrypt-mechanism1281">
-    <span class="name" name="condition-encrypt-mechanism">condition-encrypt-mechanism</span>
-  </a> <span class="args">encrypt-error</span></div>
-<div class="desc">This condition will be raised when encrypt operation is failed.</div>
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;decrypt-error1282">
-      <span class="name" name="&amp;decrypt-error">&amp;decrypt-error</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Function</span><a name="decrypt-error?1283">
-    <span class="name" name="decrypt-error?">decrypt-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-decrypt-mechanism1284">
-    <span class="name" name="condition-decrypt-mechanism">condition-decrypt-mechanism</span>
-  </a> <span class="args">decrypt-error</span></div>
-<div class="desc">This condition will be raised when decrypt operation is failed.</div>
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;encode-error1285">
-      <span class="name" name="&amp;encode-error">&amp;encode-error</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Function</span><a name="encode-error?1286">
-    <span class="name" name="encode-error?">encode-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">This condition will be raised when encoding operation is failed.</div>
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;decode-error1287">
-      <span class="name" name="&amp;decode-error">&amp;decode-error</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Function</span><a name="decode-error?1288">
-    <span class="name" name="decode-error?">decode-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">This condition will be raised when decoding operation is failed.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="raise-encrypt-error1289">
-    <span class="name" name="raise-encrypt-error">raise-encrypt-error</span>
-  </a>
- <span class="args">who message mechanism :optional irritants</span></div>
-<div class="desc"><var>who</var>, <var>message</var> and <var>irritants</var> are the same as
-<code>assertion-violation</code>.
-<p /><var>mechanism</var> should be a name of cryptographic algorithm.
-<p />Raises <code>&amp;encrypt-error</code>.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="raise-decrypt-error1290">
-    <span class="name" name="raise-decrypt-error">raise-decrypt-error</span>
-  </a>
- <span class="args">who message mechanism :optional irritants</span></div>
-<div class="desc"><var>who</var>, <var>message</var> and <var>irritants</var> are the same as
-<code>assertion-violation</code>.
-<p /><var>mechanism</var> should be a name of cryptographic algorithm.
-<p />Raises <code>&amp;decrypt-error</code>.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="raise-encode-error1291">
-    <span class="name" name="raise-encode-error">raise-encode-error</span>
-  </a>
- <span class="args">who message :optional irritants</span></div>
-<div class="desc"><var>who</var>, <var>message</var> and <var>irritants</var> are the same as
-<code>assertion-violation</code>.
-<p />Raises <code>&amp;encode-error</code>.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="raise-decode-error1292">
-    <span class="name" name="raise-decode-error">raise-decode-error</span>
-  </a>
- <span class="args">who message :optional irritants</span></div>
-<div class="desc"><var>who</var>, <var>message</var> and <var>irritants</var> are the same as
-<code>assertion-violation</code>.
-<p />Raises <code>&amp;decode-error</code>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="custom.cipher"><span class="section-number">7.5.5</span>Creating own cipher</a>
-  </h4>
-<p />If Sagittarius does not support sufficient cipher algorithm for you, then you
-can write own cipher such as DSA. For this purpose, you might need to know how
-this library works. It will be described the bottom of this section. If you just
-want to create a new cipher, you just need to follow the example.
-<p /><pre class="codeblock">(import (rnrs) (crypto) (clos user) (sagittarius))
-<p />(define (sample-encrypt pt key) pt)
-(define (sample-decrypt ct key) ct)
-<p />(define-class &lt;sample-cipher-spi&gt; (&lt;cipher-spi&gt;) ())
-(define-method initialize ((o &lt;sample-cipher-spi&gt;) initargs)
-  (slot-set! o 'name 'sample)
-  (slot-set! o 'key #f)
-  (slot-set! o 'encrypt sample-encrypt)
-  (slot-set! o 'decrypt sample-decrypt)
-  (slot-set! o 'padder #f)
-  (slot-set! o 'signer (lambda _ #vu8()))
-  (slot-set! o 'verifier (lambda _ #t))
-  (slot-set! o 'keysize (lambda _ 0)))
-(define-class &lt;sample&gt; () ())
-(define sample (make &lt;sample&gt;))
-(register-spi sample &lt;sample-cipher-spi&gt;)
-;; test sample-cipher
-(define sample-cipher (cipher sample #f))
-(define message (string-&gt;utf8 "sample message"))
-(let ((encrypted-message (encrypt sample-cipher message)))
-  (decrypt sample-cipher encrypted-message))
-;; -&gt; #vu8(115 97 109 112 108 101 32 109 101 115 115 97 103 101)
-</pre>
-<p />The sample code actually does nothing. If you want to see real working code,
-<code>ext/crypto/crypto/key/rsa.scm</code> might be a good example for you.
-<p />The basic idea of creating a new cipher is that you need to define own subclass
-of <code>&lt;cipher-spi&gt;</code> and register it. 
-<p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<cipher-spi&gt;1293">
-      <span class="name" name="<cipher-spi&gt;">&lt;cipher-spi&gt;</span>
-    </a>
-  </div>
-<div class="desc">The base class for all SPI (Service Provider Interface).
-<p />Subclass must set these slots.
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">encrypt</dt>
-      <dd class="dl-item-desc">The value must be a procedure which takes 2 arguments.</dd>
-      <dt class="dl-item-title">decrypt</dt>
-      <dd class="dl-item-desc">The value must be a procedure which takes 2 arguments.</dd>
-      <dt class="dl-item-title">padder</dt>
-      <dd class="dl-item-desc">The value must be #f or a procedure which takes 2
-    arguments.
-  </dd>
-    </dl>
-  </div>
-<p />NOTE: Default symmetric key ciphers use <code>pkcs5-padder</code> which takes 3
-arguments, bytevector, block-size and padding flag. This is because the
-procedure can be used by multi ciphers. And custom cipher must know its own
-block size.
-<p />These slots are optional.
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">name</dt>
-      <dd class="dl-item-desc">Describe the cipher.</dd>
-      <dt class="dl-item-title">key</dt>
-      <dd class="dl-item-desc">The value will be passed to <code>encrypt</code>, <code>decrypt</code>,
-    <code>sign</code> and <code>verify</code> to be used.</dd>
-      <dt class="dl-item-title">signer</dt>
-      <dd class="dl-item-desc">A procedure for signing. The given procedure must accept at
-    least 2 arguments.
-  </dd>
-      <dt class="dl-item-title">verifier</dt>
-      <dd class="dl-item-desc">A procedure for verifying. The given procedure must
-    accept at least 3 arguments.
-  </dd>
-      <dt class="dl-item-title">keysize</dt>
-      <dd class="dl-item-desc">A procedure to get recommended keysize of this cipher. The
-    given procedure must accept 1 argument.
-  </dd>
-    </dl>
-  </div>
-<p />NOTE: Even required slots, Sagittarius does not check if it's set or not.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="register-spi1294">
-    <span class="name" name="register-spi">register-spi</span>
-  </a> <span class="args">mark spi</span></div>
-<div class="desc">Register custom cipher spi.
-<p /><var>mark</var> can be any thing which returns #t then compared by <code>equal?</code>
-<p /><var>spi</var> must be subclass of <code>&lt;cipher-spi&gt;</code>
-<p />NOTE: We recommend to make <var>mark</var> the same as example code does and export
-the registered <var>mark</var>.
-</div>
-<p />The concept of this SPI is influenced by Java's JCE. The toplevel of cipher is
-just a wrapper for real implementaion (SPI). When a cipher is created, the
-<code>cipher</code> procedure actually creates an instance of SPI class and set it to
-the cipher object. So users need not to know about the implementation and if the
-implementation supply default parameter then users even can use it by default.
-<p />This is the class hierarchy of these crypto objects.
-<p /><pre class="codeblock">+ &lt;top&gt;
-  + &lt;crypto&gt;
-      + &lt;cipher&gt;
-      + &lt;cipher-spi&gt;
-          + &lt;builtin-cipher-spi&gt; &lt;- default implementations of symmetric keys.
-          + &lt;rsa-cipher-spi&gt;     &lt;- default RSA implementation
-      + &lt;key&gt;
-          + &lt;symmetric-key&gt;
-              + &lt;builtin-symmetric-key&gt; &lt;- default symmetric key. ex. DES
-          + &lt;asymmetric-key&gt;
-              + &lt;private-key&gt;
-                  + &lt;rsa-private-key&gt;
-                      + &lt;rsa-private-crt-key&gt;
-              + &lt;public-key&gt;
-                  + &lt;rsa-public-key&gt;
-</pre>
-<p />The <code>&lt;cipher&gt;</code> and <code>builtin-</code> prefixed classes can not have any
-subclass.
 
-</section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section74.html">(util bytevector) - Bytevector utility library</a>
+    <a class="prev" href="section74.html">(binary pack) - Packing binary data</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section76.html">(dbi) - Database independent access layer</a>
+    <a class="next" href="section76.html">(crypto) - Cryptographic library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-12-20T08:41:27+0100</i></div>
   </div>
 </html>

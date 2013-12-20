@@ -6,225 +6,452 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section711.html">(math) - Mathematics library</a>
+    <a class="prev" href="section711.html">(util list) - Extra list utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section713.html">(odbc) - ODBC binding</a>
+    <a class="next" href="section713.html">(net oauth) - OAuth library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="net.oauth"><span class="section-number">7.12</span>(net oauth) - OAuth library</a>
+    <a class="section.anchor" name="math"><span class="section-number">7.12</span>(math) - Mathematics library</a>
   </h3>
-<p />This section describes the APIs for OAuth. OAuth is new secure authentication
-method for web service. For more detail, see 
-<a href="http://oauth.net/">OAuth Community Site</a>.
-<p />The following example shows how to obtain an access token from Twitter.
-<p /><pre class="codeblock">(import (rnrs) (net oauth) (sagittarius control) (srfi :13 strings))
-;; obtain a request token.
-;; type consumer key and secret you have got issued by Twitter
-(define token (obtain-request-token
-	       "http://api.twitter.com/oauth/request_token"
-	       (make-consumer-token
-		:key "consumer key"
-		:secret "consumer secret")))
-<p />(define (get-pin url)
-  (print "Open the following url and type in the shown PIN.")
-  (print url)
-  (let loop ()
-    (display "Input PIN: ") (flush-output-port (current-output-port))
-    (let1 pin (get-line (current-input-port))
-      (cond ((eof-object? pin) #f)
-            ((string-null? pin) (loop))
-            (else pin)))))
-<p />(define (report token)
-  (print "(begin")
-  (print " (define consumer-key \"" (token-key (token-consumer token)) "\")")
-  (print " (define consumer-secret \""
-	 (token-secret (token-consumer token))"\")")
-  (print " (define access-token \""(token-key token)"\")")
-  (print " (define access-token-secret \""(token-secret token)"\")")
-  (print ")"))
-<p />(define (main args)
-  (let1 pin (get-pin (make-authorization-uri
-		      "http://api.twitter.com/oauth/authorize"
-		      token))
-    ;; authorize the request token manually.
-    (authorize-request-token token pin)
-    ;; obtain the access token
-    (let1 access-token (obtain-access-token 
-			"http://api.twitter.com/oauth/access_token"
-			token)
-      (report access-token))))
-</pre>
-<p />Now you get the access token to tweet, let's tweet something on Sagittarius:
-<pre class="codeblock">(import (rnrs) (srfi :26 cut) (text sxml ssax) (net oauth) (sagittarius io))
-(define consumer-key "your consumer key")
-(define consumer-secret "your consumer secret")
-(define access-token "your access token")
-(define access-token-secret "your access token secret")
-<p />;; creates an access token to tweet.
-(define access-token
-  (make-access-token :key access-token
-		     :secret access-token-secret
-		     :consumer
-		     (make-consumer-token
-		      :key consumer-key
-		      :secret consumer-secret)))
-<p />(define (call/twitter-api-&gt;sxml token method path params . opts)
-  (define (call)
-    (access-protected-resource 
-     (string-append "http://api.twitter.com" path)
-     token
-     :request-method method
-     :user-parameters params))
-  (define (retrieve body status hint advice)
-    (if hint (print hint))
-    (if advice (print advice))
-    (call-with-input-string body (cut ssax:xml-&gt;sxml &lt;&gt; '())))
-  (call-with-values call retrieve))
-<p />(define (twitter-update/sxml token message . opts)
-  (call/twitter-api-&gt;sxml 
-   token 'POST "/1/statuses/update.xml" 
-   `(("status" ,message))))
-<p />;; if you want to use this from command line.
-(import (getopt))
-<p />(define (main args)
-  (with-args args
-      ((message (#\m "message") #t (usage)))
-    (print (twitter-update/sxml access-token message))))
-</pre>
-<p />The examples explain basic flows. To obtain an access token, and access to
-protected resource with it.
+<p />This section describes matheatics operations which are used by <code>(crypto)</code>
+library.
+<p />This library also uses <code>libtomcrypt</code> as its implemention except prime
+number operations.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(net oauth)1446">
-      <span class="name" name="(net oauth)">(net oauth)</span>
+    <a name="(math)1573">
+      <span class="name" name="(math)">(math)</span>
     </a>
   </div>
-<div class="desc">This library provides OAuth 1.0 procedures. The API's names are compatible
-with cl-oauth.
+<div class="desc">The top most level library of mathematics. It exports all of procedures
+from <code>(math random)</code>, <code>(math hash)</code>, <code>(math prime)</code> and
+<code>(math helper)</code>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="obtain-request-token1447">
-    <span class="name" name="obtain-request-token">obtain-request-token</span>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1574"><span class="section-number">7.12.1</span>Random number operations</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(math random)1575">
+      <span class="name" name="(math random)">(math random)</span>
+    </a>
+  </div>
+<div class="desc">This library exports procedures for random numbers.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="pseudo-random1576">
+    <span class="name" name="pseudo-random">pseudo-random</span>
+  </a> <span class="args">type :key (seed #f) (reader #f)</span></div>
+<div class="desc"><var>type</var> must be a string.
+<p />Creates a pseudo random object (prng). If keyword argument <var>reader</var> is given
+it creates a custom prng. The <var>reader</var> must be a procedure which accepts two
+argument, a bytevector and integer. It must fill the given bytevector with
+random numbers.
+<p /><var>type</var> is used to specify the builtin pseudo random algorithm. The possible
+algorithms are below:
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Yarrow1577">
+      <span class="name" name="Yarrow">Yarrow</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Fortuna1578">
+      <span class="name" name="Fortuna">Fortuna</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RC41579">
+      <span class="name" name="RC4">RC4</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SOBER-1281580">
+      <span class="name" name="SOBER-128">SOBER-128</span>
+    </a>
+  </div>
+<p /><var>seed</var> is entropy of the pseudo random.
+<p />Note: each time if you create pseudo random, it returns exactly the same value.
+For example:
+<pre class="codeblock">(do ((i 0 (+ i 1)) (r '() (cons (random (pseudo-random RC4) 10) r)))
+    ((= i 10) r))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">'(0 0 0 0 0 0 0 0 0 0)</span></pre>
+So if you need different number as I believe, you need to reuse the prng object
+like this
+<pre class="codeblock">(let ((rc (pseudo-random RC4)))
+  (do ((i 0 (+ i 1)) (r '() (cons (random rc 10) r)))
+      ((= i 10) r)))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">'(3 4 0 6 7 4 3 4 2 0)</span></pre>
+If you don't want to care this behaviour, use <code>secure-random</code> below.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="secure-random1581">
+    <span class="name" name="secure-random">secure-random</span>
+  </a> <span class="args">type :key (bits 128)</span></div>
+<div class="desc"><var>type</var> must be one of the pseudo random algorithms.
+<p />Creates secure random object. 
+<p /><var>bit</var> is initial entropy of the pseudo random. It must be in between 64 to
+1028.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="prng?1582">
+    <span class="name" name="prng?">prng?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="pseudo-random?1583">
+    <span class="name" name="pseudo-random?">pseudo-random?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="secure-random?1584">
+    <span class="name" name="secure-random?">secure-random?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is prng object, builtin pseudo random objcet,
+custom random object or secure random object respectively.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="random-seed-set!1585">
+    <span class="name" name="random-seed-set!">random-seed-set!</span>
+  </a> <span class="args">prng seed</span></div>
+<div class="desc"><var>seed</var> must be a bytevector or integer.
+<p />Add entropy to given <var>prng</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="random1586">
+    <span class="name" name="random">random</span>
+  </a> <span class="args">prng size :key (read-size 100)</span></div>
+<div class="desc">Returns random number according to given <var>prng</var> algorithm. The result
+number will be less than <var>size</var>.
+<p />Keyword argument <var>read-size</var> will be passed to <code>read-random-bytes</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="random1587">
+    <span class="name" name="random">random</span>
+  </a> <span class="args">prng size</span></div>
+<div class="desc"><var>size</var> must a positive fixnum.
+<p />Reads <var>size</var> bytes of random byte from <var>prng</var>.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="prng-state1588">
+    <span class="name" name="prng-state">prng-state</span>
+  </a> <span class="args">(prng &lt;prng&gt;)</span></div>
+<div class="desc">Returns given <var>prng</var>'s state if the pseudo random implementation
+allows.
+<p />For default built in pseudo randoms return #f.
+<p />NOTE: if &lt;secure-random&gt; is implemented, then the pseudo random implementation
+should not return the state.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="read-random-bytes1589">
+    <span class="name" name="read-random-bytes">read-random-bytes</span>
+  </a> <span class="args">prng size</span></div>
+<div class="define"><span class="define-category">Function</span><a name="read-random-bytes!1590">
+    <span class="name" name="read-random-bytes!">read-random-bytes!</span>
+  </a> <span class="args">prng bv size</span></div>
+<div class="desc">Reads random bytes from given <var>prng</var>.
+<p />The first form creates fresh bytevector with size <var>size</var>.
+<p />The second form reads random bytes from <var>prng</var> and sets the result into the
+given <var>bv</var> destructively.
+<p />If the second form is used, <var>bv</var> must have the length at least <var>size</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="read-sys-random1591">
+    <span class="name" name="read-sys-random">read-sys-random</span>
+  </a> <span class="args">bis</span></div>
+<div class="desc">Returns given <var>bits</var> bits of random bytevector.</div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1592"><span class="section-number">7.12.1.1</span>Custom pseudo random operations</a>
+  </h5>
+<p />Since version 0.3.2, pseudo random also has custom operations. Similar with
+cipher spi or hash algorithm.
+<p />The following example describes how to make it.
+<p /><pre class="codeblock">;; the code snipet is from math/mt-random
+(define-class &lt;mersenne-twister&gt; (&lt;user-prng&gt;)
+  (;; The array for the state vector
+   ;; using bytevector, it needs to be 64 bit aligned.
+   (state :init-keyword :state :init-form (make-bytevector (* NN 8)))
+   ;; mti==NN+1 means MT[NN] is not initialized
+   (mti   :init-keyword :mti   :init-form (+ NN 1))))
+(define-method initialize ((o &lt;mersenne-twister&gt;) initargs)
+  (call-next-method)
+  (let ((seed (get-keyword :seed initargs #f)))
+    (slot-set! o 'set-seed! mt-set-seed)
+    (slot-set! o 'read-random! mt-read-random!)
+    (when seed
+      (mt-set-seed o seed))))
+</pre>
+<p />User just need to set the slots <code>set-seed!</code> and <code>read-random!</code>. Then
+other process is done by lower layer.
+<p />Following describes the meaning of these slots.
+<p />The slot <code>set-seed!</code> requires a procedure which accepts 2 arguments,
+target pseudo random and <var>seed</var>. <var>seed</var> must be bytevector.
+<p />The slot <code>read-random!</code> requires a pseudo which accepts 3 arguments,
+target pseudo random <var>buffer</var> and <var>bytes</var>. <var>buffer</var> must be a
+bytevector and have bigger size than given <var>bytes</var>. <var>bytes</var> must be
+a non negative fixnum.
+<p />NOTE: The custom pseudo random interface has been changed since version 0.3.6.
+Make sure which version of Sagittarius your application using.
+<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="math.hash"><span class="section-number">7.12.2</span>Hash operations</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(math hash)1593">
+      <span class="name" name="(math hash)">(math hash)</span>
+    </a>
+  </div>
+<div class="desc">This library exports procedures for hash (digest) operations.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-algorithm1594">
+    <span class="name" name="hash-algorithm">hash-algorithm</span>
+  </a> <span class="args">name . options</span></div>
+<div class="desc"><var>name</var> must be a string.
+<p />Creates a hash-algorithm object. <var>name</var> specifies its algorithm. The
+predefined algorithms are blow:
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="WHIRLPOOL1595">
+      <span class="name" name="WHIRLPOOL">WHIRLPOOL</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-5121596">
+      <span class="name" name="SHA-512">SHA-512</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-3841597">
+      <span class="name" name="SHA-384">SHA-384</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RIPEMD-3201598">
+      <span class="name" name="RIPEMD-320">RIPEMD-320</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-2561599">
+      <span class="name" name="SHA-256">SHA-256</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RIPEMD-2561600">
+      <span class="name" name="RIPEMD-256">RIPEMD-256</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-2241601">
+      <span class="name" name="SHA-224">SHA-224</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-2241602">
+      <span class="name" name="SHA-224">SHA-224</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Tiger-1921603">
+      <span class="name" name="Tiger-192">Tiger-192</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-11604">
+      <span class="name" name="SHA-1">SHA-1</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RIPEMD-1601605">
+      <span class="name" name="RIPEMD-160">RIPEMD-160</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RIPEMD-1281606">
+      <span class="name" name="RIPEMD-128">RIPEMD-128</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MD51607">
+      <span class="name" name="MD5">MD5</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MD41608">
+      <span class="name" name="MD4">MD4</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MD21609">
+      <span class="name" name="MD2">MD2</span>
+    </a>
+  </div>
+<p />If you want to use other hash algorithm, you can also create a new hash
+algorithm. It is described the section
+<a href="section712.html#custom.hash">Custom hash algorithm</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-algorithm?1610">
+    <span class="name" name="hash-algorithm?">hash-algorithm?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Return #t if <var>obj</var> is hash-algorithm object otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-oid1611">
+    <span class="name" name="hash-oid">hash-oid</span>
+  </a> <span class="args">hash-algorithm</span></div>
+<div class="desc">Return OID of given <var>hash-algorithm</var> if it has otherwise #f.</div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1612"><span class="section-number">7.12.2.1</span>User level APIs of hash operations</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash1613">
+    <span class="name" name="hash">hash</span>
+  </a> <span class="args">type bv . options</span></div>
+<div class="desc"><var>type</var> must be a string which specifies hash algorithms or
+hash-algorithm object.
+<p />The <code>hash</code> procedure generates digest from given bytevector <var>bv</var>
+according to the given algorithm. The result digest will be a bytevector.
+<p />If <var>type</var> is not a hash algorithm object nor predefined hash algorithm,
+then <var>options</var> will be passed to the custom hash algorithm creation.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-size1614">
+    <span class="name" name="hash-size">hash-size</span>
+  </a> <span class="args">hash-algorithm</span></div>
+<div class="desc">Returns hash size of given <var>hash-algorithm</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-block-size1615">
+    <span class="name" name="hash-block-size">hash-block-size</span>
+  </a> <span class="args">hash-algorithm</span></div>
+<div class="desc">Returns hash block size of given <var>hash-algorithm</var>.</div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1616"><span class="section-number">7.12.2.2</span>Low level APIs of hash operations</a>
+  </h5>
+<p />Most of the time User level APIs are sufficient enough, however for some cases,
+for example multiple input datas, you might need to use these low leve APIs.
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-init!1617">
+    <span class="name" name="hash-init!">hash-init!</span>
+  </a> <span class="args">hash-algorithm</span></div>
+<div class="desc">Initialise given <var>hash-algorithm</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-process!1618">
+    <span class="name" name="hash-process!">hash-process!</span>
+  </a> <span class="args">hash-algorithm bv</span></div>
+<div class="desc"><var>bv</var> must be a bytevector.
+<p />Process hash process with input data <var>bv</var>. The result will be stored in the
+<var>hash-algorithm</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-done!1619">
+    <span class="name" name="hash-done!">hash-done!</span>
+  </a> <span class="args">hash-algorithm out</span></div>
+<div class="desc"><var>out</var> must be a bytevector and must have hash size which the
+<code>hash-size</code> procedure returns.
+<p />Flushes stored hash result in <var>hash-algorithm</var> into <var>out</var>.
+<p />Once this procedure is called <var>hash-algorithm</var>'s state will be changed. If
+you want to reuse it, you need to call <code>hash-init!</code>.
+</div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="custom.hash"><span class="section-number">7.12.2.3</span>Custom hash algorithm</a>
+  </h5>
+<p />Since version 0.3.1, user can create a custom hash algorithm. Similar with
+cipher spi described section <a href="section76.html#custom.cipher">Creating own cipher</a>.
+<p />The following example describes how to make it.
+<p /><pre class="codeblock">(import (rnrs) (sagittarius) (math) (clos user))
+;; hash operations
+(define (foo-init hash) #t)
+(define (foo-process hash bv)
+  (let ((len (bytevector-length bv)))
+    (bytevector-copy! bv 0 (slot-ref hash 'buffer) 0 (min len 16))))
+(define (foo-done hash out)
+  (let ((v (integer-&gt;bytevector (equal-hash (slot-ref hash 'buffer)))))
+    (bytevector-copy! v 0 out 0 (min 8 (bytevector-length v)))))
+<p />(define-class &lt;foo-hash&gt; (&lt;user-hash-algorithm&gt;)
+  ((buffer :init-form (make-bytevector 16))))
+(define-method initialize ((o &lt;foo-hash&gt;) initargs)
+  (call-next-method)
+  (slot-set! o 'init foo-init)
+  (slot-set! o 'process foo-process)
+  (slot-set! o 'done foo-done)
+  (slot-set! o 'block-size 16)
+  (slot-set! o 'hash-size 8)
+  (slot-set! o 'oid #f)
+  (slot-set! o 'state #f))
+;; marker
+(define-class &lt;foo-marker&gt; () ())
+(define FOO (make &lt;foo-marker&gt;))
+(register-hash FOO &lt;foo-hash&gt;)
+<p />;; use with APIs
+(hash FOO (string-&gt;utf8 "hash")) ;; -&gt; #vu8(245 221 54 232 0 0 0 0)
+</pre>
+<p />The slots <code>init</code>, <code>process</code> and <code>done</code> must be set with a
+procedure which will be called by <code>hash-init!</code>, <code>hash-process!</code> and
+<code>hash-done!</code> respectively.
+<p />The slots <code>block-size</code> and <code>hash-size</code> must be non negative exact
+integer and will be returned by <code>hash-block-size</code> and <code>hash-size</code>
+procedures respectively.
+<p />The slot <code>oid</code> must be set #f or string which represent OID of the custom
+hash algorithm. If you don't have it, it's better to set #f.
+<p />The slot <code>state</code> can be anything, this slot is for storing the hash state
+if you need.
+<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1620"><span class="section-number">7.12.3</span>Prime number operations</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(math prime)1621">
+      <span class="name" name="(math prime)">(math prime)</span>
+    </a>
+  </div>
+<div class="desc">This library exports procedures for prime number operations.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="prime?1622">
+    <span class="name" name="prime?">prime?</span>
   </a>
- <span class="args">uri consumer-token :key (version :1.0) (user-parameters '())
- (timestamp (time-second (current-time))) (auth-location :header)
- (request-method 'POST) (callback-uri #f) (additional-headers '())
- (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
-<div class="desc"><var>uri</var> must be string and URI format.
-<p /><var>consumer-token</var> must be a consumer token object.
-<p />Obtains request token from given uri with given consumer token.
-<p />if the keyword arguments are specified:
-<p /><var>version</var> specifies which version uses. We only support 1.0 so this must not
-be specified.
-<p /><var>user-parameters</var> is an alist of the extra parameters to be sent to the
-server. This parameters are in the body message if the <var>request-method</var> is
-<code>POST</code> or query string if the <var>request-method</var> is <code>GET</code>.
-<p /><var>timestamp</var> specifies timestamp to send to the server. 
-<p /><var>auth-location</var> specifies the place where the authentication information
-located. This can be either <code>:header</code> or <code>:parameters</code>.
-<p /><var>request-method</var> specifies which request method is used. This can be either
-<code>GET</code> or <code>POST</code>. <code>POST</code> is recommended.
-<p /><var>callback-uri</var> specifies call back uri described in OAuth specification. If
-users don't use specific location to be redirected, this must not be specified.
-<p /><var>additional-headers</var> is alist of additional header to be sent to the server.
-<p /><var>signature-method</var> specifies which hash method is used. For now we only
-support <code>:hmac-sha1</code>.
-<p /><var>error-translator</var> specifies how to treat the error message sent by the
-server when error occurred. This must be a procedure which accepts 3 arguments,
-http status, headers and body respectively.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-authorization-uri1448">
-    <span class="name" name="make-authorization-uri">make-authorization-uri</span>
+ <span class="args">q :optional (k 50) (rand (secure-random RC4))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="is-prime?1623">
+    <span class="name" name="is-prime?">is-prime?</span>
   </a>
- <span class="args">uri request-token :key (version :1.0) (callback-uri #f)
- (user-parameters '())</span></div>
-<div class="desc"><var>uri</var> must be string and URI format.
-<p /><var>request-token</var> must be a request token retrieved by the procedure
-<code>obtain-request-token</code>.
-<p />Creates a authorization URI which user must agree.
-<p />The other keyword arguments are the same as <code>obtain-request-token</code>.
+ <span class="args">q :optional (k 50) (rand (secure-random RC4))</span></div>
+<div class="desc">Tests if given <var>q</var> is a prime number or not.
+<p />This procedure uses Miller Rabin primality test. So there is slight possibility
+to pass non prim number.
+<p />The optional argument <var>k</var> is the test times. The default 50 makes failure
+ratio very low. And <var>rand</var> specifies whith pseudo random algorithm uses in
+the test.
+<p />The latter form is for backward compatibility.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="authorize-request-token1449">
-    <span class="name" name="authorize-request-token">authorize-request-token</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="random-prime1624">
+    <span class="name" name="random-prime">random-prime</span>
   </a>
- <span class="args">request-token verificateion-code</span></div>
-<div class="desc"><var>request-token</var> must be a request token which retrieved by the
-procedure <code>obtain-request-token</code>.
-<p /><var>verificateion-code</var> must be a string returned by the URI generated by the
-procedure <code>make-authorization-uri</code>
-<p />Sets the given <var>verificateion-code</var> to the request token and authorized flag
-#t, manually.
+ <span class="args">size :key (prng (secure-random RC4))</span></div>
+<div class="desc">Find a prime number from <var>size</var> bytes. So the minimum range will be
+<code>1 &lt;= p &lt;= 251</code>.
+<p />Keyword argument <var>prng</var> specifies which pseudo random uses to find a prime
+number.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="obtain-access-token1450">
-    <span class="name" name="obtain-access-token">obtain-access-token</span>
-  </a> 
- <span class="args">uri token :key (consumer-token (token-consumer token))
- (version :1.0) (user-parameters '())
- (timestamp (time-second (current-time))) (auth-location :header)
- (request-method 'POST) (callback-uri #f) (additional-headers '())
- (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
-<div class="desc"><var>uri</var> must a string URI formatted.
-<p /><var>token</var> must be either request token or access token.
-<p />Obtains access token from the given URI.
-<p />The keyword arguments <var>consumer-token</var> specifies which consumer token is
-used. And must the same one as when you request the request token.
-<p />The rest keyword arguments are the same as <code>obtain-request-token</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="access-protected-resource1451">
-    <span class="name" name="access-protected-resource">access-protected-resource</span>
-  </a>
- <span class="args">uri access-token :key (consumer-token (token-consumer access-token))
- (on-refresh #f)
- (version :1.0) (user-parameters '())
- (timestamp (time-second (current-time))) (auth-location :header)
- (request-method 'POST) (callback-uri #f) (additional-headers '())
- (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
-<div class="desc"><var>uri</var> must a string URI formatted.
-<p /><var>access-token</var> must be an access token which obtained by the procedure
-<code>obtain-access-token</code> or created by <code>make-access-token</code>.
-<p />Accesses to protected resource.
-<p />The keyword argument <var>on-refresh</var> is a hook for when token is expired and
-refreshed. It must accept be a procedure which accepts 1 argument that is a
-refreshed access token.
-<p />The rest keyword arguments are the same as the <code>obtain-request-token</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="oauth-uri-encode1452">
-    <span class="name" name="oauth-uri-encode">oauth-uri-encode</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Encodes given URI and make it OAuth required form.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="oauth-compose-query1453">
-    <span class="name" name="oauth-compose-query">oauth-compose-query</span>
-  </a> <span class="args">parameters</span></div>
-<div class="desc">Composes given alist to http query form and make it OAuth required form.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-consumer-token1454">
-    <span class="name" name="make-consumer-token">make-consumer-token</span>
-  </a>
- <span class="args">:key (key (random-key)) (secret random-secret) (user-data #f)
- (last-timestamp 0)</span></div>
-<div class="desc">Creates a consumer token.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-access-token1455">
-    <span class="name" name="make-access-token">make-access-token</span>
-  </a>
- <span class="args">:key (key (random-key)) (secret random-secret) (user-data #f)
- consumer (session-handle #f) (expires #f) (authorization-expires #f)
- (origin-uri #f)</span></div>
-<div class="desc">Creates a access token.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="token-consumer1456">
-    <span class="name" name="token-consumer">token-consumer</span>
-  </a> <span class="args">token</span></div>
-<div class="desc"><var>token</var> must be an access token or request token.
-<p />Retrieves consumer token from given <var>token</var>.
-</div>
-</section>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1625"><span class="section-number">7.12.4</span>Misc arithmetic operations</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(math helper)1626">
+      <span class="name" name="(math helper)">(math helper)</span>
+    </a>
+  </div>
+<div class="desc">This library exports procedures for misc arithmetic operations.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mod-inverse1627">
+    <span class="name" name="mod-inverse">mod-inverse</span>
+  </a> <span class="args">x m</span></div>
+<div class="desc">Re exporting <code>mod-inverse</code> defined in <code>(sagittarius)</code> library.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mod-expt1628">
+    <span class="name" name="mod-expt">mod-expt</span>
+  </a> <span class="args">x e m</span></div>
+<div class="desc">Re exporting <code>mod-expt</code> defined in <code>(sagittarius)</code> library.</div>
+
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section711.html">(math) - Mathematics library</a>
+    <a class="prev" href="section711.html">(util list) - Extra list utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section713.html">(odbc) - ODBC binding</a>
+    <a class="next" href="section713.html">(net oauth) - OAuth library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-12-20T08:41:27+0100</i></div>
   </div>
 </html>

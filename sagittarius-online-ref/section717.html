@@ -6,57 +6,70 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section716.html">(rfc base64) - Base 64 encode and decode library</a>
+    <a class="prev" href="section716.html">(rfc :5322) - Internet message format library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section718.html">(rfc hmac) - HMAC library</a>
+    <a class="next" href="section718.html">(rfc cmac) - CMAC library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.cmac"><span class="section-number">7.17</span>(rfc cmac) - CMAC library</a>
+    <a class="section.anchor" name="rfc.base64"><span class="section-number">7.17</span>(rfc base64) - Base 64 encode and decode library</a>
   </h3>
-<p />This section describes the CMAC extension of hash algorithm. The CMAC itself
-is described <a href="http://tools.ietf.org/html/rfc4493">RFC 4493</a>.
-The provided library make user be able to use the algorithm with the APIs of
-math library's hash algorithm APIs. For the APIs detail, see
-<a href="section711.html#math.hash">Hash operations</a>.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc cmac)1518">
-      <span class="name" name="(rfc cmac)">(rfc cmac)</span>
+    <a name="(rfc base64)1694">
+      <span class="name" name="(rfc base64)">(rfc base64)</span>
     </a>
   </div>
-<div class="desc">Provides CMAC hash algorithm.</div>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="CMAC1519">
-      <span class="name" name="CMAC">CMAC</span>
-    </a>
-  </div>
-<div class="desc">The name for CMAC hash algorithm.
-<p />The following example explains, how to use it.
-<p /><pre class="codeblock">(import (rnrs) (rfc cmac) (math) (crypto))
-<p />(define K (generate-secret-key AES (integer-&gt;bytevector 
-				    #x2b7e151628aed2a6abf7158809cf4f3c)))
-<p />(define aes-cipher (cipher AES K))
-<p />(hash CMAC #vu8() :cipher aes-cipher)
-;; =&gt; #vu8(187 29 105 41 233 89 55 40 127 163 125 18 155 117 103 70)
-<p />;; for AES-CMAC-96
-(hash CMAC #vu8() :cipher aes-cipher :size (/ 96 8))
-;; =&gt; #vu8(187 29 105 41 233 89 55 40 127 163 125 18)
-</pre>
-<p />The RFC is defined for only AES block cipher however the implementation
-can take any block cipher such as DES3.
-<p />CAUTION: only AES cipher is tested.
+<div class="desc">This library provides Base 64 encoding and decoding procedures.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1695"><span class="section-number">7.17.1</span>Encoding procedures</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode1696">
+    <span class="name" name="base64-encode">base64-encode</span>
+  </a> <span class="args">in :key (line-width 76)</span></div>
+<div class="desc"><var>in</var> must be a bytevector or binary input port.
+<p />Encodes given input <var>in</var> to Base 64 encoded bytevector.
+<p />The keyword argument <var>line-width</var> specifies where the encode procedure
+should put linefeed. If this is less than 1 or #f, encoder does not put
+linefeed.
 </div>
-
-</section>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode-string1697">
+    <span class="name" name="base64-encode-string">base64-encode-string</span>
+  </a>
+ <span class="args">string :key (line-width 76) (transcoder (native-transcoder))</span></div>
+<div class="desc">Convenient procedure for string.
+<p />Encodes given <var>string</var> to Base 64 encoded string.
+<p />The keyword argument <var>transcoder</var> is used to convert given string to
+bytevector. The converted bytevector will be passed to the <code>base64-encode</code>
+procedure.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1698"><span class="section-number">7.17.2</span>Decoding procedures</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode1699">
+    <span class="name" name="base64-decode">base64-decode</span>
+  </a> <span class="args">in</span></div>
+<div class="desc"><var>in</var> must be a bytevector or binary input port.
+<p />Decode Base 64 encoded input <var>in</var> to original bytevector.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode-string1700">
+    <span class="name" name="base64-decode-string">base64-decode-string</span>
+  </a>
+ <span class="args">string :key (transcoder (native-transcoder))</span></div>
+<div class="desc">Convenient procedure.
+<p />Decode Base 64 encoded string to original string. The procedure is using
+<code>base64-decode</code>.
+<p />The keyword argument specifies how to convert the decoded bytevector to string.
+If this is #f, the procedure returns raw bytevector.
+</div>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section716.html">(rfc base64) - Base 64 encode and decode library</a>
+    <a class="prev" href="section716.html">(rfc :5322) - Internet message format library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section718.html">(rfc hmac) - HMAC library</a>
+    <a class="next" href="section718.html">(rfc cmac) - CMAC library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-12-20T08:41:27+0100</i></div>
   </div>
 </html>

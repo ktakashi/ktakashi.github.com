@@ -24,20 +24,20 @@ MOP.
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(sagittarius mop allocation)993">
+    <a name="(sagittarius mop allocation)1171">
       <span class="name" name="(sagittarius mop allocation)">(sagittarius mop allocation)</span>
     </a>
   </div>
 <div class="desc">Supporting <code>:allocation</code> option for <code>define-class</code>.</div>
 <p /><div class="define">
     <span class="define-category">Class</span>
-    <a name="<allocation-meta&gt;994">
+    <a name="<allocation-meta&gt;1172">
       <span class="name" name="<allocation-meta&gt;">&lt;allocation-meta&gt;</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Class</span>
-    <a name="<allocation-mixin&gt;995">
+    <a name="<allocation-mixin&gt;1173">
       <span class="name" name="<allocation-mixin&gt;">&lt;allocation-mixin&gt;</span>
     </a>
   </div>
@@ -49,37 +49,34 @@ class slot definition, respectively.
 <p />Currently, we only support <code>:instance</code> and <code>:class</code> keywords.
 <p />The following code is the whole definition of this classes.
 <p /><pre class="codeblock">(define-class &lt;allocation-meta&gt; (&lt;class&gt;) ())
-(define-method compute-getters-and-setters ((class &lt;allocation-meta&gt;) slots)
-  (let ((r (call-next-method)))
-    (for-each
-     (lambda (acc slot)
-	(cond ((slot-definition-option slot :allocation :instance)
-		=&gt; (lambda (type)
-		     (case type
-		       ((:instance))
-		       ((:class)
-			(let* ((init-value (slot-definition-option
-					    slot :init-value #f))
-			       (init-thunk (slot-definition-option 
-					    slot :init-thunk #f))
-			       (def (if init-thunk (init-thunk) init-value)))
-			  (slot-set! acc 'setter (lambda (o v) (set! def v)))
-			  (slot-set! acc 'getter (lambda (o) def))))
-		       (else
-			(assertion-violation '&lt;allocation-meta&gt;
-					     "unknown :allocation type"
-					     type)))))))
-		r slots)
-    r))
+(define-method compute-getter-and-setter ((class &lt;allocation-meta&gt;) slot)
+  (cond ((slot-definition-option slot :allocation :instance)
+         =&gt; (lambda (type)
+              (case type
+                ((:instance) '())
+                ((:class)
+                 (let* ((init-value (slot-definition-option
+                                     slot :init-value #f))
+                        (init-thunk (slot-definition-option 
+                                     slot :init-thunk #f))
+                        (def (if init-thunk (init-thunk) init-value)))
+                   (list
+                    (lambda (o) def)
+                    (lambda (o v) (set! def v)))))
+                (else
+                 (assertion-violation '&lt;allocation-meta&gt;
+                                      "unknown :allocation type"
+                                      type)))))
+        (else (call-next-method))))
 <p />(define-class &lt;allocation-mixin&gt; () () :metaclass &lt;allocation-meta&gt;)
 </pre>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G996"><span class="section-number">6.5.2</span>(sagittarius mop validator)</a>
+    <a class="section.anchor" name="G1174"><span class="section-number">6.5.2</span>(sagittarius mop validator)</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(sagittarius mop validator)997">
+    <a name="(sagittarius mop validator)1175">
       <span class="name" name="(sagittarius mop validator)">(sagittarius mop validator)</span>
     </a>
   </div>
@@ -87,13 +84,13 @@ class slot definition, respectively.
 <code>define-class</code>.</div>
 <p /><div class="define">
     <span class="define-category">Class</span>
-    <a name="<validator-meta&gt;998">
+    <a name="<validator-meta&gt;1176">
       <span class="name" name="<validator-meta&gt;">&lt;validator-meta&gt;</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Class</span>
-    <a name="<validator-mixin&gt;999">
+    <a name="<validator-mixin&gt;1177">
       <span class="name" name="<validator-mixin&gt;">&lt;validator-mixin&gt;</span>
     </a>
   </div>
@@ -104,13 +101,13 @@ the value if it's correct or not.
 which value is set to the slot.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1000"><span class="section-number">6.5.3</span>(sagittarius mop eql)</a>
+    <a class="section.anchor" name="G1178"><span class="section-number">6.5.3</span>(sagittarius mop eql)</a>
   </h4>
 <p />The eql specializer is now builtin so this library is only for backward
 compatibility.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(sagittarius mop eql)1001">
+    <a name="(sagittarius mop eql)1179">
       <span class="name" name="(sagittarius mop eql)">(sagittarius mop eql)</span>
     </a>
   </div>
@@ -127,7 +124,7 @@ usual procedure call.
 </div>
 <p /><div class="define">
     <span class="define-category">Class</span>
-    <a name="<eql-specializable-generic&gt;1002">
+    <a name="<eql-specializable-generic&gt;1180">
       <span class="name" name="<eql-specializable-generic&gt;">&lt;eql-specializable-generic&gt;</span>
     </a>
   </div>
@@ -143,6 +140,6 @@ usual procedure call.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-12-20T08:41:27+0100</i></div>
   </div>
 </html>

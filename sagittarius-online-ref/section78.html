@@ -6,224 +6,234 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section77.html">(dbm) - Generic DBM interface</a>
+    <a class="prev" href="section77.html">(dbi) - Database independent access layer</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section79.html">(getopt) - Parsing command-line options</a>
+    <a class="next" href="section79.html">(util file) - File operation utility library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.file"><span class="section-number">7.8</span>(util file) - File operation utility library</a>
+    <a class="section.anchor" name="dbm"><span class="section-number">7.8</span>(dbm) - Generic DBM interface</a>
   </h3>
-<p /><div class="define">
+<p />
+<div class="define">
     <span class="define-category">Library</span>
-    <a name="(util file)1357">
-      <span class="name" name="(util file)">(util file)</span>
+    <a name="(dbm)1516">
+      <span class="name" name="(dbm)">(dbm)</span>
     </a>
   </div>
-<div class="desc">This library provides file operation utilities which is not exported from
-<code>(sagittarius)</code> library.
-</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1358"><span class="section-number">7.8.1</span>File to Scheme object operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;list1359">
-    <span class="name" name="file-&gt;list">file-&gt;list</span>
-  </a>
- <span class="args">reader path :key (transcoder (native-transcoder))</span></div>
-<div class="desc"><var>reader</var> must be a procedure accept one argument which is a port.
-<var>path</var> must be a string indicating existing file.
-<p />Returns a list which elements are read by <var>reader</var> from the given <var>path</var>
-file. <var>reader</var> reads the file contents until it reads EOF object.
-<p />The keyword argument <var>transcoder</var> can specify which transcoder will be used
-to open a port. It must be either #f or transcoder. The default value is the
-value <code>(native-transcoder)</code> returns.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;sexp-list1360">
-    <span class="name" name="file-&gt;sexp-list">file-&gt;sexp-list</span>
-  </a> <span class="args">path</span></div>
-<div class="define"><span class="define-category">Function</span><a name="file-&gt;string-list1361">
-    <span class="name" name="file-&gt;string-list">file-&gt;string-list</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Thin wrapper of <code>file-&gt;list</code>. The procedures defined as following;
-<p /><pre class="snipet"><span class="snipet-code">(file-&gt;list <code>read/ss</code> <var>path</var>)</span></pre>
-<pre class="snipet"><span class="snipet-code">(file-&gt;list <code>get-line</code> <var>path</var>)</span></pre>
-<p />respectively.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;string1362">
-    <span class="name" name="file-&gt;string">file-&gt;string</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Reads all file contents indicated <var>path</var> as a string and return it.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;bytevector1363">
-    <span class="name" name="file-&gt;bytevector">file-&gt;bytevector</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Reads all file contents indicated <var>path</var> as a bytevector and return
- it.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1364"><span class="section-number">7.8.2</span>Temporary directory operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="temporary-directory1365">
-    <span class="name" name="temporary-directory">temporary-directory</span>
-  </a> <span class="args">:optional path</span></div>
-<div class="desc">Returns operating system specific temporary directory path.
-<p />If optional argument <var>path</var> is given, the procedure replace the temporary 
-directory path.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-temporary-file1366">
-    <span class="name" name="make-temporary-file">make-temporary-file</span>
-  </a> <span class="args">:optional prefix</span></div>
-<div class="desc">Creates temporary file and returns 2 values. One is the port, the other
-one is created file path.
-<p />The created temporary file won't be deleted automatically so it is users
-responsibility to delete.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1367"><span class="section-number">7.8.3</span>Path operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="decompose-path1368">
-    <span class="name" name="decompose-path">decompose-path</span>
-  </a> <span class="args">path</span></div>
-<div class="desc"><var>path</var> must be a string.
-<p />Decompose the given <var>path</var> to directory path, base name, and extension then
-returns these decomposed elements as 3 values.
-<p />The returning value can be #f if the path does not contains corresponding
-element.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="path-extension1369">
-    <span class="name" name="path-extension">path-extension</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Returns the extension of given <var>path</var>. If it does not contains
-extension then the procedure returns #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="path-sans-extension1370">
-    <span class="name" name="path-sans-extension">path-sans-extension</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Removes extension from given <var>path</var> and return it.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="path-basename1371">
-    <span class="name" name="path-basename">path-basename</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Returns the basename of given <var>path</var>. If it does not contains
-basename then the procedure returns #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="find-files1372">
-    <span class="name" name="find-files">find-files</span>
-  </a>
- <span class="args">target :key (pattern #f) (all #t) (sort string&lt;=?) (recursive #t)</span></div>
-<div class="desc"><var>target</var> must be a string indicating existing file system path.
-<p />Find files from <var>target</var> if it's a directory and return the found files as
-a list.
-<p />Keyword arguments:
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">pattern</dt>
-      <dd class="dl-item-desc">Specifies the file pattern to be returned. This can be
-either string or regular expression pattern object.</dd>
-      <dt class="dl-item-title">all</dt>
-      <dd class="dl-item-desc">When this keyword argument is #t, then returns all files
-including hidden files which file name starting with <code>.</code>. If this is #f,
-the procedure excludes hidden files.</dd>
-      <dt class="dl-item-title">physical</dt>
-      <dd class="dl-item-desc">If this is #t, then the <var>proc</var> is only given either
-<code>directory</code> or <code>file</code>. No symbolic likes are given.</dd>
-      <dt class="dl-item-title">sort</dt>
-      <dd class="dl-item-desc">This specifies how to sort the result list. If the value is #f,
-then the result order is unspecified.</dd>
-      <dt class="dl-item-title">recursive</dt>
-      <dd class="dl-item-desc">If this keyword argument is #t then the procedure finds
-files recursively, otherwise only the first <var>target</var> directory.</dd>
-    </dl>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="path-for-each1373">
-    <span class="name" name="path-for-each">path-for-each</span>
-  </a>
- <span class="args">path proc :key (physical #t) (file-only #f) (absolute-path #t)
- (stop-on-file #f) (all #t) (recursive #t)</span></div>
-<div class="desc"><var>path</var> must be a string indicating existing file path. <var>proc</var>
-must be a procedure accepts 2 arguments, a path string and a symbol. The given
-symbol can be <code>directory</code>, <code>symbolic-link</code> or <code>file</code>.
-<p />Apply given <var>proc</var> to the found paths starting from <var>path</var> and returns
-unspecified value. The second argument of <var>proc</var> indicates the file type
-with following meaning;
+<div class="desc">The library provides the generic interface to access DBM.
+<p />Sagittarius currently supports following DBM implementation;
 <p /><div class="dl-list-wrapper">
     <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>directory</code>
-      </dt>
-      <dd class="dl-item-desc">The path is a directory.</dd>
-      <dt class="dl-item-title">
-        <code>symbolic-link</code>
-      </dt>
-      <dd class="dl-item-desc">The path is a symbolic link.</dd>
-      <dt class="dl-item-title">
-        <code>file</code>
-      </dt>
-      <dd class="dl-item-desc">The path is a file</dd>
+      <dt class="dl-item-title">(dbm dumb)</dt>
+      <dd class="dl-item-desc"> DBM-like library. Inspired by Python's dbm.dumb. This library must be used
+ as the last resort. It has poor performance and memory usage.
+</dd>
     </dl>
   </div>
-<p />The keyword arguments:
-<div class="dl-list-wrapper">
+</div>
+<p />The following code shows a typical usage;
+<p /><pre class="codeblock">(import (dbm))
+<p />;; Open the database
+(define *db* (dbm-open (dbm-type-&gt;class 'dumb) :path "dumb.db"))
+<p />;; Put the value to the database
+(dbm-put! *db* "key1" "value1")
+<p />;; Get the value from the database
+(dbm-get *db* "key1")
+<p />;; Iterate over the database
+(dbm-for-each *db* (lambda (key val) #| do something useful |#))
+<p />;; Close the database
+(dbm-close *db*)
+</pre>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1517"><span class="section-number">7.8.1</span>Opening and closing a dbm database</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<dbm&gt;1518">
+      <span class="name" name="<dbm&gt;">&lt;dbm&gt;</span>
+    </a>
+  </div>
+<div class="desc">An abstract class for DBM-like database. The class has the following
+slots. It must be filled by <code>dbm-open</code>.
+<p /><div class="dl-list-wrapper">
     <dl class="dl-list">
-      <dt class="dl-item-title">file-only</dt>
-      <dd class="dl-item-desc">If this is #t, then the <var>proc</var> is only given a file.
-Otherwise all file types.</dd>
-      <dt class="dl-item-title">absolute-path</dt>
-      <dd class="dl-item-desc">If this is #t, then the <var>proc</var> is given absolute
-path. Otherwise only the filename.</dd>
-      <dt class="dl-item-title">stop-on-false</dt>
-      <dd class="dl-item-desc">If this is #t, then when <var>proc</var> returns #f the
-process will stop. Otherwise it continues the process.</dd>
+      <dt class="dl-item-title">path</dt>
+      <dd class="dl-item-desc"> Pathname of the dbm database. </dd>
+      <dt class="dl-item-title">rw-mode</dt>
+      <dd class="dl-item-desc">    Specifies read/write mode. Can be one of the following keywords:
+    <div class="dl-list-wrapper">
+        <dl class="dl-list">
+          <dt class="dl-item-title">:read</dt>
+          <dd class="dl-item-desc"> The database will be opened in read-only mode.</dd>
+          <dt class="dl-item-title">:write</dt>
+          <dd class="dl-item-desc">        The database will be opened in read-write mode. If the database file
+	does not exist, <code>dbm-open</code> creates one.
+      </dd>
+          <dt class="dl-item-title">:write</dt>
+          <dd class="dl-item-desc">        The database will be opened in read-write mode. If the database file
+	exists, <code>dbm-open</code> truncates it.
+      </dd>
+        </dl>
+      </div>
+    The keywords are indication so actual implementation may not behave as it
+    described.
+  </dd>
+      <dt class="dl-item-title">key-convert</dt>
+      <dt class="dl-item-title">value-convert</dt>
+      <dd class="dl-item-desc">    By default, you can use only strings for both key and values. With
+    this option, however, you can specify how to convert other Scheme
+    values to/from string to be stored in the database. The possible values
+    are the followings: 
+    <div class="dl-list-wrapper">
+        <dl class="dl-list">
+          <dt class="dl-item-title">#f</dt>
+          <dd class="dl-item-desc">       The default value. Keys (values) are not converted.
+       They must be a string.
+      </dd>
+          <dt class="dl-item-title">#t</dt>
+          <dd class="dl-item-desc">       Keys (values) are converted to its string representation, using
+       <code>write/ss</code>, to store in the database and convert back Scheme
+       values, using <code>read/ss</code>, to retrieve from the database.
+      </dd>
+          <dt class="dl-item-title">a list of two procedures</dt>
+          <dd class="dl-item-desc">       Both procedure must take a single argument. The first procedure must
+       receive a Scheme object and returns a string. It is used to convert 
+       the keys (values) to store in the database. The second procedure must
+       receive a string and returns a Scheme object. It is used to convert
+       the stored data in the database to a Scheme object.
+      </dd>
+        </dl>
+      </div>
+  </dd>
     </dl>
   </div>
-The rest of the keyword arguments are the same as <code>find-files</code>.
+<p /></div>
+<p /><div class="define">
+    <span class="define-category">Metaclass</span>
+    <a name="<dbm-meta&gt;1519">
+      <span class="name" name="<dbm-meta&gt;">&lt;dbm-meta&gt;</span>
+    </a>
+  </div>
+<div class="desc">A metaclass of <code>&lt;dbm&gt;</code> and its subclasses.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-open1520">
+    <span class="name" name="dbm-open">dbm-open</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
+<div class="desc">Opens a dbm database. <var>dbm</var> must be an instance of one of the
+concrete classes derived from the <code>&lt;dbm&gt;</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="path-map1374">
-    <span class="name" name="path-map">path-map</span>
-  </a>
- <span class="args">path proc :key (physical #t) (file-only #f) (absolute-path #t) (all #t)
-  (recursive #t)</span></div>
-<div class="desc"><var>path</var> must be a string indicating existing file path. <var>proc</var>
-must be a procedure accepts 2 arguments, a path string and a symbol. The given
-symbol can be <code>directory</code>, <code>symbolic-link</code> or <code>file</code>.
-<p />Process the path string starting from <var>path</var> with given <var>proc</var> and
-returns a list which elements are the result value of <var>proc</var>.
-<p />The keyword arguments are the same as <code>path-for-each</code>.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-open1521">
+    <span class="name" name="dbm-open">dbm-open</span>
+  </a> <span class="args">(dbm-class &lt;dbm-meta&gt;) options ...</span></div>
+<div class="desc">A convenient method that creates dbm instance and opens it.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-close1522">
+    <span class="name" name="dbm-close">dbm-close</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
+<div class="desc">Closes a dbm database <var>dbm</var>. If the database is not closed, then
+the database file may not be synchronised properly. So it is user's
+responsibility to close it.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="build-path*1375">
-    <span class="name" name="build-path*">build-path*</span>
-  </a> <span class="args">paths ...</span></div>
-<div class="desc"><var>paths</var> must be list of strings.
-<p />Compose given list to platform specific path. This procedure doesn't put path
-separator at the end of composed string.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-closed?1523">
+    <span class="name" name="dbm-closed?">dbm-closed?</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
+<div class="desc">Returns true if the dbm database <var>dbm</var> is closed, otherwise #f.
+<p />The returned value may be non boolean value.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="dbm-type-&gt;class1524">
+    <span class="name" name="dbm-type-&gt;class">dbm-type-&gt;class</span>
+  </a> <span class="args">dbmtype</span></div>
+<div class="desc">Returns DBM class if DBM implementation <var>dbmtype</var> exists, otherwise
+#f.
+<p />The <var>dbmtype</var> must be a symbol that names the type of dbm implementation,
+and the implementation library name must be <code>(dbm <var>dbmtype</var>)</code>. For
+example, to get the <var>foo</var> DBM then the library name must be 
+<code>(dbm foo)</code>.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1376"><span class="section-number">7.8.4</span>Directory operations</a>
+    <a class="section.anchor" name="G1525"><span class="section-number">7.8.2</span>Accessing a dbm database</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="create-directory*1377">
-    <span class="name" name="create-directory*">create-directory*</span>
-  </a> <span class="args">path</span></div>
-<div class="define"><span class="define-category">Function</span><a name="delete-directory*1378">
-    <span class="name" name="delete-directory*">delete-directory*</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Convenient procedures to create or delete directories.
-<p />These are the same as UNIX command <code>mkdir -p</code> and <code>rm -rf</code>,
-respectively.
+<p />Once a database is opened, you can use the following methods to access
+individual key/value pairs. 
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-put!1526">
+    <span class="name" name="dbm-put!">dbm-put!</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key value</span></div>
+<div class="desc">Put a <var>value</var> with <var>key</var></div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-get1527">
+    <span class="name" name="dbm-get">dbm-get</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key :optional default</span></div>
+<div class="desc">Get a value associated with <var>key</var>. If no value exists for <var>key</var>
+and <var>default</var> is specified, it will be returned. If no value exists for 
+<var>key</var> and <var>default</var> is not specified, then an error will be raised.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="copy-directory1379">
-    <span class="name" name="copy-directory">copy-directory</span>
-  </a>
- <span class="args">src dst :key (excludes '()) options ...</span></div>
-<div class="desc"><var>src</var> and <var>dst</var> must be string and <var>src</var> must indicates an
-existing path.
-<p />Copies <var>src</var> directory to <var>dst</var>. Keyword argument <var>excludes</var> must be
-a list of string and the procedure won't copy files which contain the
-<var>excludes</var> string(s).
-<p />The <var>options</var> is passed to <code>path-for-each</code>.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-exists?1528">
+    <span class="name" name="dbm-exists?">dbm-exists?</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key</span></div>
+<div class="desc">Return true value if a value exists for <var>key</var>, #f otherwise.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-delete!1529">
+    <span class="name" name="dbm-delete!">dbm-delete!</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key</span></div>
+<div class="desc">Delete a value associated with <var>key</var>.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1530"><span class="section-number">7.8.3</span>Iterating on a dbm database</a>
+  </h4>
+<p />To walk over the entire database, following methods are provided. 
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-fold1531">
+    <span class="name" name="dbm-fold">dbm-fold</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) procedure knil</span></div>
+<div class="desc">The basic iterator. For each key/value pair, <var>procedure</var> is called
+as <code><var>procedure</var> key value r</code>, where <var>r</var> is <var>knil</var> for the
+first call of <var>procedure</var>, and the return value of the previous call for
+subsequent calls. Returns the result of the last call of <var>procedure</var>.
+If no data is in the database, <var>knil</var> is returned.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-for-each1532">
+    <span class="name" name="dbm-for-each">dbm-for-each</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) procedure</span></div>
+<div class="desc">For each key/value pair in the database <var>dbm</var>, <var>procedure</var> is
+called. The <var>procedure</var> must accept 2 arguments, a key and a value
+respectively. The result of <var>procedure</var> is discarded.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-map1533">
+    <span class="name" name="dbm-map">dbm-map</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) procedure</span></div>
+<div class="desc">For each key/value pair in the database <var>dbm</var>, <var>procedure</var> is
+called. The <var>procedure</var> must accept 2 arguments, a key and a value
+respectively. The result of <var>procedure</var> is accumulated to a list which
+is returned as a result of <code>dbm-map</code>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1534"><span class="section-number">7.8.4</span>Managing dbm database instance</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-exists?1535">
+    <span class="name" name="dbm-db-exists?">dbm-db-exists?</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) name</span></div>
+<div class="desc">Returns #t if a database of class <var>class</var> specified by <var>name</var>
+exists.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-remove1536">
+    <span class="name" name="dbm-db-remove">dbm-db-remove</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) name</span></div>
+<div class="desc">Removes an entire database of class <var>class</var> specified by <var>name</var>.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-copy1537">
+    <span class="name" name="dbm-db-copy">dbm-db-copy</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) from to</span></div>
+<div class="desc">Copy a database of <var>class</var> specified by <var>from</var> to <var>to</var>.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-move1538">
+    <span class="name" name="dbm-db-move">dbm-db-move</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) from to</span></div>
+<div class="desc">Moves or renames a database of <var>class</var> specified by <var>from</var>
+to <var>to</var>.
 </div>
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section77.html">(dbm) - Generic DBM interface</a>
+    <a class="prev" href="section77.html">(dbi) - Database independent access layer</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section79.html">(getopt) - Parsing command-line options</a>
+    <a class="next" href="section79.html">(util file) - File operation utility library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-12-20T08:41:27+0100</i></div>
   </div>
 </html>

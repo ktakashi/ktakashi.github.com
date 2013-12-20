@@ -8,124 +8,166 @@
   <div class="prev-next">
     <a class="prev" href="section72.html">(asn.1) - Abstract Syntas Notation One library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section74.html">(util bytevector) - Bytevector utility library</a>
+    <a class="next" href="section74.html">(binary pack) - Packing binary data</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.binary.pack"><span class="section-number">7.3</span>(binary pack) - Packing binary data</a>
+    <a class="section.anchor" name="util.binary.data"><span class="section-number">7.3</span>(binary data) - Binary data read/write</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(binary pack)1189">
-      <span class="name" name="(binary pack)">(binary pack)</span>
+    <a name="(binary data)1365">
+      <span class="name" name="(binary data)">(binary data)</span>
     </a>
   </div>
-<div class="desc">This library provides an interface for packing and unpacking (writing
-and reading) binary data with template. The functionality is inspired by
-<a href="https://weinholt.se/industria/">Industria</a>'s
-<code>(weinholt struct pack)</code> library.
+<div class="desc">This library provides yet another binary data structure read/write. The
+difference between <a href="section74.html#util.binary.pack">(binary pack)</a> and this is the
+level of abstraction. This library provides higher abstraction layer of the 
+way how to handle binary data.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="pack1190">
-    <span class="name" name="pack">pack</span>
-  </a> <span class="args">template args ...</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Construct a bytevector with given <var>args</var> according to the given
-<var>template</var>. Template characters are described below.
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="pack!1191">
-    <span class="name" name="pack!">pack!</span>
-  </a> <span class="args">template bv offset args ...</span></div>
-<div class="desc"><var>template</var> must be a string. 
-<p /><var>bv</var> must be a bytevector.
-<p /><var>offset</var> must a non-negative exact integer.
-<p />Converts given <var>args</var> and put it into <var>bv</var> starting from <var>offset</var>.
-The conversion is done according to the <var>template</var> string.
-<p />The template characters are extensible so following description can only cover
-predefined characters.
-<p />x: padding; c: s8; C: u8; s: s16; S: u16; l: s32; L: u32; q: s64; Q: u64;
-f: ieee-single; d: ieee-double; ! or &gt;: big-endian; &lt;: little-endian;
-=: native-endian; u: disable natural alignment; a: enable natural alignment.
-Whitespace is ignored.
-<p /><pre class="snipet"><span class="snipet-code">(pack "!c" 128)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(128)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "s" 100)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(100 0)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!s" 100)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 100)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!d" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(64 9 30 184 81 235 133 31)</span></pre>
-<p />Fields are by default aligned to their natural alignment and NUL bytes are
-inserted as necessary to have a field's index to be aligned to its size.
-<p /><pre class="snipet"><span class="snipet-code">(pack "!xd" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 0 0 0 0 0 0 0 64 9 30 184 81 235 133 31)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!uxd" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 64 9 30 184 81 235 133 31)</span></pre>
-<p />Digits in front of the syntax characters means repetition. And <code>#\*</code> means
-indefinite length repetition.
-<p /><pre class="snipet"><span class="snipet-code">(pack "3c" 1 2 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "*c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3 4)</span></pre>
-<p />When the macro detects the given template is string, then it tries to expand
-as much as possible. So it might raises the different condition even if the
-template strings are the same.
-<p /><pre class="snipet"><span class="snipet-code">(pack "3c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&amp;syntax</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack (car '("3c")) 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&amp;error</span></pre>
-<p /></div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="unpack1192">
-    <span class="name" name="unpack">unpack</span>
-  </a> <span class="args">template bv</span></div>
-<div class="define"><span class="define-category">Macro</span><a name="unpack1193">
-    <span class="name" name="unpack">unpack</span>
-  </a> <span class="args">template bv offset</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Unpack the given bytevector according to the given <var>template</var> and returns
-the values. The template syntax are the same as <code>pack!</code>.
-<p />If the second form is used, then unpacking is done from the given <var>offset</var>.
-<p /><pre class="snipet"><span class="snipet-code">(unpack "!SS" #vu8(0 1 0 2))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">1 2</span></pre>
-<pre class="snipet"><span class="snipet-code">(unpack "!SS" #vu8(0 1 0 2 0 3) 1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">2 3</span></pre>
-<pre class="snipet"><span class="snipet-code">(unpack "!uSS" #vu8(0 1 0 2 0 3) 1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">256 512</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="get-unpack1194">
-    <span class="name" name="get-unpack">get-unpack</span>
-  </a> <span class="args">port template</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Utility unpacking macro for binary port.
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="format-size1195">
-    <span class="name" name="format-size">format-size</span>
-  </a> <span class="args">template</span></div>
-<div class="define"><span class="define-category">Macro</span><a name="format-size1196">
-    <span class="name" name="format-size">format-size</span>
-  </a> <span class="args">template args ...</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Calculate the size of the result bytevector. If the second form is used, then
-macro can calculate even if the template contains indefinite length syntax
-<code>#\*</code>, otherwise #f is returned.
-<p /><pre class="snipet"><span class="snipet-code">(format-size "!xd")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">16</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "!uxd")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">9</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "*c")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "*c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">4</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="define-**-packer1197">
-    <span class="name" name="define-**-packer">define-<var>**</var>-packer</span>
+<p /><div class="define"><span class="define-category">Macro</span><a name="define-simple-datum-define1366">
+    <span class="name" name="define-simple-datum-define">define-simple-datum-define</span>
+  </a> <span class="args">name reader writer</span></div>
+<div class="define"><span class="define-category">Macro</span><a name="define-composite-data-define1367">
+    <span class="name" name="define-composite-data-define">define-composite-data-define</span>
+  </a> <span class="args">name reader writer</span></div>
+<div class="desc">Defines a macro named <var>name</var> to read binary data by generic method
+<var>reader</var> and write binary data by <var>writer</var>.
+<p />To use defining macros effectively, both forms <var>reader</var> and <var>writer</var>
+should be the same name.
+<p />The first form defines a macro which takes 5 required arguments and optional
+keyword arguments. Let's say the <var>name</var> is <code>define-simple</code>, the
+<var>reader</var> is <code>simple-read</code> and the <var>write</var> is <code>simple-write</code>,
+Then the definition of defined macro would be like this;
+<div class="define"><span class="define-category">Macro</span><a name="define-simple1368">
+    <span class="name" name="define-simple">define-simple</span>
   </a>
- <span class="args">(char arg) (<code>pack</code> expr1 ...) (<code>unpack</code> expr2 ...)</span></div>
-<div class="desc"><var>char</var> must character.
-<p /><code>pack</code> and <code>unpack</code> are syntactic keywords.
-<p />Defines packing extension to given <var>char</var>. This macro can not overwrite
-the predefined characters. <var>**</var> can be followings;
-<p /><code>s8</code>, <code>u8</code>, <code>s16</code>, <code>u16</code>, <code>s32</code>, <code>u32</code>,
-<code>s64</code>, <code>u64</code>, <code>f32</code>, and <code>f64</code>.
-<p /><pre class="codeblock">;; defining char to u8 converter
-(define-u8-packer (#\A v)
-  (pack (char-&gt;integer v))
-  (unpack (integer-&gt;char v)))
-(pack "AA" #\a #\b)       ;; =&gt; #vu8(97 98)
-(unpack "AA" #vu8(97 98)) ;; =&gt; #\a #\b
-</pre>
+ <span class="args">name parents slots read-proc write-proc :key (parent-metaclass &lt;class&gt;)</span></div>
+<div class="desc">Defines <var>name</var> class whose parent classes are <var>parents</var> and slots
+are <var>slots</var>.
+<p /><var>read-proc</var> must be a procedure which takes one argument, a input port and
+return number of slots values.
+<p /><var>write-proc</var> must be a procedure which takes number of slots plus 1
+arguments. The first one is an output port and the rest are the value of the
+slots of the defined class' instance.
+<p />The keyword argument <var>parent-metaclass</var> is a parent class of the metaclass
+of this class.
+<p />The <var>slots</var> form must be a list of slot definitions which must be 
+followings;
+<ul class="itemlist">
+    <li class="itemlist-item">
+      <var>name</var>
+    </li>
+    <li class="itemlist-item">
+      <var>(name)</var>
+    </li>
+    <li class="itemlist-item">
+      <var>(name default)</var>
+    </li>
+  </ul>
+The first and second form define a slot which name is <var>name</var> and its
+initial value is #f. The third form defines a slot which name is <var>name</var>
+and its initial is <var>default</var>.
+<p />Note that current implemenation does not handle parent classes slots. This is
+only for seamless operations with other CLOS class.
+</div>
+<p />The second form defines a macro which takes 3 required arguments and optional
+keyword arguments. Let's say the <var>name</var> is <code>define-composite</code>, the
+<var>reader</var> is <code>simple-read</code> and the <var>write</var> is <code>simple-write</code>,
+Then the definition of defined macro would be like this;
+<div class="define"><span class="define-category">Macro</span><a name="define-simple1369">
+    <span class="name" name="define-simple">define-simple</span>
+  </a>
+ <span class="args">name parents slots :key (parent-metaclass &lt;class&gt;)</span></div>
+<div class="desc">Defines a composite data class named <var>name</var> whose parent classes are
+<var>parents</var> and slots are <var>slots</var>.
+<p />It is similar form with <code>define-class</code> however <var>slots</var> must be a list
+of one of the followings.
+<ul class="itemlist">
+    <li class="itemlist-item">
+      <var>(name type)</var>
+    </li>
+    <li class="itemlist-item">
+      <var>(name type default)</var>
+    </li>
+    <li class="itemlist-item">
+      <var>(name (type count))</var>
+    </li>
+    <li class="itemlist-item">
+      <var>(name (type count) default)</var>
+    </li>
+  </ul>
+<var>name</var> must be a symbol which represents the slot name.
+<p /><var>type</var> can be class name or <code>eqv?</code> comparable datum. e.g. keyword.
+<p /><var>default</var> can be any object.
+<p /><var>count</var> must be a non negative exact integer.
+<p />The first form is equivalent with the following form;
+<code>(name type #f)</code>.
+And the third form is equivalent with the following form;
+<code>(name (type count) #f)</code>.
+<p />The first 2 forms defines a datum slot which the datum is read by <var>reader</var>
+passing <var>type</var> and written by <var>writer</var>.
+<p />The rest forms defines an array data represented by a vector.
+<p />If the <var>type</var> is not defined by neither of the definition forms, then
+it is users responsibility to define a method which handles the <var>type</var>.
+</div>
 <p /></div>
-
-</section>
+<p />Following is the simple example to show how to use the macros above.
+<p /><pre class="codeblock">(import (clos user) (binary data))
+<p />;; use the same name of reader and writer
+(define-simple-datum-define   define-simple    sample-read sample-write)
+(define-composite-data-define define-composite sample-read sample-write)
+<p />(define-simple &lt;simple&gt; ()
+  (a b (c 0))
+  (lambda (in) (values (get-u8 in) (get-u8 in) (get-u8 in)))
+  (lambda (out a b c) (put-u8 out a) (put-u8 out b) (put-u8 out c)))
+<p />(define-composite &lt;composite&gt; ()
+  ((d :byte 1)
+   (e (:byte 4) #vu8(1 2 3 4))
+   (f &lt;simple&gt;)))
+<p />;; :byte reader and writer
+(define-method sample-read ((o (eql :byte)) in array-size?)
+  (if array-size?
+      (get-bytevector-n in array-size?)
+      (get-u8 in)))
+<p />(define-method sample-write ((type (eql :byte)) o out array-size?)
+  (if array-size?
+     (put-bytevector out o)
+     (put-u8 out o)))
+</pre>
+<p />How to use the defined data structure.
+<pre class="codeblock">;; read as a &lt;composite&gt; object
+;; "deeeeabc" in ascii
+(define bv #vu8(#x64 #x65 #x65 #x65 #x65 #x61 #x62 #x63))
+(call-with-port (open-bytevector-input-port bv)
+  (lambda (in)
+    (let ((s (sample-read &lt;composite&gt; in)))
+      (slot-ref s 'd) ;; =&gt; #\d
+      (slot-ref s 'f) ;; =&gt; &lt;simple&gt;
+      )))
+<p />;; write &lt;composite&gt; object
+(call-with-bytevector-output-port
+  (lambda (out)
+    (let* ((s (make &lt;simple&gt; :a 10 :b 20))
+           (c (make &lt;composite&gt; :f s)))
+      ;; this can be written like this as well (sample-write o out)
+      (sample-write &lt;composite&gt; c out))))
+;; =&gt; #vu8(1 1 2 3 4 10 20 0)
+</pre>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1370"><span class="section-number">7.3.1</span>Utilities</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+  </div>
+</section></section>
   <div class="prev-next">
     <a class="prev" href="section72.html">(asn.1) - Abstract Syntas Notation One library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section74.html">(util bytevector) - Bytevector utility library</a>
+    <a class="next" href="section74.html">(binary pack) - Packing binary data</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-12-20T08:41:27+0100</i></div>
   </div>
 </html>

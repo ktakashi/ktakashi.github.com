@@ -22,25 +22,24 @@ purpose.
 <p />This section describe from top to down.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(sagittarius process)1009">
+    <a name="(sagittarius process)1187">
       <span class="name" name="(sagittarius process)">(sagittarius process)</span>
     </a>
   </div>
 <div class="desc">Exports high level APIs and low level APIs for operating process.</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1010"><span class="section-number">6.7.1</span>High level APIs</a>
+    <a class="section.anchor" name="G1188"><span class="section-number">6.7.1</span>High level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="run1011">
+<p /><div class="define"><span class="define-category">Function</span><a name="run1189">
     <span class="name" name="run">run</span>
   </a> <span class="args">name arg1 ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="call1012">
+<div class="define"><span class="define-category">Function</span><a name="call1190">
     <span class="name" name="call">call</span>
   </a> <span class="args">name arg1 ...</span></div>
 <div class="desc"><var>name</var> must be string and indicate the process name be called.
 <p /><var>arg1</var> and the rest must be string which will be passed to process.
 <p />The <code>run</code> procedure invokes <var>name</var> process and waits until it ends.
-Then returns process status if your environment is UNIX like. On Windows the
-return code can not be reliable.
+Then returns process' exit status.
 <p />The <code>call</code> procedure invokes <var>name</var> process and continue the Scheme
 process, so it does not wait the called process. Then returns process object.
 If you need to finish the process, make sure you call the <code>process-wait</code>
@@ -50,9 +49,9 @@ procedure described below.
 <code>create-process</code> described below.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1013"><span class="section-number">6.7.2</span>Middle level APIs</a>
+    <a class="section.anchor" name="G1191"><span class="section-number">6.7.2</span>Middle level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="create-process1014">
+<p /><div class="define"><span class="define-category">Function</span><a name="create-process1192">
     <span class="name" name="create-process">create-process</span>
   </a>
  <span class="args">name args
@@ -112,31 +111,15 @@ process, otherwise it can cause deat lock.
 the procedure which specified <var>reader</var> keyword argument.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1015"><span class="section-number">6.7.3</span>Low level APIs</a>
+    <a class="section.anchor" name="G1193"><span class="section-number">6.7.3</span>Low level APIs</a>
   </h4>
 <p />This section describe low level APIs however some of these might be used even
 if you use <code>call</code> described above.
-<p />Before you use this APIs, you might need to know the difference between
-platforms which this library supports.
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1016"><span class="section-number">6.7.3.1</span>POSIX envionment</a>
-  </h5>
-<p />When a process object is created by <code>make-process</code> the real process is not
-created (it's not forked yet). So if you access input, output or error port of
-the process, it will return unspecified value. So you might emulate
-<code>process-run</code> with <code>process-call</code> and <code>process-wait</code>. And the
-created process can be re-used.
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1017"><span class="section-number">6.7.3.2</span>Windows</a>
-  </h5>
-<p />When a process object is created by <code>make-process</code> the real process is
-created. So you can prepare the redirection of output before you call or run
-the process. However once the process is finished, you can not re-use it.
-<p /><div class="define"><span class="define-category">Function</span><a name="process?1018">
+<p /><div class="define"><span class="define-category">Function</span><a name="process?1194">
     <span class="name" name="process?">process?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #f if <var>obj</var> is process object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-process1019">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-process1195">
     <span class="name" name="make-process">make-process</span>
   </a> <span class="args">name args</span></div>
 <div class="desc"><var>name</var> must be string and indicates the process name which will be
@@ -145,47 +128,51 @@ invoked.
 process.
 <p />Creates a process object.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-input-port1020">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-input-port1196">
     <span class="name" name="process-input-port">process-input-port</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
 <p />Returns the binary output port which is redirected to the process'
 standard input.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-output-port1021">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-output-port1197">
     <span class="name" name="process-output-port">process-output-port</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
 <p />Returns the binary input port which is redirected to the process'
 standard output.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-error-port1022">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-error-port1198">
     <span class="name" name="process-error-port">process-error-port</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
 <p />Returns the binary input port which is redirected to the process'
 standard error.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-run1023">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-run1199">
     <span class="name" name="process-run">process-run</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
 <p />Invokes the <var>process</var> and wait until it ends.
 <p />On POSIX envionment this procesure returns the result status of the process.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-call1024">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-call1200">
     <span class="name" name="process-call">process-call</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
 <p />Invokes the <var>process</var> and continue the Scheme program.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-wait1025">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-wait1201">
     <span class="name" name="process-wait">process-wait</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
-<p />Wait the given process until it ends.</div>
+<p />Wait the given process until it ends and returns the exit status of the given
+process.
+<p />NOTE: The exit status are platform dependent. On Windows, the value will be
+32 bit integer. On POSIX, the value will be 8 bit unsigned integer.
+</div>
 
-</section></section></section>
+</section></section>
   <div class="prev-next">
     <a class="prev" href="section66.html">(sagittarius object) - Convenient refs and coercion procedures</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
@@ -194,6 +181,6 @@ standard error.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2013-11-15T10:01:55+0100</i></div>
+    <div id="footer-date">Generated date: <i>2013-12-20T08:41:27+0100</i></div>
   </div>
 </html>
