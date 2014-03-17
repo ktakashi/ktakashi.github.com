@@ -15,7 +15,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc tls)1554">
+    <a name="(rfc tls)1556">
       <span class="name" name="(rfc tls)">(rfc tls)</span>
     </a>
   </div>
@@ -23,7 +23,7 @@
 <p />CAUTION: This library is not well tested. So it may have security hole or
 incompatible behaviour. If you find such bugs, please let me know.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-client-tls-socket1555">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-client-tls-socket1557">
     <span class="name" name="make-client-tls-socket">make-client-tls-socket</span>
   </a>
  <span class="args">node service :key (prng (secure-randome RC4))
@@ -53,7 +53,7 @@ This is needed if the target server only supports RSA key exchange protocol.
 </div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="tls-client-handshake tls-socket1556">
+    <a name="tls-client-handshake tls-socket1558">
       <span class="name" name="tls-client-handshake tls-socket">tls-client-handshake <span class="args">tls-socket</span></span>
     </a>
   </div>
@@ -63,7 +63,7 @@ This is needed if the target server only supports RSA key exchange protocol.
 <p />CAUTION: This procedure needs to be called only once and calling more than once
 might cause infinite loop or raise an error.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-server-tls-socket1557">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-server-tls-socket1559">
     <span class="name" name="make-server-tls-socket">make-server-tls-socket</span>
   </a>
  <span class="args">service certificates :key (prng (secure-randome RC4))
@@ -88,7 +88,7 @@ the certificate signature but only issuer DN.
 </div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="tls-socket-send tls-socket bytevector flags1558">
+    <a name="tls-socket-send tls-socket bytevector flags1560">
       <span class="name" name="tls-socket-send tls-socket bytevector flags">tls-socket-send <span class="args">tls-socket bytevector flags</span></span>
     </a>
   </div>
@@ -101,7 +101,7 @@ will be encrypted by <var>tls-socket</var>.
 </div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="tls-socket-recv tls-socket size flags1559">
+    <a name="tls-socket-recv tls-socket size flags1561">
       <span class="name" name="tls-socket-recv tls-socket size flags">tls-socket-recv <span class="args">tls-socket size flags</span></span>
     </a>
   </div>
@@ -114,14 +114,14 @@ octets the procedure should receive, however it might return less octet.
 <p />NOTE: <var>tls-socket</var> have its own buffer to return the value, so that the
 procedure can take <var>size</var> argument.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-close1560">
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-close1562">
     <span class="name" name="tls-socket-close">tls-socket-close</span>
   </a> <span class="args">tls-socket</span></div>
 <div class="desc"><var>tls-socket</var> must be the socket created by the procedure
 <code>make-client-tls-socket</code>.
 <p />Sends close notify alert to the socket and close it.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-closed?1561">
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-closed?1563">
     <span class="name" name="tls-socket-closed?">tls-socket-closed?</span>
   </a> <span class="args">tls-socket</span></div>
 <div class="desc"><var>tls-socket</var> must be the socket created by the procedure
@@ -130,7 +130,7 @@ procedure can take <var>size</var> argument.
 <p />NOTE: this procedure checks if session is closed. So the real socket might not
 be closed yet.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-accept1562">
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-accept1564">
     <span class="name" name="tls-socket-accept">tls-socket-accept</span>
   </a>
  <span class="args">tls-socket :key (handshake #t) (raise-error #t)</span></div>
@@ -143,7 +143,7 @@ by manually with <code>tls-server-handshake</code> described blow.
 <p />The keyword argument <var>raise-error</var> will be passed to
 <code>tls-server-handshake</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tls-server-handshake1563">
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-server-handshake1565">
     <span class="name" name="tls-server-handshake">tls-server-handshake</span>
   </a>
  <span class="args">tls-socket :key (raise-error #t)</span></div>
@@ -153,27 +153,27 @@ by manually with <code>tls-server-handshake</code> described blow.
 <p />If the keyword argument <var>raise-error</var> is #f then it won't raise an error
 when something happens.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1564">
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1566">
     <span class="name" name="tls-socket-peer">tls-socket-peer</span>
   </a> <span class="args">tls-socket</span></div>
 <div class="desc">Return peer of given <var>tls-socket</var> or #f.
 <p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1565">
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1567">
     <span class="name" name="tls-socket-peer">tls-socket-peer</span>
   </a> <span class="args">tls-socket</span></div>
 <div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
 version of <code>socket-peer</code>.
 <p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-name1566">
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-name1568">
     <span class="name" name="tls-socket-name">tls-socket-name</span>
   </a> <span class="args">tls-socket</span></div>
 <div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
 version of <code>socket-name</code>.
 <p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-info-values1567">
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-info-values1569">
     <span class="name" name="tls-socket-info-values">tls-socket-info-values</span>
   </a> <span class="args">tls-socket</span></div>
 <div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
@@ -182,26 +182,26 @@ version of <code>socket-info-values</code>.
 </div>
 <p /><div class="define">
     <span class="define-category">Constant</span>
-    <a name="*tls-version-1.2*1568">
+    <a name="*tls-version-1.2*1570">
       <span class="name" name="*tls-version-1.2*">*tls-version-1.2*</span>
     </a>
   </div>
 <div class="desc">Constant value of <code>#x0303</code> for TLS 1.2</div>
 <p /><div class="define">
     <span class="define-category">Constant</span>
-    <a name="*tls-version-1.1*1569">
+    <a name="*tls-version-1.1*1571">
       <span class="name" name="*tls-version-1.1*">*tls-version-1.1*</span>
     </a>
   </div>
 <div class="desc">Constant value of <code>#x0302</code> for TLS 1.1</div>
 <p /><div class="define">
     <span class="define-category">Constant</span>
-    <a name="*tls-version-1.0*1570">
+    <a name="*tls-version-1.0*1572">
       <span class="name" name="*tls-version-1.0*">*tls-version-1.0*</span>
     </a>
   </div>
 <div class="desc">Constant value of <code>#x0301</code> for TLS 1.0</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-port1571">
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-port1573">
     <span class="name" name="tls-socket-port">tls-socket-port</span>
   </a>
  <span class="args">tls-socket :optional (close? #t)</span></div>
@@ -211,10 +211,10 @@ version of <code>socket-info-values</code>.
 <p />If optional argument <var>close?</var> is #f then it won't close the socket when the
 port is closed or GCed.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-input-port1572">
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-input-port1574">
     <span class="name" name="tls-socket-input-port">tls-socket-input-port</span>
   </a> <span class="args">tls-socket</span></div>
-<div class="define"><span class="define-category">Function</span><a name="tls-socket-output-port1573">
+<div class="define"><span class="define-category">Function</span><a name="tls-socket-output-port1575">
     <span class="name" name="tls-socket-output-port">tls-socket-output-port</span>
   </a> <span class="args">tls-socket</span></div>
 <div class="desc">Convert the given TLS socket to input and output port, respectively.
@@ -222,48 +222,48 @@ port is closed or GCed.
 users responsibility to close.
 </div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1574"><span class="section-number">7.22.1</span>Integration methods</a>
+    <a class="section.anchor" name="G1576"><span class="section-number">7.22.1</span>Integration methods</a>
   </h4>
 <p />The methods listed below are convenience methods to use TLS socket and
 usual socket without changing code.
-<p /><div class="define"><span class="define-category">Method</span><a name="socket-close1575">
+<p /><div class="define"><span class="define-category">Method</span><a name="socket-close1577">
     <span class="name" name="socket-close">socket-close</span>
   </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="socket-send1576">
+<div class="define"><span class="define-category">Method</span><a name="socket-send1578">
     <span class="name" name="socket-send">socket-send</span>
   </a>
  <span class="args">(socket &lt;tls-socket&gt;) data :optional (flags 0)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="socket-recv1577">
+<div class="define"><span class="define-category">Method</span><a name="socket-recv1579">
     <span class="name" name="socket-recv">socket-recv</span>
   </a>
  <span class="args">(socket &lt;tls-socket&gt;) size :optional (flags 0)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="socket-accept1578">
+<div class="define"><span class="define-category">Method</span><a name="socket-accept1580">
     <span class="name" name="socket-accept">socket-accept</span>
   </a> <span class="args">(socket &lt;tls-socket&gt;) . opt</span></div>
-<div class="define"><span class="define-category">Method</span><a name="socket-accept1579">
+<div class="define"><span class="define-category">Method</span><a name="socket-accept1581">
     <span class="name" name="socket-accept">socket-accept</span>
   </a>
  <span class="args">(socket &lt;tls-socket&gt;) (key &lt;keyword&gt;) . dummy</span></div>
-<div class="define"><span class="define-category">Method</span><a name="call-with-socket1580">
+<div class="define"><span class="define-category">Method</span><a name="call-with-socket1582">
     <span class="name" name="call-with-socket">call-with-socket</span>
   </a> <span class="args">(socket &lt;tls-socket&gt;) proc</span></div>
-<div class="define"><span class="define-category">Method</span><a name="socket-peer1581">
+<div class="define"><span class="define-category">Method</span><a name="socket-peer1583">
     <span class="name" name="socket-peer">socket-peer</span>
   </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="socket-name1582">
+<div class="define"><span class="define-category">Method</span><a name="socket-name1584">
     <span class="name" name="socket-name">socket-name</span>
   </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="socket-info-values1583">
+<div class="define"><span class="define-category">Method</span><a name="socket-info-values1585">
     <span class="name" name="socket-info-values">socket-info-values</span>
   </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="socket-port1584">
+<div class="define"><span class="define-category">Method</span><a name="socket-port1586">
     <span class="name" name="socket-port">socket-port</span>
   </a>
  <span class="args">(socket &lt;tls-socket&gt;) :optional (close? #t)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="socket-input-port1585">
+<div class="define"><span class="define-category">Method</span><a name="socket-input-port1587">
     <span class="name" name="socket-input-port">socket-input-port</span>
   </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="socket-output-port1586">
+<div class="define"><span class="define-category">Method</span><a name="socket-output-port1588">
     <span class="name" name="socket-output-port">socket-output-port</span>
   </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
 
@@ -276,6 +276,6 @@ usual socket without changing code.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-02-14T08:44:36+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-03-14T09:00:17+0100</i></div>
   </div>
 </html>
