@@ -242,7 +242,7 @@ corresponding argument must be a <var>file-options</var> object.
 <p /><div class="define"><span class="define-category">Macro</span><a name="file-options480">
     <span class="name" name="file-options">file-options</span>
   </a> <span class="args">file-options-symbol ...</span></div>
-<div class="desc">[R6RS] Each <var>file-option-symbol</var> must be a symbol. The
+<div class="desc">[R6RS+] Each <var>file-option-symbol</var> must be a symbol. The
 <var>file-options</var> macro returns a <var>file-options</var> object that encapsulates
 the specified options.
 <p />When supplied to an operation that opens a file for output, the file-options
@@ -263,6 +263,8 @@ not included, and the file is truncated to zero length.</p></li>
 condition type <code>&amp;i/o-file-already-exists</code> has been inhibited by inclusion
 of <code>no-create</code> or <code>no-fail</code>, the file is not truncated, but the port's
 current position is still set to the beginning of the file.</p></li>
+    <li class="itemlist-item"><code>append</code> <p>Among with <code>no-truncate</code>, set the opened port's 
+position the end of the file. This is not a part of R6RS specification.</p></li>
   </ul>
 </div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
@@ -544,8 +546,9 @@ integer object.
   </a> <span class="args">port</span></div>
 <div class="define"><span class="define-category">Function</span><a name="set-port-position!516">
     <span class="name" name="set-port-position!">set-port-position!</span>
-  </a> <span class="args">port pos</span></div>
-<div class="desc">[R6RS] The <code>port-has-set-port-position!?</code> procedure returns #t if the
+  </a>
+ <span class="args">port pos :optional (whence 'begin)</span></div>
+<div class="desc">[R6RS+] The <code>port-has-set-port-position!?</code> procedure returns #t if the
 <var>port</var> supports the <code>set-port-position!</code> operation, and #f otherwise.
 <p />The <code>set-port-position!</code> procedure raises an exception with condition type
 <code>&amp;assertion</code> if the port does not support the operation, and an exception
@@ -553,9 +556,29 @@ with condition type <code>&amp;i/o-invalid-position</code> if pos is not in the 
 valid positions of <var>port</var>. Otherwise, it sets the current position of the
 <var>port</var> to <var>pos</var>. If <var>port</var> is an output port,
 <var>set-port-position!</var> first flushes <var>port</var>.
-<p />On Sagittarius Scheme, binary port and string port have <code>port-position</code> but
-transcoded file port does not support the <code>port-position</code> and
-<code>set-port-position!</code>.
+<p />The optional argument <var>whence</var> must be one of the following symbols;
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>begin</code>
+      </dt>
+      <dd class="dl-item-desc">  Set position from the beginning of the given <var>port</var>.
+  </dd>
+      <dt class="dl-item-title">
+        <code>current</code>
+      </dt>
+      <dd class="dl-item-desc">  Set position from the current position of the given <var>port</var>.
+  </dd>
+      <dt class="dl-item-title">
+        <code>end</code>
+      </dt>
+      <dd class="dl-item-desc">  Set position from the end of the given <var>port</var>.
+  </dd>
+    </dl>
+  </div>
+NOTE: for R6RS custom port, the procedure doesn't accept the optional argument,
+so it will be always considered <code>begin</code> even though user specified it
+as <code>current</code> or <code>end</code>.
 </div>
 <p /><div class="define"><span class="define-category">Function</span><a name="close-port517">
     <span class="name" name="close-port">close-port</span>
@@ -617,20 +640,32 @@ otherwise the port will be textual port.
 </div>
 <p /><div class="define"><span class="define-category">Function</span><a name="open-bytevector-input-port523">
     <span class="name" name="open-bytevector-input-port">open-bytevector-input-port</span>
-  </a> <span class="args">bytevector maybe-transcoder</span></div>
-<div class="desc">[R6RS] <var>Maybe-transcoder</var> must be either a transcoder or #f.
-The <code>open-bytevector-input-port</code> procedure returns an input port whose bytes
-are drawn from <var>bytevector</var>. If <var>transcoder</var> is specified, it becomes the
-transcoder associated with the returned port.
-<p />If <var>maybe-transcoder</var> is #f or absent, the port will be a binary port,
+  </a>
+ <span class="args">bytevector :optional (transcoder #f) 
+                            (start 0) (end (bytevector-length bytevector))</span></div>
+<div class="desc">[R6RS+] <var>transcoder</var> must be either a transcoder or #f.
+The <code>open-bytevector-input-port</code> procedure returns an input port whose
+bytes are drawn from <var>bytevector</var>. If <var>transcoder</var> is specified, it
+becomes the transcoder associated with the returned port.
+<p />If <var>transcoder</var> is #f or absent, the port will be a binary port,
 otherwise the port will be textual port.
+<p />Optional arguments <var>start</var> and <var>end</var> restricts the range of
+input bytevector. It is almost the same as following code but doesn't
+allocate extra memory;
+<pre class="snipet"><span class="snipet-code">(open-bytevector-input-port (bytevector-copy bytevector start end))</span></pre>
 </div>
 <p /><div class="define"><span class="define-category">Function</span><a name="open-string-input-port524">
     <span class="name" name="open-string-input-port">open-string-input-port</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">[R6RS] Returns a textual input port whose characters are drawn from
+  </a>
+ <span class="args">string :optional (start 0) (end (string-length string))</span></div>
+<div class="desc">[R6RS+] Returns a textual input port whose characters are drawn from
 <var>string</var>.
-<p />These procedures reuse the given arguments, thus if <var>bytevector</var> is modified
+<p />Optional arguments <var>start</var> and <var>end</var> restricts the range of
+input string. It is almost the same as following code but doesn't
+allocate extra memory;
+<pre class="snipet"><span class="snipet-code">(open-string-input-port (substring string start end))</span></pre>
+<p />
+These procedures reuse the given arguments, thus if <var>bytevector</var> is modified
 after <code>open-bytevector-input-port</code> has been called, it affects the result
 of the port. So does <code>open-string-input-port</code>.
 </div>
@@ -1271,6 +1306,6 @@ as <code>put-datum</code>.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-01T08:54:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
   </div>
 </html>

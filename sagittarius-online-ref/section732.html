@@ -6,92 +6,43 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section731.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section731.html">(text html-lite) - Simple HTML document builder library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section8.html">Ported libraries</a>
+    <a class="next" href="section733.html">(tlv) - TLV library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.tlv"><span class="section-number">7.32</span>(tlv) - TLV library</a>
+    <a class="section.anchor" name="text.tree"><span class="section-number">7.32</span>(text tree) - Lightweight text generation</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(tlv)1726">
-      <span class="name" name="(tlv)">(tlv)</span>
+    <a name="(text tree)1752">
+      <span class="name" name="(text tree)">(text tree)</span>
     </a>
   </div>
-<div class="desc">This library provides TLV (tag length value) data operation procedures.
+<div class="desc">Defines simple but commonly used functions for a text construction.
+<p />This library is ported from Gauche.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1727"><span class="section-number">7.32.1</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-emv-tlv-parser1728">
-    <span class="name" name="make-emv-tlv-parser">make-emv-tlv-parser</span>
-  </a>
- <span class="args">:key (object-builder tlv-builder)</span></div>
-<div class="desc">Creates EMV type TLV parser.
-<p />This procedure returns a procedure which accepts a binary port as its argument.
-<p />The keyword argument <code>object-builder</code> specifies how to construct a TLV
-object. The default value is <code>tlv-builder</code>.
+<p /><div class="define"><span class="define-category">Generic</span><a name="write-tree1753">
+    <span class="name" name="write-tree">write-tree</span>
+  </a> <span class="args">tree :optional out</span></div>
+<div class="desc">Write out an <var>tree</var> as a tree of text, to the output port <var>out</var>.
+If the <var>out</var> is omitted, then current output port is used.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-object?1729">
-    <span class="name" name="tlv-object?">tlv-object?</span>
-  </a> <span class="args">o</span></div>
-<div class="desc">Returns #t if the given object is TLV object otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-tag1730">
-    <span class="name" name="tlv-tag">tlv-tag</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV tag of given TLV object <var>tlv</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-data1731">
-    <span class="name" name="tlv-data">tlv-data</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV binary data if the given TLV object <var>tlv</var> is not
-constructed, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-components1732">
-    <span class="name" name="tlv-components">tlv-components</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV components of given TLV object <var>tlv</var>. If the <var>tlv</var>
-is not constructed, this returns <code>()</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-&gt;bytevector1733">
-    <span class="name" name="tlv-&gt;bytevector">tlv-&gt;bytevector</span>
-  </a> <agrs>tlv</agrs></div>
-<div class="desc">Converts given TLV object <var>tlv</var> to bytevector.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="write-tlv1734">
-    <span class="name" name="write-tlv">write-tlv</span>
-  </a>
- <agrs>tlv :optional (out (current-output-port))</agrs></div>
-<div class="desc"><var>out</var> must be binary output port.
-<p />Writes given TLV object <var>tlv</var> to <var>out</var> as TLV data.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="dump-tlv1735">
-    <span class="name" name="dump-tlv">dump-tlv</span>
-  </a> <span class="args">:optional (out (current-output-port))</span></div>
-<div class="desc">Dump given TLV object <var>tlv</var> as human readable form.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1736"><span class="section-number">7.32.2</span>Custom object builder</a>
-  </h4>
-<p />Sometimes default TLV object is not convenient to use. Then users can create
-own object from TLV data passing own object builder to the
-<code>make-emv-tlv-parser</code> procedure.
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-builder1737">
-    <span class="name" name="tlv-builder">tlv-builder</span>
-  </a> <span class="args">first-byte tag data constructed?</span></div>
-<div class="desc">Default TLV object builder. User should not use this procedure directly.
-<p /><var>first-byte</var> is the first byte of the leading TLV object.
-<p /><var>tag</var> is the read tag of the TLV object.
-<p /><var>data</var> is either a list of TLV object or bytevector. User can check it with
-<var>constructed?</var> argument.
-<p /><var>constructed?</var> indicates if the TLV object is constructed or not. If this is
-#t then <var>data</var> is a list of TLV objects.
-</div>
-</section></section>
+<p /><div class="define"><span class="define-category">Function</span><a name="tree-&gt;string1754">
+    <span class="name" name="tree-&gt;string">tree-&gt;string</span>
+  </a> <span class="args">tree</span></div>
+<div class="desc">Just calls the <code>write-tree</code> method for <var>tree] using an output
+string port, and returns the result string.
+</var></div>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section731.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section731.html">(text html-lite) - Simple HTML document builder library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section8.html">Ported libraries</a>
+    <a class="next" href="section733.html">(tlv) - TLV library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-01T08:54:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
   </div>
 </html>
