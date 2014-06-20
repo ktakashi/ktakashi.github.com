@@ -6,109 +6,276 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section725.html">(rfc uuid) - UUID generate library</a>
+    <a class="prev" href="section725.html">(rfc sftp) - SFTP library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section727.html">(rfc zlib) - zlib compression library</a>
+    <a class="next" href="section727.html">(rfc uri) - Parse and construct URIs</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.x.509"><span class="section-number">7.26</span>(rfc x.509) - X.509 certificate utility library</a>
+    <a class="section.anchor" name="rfc.tls"><span class="section-number">7.26</span>(rfc tls) - TLS protocol library</a>
   </h3>
-<p />This library does not support whole feature of X.509, it just parse and verify
-a message and signature. So it can not verify certificate itself.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc x.509)1656">
-      <span class="name" name="(rfc x.509)">(rfc x.509)</span>
+    <a name="(rfc tls)1656">
+      <span class="name" name="(rfc tls)">(rfc tls)</span>
     </a>
   </div>
-<div class="desc">Exports X.509 utility procedures.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate1657">
-    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
-  </a> <span class="args">(in &lt;port&gt;)</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate1658">
-    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
+<div class="desc">This library provides TLS protocol socket APIs.
+<p />CAUTION: This library is not well tested. So it may have security hole or
+incompatible behaviour. If you find such bugs, please let me know.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-client-tls-socket1657">
+    <span class="name" name="make-client-tls-socket">make-client-tls-socket</span>
   </a>
- <span class="args">(sequence &lt;asn.1-sequence&gt;)</span></div>
-<div class="desc">Creates an X.509 certificate object from given binary input port or ASN.1
-sequence object (second form).
+ <span class="args">node service :key (prng (secure-randome RC4))
+ (version *tls-version-1.2*) (session #f) (handshake #t)
+  (certificates '()) (private-key #f)
+ :allow-other-keys opt</span></div>
+<div class="desc"><var>node</var> and <var>service</var> must be string.
+<p />Creates a client TLS socket. <var>node</var>, <var>service</var> and <var>opt</var> will be
+passed to <code>make-client-socket</code> described in
+<a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+<p />The keyword argument <var>prng</var> specifies which pseudo random algorithm will
+be used for generating security parameters.
+<p />The keyword argument <var>version</var> specifies which TLS protocol version will be
+used for negotiation. However the real version will be decided by target server.
+<p />The keyword argument <var>session</var> is for future extension, so do not specify.
+<p />If the keyword argument <var>handshake</var> #f then the procedure won't do
+TLS handshake after the socket creation so users must do it manually with
+<code>tls-client-handshake</code> procedure described below.
+<p />
+The keyword argument <var>certificates</var> is for certificate request message.
+The value must be a list of x509 certificates. If the certificates argument
+is null, then the procedures send empty certificate list to the server as
+a response of certificate request message.
+<p />The keyword argument <var>private-key</var> specifies which private key is used.
+The value must be private key object described in <a href="section76.html#crypto">"(crypto)"</a>.
+This is needed if the target server only supports RSA key exchange protocol.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate?1659">
-    <span class="name" name="x509-certificate?">x509-certificate?</span>
-  </a> <span class="args">o</span></div>
-<div class="desc">Return #t if the <var>o</var> is X.509 certificate object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-version1660">
-    <span class="name" name="x509-certificate-get-version">x509-certificate-get-version</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return version of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-serial-number1661">
-    <span class="name" name="x509-certificate-get-serial-number">x509-certificate-get-serial-number</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return serial number of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-issuer-dn1662">
-    <span class="name" name="x509-certificate-get-issuer-dn">x509-certificate-get-issuer-dn</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return issuer DN of given X.509 certificate object as X.509 principal.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-subject-dn1663">
-    <span class="name" name="x509-certificate-get-subject-dn">x509-certificate-get-subject-dn</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return subject DN of given X.509 certificate object as X.509 principal.
-<p />NOTE: These Issuer DN and Subject DN getters return &lt;x.509-principal&gt; object,
-however I did not implement any utility for this class, so it's just useless
-for now.
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="tls-client-handshake tls-socket1658">
+      <span class="name" name="tls-client-handshake tls-socket">tls-client-handshake <span class="args">tls-socket</span></span>
+    </a>
+  </div>
+<div class="desc">Do client side handshake and return a TLS socket. The procedure must
+*NOT* be called if the socket is created with <var>handshake</var> keyword argument
+#t.
+<p />CAUTION: This procedure needs to be called only once and calling more than once
+might cause infinite loop or raise an error.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-before1664">
-    <span class="name" name="x509-certificate-get-not-before">x509-certificate-get-not-before</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return start date of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-after1665">
-    <span class="name" name="x509-certificate-get-not-after">x509-certificate-get-not-after</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return end date of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature1666">
-    <span class="name" name="x509-certificate-get-signature">x509-certificate-get-signature</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return signature of given X.509 certificate object. 
-<p />NOTE: This signature is not for <code>verify</code> described below.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature-algorithm1667">
-    <span class="name" name="x509-certificate-get-signature-algorithm">x509-certificate-get-signature-algorithm</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return signature algorithm of given X.509 certificate object as an OID
-string.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-public-key1668">
-    <span class="name" name="x509-certificate-get-public-key">x509-certificate-get-public-key</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return public key of given X.509 certificate object. The return value is
-<code>&lt;public-key&gt;</code> described in the section
-<a href="section76.html#crypto">(crypto) - Cryptographic library</a>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="verify1669">
-    <span class="name" name="verify">verify</span>
-  </a> <span class="args">x509 message signature
-  :key (verify pkcs1-emsa-v1.5-verify) (hash SHA-1)</span></div>
-<div class="desc"><var>message</var> and <var>signature</var> must be bytevector.
-<p />Verify given <var>message</var> with <var>signature</var> and <var>x509</var> certificate.
-<p />This procedure uses the <code>verify</code> procedure in <code>(crypto)</code> library. The
-keyword arguments will be passed to it. For more detail, see
-<a href="section76.html#crypto">(crypto) - Cryptographic library</a>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="check-validity1670">
-    <span class="name" name="check-validity">check-validity</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-server-tls-socket1659">
+    <span class="name" name="make-server-tls-socket">make-server-tls-socket</span>
   </a>
- <span class="args">x509 :optional (date (current-date))</span></div>
-<div class="desc">Validate if the given certificate is valid in given <var>date</var>. Return #t
-if it's valid, otherwise raises <code>&amp;assertion</code>.
+ <span class="args">service certificates :key (prng (secure-randome RC4))
+ (version *tls-version-1.2*)
+ (private-key #f) (authorities '())
+ :allow-other-keys opt</span></div>
+<div class="desc"><var>service</var> must be string. <var>certificates</var> must be a
+list of x509 certificate.
+<p />Creates a server TLS socket. <var>service</var> and <var>opt</var> will be passed to
+<code>make-server-socket</code> described in 
+<a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+<p />The keyword arguments <var>prng</var> and <var>version</var> are the same meaning as
+<code>make-client-tls-socket</code>.
+<p />The keyword argument <var>private-key</var> is used the same as client socket
+the difference is that it is used if the client side only supports RSA key
+exchange.
+<p />The keyword argument <var>authorities</var> must be a list of x509 certificate and
+if this is not empty list then the server socket will send certificate request
+message to the client. 
+<p />CAUTION: the <var>authorities</var> keyword argument currently doesn't check
+the certificate signature but only issuer DN.
 </div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="tls-socket-send tls-socket bytevector flags1660">
+      <span class="name" name="tls-socket-send tls-socket bytevector flags">tls-socket-send <span class="args">tls-socket bytevector flags</span></span>
+    </a>
+  </div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p /><var>flags</var> must be non negative exact integer.
+<p />Sends given bytevector to <var>tls-socket</var>. <var>flags</var> are described in
+the section <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>. The packet
+will be encrypted by <var>tls-socket</var>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="tls-socket-recv tls-socket size flags1661">
+      <span class="name" name="tls-socket-recv tls-socket size flags">tls-socket-recv <span class="args">tls-socket size flags</span></span>
+    </a>
+  </div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p /><var>size</var> and <var>flags</var> must be non negative exact integer.
+<p />Receives decrypted packet from <var>tls-socket</var>. <var>size</var> indicates how many
+octets the procedure should receive, however it might return less octet.
+<var>flags</var> will be passed to <code>socket-recv</code>.
+<p />NOTE: <var>tls-socket</var> have its own buffer to return the value, so that the
+procedure can take <var>size</var> argument.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-close1662">
+    <span class="name" name="tls-socket-close">tls-socket-close</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Sends close notify alert to the socket and close it.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-closed?1663">
+    <span class="name" name="tls-socket-closed?">tls-socket-closed?</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Returns #t if the given socket is closed, otherwise #f.
+<p />NOTE: this procedure checks if session is closed. So the real socket might not
+be closed yet.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-accept1664">
+    <span class="name" name="tls-socket-accept">tls-socket-accept</span>
+  </a>
+ <span class="args">tls-socket :key (handshake #t) (raise-error #t)</span></div>
+<div class="desc"><var>tls-socket</var> must be a server TLS socket created by
+<code>make-server-tls-socket</code>.
+<p />Wait for an incoming connection request and returns a fresh connected client
+socket.
+<p />If the keyword argument <var>handshake</var> is #f then the handshake must be done
+by manually with <code>tls-server-handshake</code> described blow.
+<p />The keyword argument <var>raise-error</var> will be passed to
+<code>tls-server-handshake</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-server-handshake1665">
+    <span class="name" name="tls-server-handshake">tls-server-handshake</span>
+  </a>
+ <span class="args">tls-socket :key (raise-error #t)</span></div>
+<div class="desc">Do server side TLS handshake and returns a TLS socket. The procedure must
+*NOT* be called if the socket is created with <var>handshake</var> keyword argument
+#t.
+<p />If the keyword argument <var>raise-error</var> is #f then it won't raise an error
+when something happens.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1666">
+    <span class="name" name="tls-socket-peer">tls-socket-peer</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1667">
+    <span class="name" name="tls-socket-peer">tls-socket-peer</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-peer</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-name1668">
+    <span class="name" name="tls-socket-name">tls-socket-name</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-name</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-info-values1669">
+    <span class="name" name="tls-socket-info-values">tls-socket-info-values</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-info-values</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.2*1670">
+      <span class="name" name="*tls-version-1.2*">*tls-version-1.2*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0303</code> for TLS 1.2</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.1*1671">
+      <span class="name" name="*tls-version-1.1*">*tls-version-1.1*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0302</code> for TLS 1.1</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.0*1672">
+      <span class="name" name="*tls-version-1.0*">*tls-version-1.0*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0301</code> for TLS 1.0</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-port1673">
+    <span class="name" name="tls-socket-port">tls-socket-port</span>
+  </a>
+ <span class="args">tls-socket :optional (close? #t)</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Returns input/output-port of given <var>tls-socket</var>.
+<p />If optional argument <var>close?</var> is #f then it won't close the socket when the
+port is closed or GCed.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-input-port1674">
+    <span class="name" name="tls-socket-input-port">tls-socket-input-port</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="define"><span class="define-category">Function</span><a name="tls-socket-output-port1675">
+    <span class="name" name="tls-socket-output-port">tls-socket-output-port</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Convert the given TLS socket to input and output port, respectively.
+<p />The given socket won't be closed when the port is closed or GCed. So it is the
+users responsibility to close.
+</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1676"><span class="section-number">7.26.1</span>Integration methods</a>
+  </h4>
+<p />The methods listed below are convenience methods to use TLS socket and
+usual socket without changing code.
+<p /><div class="define"><span class="define-category">Method</span><a name="socket-close1677">
+    <span class="name" name="socket-close">socket-close</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-send1678">
+    <span class="name" name="socket-send">socket-send</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) data :optional (flags 0)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-recv1679">
+    <span class="name" name="socket-recv">socket-recv</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) size :optional (flags 0)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-accept1680">
+    <span class="name" name="socket-accept">socket-accept</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;) . opt</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-accept1681">
+    <span class="name" name="socket-accept">socket-accept</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) (key &lt;keyword&gt;) . dummy</span></div>
+<div class="define"><span class="define-category">Method</span><a name="call-with-socket1682">
+    <span class="name" name="call-with-socket">call-with-socket</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;) proc</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-peer1683">
+    <span class="name" name="socket-peer">socket-peer</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-name1684">
+    <span class="name" name="socket-name">socket-name</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-info-values1685">
+    <span class="name" name="socket-info-values">socket-info-values</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-port1686">
+    <span class="name" name="socket-port">socket-port</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) :optional (close? #t)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-input-port1687">
+    <span class="name" name="socket-input-port">socket-input-port</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-output-port1688">
+    <span class="name" name="socket-output-port">socket-output-port</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
 
-</section>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section725.html">(rfc uuid) - UUID generate library</a>
+    <a class="prev" href="section725.html">(rfc sftp) - SFTP library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section727.html">(rfc zlib) - zlib compression library</a>
+    <a class="next" href="section727.html">(rfc uri) - Parse and construct URIs</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
   </div>
 </html>

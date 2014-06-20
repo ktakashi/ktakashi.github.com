@@ -6,159 +6,109 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section728.html">RPC support framework</a>
+    <a class="prev" href="section728.html">(rfc uuid) - UUID generate library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section730.html">(text csv) - Comma separated values parser library</a>
+    <a class="next" href="section730.html">(rfc zlib) - zlib compression library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="lib.rpc.json"><span class="section-number">7.29</span>(rpc json) - JSON RPC library</a>
+    <a class="section.anchor" name="rfc.x.509"><span class="section-number">7.29</span>(rfc x.509) - X.509 certificate utility library</a>
   </h3>
+<p />This library does not support whole feature of X.509, it just parse and verify
+a message and signature. So it can not verify certificate itself.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rpc json)1704">
-      <span class="name" name="(rpc json)">(rpc json)</span>
+    <a name="(rfc x.509)1726">
+      <span class="name" name="(rfc x.509)">(rfc x.509)</span>
     </a>
   </div>
-<div class="desc">This library provides procedures handling 
-<a href="http://www.jsonrpc.org/specification">JSON RPC 2.0</a>.
-<p />This library doesn't provide transport layer. To send request and receive
-response, use <a href="section728.html#utils.rpc.transport.http">Http transport</a>.
-<p />This library uses <a href="section86.html#ported.json">JSON parser library</a> and its
-JSON representation.
+<div class="desc">Exports X.509 utility procedures.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate1727">
+    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
+  </a> <span class="args">(in &lt;port&gt;)</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate1728">
+    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
+  </a>
+ <span class="args">(sequence &lt;asn.1-sequence&gt;)</span></div>
+<div class="desc">Creates an X.509 certificate object from given binary input port or ASN.1
+sequence object (second form).
 </div>
-<p />Following piece of code describes how to use;
-<pre class="codeblock">(import (rnrs) (rpc json) (rpc transport http))
-<p />(define (json-rpc-send&amp;request url method param)
-  (let ((request (make-json-request method :param param)))
-    (let-values (((status header response) (rpc-http-request url request)))
-      ;; rpc-http-request unmarshalls only when HTTP status starts with "2"
-      ;; for this example we don't check it.
-      (json-response-result response))))
-<p />(json-rpc-send&amp;request "http://localhost/json-rpc" "sample" "parameter")
-;; -&gt; result of method execution
-</pre>
-<p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<json-request&gt;1705">
-      <span class="name" name="<json-request&gt;">&lt;json-request&gt;</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<json-response&gt;1706">
-      <span class="name" name="<json-response&gt;">&lt;json-response&gt;</span>
-    </a>
-  </div>
-<div class="desc">These classes represents JSON RPC request and response respectively.
-<p />The class instance should be created by <code>make-json-request</code>,
-<code>json-string-&gt;json-request</code> or <code>json-string-&gt;json-response</code>. Users
-should not create an instance directly using <code>make</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate?1729">
+    <span class="name" name="x509-certificate?">x509-certificate?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Return #t if the <var>o</var> is X.509 certificate object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-version1730">
+    <span class="name" name="x509-certificate-get-version">x509-certificate-get-version</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return version of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-serial-number1731">
+    <span class="name" name="x509-certificate-get-serial-number">x509-certificate-get-serial-number</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return serial number of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-issuer-dn1732">
+    <span class="name" name="x509-certificate-get-issuer-dn">x509-certificate-get-issuer-dn</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return issuer DN of given X.509 certificate object as X.509 principal.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-subject-dn1733">
+    <span class="name" name="x509-certificate-get-subject-dn">x509-certificate-get-subject-dn</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return subject DN of given X.509 certificate object as X.509 principal.
+<p />NOTE: These Issuer DN and Subject DN getters return &lt;x.509-principal&gt; object,
+however I did not implement any utility for this class, so it's just useless
+for now.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1707"><span class="section-number">7.29.1</span>Predicates</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request?1708">
-    <span class="name" name="json-request?">json-request?</span>
-  </a> <span class="args">object</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response?1709">
-    <span class="name" name="json-response?">json-response?</span>
-  </a> <span class="args">object</span></div>
-<div class="desc">Returns #t if the given <var>object</var> is an instance of 
-<code>&lt;json-request&gt;</code> and <code>&lt;json-response&gt;</code> respectively.
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-before1734">
+    <span class="name" name="x509-certificate-get-not-before">x509-certificate-get-not-before</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return start date of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-after1735">
+    <span class="name" name="x509-certificate-get-not-after">x509-certificate-get-not-after</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return end date of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature1736">
+    <span class="name" name="x509-certificate-get-signature">x509-certificate-get-signature</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return signature of given X.509 certificate object. 
+<p />NOTE: This signature is not for <code>verify</code> described below.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1710"><span class="section-number">7.29.2</span>Constructors</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-json-request1711">
-    <span class="name" name="make-json-request">make-json-request</span>
-  </a> <span class="args">method :key (params '()) id</span></div>
-<div class="desc">Creates a JSON RPC request.
-<p /><var>method</var> must be a symbol or string represents method name to be invoked.
-<p />The keyword argument <var>params</var> is the <code>params</code> field of the JSON
-RPC protocol.
-<p />The keyword argument <var>id</var> is the <code>id</code> field of the JSON RPC protocol.
-If this is not specified then a value generated by UUID v4 will be used.
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature-algorithm1737">
+    <span class="name" name="x509-certificate-get-signature-algorithm">x509-certificate-get-signature-algorithm</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return signature algorithm of given X.509 certificate object as an OID
+string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-public-key1738">
+    <span class="name" name="x509-certificate-get-public-key">x509-certificate-get-public-key</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return public key of given X.509 certificate object. The return value is
+<code>&lt;public-key&gt;</code> described in the section
+<a href="section76.html#crypto">(crypto) - Cryptographic library</a>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-string-&gt;json-request1712">
-    <span class="name" name="json-string-&gt;json-request">json-string-&gt;json-request</span>
-  </a> <span class="args">json</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-string-&gt;json-response1713">
-    <span class="name" name="json-string-&gt;json-response">json-string-&gt;json-response</span>
-  </a> <span class="args">json</span></div>
-<div class="desc">Creates JSON RPC request and response from given JSON string <var>json</var>.
+<p /><div class="define"><span class="define-category">Function</span><a name="verify1739">
+    <span class="name" name="verify">verify</span>
+  </a> <span class="args">x509 message signature
+  :key (verify pkcs1-emsa-v1.5-verify) (hash SHA-1)</span></div>
+<div class="desc"><var>message</var> and <var>signature</var> must be bytevector.
+<p />Verify given <var>message</var> with <var>signature</var> and <var>x509</var> certificate.
+<p />This procedure uses the <code>verify</code> procedure in <code>(crypto)</code> library. The
+keyword arguments will be passed to it. For more detail, see
+<a href="section76.html#crypto">(crypto) - Cryptographic library</a>.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1714"><span class="section-number">7.29.3</span>Accessors</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request-method1715">
-    <span class="name" name="json-request-method">json-request-method</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-request-params1716">
-    <span class="name" name="json-request-params">json-request-params</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-request-id1717">
-    <span class="name" name="json-request-id">json-request-id</span>
-  </a> <span class="args">json-request</span></div>
-<div class="desc">Retrieves JSON RPC request's method, params and id respectively from given
-json request object <var>json-request</var>.
+<p /><div class="define"><span class="define-category">Function</span><a name="check-validity1740">
+    <span class="name" name="check-validity">check-validity</span>
+  </a>
+ <span class="args">x509 :optional (date (current-date))</span></div>
+<div class="desc">Validate if the given certificate is valid in given <var>date</var>. Return #t
+if it's valid, otherwise raises <code>&amp;assertion</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-response-result1718">
-    <span class="name" name="json-response-result">json-response-result</span>
-  </a> <span class="args">json-response</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response-id1719">
-    <span class="name" name="json-response-id">json-response-id</span>
-  </a> <span class="args">json-response</span></div>
-<div class="desc">Retrieves JSON RPC response's result and id respectively from given
-json response object <var>json-response</var>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1720"><span class="section-number">7.29.4</span>Converters</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request-&gt;json-string1721">
-    <span class="name" name="json-request-&gt;json-string">json-request-&gt;json-string</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response-&gt;json-string1722">
-    <span class="name" name="json-response-&gt;json-string">json-response-&gt;json-string</span>
-  </a> <span class="args">json-response</span></div>
-<div class="desc">Converts given <var>json-request</var> and <var>json-response</var> to JSON string.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1723"><span class="section-number">7.29.5</span>Implemented methods</a>
-  </h4>
-<p />Following methods are currently used only in <code>(rpc http transport)</code>.
-When we support other transport, this implementation may change.
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1724"><span class="section-number">7.29.5.1</span>Message methods</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-marshall-message1725">
-    <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Converts to given JSON RPC request object to UTF8 bytes.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-unmarshall-message1726">
-    <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
-  </a> <span class="args">(type (eql 'json)) body</span></div>
-<div class="desc">Converts to given UTF8 bytes to JSON RPC response object.</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1727"><span class="section-number">7.29.5.2</span>Transport methods</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type1728">
-    <span class="name" name="rpc-http-content-type">rpc-http-content-type</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Returns <code>application/json</code> content type header value</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type1729">
-    <span class="name" name="rpc-http-response-type">rpc-http-response-type</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Returns <code>json</code> symbol.</div>
-<p />
-</section></section></section>
+
+</section>
   <div class="prev-next">
-    <a class="prev" href="section728.html">RPC support framework</a>
+    <a class="prev" href="section728.html">(rfc uuid) - UUID generate library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section730.html">(text csv) - Comma separated values parser library</a>
+    <a class="next" href="section730.html">(rfc zlib) - zlib compression library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
   </div>
 </html>

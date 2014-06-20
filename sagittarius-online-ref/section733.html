@@ -6,92 +6,130 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section732.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section732.html">(rpc json) - JSON RPC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section8.html">Ported libraries</a>
+    <a class="next" href="section734.html">(text html-lite) - Simple HTML document builder library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.tlv"><span class="section-number">7.33</span>(tlv) - TLV library</a>
+    <a class="section.anchor" name="text.csv"><span class="section-number">7.33</span>(text csv) - Comma separated values parser library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(tlv)1755">
-      <span class="name" name="(tlv)">(tlv)</span>
+    <a name="(text csv)1800">
+      <span class="name" name="(text csv)">(text csv)</span>
     </a>
   </div>
-<div class="desc">This library provides TLV (tag length value) data operation procedures.
+<div class="desc">This library provides comma separated values parser and write procedures.
+The implementation conforms RFC 4180.
 </div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1756"><span class="section-number">7.33.1</span>High level APIs</a>
+    <a class="section.anchor" name="G1801"><span class="section-number">7.33.1</span>High level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-emv-tlv-parser1757">
-    <span class="name" name="make-emv-tlv-parser">make-emv-tlv-parser</span>
-  </a>
- <span class="args">:key (object-builder tlv-builder)</span></div>
-<div class="desc">Creates EMV type TLV parser.
-<p />This procedure returns a procedure which accepts a binary port as its argument.
-<p />The keyword argument <code>object-builder</code> specifies how to construct a TLV
-object. The default value is <code>tlv-builder</code>.
+<p />The high level APIs are implemented as object oriented style. So we have CSV
+object and its accessors.
+<p /><div class="define"><span class="define-category">Function</span><a name="csv?1802">
+    <span class="name" name="csv?">csv?</span>
+  </a> <span class="args">object</span></div>
+<div class="desc">Returns #t if <var>object</var> is csv object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="csv-header1803">
+    <span class="name" name="csv-header">csv-header</span>
+  </a> <span class="args">(csv &lt;csv&gt;)</span></div>
+<div class="desc">Retrieves CSV header from given CSV object <var>csv</var> if it has, otherwise
+'().
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-object?1758">
-    <span class="name" name="tlv-object?">tlv-object?</span>
-  </a> <span class="args">o</span></div>
-<div class="desc">Returns #t if the given object is TLV object otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-tag1759">
-    <span class="name" name="tlv-tag">tlv-tag</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV tag of given TLV object <var>tlv</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-data1760">
-    <span class="name" name="tlv-data">tlv-data</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV binary data if the given TLV object <var>tlv</var> is not
-constructed, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-components1761">
-    <span class="name" name="tlv-components">tlv-components</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV components of given TLV object <var>tlv</var>. If the <var>tlv</var>
-is not constructed, this returns <code>()</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-&gt;bytevector1762">
-    <span class="name" name="tlv-&gt;bytevector">tlv-&gt;bytevector</span>
-  </a> <agrs>tlv</agrs></div>
-<div class="desc">Converts given TLV object <var>tlv</var> to bytevector.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="write-tlv1763">
-    <span class="name" name="write-tlv">write-tlv</span>
-  </a>
- <agrs>tlv :optional (out (current-output-port))</agrs></div>
-<div class="desc"><var>out</var> must be binary output port.
-<p />Writes given TLV object <var>tlv</var> to <var>out</var> as TLV data.
+<p /><div class="define"><span class="define-category">Generic</span><a name="csv-records1804">
+    <span class="name" name="csv-records">csv-records</span>
+  </a> <span class="args">(csv &lt;csv&gt;)</span></div>
+<div class="desc">Retrieves CSV records from given CSV object <var>csv</var> if it has, otherwise
+'().
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="dump-tlv1764">
-    <span class="name" name="dump-tlv">dump-tlv</span>
-  </a> <span class="args">:optional (out (current-output-port))</span></div>
-<div class="desc">Dump given TLV object <var>tlv</var> as human readable form.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1765"><span class="section-number">7.33.2</span>Custom object builder</a>
+<p /><div class="define"><span class="define-category">Generic</span><a name="csv-read1805">
+    <span class="name" name="csv-read">csv-read</span>
+  </a> <span class="args">(port &lt;port&gt;) . option</span>
+<div class="define"><span class="define-category">Generic</span><a name="csv-read1806">
+    <span class="name" name="csv-read">csv-read</span>
+  </a> <span class="args">(string &lt;string&gt;) . option</span>
+<div class="desc">Reads CSV data from given <var>port</var> and returns csv object.
+<p />If the second form is called, the procedure opens string input port from given
+<var>string</var> and passes it to the first form.
+<p />The <var>option</var> will be passed to <code>csv-&gt;list</code> described below.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="csv-write1807">
+    <span class="name" name="csv-write">csv-write</span>
+  </a>
+ <span class="args">(csv &lt;csv&gt;) :optional (out (current-output-port))</span></div>
+<div class="desc">Writes given CSV object <var>csv</var> to the output port <var>port</var>.</div>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G1808"><span class="section-number">7.33.2</span>Middle level APIs</a>
   </h4>
-<p />Sometimes default TLV object is not convenient to use. Then users can create
-own object from TLV data passing own object builder to the
-<code>make-emv-tlv-parser</code> procedure.
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-builder1766">
-    <span class="name" name="tlv-builder">tlv-builder</span>
-  </a> <span class="args">first-byte tag data constructed?</span></div>
-<div class="desc">Default TLV object builder. User should not use this procedure directly.
-<p /><var>first-byte</var> is the first byte of the leading TLV object.
-<p /><var>tag</var> is the read tag of the TLV object.
-<p /><var>data</var> is either a list of TLV object or bytevector. User can check it with
-<var>constructed?</var> argument.
-<p /><var>constructed?</var> indicates if the TLV object is constructed or not. If this is
-#t then <var>data</var> is a list of TLV objects.
+<p /><div class="define"><span class="define-category">Function</span><a name="csv-&gt;list1809">
+    <span class="name" name="csv-&gt;list">csv-&gt;list</span>
+  </a>
+ <span class="args">port :optional (first-line-is-header? #f)</span></div>
+<div class="desc">Reads CSV data from given input port <var>port</var> and returns alist
+representing CSV data.
+<p />If optional argument <var>first-line-is-header?</var> is #t, then the procedure reads
+the first line as header line.
+<p />The returning alist is following format;
+<p /><pre class="codeblock">alist  := (header{0,1} record*)
+header := (:header value*)
+record := (:record value*)
+value  := string
+</pre>
+<p />Note: the value returning from <code>csv-records</code> or <code>csv-header</code> do not
+have meta values <code>:record</code> and <code>:header</code>.
 </div>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G1810"><span class="section-number">7.33.3</span>Low level APIs</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<csv&gt;1811">
+      <span class="name" name="<csv&gt;">&lt;csv&gt;</span>
+    </a>
+  </div>
+<div class="desc">The class representing CSV. If you need to create empty CSV object, you
+can do like following code;
+<p /><pre class="snipet"><span class="snipet-code">(make &lt;csv&gt;)</span></pre>.
+<p />Make sure, you import <code>(clos user)</code> library.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="add-record!1812">
+    <span class="name" name="add-record!">add-record!</span>
+  </a> <span class="args">(csv &lt;csv&gt;) (list &lt;list&gt;)</span></div>
+<div class="desc">Adds a CSV representing record <var>list</var> to given CSV object <var>csv</var>.
+<p />The record must have <code>:record</code> keyword in the first element of the list.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="set-header!1813">
+    <span class="name" name="set-header!">set-header!</span>
+  </a> <span class="args">(csv &lt;csv&gt;) (list &lt;list&gt;)</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="set-header!1814">
+    <span class="name" name="set-header!">set-header!</span>
+  </a> <span class="args">(csv &lt;csv&gt;) (string &lt;string&gt;)</span></div>
+<div class="desc">Sets a CSV header <var>list</var> to given CSV object <var>csv</var>.
+<p />If the second form is called, then first parse the string to CSV header and
+calls the first form with parsed CSV header.
+<p />The <var>list</var> must have <code>:header</code> keyword in the first element of the
+list.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="add-records!1815">
+    <span class="name" name="add-records!">add-records!</span>
+  </a> <span class="args">(csv &lt;csv&gt;) (list &lt;list&gt;)</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="add-records!1816">
+    <span class="name" name="add-records!">add-records!</span>
+  </a> <span class="args">(csv &lt;csv&gt;) (string &lt;string&gt;)</span></div>
+<div class="desc">Convenient procedures.
+<p />Adds given CSV records <var>list</var> to given CSV object <var>csv</var>.
+<p />If the second form is called, then first parse the given string to CSV
+representing list and call the first form.
+</div>
+<p /></div></div>
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section732.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section732.html">(rpc json) - JSON RPC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section8.html">Ported libraries</a>
+    <a class="next" href="section734.html">(text html-lite) - Simple HTML document builder library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
   </div>
 </html>

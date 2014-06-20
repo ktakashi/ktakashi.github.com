@@ -6,225 +6,139 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section712.html">(math) - Mathematics library</a>
+    <a class="prev" href="section712.html">(util hashtables) - Hashtable utilities</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section714.html">(odbc) - ODBC binding</a>
+    <a class="next" href="section714.html">(math) - Mathematics library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="net.oauth"><span class="section-number">7.13</span>(net oauth) - OAuth library</a>
+    <a class="section.anchor" name="util.list"><span class="section-number">7.13</span>(util list) - Extra list utility library</a>
   </h3>
-<p />This section describes the APIs for OAuth. OAuth is new secure authentication
-method for web service. For more detail, see 
-<a href="http://oauth.net/">OAuth Community Site</a>.
-<p />The following example shows how to obtain an access token from Twitter.
-<p /><pre class="codeblock">(import (rnrs) (net oauth) (sagittarius control) (srfi :13 strings))
-;; obtain a request token.
-;; type consumer key and secret you have got issued by Twitter
-(define token (obtain-request-token
-	       "http://api.twitter.com/oauth/request_token"
-	       (make-consumer-token
-		:key "consumer key"
-		:secret "consumer secret")))
-<p />(define (get-pin url)
-  (print "Open the following url and type in the shown PIN.")
-  (print url)
-  (let loop ()
-    (display "Input PIN: ") (flush-output-port (current-output-port))
-    (let1 pin (get-line (current-input-port))
-      (cond ((eof-object? pin) #f)
-            ((string-null? pin) (loop))
-            (else pin)))))
-<p />(define (report token)
-  (print "(begin")
-  (print " (define consumer-key \"" (token-key (token-consumer token)) "\")")
-  (print " (define consumer-secret \""
-	 (token-secret (token-consumer token))"\")")
-  (print " (define access-token \""(token-key token)"\")")
-  (print " (define access-token-secret \""(token-secret token)"\")")
-  (print ")"))
-<p />(define (main args)
-  (let1 pin (get-pin (make-authorization-uri
-		      "http://api.twitter.com/oauth/authorize"
-		      token))
-    ;; authorize the request token manually.
-    (authorize-request-token token pin)
-    ;; obtain the access token
-    (let1 access-token (obtain-access-token 
-			"http://api.twitter.com/oauth/access_token"
-			token)
-      (report access-token))))
-</pre>
-<p />Now you get the access token to tweet, let's tweet something on Sagittarius:
-<pre class="codeblock">(import (rnrs) (srfi :26 cut) (text sxml ssax) (net oauth) (sagittarius io))
-(define consumer-key "your consumer key")
-(define consumer-secret "your consumer secret")
-(define access-token "your access token")
-(define access-token-secret "your access token secret")
-<p />;; creates an access token to tweet.
-(define access-token
-  (make-access-token :key access-token
-		     :secret access-token-secret
-		     :consumer
-		     (make-consumer-token
-		      :key consumer-key
-		      :secret consumer-secret)))
-<p />(define (call/twitter-api-&gt;sxml token method path params . opts)
-  (define (call)
-    (access-protected-resource 
-     (string-append "http://api.twitter.com" path)
-     token
-     :request-method method
-     :user-parameters params))
-  (define (retrieve body status hint advice)
-    (if hint (print hint))
-    (if advice (print advice))
-    (call-with-input-string body (cut ssax:xml-&gt;sxml &lt;&gt; '())))
-  (call-with-values call retrieve))
-<p />(define (twitter-update/sxml token message . opts)
-  (call/twitter-api-&gt;sxml 
-   token 'POST "/1/statuses/update.xml" 
-   `(("status" ,message))))
-<p />;; if you want to use this from command line.
-(import (getopt))
-<p />(define (main args)
-  (with-args args
-      ((message (#\m "message") #t (usage)))
-    (print (twitter-update/sxml access-token message))))
-</pre>
-<p />The examples explain basic flows. To obtain an access token, and access to
-protected resource with it.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(net oauth)1467">
-      <span class="name" name="(net oauth)">(net oauth)</span>
+    <a name="(util list)1441">
+      <span class="name" name="(util list)">(util list)</span>
     </a>
   </div>
-<div class="desc">This library provides OAuth 1.0 procedures. The API's names are compatible
-with cl-oauth.
+<div class="desc">This library provides extra list utility procedures.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="obtain-request-token1468">
-    <span class="name" name="obtain-request-token">obtain-request-token</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="for-each-with-index1442">
+    <span class="name" name="for-each-with-index">for-each-with-index</span>
+  </a> <span class="args">proc list1 list2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="map-with-index1443">
+    <span class="name" name="map-with-index">map-with-index</span>
+  </a> <span class="args">proc list1 list2 ...</span></div>
+<div class="desc">Like <code>for-each</code> and <code>map</code>, expect <var>proc</var> receives the index
+as the first argument.
+<p /><pre class="snipet"><span class="snipet-code">(map-with-index list '(a b c) '(e f g))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((0 a e) (1 b f) (2 c g))</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="intersperse1444">
+    <span class="name" name="intersperse">intersperse</span>
+  </a> <span class="args">item list</span></div>
+<div class="desc">Inserts <var>item</var> between elements in the <var>list</var>.
+<p /><pre class="snipet"><span class="snipet-code">(intersperse '+ '(1 2 3))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(1 + 2 + 3)</span></pre>
+<pre class="snipet"><span class="snipet-code">(intersperse '+ '(1))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(1)</span></pre>
+<pre class="snipet"><span class="snipet-code">(intersperse '+ '())</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">()</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="slices1445">
+    <span class="name" name="slices">slices</span>
+  </a> <span class="args">list k :optional fill? padding</span></div>
+<div class="desc">Splits <var>list</var> into the sublists (slices) where the length of each
+slice is <var>k</var>. If the length of <var>list</var> is not multiple of <var>k</var>, the
+last slice is dealt in the same way as <code>take*</code>; this is, it is shorter than
+<var>k</var> by default, or added <var>padding</var> if <var>fill?</var> is true.
+<p /><pre class="snipet"><span class="snipet-code">(slices '(a b c d e f g) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((a b c) (d e f) (g))</span></pre>
+<pre class="snipet"><span class="snipet-code">(slices '(a b c d e f g) 3 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((a b c) (d e f) (g z z))</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="split-at*1446">
+    <span class="name" name="split-at*">split-at*</span>
   </a>
- <span class="args">uri consumer-token :key (version :1.0) (user-parameters '())
- (timestamp (time-second (current-time))) (auth-location :header)
- (request-method 'POST) (callback-uri #f) (additional-headers '())
- (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
-<div class="desc"><var>uri</var> must be string and URI format.
-<p /><var>consumer-token</var> must be a consumer token object.
-<p />Obtains request token from given uri with given consumer token.
-<p />if the keyword arguments are specified:
-<p /><var>version</var> specifies which version uses. We only support 1.0 so this must not
-be specified.
-<p /><var>user-parameters</var> is an alist of the extra parameters to be sent to the
-server. This parameters are in the body message if the <var>request-method</var> is
-<code>POST</code> or query string if the <var>request-method</var> is <code>GET</code>.
-<p /><var>timestamp</var> specifies timestamp to send to the server. 
-<p /><var>auth-location</var> specifies the place where the authentication information
-located. This can be either <code>:header</code> or <code>:parameters</code>.
-<p /><var>request-method</var> specifies which request method is used. This can be either
-<code>GET</code> or <code>POST</code>. <code>POST</code> is recommended.
-<p /><var>callback-uri</var> specifies call back uri described in OAuth specification. If
-users don't use specific location to be redirected, this must not be specified.
-<p /><var>additional-headers</var> is alist of additional header to be sent to the server.
-<p /><var>signature-method</var> specifies which hash method is used. For now we only
-support <code>:hmac-sha1</code>.
-<p /><var>error-translator</var> specifies how to treat the error message sent by the
-server when error occurred. This must be a procedure which accepts 3 arguments,
-http status, headers and body respectively.
+ <span class="args">list k :optional (fill? #t) (padding #f)</span></div>
+<div class="desc">Splits the list <var>list</var> at index <var>k</var>. This is more tolerant version
+of <code>split-at</code> defined in SRFI-1 library. Returns the results of
+<code>take*</code> and <code>drop*</code>.
+<p /><pre class="snipet"><span class="snipet-code">(split-at* '(a b c d) 6 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d z z) and ()</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-authorization-uri1469">
-    <span class="name" name="make-authorization-uri">make-authorization-uri</span>
-  </a>
- <span class="args">uri request-token :key (version :1.0) (callback-uri #f)
- (user-parameters '())</span></div>
-<div class="desc"><var>uri</var> must be string and URI format.
-<p /><var>request-token</var> must be a request token retrieved by the procedure
-<code>obtain-request-token</code>.
-<p />Creates a authorization URI which user must agree.
-<p />The other keyword arguments are the same as <code>obtain-request-token</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="authorize-request-token1470">
-    <span class="name" name="authorize-request-token">authorize-request-token</span>
-  </a>
- <span class="args">request-token verificateion-code</span></div>
-<div class="desc"><var>request-token</var> must be a request token which retrieved by the
-procedure <code>obtain-request-token</code>.
-<p /><var>verificateion-code</var> must be a string returned by the URI generated by the
-procedure <code>make-authorization-uri</code>
-<p />Sets the given <var>verificateion-code</var> to the request token and authorized flag
-#t, manually.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="obtain-access-token1471">
-    <span class="name" name="obtain-access-token">obtain-access-token</span>
-  </a> 
- <span class="args">uri token :key (consumer-token (token-consumer token))
- (version :1.0) (user-parameters '())
- (timestamp (time-second (current-time))) (auth-location :header)
- (request-method 'POST) (callback-uri #f) (additional-headers '())
- (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
-<div class="desc"><var>uri</var> must a string URI formatted.
-<p /><var>token</var> must be either request token or access token.
-<p />Obtains access token from the given URI.
-<p />The keyword arguments <var>consumer-token</var> specifies which consumer token is
-used. And must the same one as when you request the request token.
-<p />The rest keyword arguments are the same as <code>obtain-request-token</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="access-protected-resource1472">
-    <span class="name" name="access-protected-resource">access-protected-resource</span>
-  </a>
- <span class="args">uri access-token :key (consumer-token (token-consumer access-token))
- (on-refresh #f)
- (version :1.0) (user-parameters '())
- (timestamp (time-second (current-time))) (auth-location :header)
- (request-method 'POST) (callback-uri #f) (additional-headers '())
- (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
-<div class="desc"><var>uri</var> must a string URI formatted.
-<p /><var>access-token</var> must be an access token which obtained by the procedure
-<code>obtain-access-token</code> or created by <code>make-access-token</code>.
-<p />Accesses to protected resource.
-<p />The keyword argument <var>on-refresh</var> is a hook for when token is expired and
-refreshed. It must accept be a procedure which accepts 1 argument that is a
-refreshed access token.
-<p />The rest keyword arguments are the same as the <code>obtain-request-token</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="oauth-uri-encode1473">
-    <span class="name" name="oauth-uri-encode">oauth-uri-encode</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Encodes given URI and make it OAuth required form.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="oauth-compose-query1474">
-    <span class="name" name="oauth-compose-query">oauth-compose-query</span>
-  </a> <span class="args">parameters</span></div>
-<div class="desc">Composes given alist to http query form and make it OAuth required form.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-consumer-token1475">
-    <span class="name" name="make-consumer-token">make-consumer-token</span>
-  </a>
- <span class="args">:key (key (random-key)) (secret random-secret) (user-data #f)
- (last-timestamp 0)</span></div>
-<div class="desc">Creates a consumer token.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-access-token1476">
-    <span class="name" name="make-access-token">make-access-token</span>
-  </a>
- <span class="args">:key (key (random-key)) (secret random-secret) (user-data #f)
- consumer (session-handle #f) (expires #f) (authorization-expires #f)
- (origin-uri #f)</span></div>
-<div class="desc">Creates a access token.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="token-consumer1477">
-    <span class="name" name="token-consumer">token-consumer</span>
-  </a> <span class="args">token</span></div>
-<div class="desc"><var>token</var> must be an access token or request token.
-<p />Retrieves consumer token from given <var>token</var>.
+<p />
+<div class="define"><span class="define-category">Function</span><a name="take*1447">
+    <span class="name" name="take*">take*</span>
+  </a> <span class="args">list k :optional (fill? #f) (padding #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="drop*1448">
+    <span class="name" name="drop*">drop*</span>
+  </a> <span class="args">list k</span></div>
+<div class="desc">More tolerant version of <code>take</code> and <code>drop</code> defined in SRFI-1
+library. These won't raise an error when <var>k</var> is larger than the size of the
+given list.
+<p />If the list is shorter than <var>k</var> elements, <code>take*</code> returns a copy of
+<var>list</var> by default. If <var>fill?</var> is true, <var>padding</var> is added to the
+result to make its length <var>k</var>.
+<p />On the other hand, <code>drop*</code> just returns as empty list when the input list
+is shorter than <var>k</var> elements.
+<p /><pre class="snipet"><span class="snipet-code">(take* '(a b c d) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c)</span></pre>
+<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d)</span></pre>
+<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6 #t)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d #f #f)</span></pre>
+<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d z z)</span></pre>
+<pre class="snipet"><span class="snipet-code">(drop* '(a b c d) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(d)</span></pre>
+<pre class="snipet"><span class="snipet-code">(drop* '(a b c d) 5)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">()</span></pre>
+<p /></div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="cond-list1449">
+    <span class="name" name="cond-list">cond-list</span>
+  </a> <span class="args">clause ...</span></div>
+<div class="desc">Construct a list by conditionally adding entries. Each <var>clause</var> must
+have a test and expressions. When its test yields true, then result of
+associated expression is used to construct the resulting list. When the test 
+yields false, nothing is inserted.
+<p /><var>Clause</var> must either one of the following form:
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <var>(test expr ...)</var>
+      </dt>
+      <dd class="dl-item-desc">	<var>Test</var> is evaluated, and when it is true, <var>expr ...</var> are
+	evaluated, and the return value becomes a part of the result. If no
+	<var>expr</var> is given, the result of test is used if it is not false.
+</dd>
+      <dt class="dl-item-title">
+        <var>(test =&gt; proc)</var>
+      </dt>
+      <dd class="dl-item-desc">	<var>Test</var> is evaluated, and if it is true, <var>proc</var> is called with
+	the value, and the return value is used to construct the result
+</dd>
+      <dt class="dl-item-title">
+        <var>(test   expr ...)</var>
+      </dt>
+      <dd class="dl-item-desc">	Like <code>(test expr ...)</code>, except that the result of the last
+	<var>expr</var> must be a list, and it is spliced into the resulting list,
+	like unquote-splicing.
+</dd>
+      <dt class="dl-item-title">
+        <var>(test =&gt;   proc)</var>
+      </dt>
+      <dd class="dl-item-desc">	Like <code>(test =&gt; proc)</code>, except that the result of the last
+	<var>proc</var> must be a list, and it is spliced into the resulting list,
+	like unquote-splicing.
+</dd>
+    </dl>
+  </div>
+<p /><pre class="codeblock">(let ((alist '((x 3) (y -1) (z 6))))
+ (cond-list ((assoc 'x alist) 'have-x)
+            ((assoc 'w alist) 'have-w)
+            ((assoc 'z alist) =&gt; cadr)))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(have-x 6)</span></pre>
+<p /><pre class="codeblock">(let ((x 2) (y #f) (z 5))
+  (cond-list (x   `(:x ,x))
+             (y   `(:y ,y))
+             (z   `(:z ,z))))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(:x 2 :z 5)</span></pre>
 </div>
 </section>
   <div class="prev-next">
-    <a class="prev" href="section712.html">(math) - Mathematics library</a>
+    <a class="prev" href="section712.html">(util hashtables) - Hashtable utilities</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section714.html">(odbc) - ODBC binding</a>
+    <a class="next" href="section714.html">(math) - Mathematics library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
   </div>
 </html>

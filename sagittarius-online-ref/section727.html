@@ -6,232 +6,171 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section726.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="prev" href="section726.html">(rfc tls) - TLS protocol library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section728.html">RPC support framework</a>
+    <a class="next" href="section728.html">(rfc uuid) - UUID generate library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.zlib"><span class="section-number">7.27</span>(rfc zlib) - zlib compression library</a>
+    <a class="section.anchor" name="rfc.uri"><span class="section-number">7.27</span>(rfc uri) - Parse and construct URIs</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc zlib)1671">
-      <span class="name" name="(rfc zlib)">(rfc zlib)</span>
+    <a name="(rfc uri)1689">
+      <span class="name" name="(rfc uri)">(rfc uri)</span>
     </a>
   </div>
-<div class="desc">This library provides the binding for zlib compression library. For now,
-it only provides the highest level APIs.
+<div class="desc">This library provides RFC3986 'URI Generic Syntax' procedures.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-parse1690">
+    <span class="name" name="uri-parse">uri-parse</span>
+  </a> <span class="args">uri</span></div>
+<div class="desc"><var>uri</var> must be string.
+<p />Parses given <var>uri</var> and returns following 7 values;
+<ul class="itemlist"><li class="itemlist-item">
+    <var>scheme</var>
+  </li>
+<li class="itemlist-item">
+    <var>user-info</var>
+  </li>
+<li class="itemlist-item">
+    <var>host</var>
+  </li>
+<li class="itemlist-item">
+    <var>port</var>
+  </li>
+<li class="itemlist-item">
+    <var>path</var>
+  </li>
+<li class="itemlist-item">
+    <var>query</var>
+  </li>
+<li class="itemlist-item">
+    <var>fragment</var>
+  </li>
+</ul>
+<p />Following examples are from RFC3986 text;
+<pre class="codeblock">   foo://example.com:8042/over/there?name=ferret#nose
+   \_/   \______________/\_________/ \_________/ \__/
+    |           |            |            |        |
+ scheme     authority       path        query   fragment
+    |   _____________________|__
+   / \ /                        \
+   urn:example:animal:ferret:nose
+</pre>
+<p />authority = [ <var>user-info</var> "@" ] <var>host</var> [ ":" <var>port</var> ]
+<p />If given <var>uri</var> does not contain the part described above, it will be #f.
+ex)
+<pre class="snipet"><span class="snipet-code">(uri-parse "http://localhost")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(values http #f localhost #f #f #f #f)</span></pre>
+<p /></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-scheme&amp;specific1691">
+    <span class="name" name="uri-scheme&amp;specific">uri-scheme&amp;specific</span>
+  </a> <span class="args">uri</span></div>
+<div class="desc"><var>uri</var> must be string.
+<p />Parse given <var>uri</var> into scheme and rest. Returns the 2 values.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decompose-hierarchical1692">
+    <span class="name" name="uri-decompose-hierarchical">uri-decompose-hierarchical</span>
+  </a> <span class="args">specific</span></div>
+<div class="desc"><var>specific</var> must be string.
+<p /><var>specific</var> is a URI without scheme. For example, the specific of following 
+URI 'http://localhost/foo.html' if '//localhost/foo.html'.
+<p />Parse given <var>specific</var> into 4 values <var>authority</var>, <var>path</var>,
+<var>query</var> and <var>fragment</var>.
+<p />If the <var>specific</var> does not contain the part, it will be #f.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decompose-authority1693">
+    <span class="name" name="uri-decompose-authority">uri-decompose-authority</span>
+  </a> <span class="args">authority</span></div>
+<div class="desc"><var>authority</var> must be string.
+<p />Parse given <var>authority</var> into  3 values, <var>user-info</var>, <var>host</var> and
+<var>post</var>.
+<p />If the <var>authority</var> does not contain the part, it will be #f.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decode1694">
+    <span class="name" name="uri-decode">uri-decode</span>
+  </a> <span class="args">in out :key (cgi-decode #f)</span></div>
+<div class="desc"><var>in</var> must be binary input port.
+<p /><var>out</var> must binary output port.
+<p />Reads and decodes given <var>in</var> and put the result into <var>out</var>.
+<p />If the keyword argument <var>cgi-decode</var> is #t, the procedure decodes
+<code>#x2b</code>('+') to <code>#x20</code>('#\space').
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decode-string1695">
+    <span class="name" name="uri-decode-string">uri-decode-string</span>
+  </a>
+ <span class="args">string :key (encoding 'utf-8) (cgi-decode #f)</span></div>
+<div class="desc">Decodes given <var>string</var> and returns decoded string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-encode1696">
+    <span class="name" name="uri-encode">uri-encode</span>
+  </a>
+ <span class="args">in out :key (noescape *rfc3986-unreserved-char-set*) (upper-case #t)</span></div>
+<div class="desc"><var>in</var> must be binary input port.
+<p /><var>out</var> must binary output port.
+<p />Reads and encodes given <var>in</var> and put the result into <var>out</var>.
+<p />The keyword argument <var>noescape</var> specifies which character must be escaped.
+<p />The keyword argument <var>upper-case</var> specifies the result case of encoded
+value. If the value is true value then it encodes to upper case (default),
+otherwise lower case.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-encode-string1697">
+    <span class="name" name="uri-encode-string">uri-encode-string</span>
+  </a>
+ <span class="args">string :key (encoding 'utf-8) :allow-other-keys</span></div>
+<div class="desc">Encodes given <var>string</var> and returns encoded string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-compose1698">
+    <span class="name" name="uri-compose">uri-compose</span>
+  </a>
+ <span class="args">:key (scheme #f) (userinfo #f) (host #f) (port #f) (authority #f)
+            (path #f) (path* #f) (query #f) (fragment #f) (specific #f)</span></div>
+<div class="desc">Composes URI from given arguments.
+<p />If all keyword arguments are #f, the procedure returns empty string.
+<p />The procedure put priority on bigger chunk of URI part. For example, if keyword
+argument <var>specific</var> is specified, the procedure uses only <var>scheme</var> and
+<var>specific</var>. Following describes the priority hierarchy;
+<pre class="codeblock"><var>scheme</var>
+<var>specific</var>
+  +- <var>authority</var>
+       +- <var>userinfo</var>
+       +- <var>host</var>
+       +- <var>port</var>
+  +- <var>path*</var>
+       +- <var>path</var>
+       +- <var>query</var>
+       +- <var>fragment</var>
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-merge1699">
+    <span class="name" name="uri-merge">uri-merge</span>
+  </a>
+ <span class="args">base-uri relative-uri1 relative-uri2 ...</span></div>
+<div class="desc">Merges given <var>relative-uris</var> to <var>base-uri</var> according to RFC 3986
+section 5.
 </div>
 <p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;zlib-error1672">
-      <span class="name" name="&amp;zlib-error">&amp;zlib-error</span>
+    <span class="define-category">Variable</span>
+    <a name="*rfc3986-unreserved-char-set*1700">
+      <span class="name" name="*rfc3986-unreserved-char-set*">*rfc3986-unreserved-char-set*</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="zlib-error?1673">
-    <span class="name" name="zlib-error?">zlib-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-zlib-stream1674">
-    <span class="name" name="condition-zlib-stream">condition-zlib-stream</span>
-  </a> <span class="args">zlib-error</span></div>
-<div class="desc">Subcondition of <code>&amp;error</code>.
-<p />This condition is raised when zlib process is finished unsuccessfully. You can
-obtain the cause z-stream with the <code>condition-zlib-stream</code> procedure and
-get the detail message with the <code>zlib-error-message</code> procedure. When error
-occurred, however, it is raised with <code>message-condition</code> and it has the
-error message with. So you can simply get it with <code>condition-message</code>
-procedure.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="zlib-error-message1675">
-    <span class="name" name="zlib-error-message">zlib-error-message</span>
-  </a> <span class="args">z-stream</span></div>
-<div class="desc"><var>Z-stream</var> must be z-stream object.
-<p />Retrieve error message from <var>z-stream</var>. If <var>z-stream</var> does not have any
-error message and this procedure is called, the behaviour is unspecified.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-deflating-output-port1676">
-    <span class="name" name="open-deflating-output-port">open-deflating-output-port</span>
-  </a>
- <span class="args">sink :key compression-level buffer-size window-bits memory-level
- strategy dictionary owner?</span></div>
-<div class="desc"><var>Sink</var> must be binary output port. Creates a custom binary output
-port. The port deflates its input and put the result to <var>sink</var>. With the
-optional keys, you can specify the following conditions:
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <var>compression-level</var>
-      </dt>
-      <dd class="dl-item-desc">You can specify an exact integer between 1 and 9 (inclusive) to
-<var>compression-level</var>. When it is omitted, a default compression level is
-used, which is usually 6.
-<p />The following constants are defined to specify <var>compression-level</var>
-conveniently:
 <div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_NO_COMPRESSION1677">
-          <span class="name" name="Z_NO_COMPRESSION">Z_NO_COMPRESSION</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_BEST_SPEED1678">
-          <span class="name" name="Z_BEST_SPEED">Z_BEST_SPEED</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_BEST_COMPRESSION1679">
-          <span class="name" name="Z_BEST_COMPRESSION">Z_BEST_COMPRESSION</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_DEFAULT_COMPRESSION1680">
-          <span class="name" name="Z_DEFAULT_COMPRESSION">Z_DEFAULT_COMPRESSION</span>
-        </a>
-      </div>
-</dd>
-      <dt class="dl-item-title">
-        <var>buffer-size</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies the buffer size of the port in bytes.
-The default is 4096.
-</dd>
-      <dt class="dl-item-title">
-        <var>window-bits</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies the size of the window in exact
-integer. Typically the value should be between 8 and 15, inclusive, and it
-specifies the base two logarithm of the window size used in compression. Larger
-number yields better compression ratio, but more memory usage. The default value
-is 15.
-</dd>
-      <dt class="dl-item-title">
-        <var>memory-level</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies how much memory should be allocated to
-keep the internal state during compression. 1 means smallest memory which causes
-slow and less compression. 9 means fastest and best compression with the largest
-amount of memory. The default value is 8.
-</dd>
-      <dt class="dl-item-title">
-        <var>strategy</var>
-      </dt>
-      <dd class="dl-item-desc">To fine tune compression algorithm, you can use the
-<var>strategy</var> argument. The following constants are defined as the valid value
-as <var>strategy</var>.
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_DEFAULT_STRATEGY1681">
-          <span class="name" name="Z_DEFAULT_STRATEGY">Z_DEFAULT_STRATEGY</span>
-        </a>
-      </div>
-<div class="desc">The default strategy, suitable for most ordinary data.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_FILTERED1682">
-          <span class="name" name="Z_FILTERED">Z_FILTERED</span>
-        </a>
-      </div>
-<div class="desc">Suitable for data generated by filters (or predictors). Filtered data
-consists mostly of small values with a somewhat compress them better. The
-effect of this is to force more huffman coding and less string matching.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_HUFFMAN_ONLY1683">
-          <span class="name" name="Z_HUFFMAN_ONLY">Z_HUFFMAN_ONLY</span>
-        </a>
-      </div>
-<div class="desc">Force to use huffman encoding only.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_RLE1684">
-          <span class="name" name="Z_RLE">Z_RLE</span>
-        </a>
-      </div>
-<div class="desc">This is designed to be almost as fast as Z_HUFFMAN_ONLY, but gives better
-compression for PNG image data.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_FIXED1685">
-          <span class="name" name="Z_FIXED">Z_FIXED</span>
-        </a>
-      </div>
-<div class="desc">This prevents the use of dynamic huffman codes, allowing for a simpler
-decoder for special applications.</div>
-The choice of <var>strategy</var> only affects compression ratio and speed. Any
-choice produces correct and decompressable data.
-</dd>
-      <dt class="dl-item-title">
-        <var>dictionary</var>
-      </dt>
-      <dd class="dl-item-desc">You can give an initial dictionary to the
-<var>dictionary</var> argument to be used in compression. The compressor and
-decompressor must use exactly the same dictionary.
-</dd>
-      <dt class="dl-item-title">
-        <var>owner?</var>
-      </dt>
-      <dd class="dl-item-desc">If this argument is specified true value, the created
-port automatically closes the given output port <var>sink</var> when it is closed.
-</dd>
-    </dl>
+    <span class="define-category">Variable</span>
+    <a name="*rfc2396-unreserved-char-set*1701">
+      <span class="name" name="*rfc2396-unreserved-char-set*">*rfc2396-unreserved-char-set*</span>
+    </a>
   </div>
-<p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-inflating-input-port1686">
-    <span class="name" name="open-inflating-input-port">open-inflating-input-port</span>
-  </a>
- <span class="args">source :key buffer-size window-bits dictionary owner?</span></div>
-<div class="desc"><var>Source</var> must be a binary input port.
-<p />The <code>open-inflating-input-port</code> creates a custom binary input port, which
-reads compressed binary data from the given port <var>source</var> and decompresses
-the read data. When <var>source</var> port supports both <code>port-position</code> and
-<code>set-port-position!</code> then the procedure will set <var>source</var> position
-to offset of used bytes length when the created custom port is being closed.
-Thus if the <var>source</var> port contains mixture of deflated data and non
-deflated data then the custom port will only read deflated data and won't
-forward the original port position beyond it no matter how big the
-<var>buffer-size</var> is specified.
-<p />The meaning of <var>buffer-size</var> is the same as
- <code>open-deflating-output-port</code>.
-<p />The meaning of <var>window-bits</var> is almost the same, except if a value increased
-by 32 is given, the inflating port automatically detecs whether the source
-stream is zlib or gzip by its header.
-<p />If the input data is compressed with specified dictionary, the same dictionary
-must be given to <var>dictionary</var> argument. Otherwise &amp;zlib-error condition is
-raised.
+<div class="desc">Charsets which contains no escape needed characters.
+<p />There is slight difference between RFC2396 and RFC3986. This library uses
+RFC3986 charset by default to encode.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="inflate-bytevector1687">
-    <span class="name" name="inflate-bytevector">inflate-bytevector</span>
-  </a> <span class="args">bv opts ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deflate-bytevector1688">
-    <span class="name" name="deflate-bytevector">deflate-bytevector</span>
-  </a> <span class="args">bv opts ...</span></div>
-<div class="desc">Inflate/deflate given bytevector <var>bv</var> respectively.
-<p />These are convenient procedures. It uses <code>open-inflating-input-port</code> or
-<code>open-deflating-output-port</code> to inflate/deflate.
-<p />The <var>opts</var> will be passed to underlying procedures.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="crc321689">
-    <span class="name" name="crc32">crc32</span>
-  </a> <span class="args">bv :optional (checksum 0)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="adler321690">
-    <span class="name" name="adler32">adler32</span>
-  </a> <span class="args">bv :optional (checksum 0)</span></div>
-<div class="desc">Returns CSC32/Adler32 checksum of bytevector <var>bv</var>, respectively.
-<p />If optional <var>checksum</var> is given, then returned checksum is an update of
-<var>checksum</var> by <var>bv</var>.
-</div>
+
 </section>
   <div class="prev-next">
-    <a class="prev" href="section726.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="prev" href="section726.html">(rfc tls) - TLS protocol library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section728.html">RPC support framework</a>
+    <a class="next" href="section728.html">(rfc uuid) - UUID generate library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
   </div>
 </html>

@@ -6,168 +6,74 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section723.html">(rfc tls) - TLS protocol library</a>
+    <a class="prev" href="section723.html">(rfc pem) - PEM format  library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section725.html">(rfc uuid) - UUID generate library</a>
+    <a class="next" href="section725.html">(rfc sftp) - SFTP library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.uri"><span class="section-number">7.24</span>(rfc uri) - Parse and construct URIs</a>
+    <a class="section.anchor" name="rfc.quoted-printable"><span class="section-number">7.24</span>(rfc quoted-printable) - Base 64 encode and decode library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc uri)1619">
-      <span class="name" name="(rfc uri)">(rfc uri)</span>
+    <a name="(rfc quoted-printable)1621">
+      <span class="name" name="(rfc quoted-printable)">(rfc quoted-printable)</span>
     </a>
   </div>
-<div class="desc">This library provides RFC3986 'URI Generic Syntax' procedures.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-parse1620">
-    <span class="name" name="uri-parse">uri-parse</span>
-  </a> <span class="args">uri</span></div>
-<div class="desc"><var>uri</var> must be string.
-<p />Parses given <var>uri</var> and returns following 7 values;
-<ul class="itemlist"><li class="itemlist-item">
-    <var>scheme</var>
-  </li>
-<li class="itemlist-item">
-    <var>user-info</var>
-  </li>
-<li class="itemlist-item">
-    <var>host</var>
-  </li>
-<li class="itemlist-item">
-    <var>port</var>
-  </li>
-<li class="itemlist-item">
-    <var>path</var>
-  </li>
-<li class="itemlist-item">
-    <var>query</var>
-  </li>
-<li class="itemlist-item">
-    <var>fragment</var>
-  </li>
-</ul>
-<p />Following examples are from RFC3986 text;
-<pre class="codeblock">   foo://example.com:8042/over/there?name=ferret#nose
-   \_/   \______________/\_________/ \_________/ \__/
-    |           |            |            |        |
- scheme     authority       path        query   fragment
-    |   _____________________|__
-   / \ /                        \
-   urn:example:animal:ferret:nose
-</pre>
-<p />authority = [ <var>user-info</var> "@" ] <var>host</var> [ ":" <var>port</var> ]
-<p />If given <var>uri</var> does not contain the part described above, it will be #f.
-ex)
-<pre class="snipet"><span class="snipet-code">(uri-parse "http://localhost")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(values http #f localhost #f #f #f #f)</span></pre>
-<p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-scheme&amp;specific1621">
-    <span class="name" name="uri-scheme&amp;specific">uri-scheme&amp;specific</span>
-  </a> <span class="args">uri</span></div>
-<div class="desc"><var>uri</var> must be string.
-<p />Parse given <var>uri</var> into scheme and rest. Returns the 2 values.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-decompose-hierarchical1622">
-    <span class="name" name="uri-decompose-hierarchical">uri-decompose-hierarchical</span>
-  </a> <span class="args">specific</span></div>
-<div class="desc"><var>specific</var> must be string.
-<p /><var>specific</var> is a URI without scheme. For example, the specific of following 
-URI 'http://localhost/foo.html' if '//localhost/foo.html'.
-<p />Parse given <var>specific</var> into 4 values <var>authority</var>, <var>path</var>,
-<var>query</var> and <var>fragment</var>.
-<p />If the <var>specific</var> does not contain the part, it will be #f.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-decompose-authority1623">
-    <span class="name" name="uri-decompose-authority">uri-decompose-authority</span>
-  </a> <span class="args">authority</span></div>
-<div class="desc"><var>authority</var> must be string.
-<p />Parse given <var>authority</var> into  3 values, <var>user-info</var>, <var>host</var> and
-<var>post</var>.
-<p />If the <var>authority</var> does not contain the part, it will be #f.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-decode1624">
-    <span class="name" name="uri-decode">uri-decode</span>
-  </a> <span class="args">in out :key (cgi-decode #f)</span></div>
-<div class="desc"><var>in</var> must be binary input port.
-<p /><var>out</var> must binary output port.
-<p />Reads and decodes given <var>in</var> and put the result into <var>out</var>.
-<p />If the keyword argument <var>cgi-decode</var> is #t, the procedure decodes
-<code>#x2b</code>('+') to <code>#x20</code>('#\space').
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-decode-string1625">
-    <span class="name" name="uri-decode-string">uri-decode-string</span>
+<div class="desc">This library provides quoted printable encoding and decoding procedures.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1622"><span class="section-number">7.24.1</span>Encoding procedures</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-encode1623">
+    <span class="name" name="quoted-printable-encode">quoted-printable-encode</span>
   </a>
- <span class="args">string :key (encoding 'utf-8) (cgi-decode #f)</span></div>
-<div class="desc">Decodes given <var>string</var> and returns decoded string.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-encode1626">
-    <span class="name" name="uri-encode">uri-encode</span>
-  </a>
- <span class="args">in out :key (noescape *rfc3986-unreserved-char-set*)</span></div>
-<div class="desc"><var>in</var> must be binary input port.
-<p /><var>out</var> must binary output port.
-<p />Reads and encodes given <var>in</var> and put the result into <var>out</var>.
-<p />The keyword argument <var>noescape</var> specifies which character must be escaped.
+ <span class="args">bv :key (line-width 76) (binary? #f)</span></div>
+<div class="desc"><var>bv</var> must be a bytevector.
+<p />Encodes given bytevector to quoted printable encoded bytevector.
+<p />The keyword argument <var>line-width</var> specifies where the encode procedure
+should put linefeed. If this is less than 1 or #f, encoder does not put
+linefeed.
+<p />If the keyword argument <var>binary?</var> is not #f, then the procedure encodes
+#x0a and #x0b to <code>=0A</code> and <code>=0D</code> respectively.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-encode-string1627">
-    <span class="name" name="uri-encode-string">uri-encode-string</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-encode-string string1624">
+    <span class="name" name="quoted-printable-encode-string string">quoted-printable-encode-string string</span>
   </a>
- <span class="args">string :key (encoding 'utf-8) :allow-other-keys</span></div>
-<div class="desc">Encodes given <var>string</var> and returns encoded string.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-compose1628">
-    <span class="name" name="uri-compose">uri-compose</span>
+ <span class="args">:key (line-width 76) transcoder (binary? #f)</span></div>
+<div class="desc">Convenient procedure for string.
+<p />Encodes given <var>string</var> to quoted printable encoded string.
+<p />The keyword argument <var>transcoder</var> is used to convert given string to
+bytevector. The converted bytevector will be passed to the
+<code>quoted-printable-encode</code> procedure. The default is utf-8 codec with
+NONE eol style.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1625"><span class="section-number">7.24.2</span>Decoding procedures</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-decode1626">
+    <span class="name" name="quoted-printable-decode">quoted-printable-decode</span>
+  </a> <span class="args">bv</span></div>
+<div class="desc"><var>bv</var> must be a bytevector.
+<p />Decode quoted printable encoded bytevector to original bytevector.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-decode-string1627">
+    <span class="name" name="quoted-printable-decode-string">quoted-printable-decode-string</span>
   </a>
- <span class="args">:key (scheme #f) (userinfo #f) (host #f) (port #f) (authority #f)
-            (path #f) (path* #f) (query #f) (fragment #f) (specific #f)</span></div>
-<div class="desc">Composes URI from given arguments.
-<p />If all keyword arguments are #f, the procedure returns empty string.
-<p />The procedure put priority on bigger chunk of URI part. For example, if keyword
-argument <var>specific</var> is specified, the procedure uses only <var>scheme</var> and
-<var>specific</var>. Following describes the priority hierarchy;
-<pre class="codeblock"><var>scheme</var>
-<var>specific</var>
-  +- <var>authority</var>
-       +- <var>userinfo</var>
-       +- <var>host</var>
-       +- <var>port</var>
-  +- <var>path*</var>
-       +- <var>path</var>
-       +- <var>query</var>
-       +- <var>fragment</var>
-</pre>
+ <span class="args">string :key (transcoder (native-transcoder))</span></div>
+<div class="desc">Convenient procedure.
+<p />Decode quoted printable encoded string to original string. The procedure is
+using <code>quoted-printable-decode</code>.
+<p />The keyword argument specifies how to convert the decoded bytevector to string.
+If this is #f, the procedure returns raw bytevector.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-merge1629">
-    <span class="name" name="uri-merge">uri-merge</span>
-  </a>
- <span class="args">base-uri relative-uri1 relative-uri2 ...</span></div>
-<div class="desc">Merges given <var>relative-uris</var> to <var>base-uri</var> according to RFC 3986
-section 5.
-</div>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="*rfc3986-unreserved-char-set*1630">
-      <span class="name" name="*rfc3986-unreserved-char-set*">*rfc3986-unreserved-char-set*</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="*rfc2396-unreserved-char-set*1631">
-      <span class="name" name="*rfc2396-unreserved-char-set*">*rfc2396-unreserved-char-set*</span>
-    </a>
-  </div>
-<div class="desc">Charsets which contains no escape needed characters.
-<p />There is slight difference between RFC2396 and RFC3986. This library uses
-RFC3986 charset by default to encode.
-</div>
-
-</section>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section723.html">(rfc tls) - TLS protocol library</a>
+    <a class="prev" href="section723.html">(rfc pem) - PEM format  library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section725.html">(rfc uuid) - UUID generate library</a>
+    <a class="next" href="section725.html">(rfc sftp) - SFTP library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
   </div>
 </html>

@@ -6,108 +6,70 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section719.html">(rfc hmac) - HMAC library</a>
+    <a class="prev" href="section719.html">(rfc :5322) - Internet message format library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section721.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="next" href="section721.html">(rfc cmac) - CMAC library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.pem"><span class="section-number">7.20</span>(rfc pem) - PEM format  library</a>
+    <a class="section.anchor" name="rfc.base64"><span class="section-number">7.20</span>(rfc base64) - Base 64 encode and decode library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc pem)1543">
-      <span class="name" name="(rfc pem)">(rfc pem)</span>
+    <a name="(rfc base64)1602">
+      <span class="name" name="(rfc base64)">(rfc base64)</span>
     </a>
   </div>
-<div class="desc">This library provides PEM format file parser.
-<p />Currently only supports RFC 1421 format.
-</div>
+<div class="desc">This library provides Base 64 encoding and decoding procedures.</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1544"><span class="section-number">7.20.1</span>Conditions</a>
+    <a class="section.anchor" name="G1603"><span class="section-number">7.20.1</span>Encoding procedures</a>
   </h4>
-<p />This library defines these conditions.
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;pem-error1545">
-      <span class="name" name="&amp;pem-error">&amp;pem-error</span>
-    </a>
-  </div>
-<div class="desc">Super condition of all PEM file process related conditions.</div>
-<div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;invalid-pem-format1546">
-      <span class="name" name="&amp;invalid-pem-format">&amp;invalid-pem-format</span>
-    </a>
-  </div>
-<div class="desc">This condition indicates, given PEM file contains invalid format.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1547"><span class="section-number">7.20.2</span>Operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem1548">
-    <span class="name" name="parse-pem">parse-pem</span>
-  </a>
- <span class="args">in :key (multiple #f) (builder #f) (asn1 #f)</span></div>
-<div class="desc"><var>in</var> must be textual input port.
-<p />Parses given input port <var>in</var> and returns 2 values, parameter alist and
-decoded bytevector.
-<p />Keyword arguments
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>multiple</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure returns a list which
-    contains alist of parameter and content.
-<p />    This parameter is useful for the PEM files which contains multiple contents.
-  </dd>
-      <dt class="dl-item-title">
-        <code>builder</code>
-      </dt>
-      <dd class="dl-item-desc">    This keyword argument must take a procedure which accept one argument or
-    #f. If <var>builder</var> is specified then the given procedure will be called
-    to build then contents of the PEM.
-<p />    This argument is not correspond with <var>asn1</var> keyword argument and has
-    higher priority. So if both arguments are specified, then <var>builder</var>
-    will be used.
-  </dd>
-      <dt class="dl-item-title">
-        <code>asn1</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure converts BASE64
-    bytevector to ASN.1 object defined in <code>(asn.1)</code> library.
-  </dd>
-    </dl>
-  </div>
-<p />The procedure may raise following condition.
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>&amp;invalid-pem-format</code>
-      </dt>
-      <dd class="dl-item-desc">    When given <var>in</var> contains invalid PEM format.
-  </dd>
-    </dl>
-  </div>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode1604">
+    <span class="name" name="base64-encode">base64-encode</span>
+  </a> <span class="args">in :key (line-width 76)</span></div>
+<div class="desc"><var>in</var> must be a bytevector or binary input port.
+<p />Encodes given input <var>in</var> to Base 64 encoded bytevector.
+<p />The keyword argument <var>line-width</var> specifies where the encode procedure
+should put linefeed. If this is less than 1 or #f, encoder does not put
+linefeed.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem-file1549">
-    <span class="name" name="parse-pem-file">parse-pem-file</span>
-  </a> <span class="args">file :rest options</span></div>
-<div class="define"><span class="define-category">Function</span><a name="parse-pem-string1550">
-    <span class="name" name="parse-pem-string">parse-pem-string</span>
-  </a> <span class="args">pem-string :rest options</span></div>
-<div class="desc">Convenient procedures.
-<p />Parse given file and PEM string, respectively.
-<p /><var>option</var> will be passed to the <code>parse-pem</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode-string1605">
+    <span class="name" name="base64-encode-string">base64-encode-string</span>
+  </a>
+ <span class="args">string :key (line-width 76) (transcoder (native-transcoder))</span></div>
+<div class="desc">Convenient procedure for string.
+<p />Encodes given <var>string</var> to Base 64 encoded string.
+<p />The keyword argument <var>transcoder</var> is used to convert given string to
+bytevector. The converted bytevector will be passed to the <code>base64-encode</code>
+procedure.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1606"><span class="section-number">7.20.2</span>Decoding procedures</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode1607">
+    <span class="name" name="base64-decode">base64-decode</span>
+  </a> <span class="args">in</span></div>
+<div class="desc"><var>in</var> must be a bytevector or binary input port.
+<p />Decode Base 64 encoded input <var>in</var> to original bytevector.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode-string1608">
+    <span class="name" name="base64-decode-string">base64-decode-string</span>
+  </a>
+ <span class="args">string :key (transcoder (native-transcoder))</span></div>
+<div class="desc">Convenient procedure.
+<p />Decode Base 64 encoded string to original string. The procedure is using
+<code>base64-decode</code>.
+<p />The keyword argument specifies how to convert the decoded bytevector to string.
+If this is #f, the procedure returns raw bytevector.
 </div>
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section719.html">(rfc hmac) - HMAC library</a>
+    <a class="prev" href="section719.html">(rfc :5322) - Internet message format library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section721.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="next" href="section721.html">(rfc cmac) - CMAC library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
   </div>
 </html>

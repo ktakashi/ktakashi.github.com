@@ -8,222 +8,250 @@
   <div class="prev-next">
     <a class="prev" href="section78.html">(dbm) - Generic DBM interface</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section710.html">(getopt) - Parsing command-line options</a>
+    <a class="next" href="section710.html">(util file) - File operation utility library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.file"><span class="section-number">7.9</span>(util file) - File operation utility library</a>
+    <a class="section.anchor" name="util.deque"><span class="section-number">7.9</span>(util deque) - Deque</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util file)1377">
-      <span class="name" name="(util file)">(util file)</span>
+    <a name="(util deque)1378">
+      <span class="name" name="(util deque)">(util deque)</span>
     </a>
   </div>
-<div class="desc">This library provides file operation utilities which is not exported from
-<code>(sagittarius)</code> library.
+<div class="desc">This library provides deque (double-ended queue) data structure and
+its operations.
+<p />You can create a simple deque, which is not thread-safe, or an MT deque, a
+thread-safe deque. Basic deque operations work on both type of deques. When
+a mtdeque is passed to the procedures listed in this section, each operation
+is done in atomic way, unless otherwise noted.
+<p />There are also a set of procedures for mtdeques that can be used for thread
+synchronisation; for example, you can let the consumer thread block if an
+mtdeque is empty, and/or the producer thread block if the number of items in
+the mtdeque reaches a specified limit. Using these procedures allows the
+program to use an mtdeque as a <var>channel</var>.
+<p />NOTE: <a href="section718.html#util.queue">(util queue)</a> is implemented using this library.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1378"><span class="section-number">7.9.1</span>File to Scheme object operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;list1379">
-    <span class="name" name="file-&gt;list">file-&gt;list</span>
-  </a>
- <span class="args">reader path :key (transcoder (native-transcoder))</span></div>
-<div class="desc"><var>reader</var> must be a procedure accept one argument which is a port.
-<var>path</var> must be a string indicating existing file.
-<p />Returns a list which elements are read by <var>reader</var> from the given <var>path</var>
-file. <var>reader</var> reads the file contents until it reads EOF object.
-<p />The keyword argument <var>transcoder</var> can specify which transcoder will be used
-to open a port. It must be either #f or transcoder. The default value is the
-value <code>(native-transcoder)</code> returns.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;sexp-list1380">
-    <span class="name" name="file-&gt;sexp-list">file-&gt;sexp-list</span>
-  </a> <span class="args">path</span></div>
-<div class="define"><span class="define-category">Function</span><a name="file-&gt;string-list1381">
-    <span class="name" name="file-&gt;string-list">file-&gt;string-list</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Thin wrapper of <code>file-&gt;list</code>. The procedures defined as following;
-<p /><pre class="snipet"><span class="snipet-code">(file-&gt;list <code>read/ss</code> <var>path</var>)</span></pre>
-<pre class="snipet"><span class="snipet-code">(file-&gt;list <code>get-line</code> <var>path</var>)</span></pre>
-<p />respectively.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;string1382">
-    <span class="name" name="file-&gt;string">file-&gt;string</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Reads all file contents indicated <var>path</var> as a string and return it.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;bytevector1383">
-    <span class="name" name="file-&gt;bytevector">file-&gt;bytevector</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Reads all file contents indicated <var>path</var> as a bytevector and return
- it.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1384"><span class="section-number">7.9.2</span>Temporary directory operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="temporary-directory1385">
-    <span class="name" name="temporary-directory">temporary-directory</span>
-  </a> <span class="args">:optional path</span></div>
-<div class="desc">Returns operating system specific temporary directory path.
-<p />If optional argument <var>path</var> is given, the procedure replace the temporary 
-directory path.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-temporary-file1386">
-    <span class="name" name="make-temporary-file">make-temporary-file</span>
-  </a> <span class="args">:optional prefix</span></div>
-<div class="desc">Creates temporary file and returns 2 values. One is the port, the other
-one is created file path.
-<p />The created temporary file won't be deleted automatically so it is users
-responsibility to delete.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1387"><span class="section-number">7.9.3</span>Path operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="decompose-path1388">
-    <span class="name" name="decompose-path">decompose-path</span>
-  </a> <span class="args">path</span></div>
-<div class="desc"><var>path</var> must be a string.
-<p />Decompose the given <var>path</var> to directory path, base name, and extension then
-returns these decomposed elements as 3 values.
-<p />The returning value can be #f if the path does not contains corresponding
-element.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="path-extension1389">
-    <span class="name" name="path-extension">path-extension</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Returns the extension of given <var>path</var>. If it does not contains
-extension then the procedure returns #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="path-sans-extension1390">
-    <span class="name" name="path-sans-extension">path-sans-extension</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Removes extension from given <var>path</var> and return it.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="path-basename1391">
-    <span class="name" name="path-basename">path-basename</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Returns the basename of given <var>path</var>. If it does not contains
-basename then the procedure returns #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="find-files1392">
-    <span class="name" name="find-files">find-files</span>
-  </a>
- <span class="args">target :key (pattern #f) (all #t) (sort string&lt;=?) (recursive #t)</span></div>
-<div class="desc"><var>target</var> must be a string indicating existing file system path.
-<p />Find files from <var>target</var> if it's a directory and return the found files as
-a list.
-<p />Keyword arguments:
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">pattern</dt>
-      <dd class="dl-item-desc">Specifies the file pattern to be returned. This can be
-either string or regular expression pattern object.</dd>
-      <dt class="dl-item-title">all</dt>
-      <dd class="dl-item-desc">When this keyword argument is #t, then returns all files
-including hidden files which file name starting with <code>.</code>. If this is #f,
-the procedure excludes hidden files.</dd>
-      <dt class="dl-item-title">physical</dt>
-      <dd class="dl-item-desc">If this is #t, then the <var>proc</var> is only given either
-<code>directory</code> or <code>file</code>. No symbolic likes are given.</dd>
-      <dt class="dl-item-title">sort</dt>
-      <dd class="dl-item-desc">This specifies how to sort the result list. If the value is #f,
-then the result order is unspecified.</dd>
-      <dt class="dl-item-title">recursive</dt>
-      <dd class="dl-item-desc">If this keyword argument is #t then the procedure finds
-files recursively, otherwise only the first <var>target</var> directory.</dd>
-    </dl>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<deque&gt;1379">
+      <span class="name" name="<deque&gt;">&lt;deque&gt;</span>
+    </a>
   </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="path-for-each1393">
-    <span class="name" name="path-for-each">path-for-each</span>
-  </a>
- <span class="args">path proc :key (physical #t) (file-only #f) (absolute-path #t)
- (stop-on-file #f) (all #t) (recursive #t)</span></div>
-<div class="desc"><var>path</var> must be a string indicating existing file path. <var>proc</var>
-must be a procedure accepts 2 arguments, a path string and a symbol. The given
-symbol can be <code>directory</code>, <code>symbolic-link</code> or <code>file</code>.
-<p />Apply given <var>proc</var> to the found paths starting from <var>path</var> and returns
-unspecified value. The second argument of <var>proc</var> indicates the file type
-with following meaning;
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>directory</code>
-      </dt>
-      <dd class="dl-item-desc">The path is a directory.</dd>
-      <dt class="dl-item-title">
-        <code>symbolic-link</code>
-      </dt>
-      <dd class="dl-item-desc">The path is a symbolic link.</dd>
-      <dt class="dl-item-title">
-        <code>file</code>
-      </dt>
-      <dd class="dl-item-desc">The path is a file</dd>
-    </dl>
+<div class="desc">A class of simple deque. </div>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<mtdeque&gt;1380">
+      <span class="name" name="<mtdeque&gt;">&lt;mtdeque&gt;</span>
+    </a>
   </div>
-<p />The keyword arguments:
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">file-only</dt>
-      <dd class="dl-item-desc">If this is #t, then the <var>proc</var> is only given a file.
-Otherwise all file types.</dd>
-      <dt class="dl-item-title">absolute-path</dt>
-      <dd class="dl-item-desc">If this is #t, then the <var>proc</var> is given absolute
-path. Otherwise only the filename.</dd>
-      <dt class="dl-item-title">stop-on-false</dt>
-      <dd class="dl-item-desc">If this is #t, then when <var>proc</var> returns #f the
-process will stop. Otherwise it continues the process.</dd>
-    </dl>
+<div class="desc">A class of mtdeque. Inherits <code>&lt;deque&gt;</code>.</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="make-deque1381">
+      <span class="name" name="make-deque">make-deque</span>
+    </a>
   </div>
-The rest of the keyword arguments are the same as <code>find-files</code>.
+<div class="desc">Creates and return an empty simple deque.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-mtdeque1382">
+    <span class="name" name="make-mtdeque">make-mtdeque</span>
+  </a> <span class="args">:key max-length</span></div>
+<div class="desc">Creates and return an empty mtdeque.
+<p />The keyword argument <var>max-length</var> specifies the maximum entry count of
+the deque. Negative number indicates unlimited number of entry. If the given
+number is zero then the deque cannot hold any item.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="path-map1394">
-    <span class="name" name="path-map">path-map</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="deque?1383">
+    <span class="name" name="deque?">deque?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is a deque (either a simple deque or an mtdeque).</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="deque?1384">
+    <span class="name" name="deque?">deque?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is an mtdeque.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="deque-empty?1385">
+    <span class="name" name="deque-empty?">deque-empty?</span>
+  </a> <span class="args">deque</span></div>
+<div class="desc">Returns #t if <var>deque</var> is an empty deque.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="deque-length1386">
+    <span class="name" name="deque-length">deque-length</span>
+  </a> <span class="args">deque</span></div>
+<div class="desc">Returns the number of the items in the deque.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mtdeque-max-length1387">
+    <span class="name" name="mtdeque-max-length">mtdeque-max-length</span>
+  </a> <span class="args">mtdeque</span></div>
+<div class="desc">Returns the maximum number of items <var>mtdeque</var> can hold. 
+#f indicates unlimited.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mtdeque-room1388">
+    <span class="name" name="mtdeque-room">mtdeque-room</span>
+  </a> <span class="args">mtdeque</span></div>
+<div class="desc">Returns the number of elements <var>mtdeque</var> can accept at this moment
+before it hits its maximum length. If the deque has unlimited capacity then
+the procedure returns <code>+inf.0</code>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="copy-deque1389">
+    <span class="name" name="copy-deque">copy-deque</span>
+  </a> <span class="args">deque</span></div>
+<div class="desc">Returns a copy of <var>deque</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="deque-push!1390">
+    <span class="name" name="deque-push!">deque-push!</span>
+  </a> <span class="args">deque obj more-objs ...</span></div>
+<div class="desc">Adds <var>obj</var> to the end of  <var>deque</var>. You may give more than
+one object, and each of them are pushed in order.
+<p />If <var>deque</var> is an mtdeque, all the objects are pushed atomically; no
+other objects from other threads can be inserted between the objects given
+to a single <code>deque-push!</code> call. Besides, if the value of the result of
+<code>mtdeque-max-length</code> is positive, and adding <var>objs</var> makes the
+number of element in <var>deque</var> exceeds it, an error is raised and 
+<var>deque</var> won't be modified. (If the maximum length is zero, this procedure
+always fail. Use <code>deque-push/wait!</code> below.)
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="deque-unshift!1391">
+    <span class="name" name="deque-unshift!">deque-unshift!</span>
+  </a> <span class="args">deque obj more-objs ...</span></div>
+<div class="desc">Adds <var>obj</var> to in front of <var>deque</var>. You may give more than
+one object, and each of them are pushed in order.
+<p />Like <code>deque-push!</code>, when <var>deque</var> is an mtdeque, all objects are added
+atomically, and the value of max length is checked. See <code>deque-push!</code> above
+for more detail.
+<p />The name unshift is taken from Perl.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="deque-push-unique!1392">
+    <span class="name" name="deque-push-unique!">deque-push-unique!</span>
   </a>
- <span class="args">path proc :key (physical #t) (file-only #f) (absolute-path #t) (all #t)
-  (recursive #t)</span></div>
-<div class="desc"><var>path</var> must be a string indicating existing file path. <var>proc</var>
-must be a procedure accepts 2 arguments, a path string and a symbol. The given
-symbol can be <code>directory</code>, <code>symbolic-link</code> or <code>file</code>.
-<p />Process the path string starting from <var>path</var> with given <var>proc</var> and
-returns a list which elements are the result value of <var>proc</var>.
-<p />The keyword arguments are the same as <code>path-for-each</code>.
+ <span class="args">deque eq-proc obj more-objs ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="deque-unshift-unique!1393">
+    <span class="name" name="deque-unshift-unique!">deque-unshift-unique!</span>
+  </a>
+ <span class="args">deque eq-proc obj more-objs ...</span></div>
+<div class="desc">Like <code>deque-push!</code> and <code>deque-unshift!</code>, respectively, except
+that these don't modify <var>deque</var> if it already contains <var>objs</var> (elements
+are compared by two-argument procedure <var>eq-proc</var>).
+<p />When <var>deque</var> is an mtdeque, all objects are added atomically, and the max
+length is checked. See <code>deque-push!</code> above for the detail.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="build-path*1395">
-    <span class="name" name="build-path*">build-path*</span>
-  </a> <span class="args">paths ...</span></div>
-<div class="desc"><var>paths</var> must be list of strings.
-<p />Compose given list to platform specific path. This procedure doesn't put path
-separator at the end of composed string.
+<p /><div class="define"><span class="define-category">Function</span><a name="deque-pop!1394">
+    <span class="name" name="deque-pop!">deque-pop!</span>
+  </a> <span class="args">deque :optional fallback</span></div>
+<div class="define"><span class="define-category">Function</span><a name="deque-shift!1395">
+    <span class="name" name="deque-shift!">deque-shift!</span>
+  </a> <span class="args">deque :optional fallback</span></div>
+<div class="desc">Take one object from the end or the front of <var>deque</var>, respectively,
+and return it.
+<p />If <var>deque</var> is empty, <var>fallback</var> is returned if give, otherwise an 
+error is raised.
+<p />If <var>deque</var> is mtdeque and its max length is zero, then the deque is
+always empty. Use <code>deque-pop/wait!</code> or <code>deque-shift/wait!</code> to use
+such a deque as a synchronisation device.
+<p />The name shift is take from Perl.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1396"><span class="section-number">7.9.4</span>Directory operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="create-directory*1397">
-    <span class="name" name="create-directory*">create-directory*</span>
-  </a> <span class="args">path</span></div>
-<div class="define"><span class="define-category">Function</span><a name="delete-directory*1398">
-    <span class="name" name="delete-directory*">delete-directory*</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Convenient procedures to create or delete directories.
-<p />These are the same as UNIX command <code>mkdir -p</code> and <code>rm -rf</code>,
+<p /><div class="define"><span class="define-category">Function</span><a name="deque-pop-all!1396">
+    <span class="name" name="deque-pop-all!">deque-pop-all!</span>
+  </a> <span class="args">deque</span></div>
+<div class="define"><span class="define-category">Function</span><a name="deque-shift-all!1397">
+    <span class="name" name="deque-shift-all!">deque-shift-all!</span>
+  </a> <span class="args">deque</span></div>
+<div class="desc">Returns the whole content of <var>deque</var> by a list, with emptying 
+<var>deque</var>. If <var>deque</var> is empty, returns an empty list.
+<p />The the returning list of <code>deque-pop-all!</code> is constructed from the end
+of <var>queue</var> and <code>deque-shift-all!</code>'s one is constructed from the front
+of <var>queue</var>.
+<p />See also <code>deque-&gt;list</code> below.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="deque-front1398">
+    <span class="name" name="deque-front">deque-front</span>
+  </a> <span class="args">deque :optional fallback</span></div>
+<div class="define"><span class="define-category">Function</span><a name="deque-rear1399">
+    <span class="name" name="deque-rear">deque-rear</span>
+  </a> <span class="args">deque :optional fallback</span></div>
+<div class="desc">Peek the head or the tail of <var>deque</var> and return the object, 
 respectively.
+<p />If <var>deque</var> is empty, <var>fallback</var> is returned if give, otherwise an 
+error is raised.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="copy-directory1399">
-    <span class="name" name="copy-directory">copy-directory</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="list-&gt;deque1400">
+    <span class="name" name="list-&gt;deque">list-&gt;deque</span>
+  </a> <span class="args">list :optional class :rest initargs</span></div>
+<div class="desc">Returns a new deque which content is the elements in <var>list</var>, in
+the given order.
+<p />By default the created deque is a simple deque, but you can create mtdeque
+or instance of other subclass <code>&lt;deque&gt;</code> by giving the class to the
+optional <var>class</var> arguments. The optional <var>initargs</var> arguments are
+passed to the constructor of <var>class</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="deque-&gt;list1401">
+    <span class="name" name="deque-&gt;list">deque-&gt;list</span>
+  </a> <span class="args">deque</span></div>
+<div class="desc">Returns a list whose content is the items in <var>deque</var> in order.
+Unlike <code>deque-shift-all!</code>, the content of <var>deque</var> remains intact.
+The returning list is a copy of the content. So modifying the list won't
+affect <var>deque</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="find-in-deque1402">
+    <span class="name" name="find-in-deque">find-in-deque</span>
+  </a> <span class="args">pred deque</span></div>
+<div class="desc">Returns the first item in <var>deque</var> that satisfies a predicate
+<var>pred</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="any-in-deque1403">
+    <span class="name" name="any-in-deque">any-in-deque</span>
+  </a> <span class="args">pred deque</span></div>
+<div class="desc">Apply <var>pred</var> on each item in <var>deque</var> until it evaluates true,
+and returns that true value. If no item satisfies <var>pred</var>, #f is returned.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="every-in-deque1404">
+    <span class="name" name="every-in-deque">every-in-deque</span>
+  </a> <span class="args">pred deque</span></div>
+<div class="desc">Apply <var>pred</var> on each item in <var>deque</var>. If <var>pred</var> returns #f,
+stops iteration and returns #f immediately. Otherwise, returns the result of
+<var>pred</var> on the last item of <var>deque</var>. If the deque is empty, #t is
+returned.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="remove-from-deque!1405">
+    <span class="name" name="remove-from-deque!">remove-from-deque!</span>
+  </a> <span class="args">pred deque</span></div>
+<div class="desc">Removes all items in <var>deque</var> that satisfies <var>pred</var>. Returns
+#t if any item is removed. Otherwise #f.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="deque-unshift/wait!1406">
+    <span class="name" name="deque-unshift/wait!">deque-unshift/wait!</span>
   </a>
- <span class="args">src dst :key (excludes '()) options ...</span></div>
-<div class="desc"><var>src</var> and <var>dst</var> must be string and <var>src</var> must indicates an
-existing path.
-<p />Copies <var>src</var> directory to <var>dst</var>. Keyword argument <var>excludes</var> must be
-a list of string and the procedure won't copy files which contain the
-<var>excludes</var> string(s).
-<p />The <var>options</var> is passed to <code>path-for-each</code>.
+ <span class="args">mtdeque obj :optional timeout timeout-val</span></div>
+<div class="define"><span class="define-category">Function</span><a name="deque-push/wait!1407">
+    <span class="name" name="deque-push/wait!">deque-push/wait!</span>
+  </a>
+ <span class="args">mtdeque obj :optional timeout timeout-val</span></div>
+<div class="define"><span class="define-category">Function</span><a name="deque-shift/wait!1408">
+    <span class="name" name="deque-shift/wait!">deque-shift/wait!</span>
+  </a>
+ <span class="args">mtdeque :optional timeout timeout-val</span></div>
+<div class="define"><span class="define-category">Function</span><a name="deque-pop/wait!1409">
+    <span class="name" name="deque-pop/wait!">deque-pop/wait!</span>
+  </a>
+ <span class="args">mtdeque :optional timeout timeout-val</span></div>
+<div class="desc">These synchronising variants work on an mtdeque and make the caller
+thread block when the mtdeque has reached its maximum length (for
+<code>deque-unshift/wait!</code> and <code>deque-push/wait!</code>), or the mtdeque is empty
+(for <code>deque-shift/wait!</code> and <code>deque-pop/wait!</code>). The blocked caller
+thread is unblocked either the blocking condition is resolved, or the
+timeout condition is met.
+<p />The optional <var>timeout</var> argument specifies the timeout condition. If it
+is #f, those procedure wait indefinitely. If it is a real number, they wait
+at least the given number of seconds.
+<p />In case the call is blocked then timed out, the value of <var>timeout-val</var> is
+returned, which default value is #t.
+<p />When <code>deque-unshift/wait!</code> and <code>deque-push/wait!</code> succeeds without
+hitting timeout, they return #t.
 </div>
-</section></section>
+
+</section>
   <div class="prev-next">
     <a class="prev" href="section78.html">(dbm) - Generic DBM interface</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section710.html">(getopt) - Parsing command-line options</a>
+    <a class="next" href="section710.html">(util file) - File operation utility library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
   </div>
 </html>

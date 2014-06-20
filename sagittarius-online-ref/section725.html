@@ -6,161 +6,284 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section724.html">(rfc uri) - Parse and construct URIs</a>
+    <a class="prev" href="section724.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section726.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="next" href="section726.html">(rfc tls) - TLS protocol library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.uuid"><span class="section-number">7.25</span>(rfc uuid) - UUID generate library</a>
+    <a class="section.anchor" name="rfc.sftp"><span class="section-number">7.25</span>(rfc sftp) - SFTP library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc uuid)1632">
-      <span class="name" name="(rfc uuid)">(rfc uuid)</span>
+    <a name="rfc sftp1628">
+      <span class="name" name="rfc sftp">rfc sftp</span>
     </a>
   </div>
-<div class="desc">This library provides RFC 4122 a Universally Unique IDentifier (UUID)
-URN Namespace procedures.</div>
-<p />
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<uuid&gt;1633">
-      <span class="name" name="<uuid&gt;">&lt;uuid&gt;</span>
-    </a>
-  </div>
-<div class="desc">The class representing UUID.</div>
+<div class="desc">This library provides SFTP programmatic operations.</div>
+<p />Following example code describes how to use in high level.
+<pre class="codeblock">(import (rfc sftp) (pp) (srfi :26))
+<p />(call-with-sftp-connection 
+  "localhost"    ;; hostname
+  "23"           ;; port number
+  (lambda (conn)
+    ;; read directory
+    (pp (sftp-readdir conn "."))
+    ;; only short names
+    (pp (sftp-readdir-as-filenames conn "."))
+    ;; only long names (usually POSIX 'ls -l' format)
+    (pp (sftp-readdir-as-longnames conn "."))
+<p />    ;; retrieve a file as a bytevector
+    (print (utf8-&gt;string (sftp-read! conn "reading/file" 
+                                    (sftp-binary-receiver))))
+    ;; store a file to local file directly
+    (sftp-read! conn "/a/file/path"
+	(sftp-file-receiver "where/to/store" :options (file-options no-fail)))
+<p />    ;; upload a file
+    (let ((handle (sftp-open conn "boo" 
+                    (bitwise-ior +ssh-fxf-creat+ +ssh-fxf-write+))))
+     (call-with-input-file "a/local/file" (cut sftp-write! conn handle &lt;&gt;)))
+<p />    ;; rename a file
+    (sftp-rename! conn "boo" "foo")
+    ;; remove a file
+    (sftp-remove! conn "foo")
+    ;; create a directory
+    (sftp-mkdir! conn "boo")
+    ;; remove a directory
+    (sftp-rmdir! conn "boo")
+<p />    ;; create a symbolic link
+    (pp (sftp-symlink! conn "/tmp" "tmp"))
+    ;; get a actual path of symbolic link
+    (pp (sftp-readlink conn "tmp"))
+    ;; get a real path. (usually an absolute path)
+    (pp (sftp-realpath conn "../")))
+  :username "username" :password "password")
+</pre>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1634"><span class="section-number">7.25.1</span>Predicates</a>
+    <a class="section.anchor" name="G1629"><span class="section-number">7.25.1</span>High level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="uuid?1635">
-    <span class="name" name="uuid?">uuid?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;uuid&gt;</code>, otherwise
- #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uuid=?1636">
-    <span class="name" name="uuid=?">uuid=?</span>
-  </a> <span class="args">uuid1 uuid2</span></div>
-<div class="desc">Compares given 2 uuids and return #t if both have the same values,
-otherwise #f.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1637"><span class="section-number">7.25.2</span>Constructors</a>
-  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-sftp-connection1630">
+    <span class="name" name="call-with-sftp-connection">call-with-sftp-connection</span>
+  </a>
+ <span class="args">server port proc . opts</span></div>
+<div class="desc"><var>server</var> and <var>port</var> must be string, indicating hostname,
+port number/service name respectively.
+<var>proc</var> must accept one argument.
+<p />Creates a SFTP connection, executes given <var>proc</var> with the connection
+and closes it after the execution.
+<p />The <var>opts</var> will be passed to <code>make-client-sftp-connection</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-open1631">
+    <span class="name" name="sftp-open">sftp-open</span>
+  </a> <span class="args">conn filename pflags</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection. 
+<var>filename</var> must be a string.
+<var>pflags</var> must be an exact integer which value must be the result of
+inclusive or of following values;
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+ssh-fxf-read+1632">
+      <span class="name" name="+ssh-fxf-read+">+ssh-fxf-read+</span>
+    </a>
+  </div>
+<div class="desc">Open the given <var>filename</var> read mode.</div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+ssh-fxf-write+1633">
+      <span class="name" name="+ssh-fxf-write+">+ssh-fxf-write+</span>
+    </a>
+  </div>
+<div class="desc">Open the given <var>filename</var> write mode.</div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+ssh-fxf-append+1634">
+      <span class="name" name="+ssh-fxf-append+">+ssh-fxf-append+</span>
+    </a>
+  </div>
+<div class="desc">Open the given <var>filename</var> append mode.</div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+ssh-fxf-creat+1635">
+      <span class="name" name="+ssh-fxf-creat+">+ssh-fxf-creat+</span>
+    </a>
+  </div>
+<div class="desc">Creates the given <var>filename</var> if it doesn't exist.</div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+ssh-fxf-trunc+1636">
+      <span class="name" name="+ssh-fxf-trunc+">+ssh-fxf-trunc+</span>
+    </a>
+  </div>
+<div class="desc">Truncate the given <var>filename</var> if it exists. <code>+ssh-fxf-creat+</code> 
+      must be specified as well.</div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+ssh-fxf-excl+1637">
+      <span class="name" name="+ssh-fxf-excl+">+ssh-fxf-excl+</span>
+    </a>
+  </div>
+<div class="desc">Raises and error <var>filename</var> if it exists. <code>+ssh-fxf-creat+</code> 
+      must be specified as well.</div>
+<p />If <var>filename</var> opened successfully, the procedure will return a handle.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-close1638">
+    <span class="name" name="sftp-close">sftp-close</span>
+  </a> <span class="args">conn handle</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection. 
+<p />Closes given <var>handle</var> created by <code>sftp-open</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-read1639">
+    <span class="name" name="sftp-read">sftp-read</span>
+  </a>
+ <span class="args">conn handle/filename receiver :key (offset 0) buffer-size</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection.
+<var>handle/filename</var> must be either a handle or string.
+<var>receiver</var> must be a procedure accepts 2 arguments, offset and data,
+respectively.
+<p />Reads the given <var>handle/filename</var> content from the server and
+call <var>receiver</var> with the returned value. When it reaches the end of file,
+then it will pass -1 as offset and eof value as data.
+<p />The keyword argument <var>offset</var> specifies starting where to read. It
+is useful to read only diff.
+<p />The keyword argument <var>buffer-size</var> specifies how many bytes it tries to
+read in one read call. The default value is 1048576 (1MB). This value is only
+an indication so that server can decide actual data length to sent.
+</div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="make-null-uuid1638">
-      <span class="name" name="make-null-uuid">make-null-uuid</span>
+    <a name="sftp-binary-receiver1640">
+      <span class="name" name="sftp-binary-receiver">sftp-binary-receiver</span>
     </a>
   </div>
-<div class="desc">Creates a null (empty) uuid.
-<p />The returning object will be represented like this UUID;
-<p /><code>00000000-0000-0000-0000-000000000000</code>.
+<div class="desc">Creates a in memory receiver for <code>sftp-read</code>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-file-receiver1641">
+    <span class="name" name="sftp-file-receiver">sftp-file-receiver</span>
+  </a> <span class="args">filename :key options</span></div>
+<div class="desc">Creates a file receiver for <code>sftp-read</code>.
+<p />The keyword argument <var>option</var> must be created by <code>file-options</code>.
+By default no option.
 </div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="make-v1-uuid1639">
-      <span class="name" name="make-v1-uuid">make-v1-uuid</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Function</span><a name="make-v3-uuid1640">
-    <span class="name" name="make-v3-uuid">make-v3-uuid</span>
-  </a> <span class="args">namespace name</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-v4-uuid1641">
-    <span class="name" name="make-v4-uuid">make-v4-uuid</span>
-  </a> <span class="args">:optional prng</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-v5-uuid1642">
-    <span class="name" name="make-v5-uuid">make-v5-uuid</span>
-  </a> <span class="args">namespace name</span></div>
-<div class="desc">Creates version 1, 3, 4 and 5 UUIDs respectively.
-<p />For version 3 and 5, procedures need to take 2 arguments, <var>namespace</var>
-and <var>name</var>. <var>namespace</var> must be a UUID object, and <var>name</var> must be a
-string.
-<p />For version 4, it can take an optional argument <var>prng</var> which specifies
-pseudo random generator. The default value is <code>(*uuid-random-state*)</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-oport-receiver1642">
+    <span class="name" name="sftp-oport-receiver">sftp-oport-receiver</span>
+  </a> <span class="args">output-port</span></div>
+<div class="desc"><var>output-port</var> must be a binary output port.
+<p />Creates a output port receiver for <code>sftp-read</code>.
 </div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-write!1643">
+    <span class="name" name="sftp-write!">sftp-write!</span>
+  </a> 
+ <span class="args">conn handle input-port :key (offset 0) buffer-size</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection.
+<var>handle</var> must be a handle.
+<var>input-port</var> must be a binary input port.
+<p />Reads the content from given <var>input-port</var> and writes it to given
+<var>handle</var>.
+<p />The keyword argument <var>offset</var> specifies where to write. This is useful
+to write a file separately or simply append.
+<p />The keyword argument <var>buffer-size</var> specifies how many bytes of data
+the procedure sends in one packet. The default value is 131072 (128KB).
+The RFC defines the minimum value 32768 (3KB) so it is safe to use the
+value. However too small buffer size makes writing extremely slow so
+we use a bit larger value to make performance better. If you meet a
+problem with writing a file, consider to change this size.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-exists?1644">
+    <span class="name" name="sftp-exists?">sftp-exists?</span>
+  </a> <span class="args">conn filename</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection.
+<var>filename</var> must be a string indicating existing filename.
+<p />Checks if the given <var>filename</var> exists.
+</div>
+<p />
+<div class="define"><span class="define-category">Function</span><a name="sftp-remove!1645">
+    <span class="name" name="sftp-remove!">sftp-remove!</span>
+  </a> <span class="args">conn filename</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection.
+<var>filename</var> must be a string indicating existing filename.
+<p />Removes the given <var>filename</var>. It is an error if the file doesn't exist
+or user doesn't have proper permission to remove.
+<p />The result value is raw SFTP status object.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-rename!1646">
+    <span class="name" name="sftp-rename!">sftp-rename!</span>
+  </a> <span class="args">conn oldpath newpath</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection.
+<var>oldpath</var> and <var>newpath</var>  must be strings indicating existing path.
+<p />Renames the given <var>oldpath</var> to <var>newpath</var>. It is an error if the 
+file doesn't exist or user doesn't have proper permission to rename.
+<p />The result value is raw SFTP status object.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-mkdir!1647">
+    <span class="name" name="sftp-mkdir!">sftp-mkdir!</span>
+  </a> <span class="args">conn path</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection.
+<var>path</var> must be a string.
+<p />Creates the given <var>path</var> directory. It is an error if the 
+directory exists or user doesn't have proper permission to create.
+<p />The result value is raw SFTP status object.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-rmdir!1648">
+    <span class="name" name="sftp-rmdir!">sftp-rmdir!</span>
+  </a> <span class="args">conn path</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection.
+<var>path</var> must be a string.
+<p />Removes the given <var>path</var> directory. It is an error if the 
+directory doesn't exists, user doesn't have proper permission to create or
+the directory isn't empty.
+<p />The result value is raw SFTP status object.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-opendir1649">
+    <span class="name" name="sftp-opendir">sftp-opendir</span>
+  </a> <span class="args">conn path</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection.
+<var>path</var> must be a string indicating existing path.
+<p />Opens the given <var>path</var> directory and returns its handle.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-readdir1650">
+    <span class="name" name="sftp-readdir">sftp-readdir</span>
+  </a> <span class="args">conn handle/path</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection.
+<var>handle/path</var> must be either a handle opened by <code>sftp-opendir</code> or
+a string indicating existing path.
+<p />Reads the given <var>handle/path</var> and returns the list of contents. The content
+is an object of <code>&lt;sftp-name&gt;</code> which has <code>filename</code>, <code>longname</code>
+and <code>attribute</code> slots.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-readdir-as-filenames1651">
+    <span class="name" name="sftp-readdir-as-filenames">sftp-readdir-as-filenames</span>
+  </a> <span class="args">conn handle/path</span></div>
+<div class="define"><span class="define-category">Function</span><a name="sftp-readdir-as-longnames1652">
+    <span class="name" name="sftp-readdir-as-longnames">sftp-readdir-as-longnames</span>
+  </a> <span class="args">conn handle/path</span></div>
+<div class="desc"><var>conn</var> must be a SFTP connection.
+<var>handle/path</var> must be either a handle opened by <code>sftp-opendir</code> or
+a string indicating existing path.
+<p />Calls <code>sftp-readdir</code> and strips out the result object to string by
+calling <code>(slot-ref <var>c</var> 'filename)</code> or 
+<code>(slot-ref <var>c</var> 'longname)</code> respectively.
+</div>
+<p />
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1643"><span class="section-number">7.25.3</span>Predefined namespaces and parameters</a>
+    <a class="section.anchor" name="G1653"><span class="section-number">7.25.2</span>Mid level APIs</a>
   </h4>
-<p /><div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+namespace-dns+1644">
-      <span class="name" name="+namespace-dns+">+namespace-dns+</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+namespace-url+1645">
-      <span class="name" name="+namespace-url+">+namespace-url+</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+namespace-oid+1646">
-      <span class="name" name="+namespace-oid+">+namespace-oid+</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+namespace-x500+1647">
-      <span class="name" name="+namespace-x500+">+namespace-x500+</span>
-    </a>
-  </div>
-<div class="desc">Constant predefined namespace of UUIDs.</div>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="*uuid-random-state*1648">
-      <span class="name" name="*uuid-random-state*">*uuid-random-state*</span>
-    </a>
-  </div>
-<div class="desc">Pseudo random generator used by version 4 UUID.</div>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="*uuids-per-tick*1649">
-      <span class="name" name="*uuids-per-tick*">*uuids-per-tick*</span>
-    </a>
-  </div>
-<div class="desc">The number of allowed UUIDs in the same time. Used by version 1 UUID.
-<p />The default value is 1000.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1650"><span class="section-number">7.25.4</span>Converters</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;bytevector1651">
-    <span class="name" name="uuid-&gt;bytevector">uuid-&gt;bytevector</span>
-  </a> <span class="args">uuid</span></div>
-<div class="desc">Returns bytevector converted from given <var>uuid</var>.
-<p /><pre class="snipet"><span class="snipet-code">(uuid-&gt;bytevector (make-null-uuid))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;string1652">
-    <span class="name" name="uuid-&gt;string">uuid-&gt;string</span>
-  </a> <span class="args">uuid</span></div>
-<div class="desc">Returns string represented uuid converted from given <var>uuid</var>.
-<p /><pre class="snipet"><span class="snipet-code">(uuid-&gt;string (make-null-uuid))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">00000000-0000-0000-0000-000000000000</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;uuid1653">
-    <span class="name" name="bytevector-&gt;uuid">bytevector-&gt;uuid</span>
-  </a> <span class="args">bv</span></div>
-<div class="desc">Returns uuid object generated from <var>bv</var>.
-<p />Given bytevector must have length at least 16.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;uuid1654">
-    <span class="name" name="string-&gt;uuid">string-&gt;uuid</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Returns uuid object generated from <var>string</var>.
-<p />Given <var>string</var> must be proper format of UUID defined in RFC 4122.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;urn-format1655">
-    <span class="name" name="uuid-&gt;urn-format">uuid-&gt;urn-format</span>
-  </a> <span class="args">uuid</span></div>
-<div class="desc">Returns URN formatted string of given <var>uuid</var>.
-</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-client-sftp-connection1654">
+    <span class="name" name="make-client-sftp-connection">make-client-sftp-connection</span>
+  </a>
+ <span class="args">server port :key (username #f) (password #f)</span></div>
+<div class="desc">Creates a SFTP connection object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sftp-close-connection1655">
+    <span class="name" name="sftp-close-connection">sftp-close-connection</span>
+  </a> <span class="args">connection</span></div>
+<div class="desc">Closes the given SFTP connection object.</div>
+
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section724.html">(rfc uri) - Parse and construct URIs</a>
+    <a class="prev" href="section724.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section726.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="next" href="section726.html">(rfc tls) - TLS protocol library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
   </div>
 </html>

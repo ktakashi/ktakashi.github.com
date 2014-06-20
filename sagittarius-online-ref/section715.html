@@ -6,188 +6,225 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section714.html">(odbc) - ODBC binding</a>
+    <a class="prev" href="section714.html">(math) - Mathematics library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section716.html">(rfc :5322) - Internet message format library</a>
+    <a class="next" href="section716.html">(odbc) - ODBC binding</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="pkcs.5"><span class="section-number">7.15</span>(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="section.anchor" name="net.oauth"><span class="section-number">7.15</span>(net oauth) - OAuth library</a>
   </h3>
-<p />This section describes the implementation of PKCS#5 specification library.
-However we do not describe PKCS#5 itself and I don't think it is necessary to
-know it if you just want to use it.
-<p />This example is the simplest way to use.
-<p /><pre class="codeblock">(import (rnrs) (crypto) (rsa pkcs :5))
-(define salt (string-&gt;utf8 "salt"))
-(define iteration-count 1024)
-(define pbe-parameter (make-pbe-parameter salt iteration-count))
-(define pbe-key (generate-secret-key pbe-with-sha1-and-des "password"))
-(define pbe-cipher (cipher pbe-with-sha1-and-des pbe-key 
-                           :parameter pbe-parameter))
-(encrypt pbe-cipher (string-&gt;utf8 "This is an example."))
-;; -&gt; #vu8(254 229 155 168 167 192 249 43 33 192 161 215 28 117
-;;         169 129 147 60 16 52 235 79 90 23)
-(decrypt pbe-cipher 
-	 #vu8(254 229 155 168 167 192 249 43 33 192 161 215
-              28 117 169 129 147 60 16 52 235 79 90 23))
-;; -&gt; #vu8(84 104 105 115 32 105 115 32 97 110 32 101 120 97
-;;         109 112 108 101 46)
+<p />This section describes the APIs for OAuth. OAuth is new secure authentication
+method for web service. For more detail, see 
+<a href="http://oauth.net/">OAuth Community Site</a>.
+<p />The following example shows how to obtain an access token from Twitter.
+<p /><pre class="codeblock">(import (rnrs) (net oauth) (sagittarius control) (srfi :13 strings))
+;; obtain a request token.
+;; type consumer key and secret you have got issued by Twitter
+(define token (obtain-request-token
+	       "http://api.twitter.com/oauth/request_token"
+	       (make-consumer-token
+		:key "consumer key"
+		:secret "consumer secret")))
+<p />(define (get-pin url)
+  (print "Open the following url and type in the shown PIN.")
+  (print url)
+  (let loop ()
+    (display "Input PIN: ") (flush-output-port (current-output-port))
+    (let1 pin (get-line (current-input-port))
+      (cond ((eof-object? pin) #f)
+            ((string-null? pin) (loop))
+            (else pin)))))
+<p />(define (report token)
+  (print "(begin")
+  (print " (define consumer-key \"" (token-key (token-consumer token)) "\")")
+  (print " (define consumer-secret \""
+	 (token-secret (token-consumer token))"\")")
+  (print " (define access-token \""(token-key token)"\")")
+  (print " (define access-token-secret \""(token-secret token)"\")")
+  (print ")"))
+<p />(define (main args)
+  (let1 pin (get-pin (make-authorization-uri
+		      "http://api.twitter.com/oauth/authorize"
+		      token))
+    ;; authorize the request token manually.
+    (authorize-request-token token pin)
+    ;; obtain the access token
+    (let1 access-token (obtain-access-token 
+			"http://api.twitter.com/oauth/access_token"
+			token)
+      (report access-token))))
 </pre>
-<p />The library itself defines simply its cipher and key generate methods. Hence
-user can use it with (crypto) library (see 
-<a href="section76.html#crypto">(crypto) - Cryptographic library</a>)
-<p />NOTE: Currently the library only supports encryption and decryption, not MAC
-generation nor verification.
-<p />NOTE: When you create cipher object with PBE related algorithms, the you need 
-to pass <code>:parameter</code> keyword to <code>cipher</code> procedure, otherwise raises
-an error.
+<p />Now you get the access token to tweet, let's tweet something on Sagittarius:
+<pre class="codeblock">(import (rnrs) (srfi :26 cut) (text sxml ssax) (net oauth) (sagittarius io))
+(define consumer-key "your consumer key")
+(define consumer-secret "your consumer secret")
+(define access-token "your access token")
+(define access-token-secret "your access token secret")
+<p />;; creates an access token to tweet.
+(define access-token
+  (make-access-token :key access-token
+		     :secret access-token-secret
+		     :consumer
+		     (make-consumer-token
+		      :key consumer-key
+		      :secret consumer-secret)))
+<p />(define (call/twitter-api-&gt;sxml token method path params . opts)
+  (define (call)
+    (access-protected-resource 
+     (string-append "http://api.twitter.com" path)
+     token
+     :request-method method
+     :user-parameters params))
+  (define (retrieve body status hint advice)
+    (if hint (print hint))
+    (if advice (print advice))
+    (call-with-input-string body (cut ssax:xml-&gt;sxml &lt;&gt; '())))
+  (call-with-values call retrieve))
+<p />(define (twitter-update/sxml token message . opts)
+  (call/twitter-api-&gt;sxml 
+   token 'POST "/1/statuses/update.xml" 
+   `(("status" ,message))))
+<p />;; if you want to use this from command line.
+(import (getopt))
+<p />(define (main args)
+  (with-args args
+      ((message (#\m "message") #t (usage)))
+    (print (twitter-update/sxml access-token message))))
+</pre>
+<p />The examples explain basic flows. To obtain an access token, and access to
+protected resource with it.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rsa pkcs :5)1500">
-      <span class="name" name="(rsa pkcs :5)">(rsa pkcs :5)</span>
+    <a name="(net oauth)1506">
+      <span class="name" name="(net oauth)">(net oauth)</span>
     </a>
   </div>
-<div class="desc">This library exports PKCS#5 related cryptographic procedures.</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1501"><span class="section-number">7.15.1</span>User level APIs</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-md5-and-des1502">
-      <span class="name" name="pbe-with-md5-and-des">pbe-with-md5-and-des</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-md5-and-rc21503">
-      <span class="name" name="pbe-with-md5-and-rc2">pbe-with-md5-and-rc2</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-sha1-and-des1504">
-      <span class="name" name="pbe-with-sha1-and-des">pbe-with-sha1-and-des</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-sha1-and-rc21505">
-      <span class="name" name="pbe-with-sha1-and-rc2">pbe-with-sha1-and-rc2</span>
-    </a>
-  </div>
-<div class="desc">The algorithms used in PBES1 encryption and decryption and key generation.
-<p />The names describe the using hash functions and cryptographic schemes. For
-example, <code>pbe-with-md5-and-des</code> uses MD5 hash and DES algorithm.
+<div class="desc">This library provides OAuth 1.0 procedures. The API's names are compatible
+with cl-oauth.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-pbe-parameter1506">
-    <span class="name" name="make-pbe-parameter">make-pbe-parameter</span>
-  </a> <span class="args">salt iteration-count</span></div>
-<div class="desc"><var>salt</var> must be a bytevector.
-<p /><var>iteration-count</var> must be a non negative exact integer.
-<p />Creates a parameter for PBE key generation. <var>salt</var> is salt and
-<var>iteration-count</var> is the iteration count  for key derivation.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="generate-secret-key1507">
-    <span class="name" name="generate-secret-key">generate-secret-key</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="obtain-request-token1507">
+    <span class="name" name="obtain-request-token">obtain-request-token</span>
   </a>
- <span class="args">algorithm (password &lt;string&gt;)</span></div>
-<div class="desc"><var>algorithm</var> must be one of the algorithms describes above.
-<p />Creates PBE secret key based on given <var>password</var> and <var>algorithm</var>.
+ <span class="args">uri consumer-token :key (version :1.0) (user-parameters '())
+ (timestamp (time-second (current-time))) (auth-location :header)
+ (request-method 'POST) (callback-uri #f) (additional-headers '())
+ (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
+<div class="desc"><var>uri</var> must be string and URI format.
+<p /><var>consumer-token</var> must be a consumer token object.
+<p />Obtains request token from given uri with given consumer token.
+<p />if the keyword arguments are specified:
+<p /><var>version</var> specifies which version uses. We only support 1.0 so this must not
+be specified.
+<p /><var>user-parameters</var> is an alist of the extra parameters to be sent to the
+server. This parameters are in the body message if the <var>request-method</var> is
+<code>POST</code> or query string if the <var>request-method</var> is <code>GET</code>.
+<p /><var>timestamp</var> specifies timestamp to send to the server. 
+<p /><var>auth-location</var> specifies the place where the authentication information
+located. This can be either <code>:header</code> or <code>:parameters</code>.
+<p /><var>request-method</var> specifies which request method is used. This can be either
+<code>GET</code> or <code>POST</code>. <code>POST</code> is recommended.
+<p /><var>callback-uri</var> specifies call back uri described in OAuth specification. If
+users don't use specific location to be redirected, this must not be specified.
+<p /><var>additional-headers</var> is alist of additional header to be sent to the server.
+<p /><var>signature-method</var> specifies which hash method is used. For now we only
+support <code>:hmac-sha1</code>.
+<p /><var>error-translator</var> specifies how to treat the error message sent by the
+server when error occurred. This must be a procedure which accepts 3 arguments,
+http status, headers and body respectively.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1508"><span class="section-number">7.15.2</span>Low level APIs</a>
-  </h4>
-<p />These APIs are for users who want to create own PBE mechanism such as PKCS#12.
-<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-11509">
-    <span class="name" name="pbkdf-1">pbkdf-1</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-authorization-uri1508">
+    <span class="name" name="make-authorization-uri">make-authorization-uri</span>
   </a>
- <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)</span></div>
-<div class="desc">Implementation of PBKDF1 describes in PKCS#5 specification.
-<p />The arguments are plain text (bytevector), salt (bytevector), iteration count
-(non negative exact integer) and key length (non negative exact integer)
-respectively.
-<p />The keyword argument <var>hash</var> specifies which hash algorithm will be used. The
-default is SHA-1. 
+ <span class="args">uri request-token :key (version :1.0) (callback-uri #f)
+ (user-parameters '())</span></div>
+<div class="desc"><var>uri</var> must be string and URI format.
+<p /><var>request-token</var> must be a request token retrieved by the procedure
+<code>obtain-request-token</code>.
+<p />Creates a authorization URI which user must agree.
+<p />The other keyword arguments are the same as <code>obtain-request-token</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-21510">
-    <span class="name" name="pbkdf-2">pbkdf-2</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="authorize-request-token1509">
+    <span class="name" name="authorize-request-token">authorize-request-token</span>
   </a>
- <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)
- (prf (hash-algorithm HMAC :key P :hash hash))</span></div>
-<div class="desc">Implementation of PBKDF2 describes in PKCS#5 specification.
-<p />The arguments are plain text (bytevector), salt (bytevector), iteration count
-(non negative exact integer) and key length (non negative exact integer)
-respectively.
-<p />The keyword argument <var>hash</var> specifies which hash algorithm will be used in
-PRF function. The default is SHA-1 and if you don't have any reasonable reason,
-this must not be changed.
-<p />The keyword argument <var>prf</var> specifies underlying pseudo random function which
-must be hash object implemented with <code>&lt;user-hash-algorithm&gt;</code> describes in
-<a href="section712.html#custom.hash">Custom hash algorithm</a>. The default is HMAC and if you
-don't have any reasonable reason, this must not be changed.
+ <span class="args">request-token verificateion-code</span></div>
+<div class="desc"><var>request-token</var> must be a request token which retrieved by the
+procedure <code>obtain-request-token</code>.
+<p /><var>verificateion-code</var> must be a string returned by the URI generated by the
+procedure <code>make-authorization-uri</code>
+<p />Sets the given <var>verificateion-code</var> to the request token and authorized flag
+#t, manually.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="derive-key1511">
-    <span class="name" name="derive-key">derive-key</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="obtain-access-token1510">
+    <span class="name" name="obtain-access-token">obtain-access-token</span>
+  </a> 
+ <span class="args">uri token :key (consumer-token (token-consumer token))
+ (version :1.0) (user-parameters '())
+ (timestamp (time-second (current-time))) (auth-location :header)
+ (request-method 'POST) (callback-uri #f) (additional-headers '())
+ (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
+<div class="desc"><var>uri</var> must a string URI formatted.
+<p /><var>token</var> must be either request token or access token.
+<p />Obtains access token from the given URI.
+<p />The keyword arguments <var>consumer-token</var> specifies which consumer token is
+used. And must the same one as when you request the request token.
+<p />The rest keyword arguments are the same as <code>obtain-request-token</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="access-protected-resource1511">
+    <span class="name" name="access-protected-resource">access-protected-resource</span>
   </a>
- <span class="args">P S c dk-len :key (kdf pbkdf-2) :allow-other-keys</span></div>
-<div class="desc">The implementation of key derive function. The required arguments are
-the same as above <code>pbkdf-1</code> and <code>pbkdf-2</code>.
-<p />This procedure just calls given <var>kdf</var> with given arguments and returns
-derived key bytevector.
+ <span class="args">uri access-token :key (consumer-token (token-consumer access-token))
+ (on-refresh #f)
+ (version :1.0) (user-parameters '())
+ (timestamp (time-second (current-time))) (auth-location :header)
+ (request-method 'POST) (callback-uri #f) (additional-headers '())
+ (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
+<div class="desc"><var>uri</var> must a string URI formatted.
+<p /><var>access-token</var> must be an access token which obtained by the procedure
+<code>obtain-access-token</code> or created by <code>make-access-token</code>.
+<p />Accesses to protected resource.
+<p />The keyword argument <var>on-refresh</var> is a hook for when token is expired and
+refreshed. It must accept be a procedure which accepts 1 argument that is a
+refreshed access token.
+<p />The rest keyword arguments are the same as the <code>obtain-request-token</code>.
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="derive-key&amp;iv1512">
-    <span class="name" name="derive-key&amp;iv">derive-key&amp;iv</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="oauth-uri-encode1512">
+    <span class="name" name="oauth-uri-encode">oauth-uri-encode</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Encodes given URI and make it OAuth required form.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="oauth-compose-query1513">
+    <span class="name" name="oauth-compose-query">oauth-compose-query</span>
+  </a> <span class="args">parameters</span></div>
+<div class="desc">Composes given alist to http query form and make it OAuth required form.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-consumer-token1514">
+    <span class="name" name="make-consumer-token">make-consumer-token</span>
   </a>
- <span class="args">marker (key &lt;pbe-secret-key&gt;) (parameter &lt;pbe-parameter&gt;)</span></div>
-<div class="desc"><var>marker</var> is user defined cipher type. <var>key</var> must be subclass of
-<code>&lt;pbe-secret-key&gt;</code>. <var>parameter</var> must be subclss of
-<code>&lt;pbe-parameter&gt;</code>.
-<p />This method is called in the <code>initialize</code> method of
-<code>&lt;pbe-cipher-spi&gt;</code> and must return 2 values; the first one is derived key
-as bytevector and second one is initial vector as bytevector.
-<p />The PKCS#5 encryption and decryption procedures require to derive both
-key and initial vector from given password and parameter (salt and iteration
-count). This method is used in PBE cipher to derive key and initial vector.
-<p />The purpose of this method is to re-use <code>&lt;pbe-cipher-spi&gt;</code>. For example,
-PKCS#12 can use this cipher, however it requires different key derivation
-mechanism.
+ <span class="args">:key (key (random-key)) (secret random-secret) (user-data #f)
+ (last-timestamp 0)</span></div>
+<div class="desc">Creates a consumer token.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-access-token1515">
+    <span class="name" name="make-access-token">make-access-token</span>
+  </a>
+ <span class="args">:key (key (random-key)) (secret random-secret) (user-data #f)
+ consumer (session-handle #f) (expires #f) (authorization-expires #f)
+ (origin-uri #f)</span></div>
+<div class="desc">Creates a access token.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="token-consumer1516">
+    <span class="name" name="token-consumer">token-consumer</span>
+  </a> <span class="args">token</span></div>
+<div class="desc"><var>token</var> must be an access token or request token.
+<p />Retrieves consumer token from given <var>token</var>.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1513"><span class="section-number">7.15.3</span>Supporting PBES2 functionality</a>
-  </h4>
-<p />Since I could not find any standard implementation, Sagittarius actually does
-not support PBES2 encryption and decryption. However supporting it is not so
-difficult. This is the sample code to support it.
-<p /><pre class="codeblock">(import (rnrs) (clos user) (rfc hmac) (math))
-(define-class &lt;pbkef2-with-hmac-sha1-des3&gt; () ())
-(define pbkdf2-with-hmac-sha1-des3 (make &lt;pbkef2-with-hmac-sha1-des3&gt;))
-(define-method generate-secret-key ((mark &lt;pbkef2-with-hmac-sha1-des3&gt;)
-				    (password &lt;string&gt;))
-  (make &lt;pbe-secret-key&gt; :password  password :hash (hash-algorithm HMAC)
-	:scheme DES3 :iv-size 8 :length 24
-	:type PKCS5-S2))
-(register-spi pbkdf2-with-hmac-sha1-des3 &lt;pbe-cipher-spi&gt;)
-</pre>
-<p />And using this supported PBES2 cipher is like this;
-<p /><pre class="codeblock">(let* ((param (make-pbe-parameter (string-&gt;utf8 "saltsalt") 1024))
-       (key (generate-secret-key pbkdf2-with-hmac-sha1-des3 "password"))
-       (pbe-cipher (cipher pbkdf2-with-hmac-sha1-des3 key :parameter param))
-       (ciphertext (encrypt pbe-cipher (string-&gt;utf8 "This is an example."))))
-  (utf8-&gt;string (decrypt pbe-cipher ciphertext)))
-</pre>
-<p />I suppose this is correct, but I could not find any implementation which
-supports PBES2. I usually test with JCE, so if you have some recommendation,
-please let me know.
-
-</section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section714.html">(odbc) - ODBC binding</a>
+    <a class="prev" href="section714.html">(math) - Mathematics library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section716.html">(rfc :5322) - Internet message format library</a>
+    <a class="next" href="section716.html">(odbc) - ODBC binding</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-05-16T07:36:28+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
   </div>
 </html>
