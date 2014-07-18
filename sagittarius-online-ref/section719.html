@@ -6,161 +6,188 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section718.html">(util queue) - Queue</a>
+    <a class="prev" href="section718.html">(odbc) - ODBC binding</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section720.html">(rfc base64) - Base 64 encode and decode library</a>
+    <a class="next" href="section720.html">(util queue) - Queue</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.5322"><span class="section-number">7.19</span>(rfc :5322) - Internet message format library</a>
+    <a class="section.anchor" name="pkcs.5"><span class="section-number">7.19</span>(rsa pkcs :5) - Password Based Cryptography library</a>
   </h3>
+<p />This section describes the implementation of PKCS#5 specification library.
+However we do not describe PKCS#5 itself and I don't think it is necessary to
+know it if you just want to use it.
+<p />This example is the simplest way to use.
+<p /><pre class="codeblock">(import (rnrs) (crypto) (rsa pkcs :5))
+(define salt (string-&gt;utf8 "salt"))
+(define iteration-count 1024)
+(define pbe-parameter (make-pbe-parameter salt iteration-count))
+(define pbe-key (generate-secret-key pbe-with-sha1-and-des "password"))
+(define pbe-cipher (cipher pbe-with-sha1-and-des pbe-key 
+                           :parameter pbe-parameter))
+(encrypt pbe-cipher (string-&gt;utf8 "This is an example."))
+;; -&gt; #vu8(254 229 155 168 167 192 249 43 33 192 161 215 28 117
+;;         169 129 147 60 16 52 235 79 90 23)
+(decrypt pbe-cipher 
+	 #vu8(254 229 155 168 167 192 249 43 33 192 161 215
+              28 117 169 129 147 60 16 52 235 79 90 23))
+;; -&gt; #vu8(84 104 105 115 32 105 115 32 97 110 32 101 120 97
+;;         109 112 108 101 46)
+</pre>
+<p />The library itself defines simply its cipher and key generate methods. Hence
+user can use it with (crypto) library (see 
+<a href="section76.html#crypto">(crypto) - Cryptographic library</a>)
+<p />NOTE: Currently the library only supports encryption and decryption, not MAC
+generation nor verification.
+<p />NOTE: When you create cipher object with PBE related algorithms, the you need 
+to pass <code>:parameter</code> keyword to <code>cipher</code> procedure, otherwise raises
+an error.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc :5322)1584">
-      <span class="name" name="(rfc :5322)">(rfc :5322)</span>
+    <a name="(rsa pkcs :5)1737">
+      <span class="name" name="(rsa pkcs :5)">(rsa pkcs :5)</span>
     </a>
   </div>
-<div class="desc">This library provides the procedures for internet message format defined
-in RFC5322(<a href="http://tools.ietf.org/html/rfc5322">RFC 5322</a>).
-</div>
+<div class="desc">This library exports PKCS#5 related cryptographic procedures.</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1585"><span class="section-number">7.19.1</span>Parsing message headers</a>
+    <a class="section.anchor" name="G1738"><span class="section-number">7.19.1</span>User level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-read-headers1586">
-    <span class="name" name="rfc5322-read-headers">rfc5322-read-headers</span>
-  </a>
- <span class="args">input-port :key (strict? #f) reader</span></div>
-<div class="desc"><var>input-port</var> must be input port and will be passed to <var>reader</var>.
-<p />Reads RFC5322 format message from the given port until it reaches the end of the
-message header and returns a list of the following format;
-<p /><pre class="snipet"><span class="snipet-code">((name body) ...)</span></pre>
-<p /><var>name ...</var> are the field names and <var>body ...</var> are the
-correspoinding field body. Both are as string. Field names are converted to
-lower-case characters.
-<p />The keyword argument <var>strict?</var> switches the behaviour when the procedure
-encounter EOF. If it's #f, then it simply ignore the field and return the
-composed list. And if it's #t, it raises <code>&amp;rfc5322-parse-error</code>.
-<p />The keyword argument <var>reader</var> reads a line from given port. The default
-is <code>rfc5322-line-reader</code> and it treats both LF and CRLF eof style. If you
-want to read from binary port, you need to pass own reader.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-line-reader1587">
-    <span class="name" name="rfc5322-line-reader">rfc5322-line-reader</span>
-  </a> <span class="args">input-port</span></div>
-<div class="desc"><var>input-port</var> must be textual input port.
-<p />Reads a line from given port. If the last character is CR chop it off.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-header-ref1588">
-    <span class="name" name="rfc5322-header-ref">rfc5322-header-ref</span>
-  </a>
- <span class="args">header-list field-name . maybe-default</span></div>
-<div class="desc">An utility procedure to get a specific field from the parsed header list, which is returned by <code>rfc5322-read-headers</code>.
-<p /><var>field-name</var> specifies the field name in lowercase string. If the field with
-given name is in <var>header-list</var>, the procedure returns its value in a string.
-Otherwise, if default is given, it is returned, and if not, #f is returned. 
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1589"><span class="section-number">7.19.2</span>Basic field parsers</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-next-token1590">
-    <span class="name" name="rfc5322-next-token">rfc5322-next-token</span>
-  </a>
- <span class="args">input-port :optional tokenizer-spec</span></div>
-<div class="desc"><var>input-port</var> must be textual input port.
-<p />A basic tokenizer. First it skips whitespaces and/or comments (CFWS) from 
-<var>input-port</var>, if any. Then reads one token according to 
-var{tokenizer-specs}. If <var>input-port</var> reaches EOF before any token is read,
-EOF is returned.
-<p /><var>tokenizer-specs</var> is a list of tokenizer spec. which is a cons of a char-set
-and a procedure.
-<p />After skipping CFWS, the procedure peeks a character at the head of
-<var>input-port</var>, and checks it against the char-sets in <var>tokenizer-specs</var>
-one by one. If a char-set that contains the character belongs to is found, then
-a token is retrieved with calling the procedure with <var>input-port</var> to read a
-token.
-<p />If the head character doesn’t match any char-sets, the character is taken from
-<var>input-port</var> and returned.
-<p />The default <var>tokenizer-specs</var> is as follows:
- 	
-<pre class="snipet"><span class="snipet-code">(list (cons (string-&gt;char-set ":") rfc5322-quoted-string)
-      (cons *rfc5322-atext-chars* rfc5322-dot-atom))
-</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-field-&gt;tokens1591">
-    <span class="name" name="rfc5322-field-&gt;tokens">rfc5322-field-&gt;tokens</span>
-  </a>
- <span class="args">field :optional tokenizer-spec</span></div>
-<div class="desc">A convenience procedure. Creates a string input port from given
-<var>field</var> and calls <code>rfc5322-next-token</code> repeatedly on it until it
-consumes all input, and returns a list of tokens.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-skip-cfws1592">
-    <span class="name" name="rfc5322-skip-cfws">rfc5322-skip-cfws</span>
-  </a> <span class="args">input-port</span></div>
-<div class="desc">Consumes whitespace characters and/or any comments from <var>input-port</var>
-and returns a non comment and whitespace character. The returned character
-remains in <var>input-port</var>.
-</div>
 <p /><div class="define">
     <span class="define-category">Variable</span>
-    <a name="*rfc5322-atext-chars*1593">
-      <span class="name" name="*rfc5322-atext-chars*">*rfc5322-atext-chars*</span>
+    <a name="pbe-with-md5-and-des1739">
+      <span class="name" name="pbe-with-md5-and-des">pbe-with-md5-and-des</span>
     </a>
   </div>
-<div class="desc">A character set which is defined RFC 5322 section 3.2.3 Atom.</div>
-<p /><div class="define">
+<div class="define">
     <span class="define-category">Variable</span>
-    <a name="*rfc5322-standard-tokenizers*1594">
-      <span class="name" name="*rfc5322-standard-tokenizers*">*rfc5322-standard-tokenizers*</span>
+    <a name="pbe-with-md5-and-rc21740">
+      <span class="name" name="pbe-with-md5-and-rc2">pbe-with-md5-and-rc2</span>
     </a>
   </div>
-<div class="desc">Default tokenizer.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-dot-atom1595">
-    <span class="name" name="rfc5322-dot-atom">rfc5322-dot-atom</span>
-  </a> <span class="args">input-port</span></div>
-<div class="define"><span class="define-category">Function</span><a name="rfc5322-quoted-string1596">
-    <span class="name" name="rfc5322-quoted-string">rfc5322-quoted-string</span>
-  </a> <span class="args">input-port</span></div>
-<div class="desc">Tokenizers for <code>dot-atom</code> and <code>quoted-string</code> respectively.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1597"><span class="section-number">7.19.3</span>Specific field parsers</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-parse-date1598">
-    <span class="name" name="rfc5322-parse-date">rfc5322-parse-date</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Takes RFC-5322 type date string and returns eight values:
-<p /><code>year, month, day-of-month, hour, minute, second, time-zone, day-of-week.</code>
-<p /><var>time-zone</var> is an offset from UT in minutes. <var>day-of-week</var> is a day from
-sunday, and may be #f if that information is not available. <var>month</var> is an
-integer between 1 and 12, inclusive. If the <var>string</var> is not parsable, all
-the elements are #f. 
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="pbe-with-sha1-and-des1741">
+      <span class="name" name="pbe-with-sha1-and-des">pbe-with-sha1-and-des</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="pbe-with-sha1-and-rc21742">
+      <span class="name" name="pbe-with-sha1-and-rc2">pbe-with-sha1-and-rc2</span>
+    </a>
+  </div>
+<div class="desc">The algorithms used in PBES1 encryption and decryption and key generation.
+<p />The names describe the using hash functions and cryptographic schemes. For
+example, <code>pbe-with-md5-and-des</code> uses MD5 hash and DES algorithm.
 </div>
-<p />
-</section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1599"><span class="section-number">7.19.4</span>Message constructors</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-write-headers1600">
-    <span class="name" name="rfc5322-write-headers">rfc5322-write-headers</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-pbe-parameter1743">
+    <span class="name" name="make-pbe-parameter">make-pbe-parameter</span>
+  </a> <span class="args">salt iteration-count</span></div>
+<div class="desc"><var>salt</var> must be a bytevector.
+<p /><var>iteration-count</var> must be a non negative exact integer.
+<p />Creates a parameter for PBE key generation. <var>salt</var> is salt and
+<var>iteration-count</var> is the iteration count  for key derivation.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="generate-secret-key1744">
+    <span class="name" name="generate-secret-key">generate-secret-key</span>
   </a>
- <span class="args">headers :key (output (current-output-port))
- (check :error) (continue #f)</span></div>
-<div class="desc">Writes the given <var>header</var> to the port <var>output</var>.
+ <span class="args">algorithm (password &lt;string&gt;)</span></div>
+<div class="desc"><var>algorithm</var> must be one of the algorithms describes above.
+<p />Creates PBE secret key based on given <var>password</var> and <var>algorithm</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="date-&gt;rfc5322-date1601">
-    <span class="name" name="date-&gt;rfc5322-date">date-&gt;rfc5322-date</span>
-  </a> <span class="args">date</span></div>
-<div class="desc"><var>date</var> must be SRFI-19 date.
-<p />Returns RFC 5322 date formatted string.
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1745"><span class="section-number">7.19.2</span>Low level APIs</a>
+  </h4>
+<p />These APIs are for users who want to create own PBE mechanism such as PKCS#12.
+<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-11746">
+    <span class="name" name="pbkdf-1">pbkdf-1</span>
+  </a>
+ <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)</span></div>
+<div class="desc">Implementation of PBKDF1 describes in PKCS#5 specification.
+<p />The arguments are plain text (bytevector), salt (bytevector), iteration count
+(non negative exact integer) and key length (non negative exact integer)
+respectively.
+<p />The keyword argument <var>hash</var> specifies which hash algorithm will be used. The
+default is SHA-1. 
 </div>
+<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-21747">
+    <span class="name" name="pbkdf-2">pbkdf-2</span>
+  </a>
+ <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)
+ (prf (hash-algorithm HMAC :key P :hash hash))</span></div>
+<div class="desc">Implementation of PBKDF2 describes in PKCS#5 specification.
+<p />The arguments are plain text (bytevector), salt (bytevector), iteration count
+(non negative exact integer) and key length (non negative exact integer)
+respectively.
+<p />The keyword argument <var>hash</var> specifies which hash algorithm will be used in
+PRF function. The default is SHA-1 and if you don't have any reasonable reason,
+this must not be changed.
+<p />The keyword argument <var>prf</var> specifies underlying pseudo random function which
+must be hash object implemented with <code>&lt;user-hash-algorithm&gt;</code> describes in
+<a href="section716.html#custom.hash">Custom hash algorithm</a>. The default is HMAC and if you
+don't have any reasonable reason, this must not be changed.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="derive-key1748">
+    <span class="name" name="derive-key">derive-key</span>
+  </a>
+ <span class="args">P S c dk-len :key (kdf pbkdf-2) :allow-other-keys</span></div>
+<div class="desc">The implementation of key derive function. The required arguments are
+the same as above <code>pbkdf-1</code> and <code>pbkdf-2</code>.
+<p />This procedure just calls given <var>kdf</var> with given arguments and returns
+derived key bytevector.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="derive-key&amp;iv1749">
+    <span class="name" name="derive-key&amp;iv">derive-key&amp;iv</span>
+  </a>
+ <span class="args">marker (key &lt;pbe-secret-key&gt;) (parameter &lt;pbe-parameter&gt;)</span></div>
+<div class="desc"><var>marker</var> is user defined cipher type. <var>key</var> must be subclass of
+<code>&lt;pbe-secret-key&gt;</code>. <var>parameter</var> must be subclss of
+<code>&lt;pbe-parameter&gt;</code>.
+<p />This method is called in the <code>initialize</code> method of
+<code>&lt;pbe-cipher-spi&gt;</code> and must return 2 values; the first one is derived key
+as bytevector and second one is initial vector as bytevector.
+<p />The PKCS#5 encryption and decryption procedures require to derive both
+key and initial vector from given password and parameter (salt and iteration
+count). This method is used in PBE cipher to derive key and initial vector.
+<p />The purpose of this method is to re-use <code>&lt;pbe-cipher-spi&gt;</code>. For example,
+PKCS#12 can use this cipher, however it requires different key derivation
+mechanism.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1750"><span class="section-number">7.19.3</span>Supporting PBES2 functionality</a>
+  </h4>
+<p />Since I could not find any standard implementation, Sagittarius actually does
+not support PBES2 encryption and decryption. However supporting it is not so
+difficult. This is the sample code to support it.
+<p /><pre class="codeblock">(import (rnrs) (clos user) (rfc hmac) (math))
+(define-class &lt;pbkef2-with-hmac-sha1-des3&gt; () ())
+(define pbkdf2-with-hmac-sha1-des3 (make &lt;pbkef2-with-hmac-sha1-des3&gt;))
+(define-method generate-secret-key ((mark &lt;pbkef2-with-hmac-sha1-des3&gt;)
+				    (password &lt;string&gt;))
+  (make &lt;pbe-secret-key&gt; :password  password :hash (hash-algorithm HMAC)
+	:scheme DES3 :iv-size 8 :length 24
+	:type PKCS5-S2))
+(register-spi pbkdf2-with-hmac-sha1-des3 &lt;pbe-cipher-spi&gt;)
+</pre>
+<p />And using this supported PBES2 cipher is like this;
+<p /><pre class="codeblock">(let* ((param (make-pbe-parameter (string-&gt;utf8 "saltsalt") 1024))
+       (key (generate-secret-key pbkdf2-with-hmac-sha1-des3 "password"))
+       (pbe-cipher (cipher pbkdf2-with-hmac-sha1-des3 key :parameter param))
+       (ciphertext (encrypt pbe-cipher (string-&gt;utf8 "This is an example."))))
+  (utf8-&gt;string (decrypt pbe-cipher ciphertext)))
+</pre>
+<p />I suppose this is correct, but I could not find any implementation which
+supports PBES2. I usually test with JCE, so if you have some recommendation,
+please let me know.
 
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section718.html">(util queue) - Queue</a>
+    <a class="prev" href="section718.html">(odbc) - ODBC binding</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section720.html">(rfc base64) - Base 64 encode and decode library</a>
+    <a class="next" href="section720.html">(util queue) - Queue</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
   </div>
 </html>

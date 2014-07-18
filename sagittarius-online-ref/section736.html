@@ -6,92 +6,129 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section735.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section735.html">(text csv) - Comma separated values parser library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section737.html">(util treemap) - Treemap</a>
+    <a class="next" href="section737.html">(text tree) - Lightweight text generation</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.tlv"><span class="section-number">7.36</span>(tlv) - TLV library</a>
+    <a class="section.anchor" name="text.html-lite"><span class="section-number">7.36</span>(text html-lite) - Simple HTML document builder library</a>
   </h3>
-<p /><div class="define">
+<p />
+<div class="define">
     <span class="define-category">Library</span>
-    <a name="(tlv)1825">
-      <span class="name" name="(tlv)">(tlv)</span>
+    <a name="(text html-lite)2015">
+      <span class="name" name="(text html-lite)">(text html-lite)</span>
     </a>
   </div>
-<div class="desc">This library provides TLV (tag length value) data operation procedures.
+<div class="desc">This library provides simple HTML builder procedures based on HTML5.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="html-escape2016">
+    <span class="name" name="html-escape">html-escape</span>
+  </a> <span class="args">:optional (in (current-input-port))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="html-escape-string2017">
+    <span class="name" name="html-escape-string">html-escape-string</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Escapes the unsafe characters in HTML and returns escaped string.
+<p />The <code>html-escape</code> reads the string from optional argument <var>in</var> which
+must be an textual input port and returns an escaped string.
+<p />The <code>html-escape-string</code> takes a string and returns an escaped string.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1826"><span class="section-number">7.36.1</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-emv-tlv-parser1827">
-    <span class="name" name="make-emv-tlv-parser">make-emv-tlv-parser</span>
-  </a>
- <span class="args">:key (object-builder tlv-builder)</span></div>
-<div class="desc">Creates EMV type TLV parser.
-<p />This procedure returns a procedure which accepts a binary port as its argument.
-<p />The keyword argument <code>object-builder</code> specifies how to construct a TLV
-object. The default value is <code>tlv-builder</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="html-doctype2018">
+    <span class="name" name="html-doctype">html-doctype</span>
+  </a> <span class="args">:key (type :html-4.01-strict)</span></div>
+<div class="desc">Returns a doctype declaration for an HTML document. <var>type</var> can be one
+of the followings;
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>:html-5</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 5
+  </dd>
+      <dt class="dl-item-title">
+        <code>:html-4.01-strict :html-4.01, :strict, :html-strict</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 4.01 Strict DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:html-4.01-transitional :html-transitional, :transitional</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 4.01 Transitional DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-strict :xhtml-1.0</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Strict DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-transitional</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Transitional DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-frameset</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Frameset DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.1</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.1 DTD
+  </dd>
+    </dl>
+  </div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-object?1828">
-    <span class="name" name="tlv-object?">tlv-object?</span>
-  </a> <span class="args">o</span></div>
-<div class="desc">Returns #t if the given object is TLV object otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-tag1829">
-    <span class="name" name="tlv-tag">tlv-tag</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV tag of given TLV object <var>tlv</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-data1830">
-    <span class="name" name="tlv-data">tlv-data</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV binary data if the given TLV object <var>tlv</var> is not
-constructed, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-components1831">
-    <span class="name" name="tlv-components">tlv-components</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV components of given TLV object <var>tlv</var>. If the <var>tlv</var>
-is not constructed, this returns <code>()</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-&gt;bytevector1832">
-    <span class="name" name="tlv-&gt;bytevector">tlv-&gt;bytevector</span>
-  </a> <agrs>tlv</agrs></div>
-<div class="desc">Converts given TLV object <var>tlv</var> to bytevector.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="write-tlv1833">
-    <span class="name" name="write-tlv">write-tlv</span>
-  </a>
- <agrs>tlv :optional (out (current-output-port))</agrs></div>
-<div class="desc"><var>out</var> must be binary output port.
-<p />Writes given TLV object <var>tlv</var> to <var>out</var> as TLV data.
+<p /><div class="define"><span class="define-category">Function</span><a name="html:element2019">
+    <span class="name" name="html:element">html:<var>element</var></span>
+  </a> <span class="args">args ...</span></div>
+<div class="desc">Construct an HTML element <var>element</var>. Currently following elements are
+provided. 
+<p /><pre class="codeblock">   a       abbr    address  area       article  aside
+   audio   b       base     bdi        bdo      blockquote
+   body    br      button   canvas     caption  cite
+   code    col     colgroup command    datalist dd
+   del     details dfn      div        dl       dt
+   em      embed   fieldset figcaption figure   footer
+   form
+   h1      h2      h3       h4         h5       h6
+   head    header  hgroup   hr         html
+   i       iframe  img      input      ins      kbd
+   keygen  label   legend   li         link     map
+   mark    menu    meta     meter      nav      noscript
+   object  ol      optgroup option     output   p
+   param   pre     progress q          rp       rt
+   ruby    s       samp     script     section  select
+   small   source  span     strong     style    sub
+   summary sup     table    tbody      td       textarea
+   tfoot   th      thead    time       title    tr
+   track   u       ul       var        video    wbr
+</pre>
+<p />The result of these functions is a tree of text segments, which can be written
+out to a port by <code>write-tree</code> or can be converted to a string by
+<code>tree-&gt;string</code> <a href="section737.html#text.tree">(text tree) - Lightweight text generation</a>.
+<p />You can specify attributes of the element by using a keyword-value notation
+before the actual content.
+<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:a :href "http://example.com" "example"))
+</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;a href="http://example.com"&gt;example&lt;/a&gt;</span></pre>
+<p />The boolean value given to the attribute has special meaning. If #t is given,
+the attribute is rendered without a value. If #f is given, the attribute is not
+rendered.
+<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:table :border #t))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;table border&gt;&lt;/table&gt;</span></pre>
+<pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:table :border #f))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;table&gt;&lt;/table&gt;</span></pre>
+<p />Special characters in attribute values are escaped by the function, but the
+ones in the content are not.
+<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:div :foo "&lt;&gt;&amp;\"" "&lt;not escaped&gt;"))
+</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;div foo="&amp;lt;&amp;gt;&amp;amp;&amp;quot;"&gt;&lt;not escaped&gt;&lt;/div&gt;</span></pre>
+<p />
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="dump-tlv1834">
-    <span class="name" name="dump-tlv">dump-tlv</span>
-  </a> <span class="args">:optional (out (current-output-port))</span></div>
-<div class="desc">Dump given TLV object <var>tlv</var> as human readable form.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1835"><span class="section-number">7.36.2</span>Custom object builder</a>
-  </h4>
-<p />Sometimes default TLV object is not convenient to use. Then users can create
-own object from TLV data passing own object builder to the
-<code>make-emv-tlv-parser</code> procedure.
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-builder1836">
-    <span class="name" name="tlv-builder">tlv-builder</span>
-  </a> <span class="args">first-byte tag data constructed?</span></div>
-<div class="desc">Default TLV object builder. User should not use this procedure directly.
-<p /><var>first-byte</var> is the first byte of the leading TLV object.
-<p /><var>tag</var> is the read tag of the TLV object.
-<p /><var>data</var> is either a list of TLV object or bytevector. User can check it with
-<var>constructed?</var> argument.
-<p /><var>constructed?</var> indicates if the TLV object is constructed or not. If this is
-#t then <var>data</var> is a list of TLV objects.
-</div>
-</section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section735.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section735.html">(text csv) - Comma separated values parser library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section737.html">(util treemap) - Treemap</a>
+    <a class="next" href="section737.html">(text tree) - Lightweight text generation</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
   </div>
 </html>

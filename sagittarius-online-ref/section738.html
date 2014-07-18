@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <div class="prev-next">
+    <a class="prev" href="section737.html">(text tree) - Lightweight text generation</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section739.html">(util treemap) - Treemap</a>
+  </div>
+  <section class="subsection"><h3 class="subsection">
+    <a class="section.anchor" name="util.tlv"><span class="section-number">7.38</span>(tlv) - TLV library</a>
+  </h3>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(tlv)2023">
+      <span class="name" name="(tlv)">(tlv)</span>
+    </a>
+  </div>
+<div class="desc">This library provides TLV (tag length value) data operation procedures.
+</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2024"><span class="section-number">7.38.1</span>High level APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-emv-tlv-parser2025">
+    <span class="name" name="make-emv-tlv-parser">make-emv-tlv-parser</span>
+  </a>
+ <span class="args">:key (object-builder tlv-builder)</span></div>
+<div class="desc">Creates EMV type TLV parser.
+<p />This procedure returns a procedure which accepts a binary port as its argument.
+<p />The keyword argument <code>object-builder</code> specifies how to construct a TLV
+object. The default value is <code>tlv-builder</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tlv-object?2026">
+    <span class="name" name="tlv-object?">tlv-object?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Returns #t if the given object is TLV object otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tlv-tag2027">
+    <span class="name" name="tlv-tag">tlv-tag</span>
+  </a> <span class="args">tlv</span></div>
+<div class="desc">Returns TLV tag of given TLV object <var>tlv</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tlv-data2028">
+    <span class="name" name="tlv-data">tlv-data</span>
+  </a> <span class="args">tlv</span></div>
+<div class="desc">Returns TLV binary data if the given TLV object <var>tlv</var> is not
+constructed, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tlv-components2029">
+    <span class="name" name="tlv-components">tlv-components</span>
+  </a> <span class="args">tlv</span></div>
+<div class="desc">Returns TLV components of given TLV object <var>tlv</var>. If the <var>tlv</var>
+is not constructed, this returns <code>()</code>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tlv-&gt;bytevector2030">
+    <span class="name" name="tlv-&gt;bytevector">tlv-&gt;bytevector</span>
+  </a> <agrs>tlv</agrs></div>
+<div class="desc">Converts given TLV object <var>tlv</var> to bytevector.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="write-tlv2031">
+    <span class="name" name="write-tlv">write-tlv</span>
+  </a>
+ <agrs>tlv :optional (out (current-output-port))</agrs></div>
+<div class="desc"><var>out</var> must be binary output port.
+<p />Writes given TLV object <var>tlv</var> to <var>out</var> as TLV data.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="dump-tlv2032">
+    <span class="name" name="dump-tlv">dump-tlv</span>
+  </a> <span class="args">:optional (out (current-output-port))</span></div>
+<div class="desc">Dump given TLV object <var>tlv</var> as human readable form.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2033"><span class="section-number">7.38.2</span>Custom object builder</a>
+  </h4>
+<p />Sometimes default TLV object is not convenient to use. Then users can create
+own object from TLV data passing own object builder to the
+<code>make-emv-tlv-parser</code> procedure.
+<p /><div class="define"><span class="define-category">Function</span><a name="tlv-builder2034">
+    <span class="name" name="tlv-builder">tlv-builder</span>
+  </a> <span class="args">first-byte tag data constructed?</span></div>
+<div class="desc">Default TLV object builder. User should not use this procedure directly.
+<p /><var>first-byte</var> is the first byte of the leading TLV object.
+<p /><var>tag</var> is the read tag of the TLV object.
+<p /><var>data</var> is either a list of TLV object or bytevector. User can check it with
+<var>constructed?</var> argument.
+<p /><var>constructed?</var> indicates if the TLV object is constructed or not. If this is
+#t then <var>data</var> is a list of TLV objects.
+</div>
+</section></section>
+  <div class="prev-next">
+    <a class="prev" href="section737.html">(text tree) - Lightweight text generation</a>
+    <a class="top" href="../sagittarius-online-ref.html">Top</a>
+    <a class="next" href="section739.html">(util treemap) - Treemap</a>
+  </div>
+  <hr>
+  <div id="document-footer">
+    <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
+    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
+  </div>
+</html>

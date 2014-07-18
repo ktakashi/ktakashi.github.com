@@ -8,137 +8,39 @@
   <div class="prev-next">
     <a class="prev" href="section712.html">(util hashtables) - Hashtable utilities</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section714.html">(math) - Mathematics library</a>
+    <a class="next" href="section714.html">Constructors, predicates and accessors</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.list"><span class="section-number">7.13</span>(util list) - Extra list utility library</a>
+    <a class="section.anchor" name="util.heap"><span class="section-number">7.13</span>(util heap) - Heap</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util list)1441">
-      <span class="name" name="(util list)">(util list)</span>
+    <a name="(util heap)1612">
+      <span class="name" name="(util heap)">(util heap)</span>
     </a>
   </div>
-<div class="desc">This library provides extra list utility procedures.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="for-each-with-index1442">
-    <span class="name" name="for-each-with-index">for-each-with-index</span>
-  </a> <span class="args">proc list1 list2 ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="map-with-index1443">
-    <span class="name" name="map-with-index">map-with-index</span>
-  </a> <span class="args">proc list1 list2 ...</span></div>
-<div class="desc">Like <code>for-each</code> and <code>map</code>, expect <var>proc</var> receives the index
-as the first argument.
-<p /><pre class="snipet"><span class="snipet-code">(map-with-index list '(a b c) '(e f g))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((0 a e) (1 b f) (2 c g))</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="intersperse1444">
-    <span class="name" name="intersperse">intersperse</span>
-  </a> <span class="args">item list</span></div>
-<div class="desc">Inserts <var>item</var> between elements in the <var>list</var>.
-<p /><pre class="snipet"><span class="snipet-code">(intersperse '+ '(1 2 3))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(1 + 2 + 3)</span></pre>
-<pre class="snipet"><span class="snipet-code">(intersperse '+ '(1))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(1)</span></pre>
-<pre class="snipet"><span class="snipet-code">(intersperse '+ '())</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">()</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="slices1445">
-    <span class="name" name="slices">slices</span>
-  </a> <span class="args">list k :optional fill? padding</span></div>
-<div class="desc">Splits <var>list</var> into the sublists (slices) where the length of each
-slice is <var>k</var>. If the length of <var>list</var> is not multiple of <var>k</var>, the
-last slice is dealt in the same way as <code>take*</code>; this is, it is shorter than
-<var>k</var> by default, or added <var>padding</var> if <var>fill?</var> is true.
-<p /><pre class="snipet"><span class="snipet-code">(slices '(a b c d e f g) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((a b c) (d e f) (g))</span></pre>
-<pre class="snipet"><span class="snipet-code">(slices '(a b c d e f g) 3 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((a b c) (d e f) (g z z))</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="split-at*1446">
-    <span class="name" name="split-at*">split-at*</span>
-  </a>
- <span class="args">list k :optional (fill? #t) (padding #f)</span></div>
-<div class="desc">Splits the list <var>list</var> at index <var>k</var>. This is more tolerant version
-of <code>split-at</code> defined in SRFI-1 library. Returns the results of
-<code>take*</code> and <code>drop*</code>.
-<p /><pre class="snipet"><span class="snipet-code">(split-at* '(a b c d) 6 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d z z) and ()</span></pre>
-</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="take*1447">
-    <span class="name" name="take*">take*</span>
-  </a> <span class="args">list k :optional (fill? #f) (padding #f)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="drop*1448">
-    <span class="name" name="drop*">drop*</span>
-  </a> <span class="args">list k</span></div>
-<div class="desc">More tolerant version of <code>take</code> and <code>drop</code> defined in SRFI-1
-library. These won't raise an error when <var>k</var> is larger than the size of the
-given list.
-<p />If the list is shorter than <var>k</var> elements, <code>take*</code> returns a copy of
-<var>list</var> by default. If <var>fill?</var> is true, <var>padding</var> is added to the
-result to make its length <var>k</var>.
-<p />On the other hand, <code>drop*</code> just returns as empty list when the input list
-is shorter than <var>k</var> elements.
-<p /><pre class="snipet"><span class="snipet-code">(take* '(a b c d) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c)</span></pre>
-<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d)</span></pre>
-<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6 #t)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d #f #f)</span></pre>
-<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d z z)</span></pre>
-<pre class="snipet"><span class="snipet-code">(drop* '(a b c d) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(d)</span></pre>
-<pre class="snipet"><span class="snipet-code">(drop* '(a b c d) 5)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">()</span></pre>
+<div class="desc">This library provides heap data structure and its operations. The
+implementation of heap is Fibonacci heap. Running time of heap operations
+are followings;
+<p /><ul class="itemlist">
+    <li class="itemlist-item">Insert(key, data): O(1)</li>
+    <li class="itemlist-item">FindMin(): O(1)</li>
+    <li class="itemlist-item">DeleteMin(): Amortized O(log n)</li>
+    <li class="itemlist-item">Delete(node): Amortized O(log n)</li>
+    <li class="itemlist-item">DecreaseKey(node): Amortized O(1)</li>
+    <li class="itemlist-item">Merge(heap1, heap2): O(1)</li>
+    <li class="itemlist-item">Search(key): O(n)</li>
+  </ul>
 <p /></div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="cond-list1449">
-    <span class="name" name="cond-list">cond-list</span>
-  </a> <span class="args">clause ...</span></div>
-<div class="desc">Construct a list by conditionally adding entries. Each <var>clause</var> must
-have a test and expressions. When its test yields true, then result of
-associated expression is used to construct the resulting list. When the test 
-yields false, nothing is inserted.
-<p /><var>Clause</var> must either one of the following form:
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <var>(test expr ...)</var>
-      </dt>
-      <dd class="dl-item-desc">	<var>Test</var> is evaluated, and when it is true, <var>expr ...</var> are
-	evaluated, and the return value becomes a part of the result. If no
-	<var>expr</var> is given, the result of test is used if it is not false.
-</dd>
-      <dt class="dl-item-title">
-        <var>(test =&gt; proc)</var>
-      </dt>
-      <dd class="dl-item-desc">	<var>Test</var> is evaluated, and if it is true, <var>proc</var> is called with
-	the value, and the return value is used to construct the result
-</dd>
-      <dt class="dl-item-title">
-        <var>(test   expr ...)</var>
-      </dt>
-      <dd class="dl-item-desc">	Like <code>(test expr ...)</code>, except that the result of the last
-	<var>expr</var> must be a list, and it is spliced into the resulting list,
-	like unquote-splicing.
-</dd>
-      <dt class="dl-item-title">
-        <var>(test =&gt;   proc)</var>
-      </dt>
-      <dd class="dl-item-desc">	Like <code>(test =&gt; proc)</code>, except that the result of the last
-	<var>proc</var> must be a list, and it is spliced into the resulting list,
-	like unquote-splicing.
-</dd>
-    </dl>
-  </div>
-<p /><pre class="codeblock">(let ((alist '((x 3) (y -1) (z 6))))
- (cond-list ((assoc 'x alist) 'have-x)
-            ((assoc 'w alist) 'have-w)
-            ((assoc 'z alist) =&gt; cadr)))
-<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(have-x 6)</span></pre>
-<p /><pre class="codeblock">(let ((x 2) (y #f) (z 5))
-  (cond-list (x   `(:x ,x))
-             (y   `(:y ,y))
-             (z   `(:z ,z))))
-<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(:x 2 :z 5)</span></pre>
-</div>
-</section>
+<p /></section>
   <div class="prev-next">
     <a class="prev" href="section712.html">(util hashtables) - Hashtable utilities</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section714.html">(math) - Mathematics library</a>
+    <a class="next" href="section714.html">Constructors, predicates and accessors</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-06-20T11:42:13+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
   </div>
 </html>
