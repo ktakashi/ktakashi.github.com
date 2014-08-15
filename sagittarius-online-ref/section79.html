@@ -6,252 +6,234 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section78.html">(dbm) - Generic DBM interface</a>
+    <a class="prev" href="section78.html">(dbi) - Database independent access layer</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section710.html">(util file) - File operation utility library</a>
+    <a class="next" href="section710.html">(util deque) - Deque</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.deque"><span class="section-number">7.9</span>(util deque) - Deque</a>
+    <a class="section.anchor" name="dbm"><span class="section-number">7.9</span>(dbm) - Generic DBM interface</a>
   </h3>
-<p /><div class="define">
+<p />
+<div class="define">
     <span class="define-category">Library</span>
-    <a name="(util deque)1549">
-      <span class="name" name="(util deque)">(util deque)</span>
+    <a name="(dbm)1527">
+      <span class="name" name="(dbm)">(dbm)</span>
     </a>
   </div>
-<div class="desc">This library provides deque (double-ended queue) data structure and
-its operations.
-<p />You can create a simple deque, which is not thread-safe, or an MT deque, a
-thread-safe deque. Basic deque operations work on both type of deques. When
-a mtdeque is passed to the procedures listed in this section, each operation
-is done in atomic way, unless otherwise noted.
-<p />There are also a set of procedures for mtdeques that can be used for thread
-synchronisation; for example, you can let the consumer thread block if an
-mtdeque is empty, and/or the producer thread block if the number of items in
-the mtdeque reaches a specified limit. Using these procedures allows the
-program to use an mtdeque as a <var>channel</var>.
-<p />NOTE: <a href="section720.html#util.queue">(util queue)</a> is implemented using this library.
+<div class="desc">The library provides the generic interface to access DBM.
+<p />Sagittarius currently supports following DBM implementation;
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">(dbm dumb)</dt>
+      <dd class="dl-item-desc"> DBM-like library. Inspired by Python's dbm.dumb. This library must be used
+ as the last resort. It has poor performance and memory usage.
+</dd>
+    </dl>
+  </div>
 </div>
+<p />The following code shows a typical usage;
+<p /><pre class="codeblock">(import (dbm))
+<p />;; Open the database
+(define *db* (dbm-open (dbm-type-&gt;class 'dumb) :path "dumb.db"))
+<p />;; Put the value to the database
+(dbm-put! *db* "key1" "value1")
+<p />;; Get the value from the database
+(dbm-get *db* "key1")
+<p />;; Iterate over the database
+(dbm-for-each *db* (lambda (key val) #| do something useful |#))
+<p />;; Close the database
+(dbm-close *db*)
+</pre>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1528"><span class="section-number">7.9.1</span>Opening and closing a dbm database</a>
+  </h4>
 <p /><div class="define">
     <span class="define-category">Class</span>
-    <a name="<deque&gt;1550">
-      <span class="name" name="<deque&gt;">&lt;deque&gt;</span>
+    <a name="<dbm&gt;1529">
+      <span class="name" name="<dbm&gt;">&lt;dbm&gt;</span>
     </a>
   </div>
-<div class="desc">A class of simple deque. </div>
+<div class="desc">An abstract class for DBM-like database. The class has the following
+slots. It must be filled by <code>dbm-open</code>.
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">path</dt>
+      <dd class="dl-item-desc"> Pathname of the dbm database. </dd>
+      <dt class="dl-item-title">rw-mode</dt>
+      <dd class="dl-item-desc">    Specifies read/write mode. Can be one of the following keywords:
+    <div class="dl-list-wrapper">
+        <dl class="dl-list">
+          <dt class="dl-item-title">:read</dt>
+          <dd class="dl-item-desc"> The database will be opened in read-only mode.</dd>
+          <dt class="dl-item-title">:write</dt>
+          <dd class="dl-item-desc">        The database will be opened in read-write mode. If the database file
+	does not exist, <code>dbm-open</code> creates one.
+      </dd>
+          <dt class="dl-item-title">:write</dt>
+          <dd class="dl-item-desc">        The database will be opened in read-write mode. If the database file
+	exists, <code>dbm-open</code> truncates it.
+      </dd>
+        </dl>
+      </div>
+    The keywords are indication so actual implementation may not behave as it
+    described.
+  </dd>
+      <dt class="dl-item-title">key-convert</dt>
+      <dt class="dl-item-title">value-convert</dt>
+      <dd class="dl-item-desc">    By default, you can use only strings for both key and values. With
+    this option, however, you can specify how to convert other Scheme
+    values to/from string to be stored in the database. The possible values
+    are the followings: 
+    <div class="dl-list-wrapper">
+        <dl class="dl-list">
+          <dt class="dl-item-title">#f</dt>
+          <dd class="dl-item-desc">       The default value. Keys (values) are not converted.
+       They must be a string.
+      </dd>
+          <dt class="dl-item-title">#t</dt>
+          <dd class="dl-item-desc">       Keys (values) are converted to its string representation, using
+       <code>write/ss</code>, to store in the database and convert back Scheme
+       values, using <code>read/ss</code>, to retrieve from the database.
+      </dd>
+          <dt class="dl-item-title">a list of two procedures</dt>
+          <dd class="dl-item-desc">       Both procedure must take a single argument. The first procedure must
+       receive a Scheme object and returns a string. It is used to convert 
+       the keys (values) to store in the database. The second procedure must
+       receive a string and returns a Scheme object. It is used to convert
+       the stored data in the database to a Scheme object.
+      </dd>
+        </dl>
+      </div>
+  </dd>
+    </dl>
+  </div>
+<p /></div>
 <p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<mtdeque&gt;1551">
-      <span class="name" name="<mtdeque&gt;">&lt;mtdeque&gt;</span>
+    <span class="define-category">Metaclass</span>
+    <a name="<dbm-meta&gt;1530">
+      <span class="name" name="<dbm-meta&gt;">&lt;dbm-meta&gt;</span>
     </a>
   </div>
-<div class="desc">A class of mtdeque. Inherits <code>&lt;deque&gt;</code>.</div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="make-deque1552">
-      <span class="name" name="make-deque">make-deque</span>
-    </a>
-  </div>
-<div class="desc">Creates and return an empty simple deque.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-mtdeque1553">
-    <span class="name" name="make-mtdeque">make-mtdeque</span>
-  </a> <span class="args">:key max-length</span></div>
-<div class="desc">Creates and return an empty mtdeque.
-<p />The keyword argument <var>max-length</var> specifies the maximum entry count of
-the deque. Negative number indicates unlimited number of entry. If the given
-number is zero then the deque cannot hold any item.
+<div class="desc">A metaclass of <code>&lt;dbm&gt;</code> and its subclasses.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-open1531">
+    <span class="name" name="dbm-open">dbm-open</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
+<div class="desc">Opens a dbm database. <var>dbm</var> must be an instance of one of the
+concrete classes derived from the <code>&lt;dbm&gt;</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque?1554">
-    <span class="name" name="deque?">deque?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is a deque (either a simple deque or an mtdeque).</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque?1555">
-    <span class="name" name="deque?">deque?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is an mtdeque.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque-empty?1556">
-    <span class="name" name="deque-empty?">deque-empty?</span>
-  </a> <span class="args">deque</span></div>
-<div class="desc">Returns #t if <var>deque</var> is an empty deque.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque-length1557">
-    <span class="name" name="deque-length">deque-length</span>
-  </a> <span class="args">deque</span></div>
-<div class="desc">Returns the number of the items in the deque.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mtdeque-max-length1558">
-    <span class="name" name="mtdeque-max-length">mtdeque-max-length</span>
-  </a> <span class="args">mtdeque</span></div>
-<div class="desc">Returns the maximum number of items <var>mtdeque</var> can hold. 
-#f indicates unlimited.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mtdeque-room1559">
-    <span class="name" name="mtdeque-room">mtdeque-room</span>
-  </a> <span class="args">mtdeque</span></div>
-<div class="desc">Returns the number of elements <var>mtdeque</var> can accept at this moment
-before it hits its maximum length. If the deque has unlimited capacity then
-the procedure returns <code>+inf.0</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="copy-deque1560">
-    <span class="name" name="copy-deque">copy-deque</span>
-  </a> <span class="args">deque</span></div>
-<div class="desc">Returns a copy of <var>deque</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque-push!1561">
-    <span class="name" name="deque-push!">deque-push!</span>
-  </a> <span class="args">deque obj more-objs ...</span></div>
-<div class="desc">Adds <var>obj</var> to the end of  <var>deque</var>. You may give more than
-one object, and each of them are pushed in order.
-<p />If <var>deque</var> is an mtdeque, all the objects are pushed atomically; no
-other objects from other threads can be inserted between the objects given
-to a single <code>deque-push!</code> call. Besides, if the value of the result of
-<code>mtdeque-max-length</code> is positive, and adding <var>objs</var> makes the
-number of element in <var>deque</var> exceeds it, an error is raised and 
-<var>deque</var> won't be modified. (If the maximum length is zero, this procedure
-always fail. Use <code>deque-push/wait!</code> below.)
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-open1532">
+    <span class="name" name="dbm-open">dbm-open</span>
+  </a> <span class="args">(dbm-class &lt;dbm-meta&gt;) options ...</span></div>
+<div class="desc">A convenient method that creates dbm instance and opens it.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-close1533">
+    <span class="name" name="dbm-close">dbm-close</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
+<div class="desc">Closes a dbm database <var>dbm</var>. If the database is not closed, then
+the database file may not be synchronised properly. So it is user's
+responsibility to close it.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque-unshift!1562">
-    <span class="name" name="deque-unshift!">deque-unshift!</span>
-  </a> <span class="args">deque obj more-objs ...</span></div>
-<div class="desc">Adds <var>obj</var> to in front of <var>deque</var>. You may give more than
-one object, and each of them are pushed in order.
-<p />Like <code>deque-push!</code>, when <var>deque</var> is an mtdeque, all objects are added
-atomically, and the value of max length is checked. See <code>deque-push!</code> above
-for more detail.
-<p />The name unshift is taken from Perl.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-closed?1534">
+    <span class="name" name="dbm-closed?">dbm-closed?</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
+<div class="desc">Returns true if the dbm database <var>dbm</var> is closed, otherwise #f.
+<p />The returned value may be non boolean value.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque-push-unique!1563">
-    <span class="name" name="deque-push-unique!">deque-push-unique!</span>
-  </a>
- <span class="args">deque eq-proc obj more-objs ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deque-unshift-unique!1564">
-    <span class="name" name="deque-unshift-unique!">deque-unshift-unique!</span>
-  </a>
- <span class="args">deque eq-proc obj more-objs ...</span></div>
-<div class="desc">Like <code>deque-push!</code> and <code>deque-unshift!</code>, respectively, except
-that these don't modify <var>deque</var> if it already contains <var>objs</var> (elements
-are compared by two-argument procedure <var>eq-proc</var>).
-<p />When <var>deque</var> is an mtdeque, all objects are added atomically, and the max
-length is checked. See <code>deque-push!</code> above for the detail.
+<p /><div class="define"><span class="define-category">Function</span><a name="dbm-type-&gt;class1535">
+    <span class="name" name="dbm-type-&gt;class">dbm-type-&gt;class</span>
+  </a> <span class="args">dbmtype</span></div>
+<div class="desc">Returns DBM class if DBM implementation <var>dbmtype</var> exists, otherwise
+#f.
+<p />The <var>dbmtype</var> must be a symbol that names the type of dbm implementation,
+and the implementation library name must be <code>(dbm <var>dbmtype</var>)</code>. For
+example, to get the <var>foo</var> DBM then the library name must be 
+<code>(dbm foo)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque-pop!1565">
-    <span class="name" name="deque-pop!">deque-pop!</span>
-  </a> <span class="args">deque :optional fallback</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deque-shift!1566">
-    <span class="name" name="deque-shift!">deque-shift!</span>
-  </a> <span class="args">deque :optional fallback</span></div>
-<div class="desc">Take one object from the end or the front of <var>deque</var>, respectively,
-and return it.
-<p />If <var>deque</var> is empty, <var>fallback</var> is returned if give, otherwise an 
-error is raised.
-<p />If <var>deque</var> is mtdeque and its max length is zero, then the deque is
-always empty. Use <code>deque-pop/wait!</code> or <code>deque-shift/wait!</code> to use
-such a deque as a synchronisation device.
-<p />The name shift is take from Perl.
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1536"><span class="section-number">7.9.2</span>Accessing a dbm database</a>
+  </h4>
+<p />Once a database is opened, you can use the following methods to access
+individual key/value pairs. 
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-put!1537">
+    <span class="name" name="dbm-put!">dbm-put!</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key value</span></div>
+<div class="desc">Put a <var>value</var> with <var>key</var></div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-get1538">
+    <span class="name" name="dbm-get">dbm-get</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key :optional default</span></div>
+<div class="desc">Get a value associated with <var>key</var>. If no value exists for <var>key</var>
+and <var>default</var> is specified, it will be returned. If no value exists for 
+<var>key</var> and <var>default</var> is not specified, then an error will be raised.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque-pop-all!1567">
-    <span class="name" name="deque-pop-all!">deque-pop-all!</span>
-  </a> <span class="args">deque</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deque-shift-all!1568">
-    <span class="name" name="deque-shift-all!">deque-shift-all!</span>
-  </a> <span class="args">deque</span></div>
-<div class="desc">Returns the whole content of <var>deque</var> by a list, with emptying 
-<var>deque</var>. If <var>deque</var> is empty, returns an empty list.
-<p />The the returning list of <code>deque-pop-all!</code> is constructed from the end
-of <var>queue</var> and <code>deque-shift-all!</code>'s one is constructed from the front
-of <var>queue</var>.
-<p />See also <code>deque-&gt;list</code> below.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-exists?1539">
+    <span class="name" name="dbm-exists?">dbm-exists?</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key</span></div>
+<div class="desc">Return true value if a value exists for <var>key</var>, #f otherwise.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-delete!1540">
+    <span class="name" name="dbm-delete!">dbm-delete!</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) key</span></div>
+<div class="desc">Delete a value associated with <var>key</var>.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1541"><span class="section-number">7.9.3</span>Iterating on a dbm database</a>
+  </h4>
+<p />To walk over the entire database, following methods are provided. 
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-fold1542">
+    <span class="name" name="dbm-fold">dbm-fold</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) procedure knil</span></div>
+<div class="desc">The basic iterator. For each key/value pair, <var>procedure</var> is called
+as <code><var>procedure</var> key value r</code>, where <var>r</var> is <var>knil</var> for the
+first call of <var>procedure</var>, and the return value of the previous call for
+subsequent calls. Returns the result of the last call of <var>procedure</var>.
+If no data is in the database, <var>knil</var> is returned.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque-front1569">
-    <span class="name" name="deque-front">deque-front</span>
-  </a> <span class="args">deque :optional fallback</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deque-rear1570">
-    <span class="name" name="deque-rear">deque-rear</span>
-  </a> <span class="args">deque :optional fallback</span></div>
-<div class="desc">Peek the head or the tail of <var>deque</var> and return the object, 
-respectively.
-<p />If <var>deque</var> is empty, <var>fallback</var> is returned if give, otherwise an 
-error is raised.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-for-each1543">
+    <span class="name" name="dbm-for-each">dbm-for-each</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) procedure</span></div>
+<div class="desc">For each key/value pair in the database <var>dbm</var>, <var>procedure</var> is
+called. The <var>procedure</var> must accept 2 arguments, a key and a value
+respectively. The result of <var>procedure</var> is discarded.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="list-&gt;deque1571">
-    <span class="name" name="list-&gt;deque">list-&gt;deque</span>
-  </a> <span class="args">list :optional class :rest initargs</span></div>
-<div class="desc">Returns a new deque which content is the elements in <var>list</var>, in
-the given order.
-<p />By default the created deque is a simple deque, but you can create mtdeque
-or instance of other subclass <code>&lt;deque&gt;</code> by giving the class to the
-optional <var>class</var> arguments. The optional <var>initargs</var> arguments are
-passed to the constructor of <var>class</var>.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-map1544">
+    <span class="name" name="dbm-map">dbm-map</span>
+  </a> <span class="args">(dbm &lt;dbm&gt;) procedure</span></div>
+<div class="desc">For each key/value pair in the database <var>dbm</var>, <var>procedure</var> is
+called. The <var>procedure</var> must accept 2 arguments, a key and a value
+respectively. The result of <var>procedure</var> is accumulated to a list which
+is returned as a result of <code>dbm-map</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque-&gt;list1572">
-    <span class="name" name="deque-&gt;list">deque-&gt;list</span>
-  </a> <span class="args">deque</span></div>
-<div class="desc">Returns a list whose content is the items in <var>deque</var> in order.
-Unlike <code>deque-shift-all!</code>, the content of <var>deque</var> remains intact.
-The returning list is a copy of the content. So modifying the list won't
-affect <var>deque</var>.
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1545"><span class="section-number">7.9.4</span>Managing dbm database instance</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-exists?1546">
+    <span class="name" name="dbm-db-exists?">dbm-db-exists?</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) name</span></div>
+<div class="desc">Returns #t if a database of class <var>class</var> specified by <var>name</var>
+exists.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="find-in-deque1573">
-    <span class="name" name="find-in-deque">find-in-deque</span>
-  </a> <span class="args">pred deque</span></div>
-<div class="desc">Returns the first item in <var>deque</var> that satisfies a predicate
-<var>pred</var>.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-remove1547">
+    <span class="name" name="dbm-db-remove">dbm-db-remove</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) name</span></div>
+<div class="desc">Removes an entire database of class <var>class</var> specified by <var>name</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="any-in-deque1574">
-    <span class="name" name="any-in-deque">any-in-deque</span>
-  </a> <span class="args">pred deque</span></div>
-<div class="desc">Apply <var>pred</var> on each item in <var>deque</var> until it evaluates true,
-and returns that true value. If no item satisfies <var>pred</var>, #f is returned.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-copy1548">
+    <span class="name" name="dbm-db-copy">dbm-db-copy</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) from to</span></div>
+<div class="desc">Copy a database of <var>class</var> specified by <var>from</var> to <var>to</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="every-in-deque1575">
-    <span class="name" name="every-in-deque">every-in-deque</span>
-  </a> <span class="args">pred deque</span></div>
-<div class="desc">Apply <var>pred</var> on each item in <var>deque</var>. If <var>pred</var> returns #f,
-stops iteration and returns #f immediately. Otherwise, returns the result of
-<var>pred</var> on the last item of <var>deque</var>. If the deque is empty, #t is
-returned.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-move1549">
+    <span class="name" name="dbm-db-move">dbm-db-move</span>
+  </a> <span class="args">(class &lt;dbm-meta&gt;) from to</span></div>
+<div class="desc">Moves or renames a database of <var>class</var> specified by <var>from</var>
+to <var>to</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="remove-from-deque!1576">
-    <span class="name" name="remove-from-deque!">remove-from-deque!</span>
-  </a> <span class="args">pred deque</span></div>
-<div class="desc">Removes all items in <var>deque</var> that satisfies <var>pred</var>. Returns
-#t if any item is removed. Otherwise #f.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deque-unshift/wait!1577">
-    <span class="name" name="deque-unshift/wait!">deque-unshift/wait!</span>
-  </a>
- <span class="args">mtdeque obj :optional timeout timeout-val</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deque-push/wait!1578">
-    <span class="name" name="deque-push/wait!">deque-push/wait!</span>
-  </a>
- <span class="args">mtdeque obj :optional timeout timeout-val</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deque-shift/wait!1579">
-    <span class="name" name="deque-shift/wait!">deque-shift/wait!</span>
-  </a>
- <span class="args">mtdeque :optional timeout timeout-val</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deque-pop/wait!1580">
-    <span class="name" name="deque-pop/wait!">deque-pop/wait!</span>
-  </a>
- <span class="args">mtdeque :optional timeout timeout-val</span></div>
-<div class="desc">These synchronising variants work on an mtdeque and make the caller
-thread block when the mtdeque has reached its maximum length (for
-<code>deque-unshift/wait!</code> and <code>deque-push/wait!</code>), or the mtdeque is empty
-(for <code>deque-shift/wait!</code> and <code>deque-pop/wait!</code>). The blocked caller
-thread is unblocked either the blocking condition is resolved, or the
-timeout condition is met.
-<p />The optional <var>timeout</var> argument specifies the timeout condition. If it
-is #f, those procedure wait indefinitely. If it is a real number, they wait
-at least the given number of seconds.
-<p />In case the call is blocked then timed out, the value of <var>timeout-val</var> is
-returned, which default value is #t.
-<p />When <code>deque-unshift/wait!</code> and <code>deque-push/wait!</code> succeeds without
-hitting timeout, they return #t.
-</div>
-
-</section>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section78.html">(dbm) - Generic DBM interface</a>
+    <a class="prev" href="section78.html">(dbi) - Database independent access layer</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section710.html">(util file) - File operation utility library</a>
+    <a class="next" href="section710.html">(util deque) - Deque</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-08-15T07:41:24+0100</i></div>
   </div>
 </html>

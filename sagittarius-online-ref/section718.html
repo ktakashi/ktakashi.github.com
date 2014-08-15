@@ -6,151 +6,225 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section717.html">(net oauth) - OAuth library</a>
+    <a class="prev" href="section717.html">(math) - Mathematics library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section719.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="next" href="section719.html">(odbc) - ODBC binding</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="odbc"><span class="section-number">7.18</span>(odbc) - ODBC binding</a>
+    <a class="section.anchor" name="net.oauth"><span class="section-number">7.18</span>(net oauth) - OAuth library</a>
   </h3>
+<p />This section describes the APIs for OAuth. OAuth is new secure authentication
+method for web service. For more detail, see 
+<a href="http://oauth.net/">OAuth Community Site</a>.
+<p />The following example shows how to obtain an access token from Twitter.
+<p /><pre class="codeblock">(import (rnrs) (net oauth) (sagittarius control) (srfi :13 strings))
+;; obtain a request token.
+;; type consumer key and secret you have got issued by Twitter
+(define token (obtain-request-token
+	       "http://api.twitter.com/oauth/request_token"
+	       (make-consumer-token
+		:key "consumer key"
+		:secret "consumer secret")))
+<p />(define (get-pin url)
+  (print "Open the following url and type in the shown PIN.")
+  (print url)
+  (let loop ()
+    (display "Input PIN: ") (flush-output-port (current-output-port))
+    (let1 pin (get-line (current-input-port))
+      (cond ((eof-object? pin) #f)
+            ((string-null? pin) (loop))
+            (else pin)))))
+<p />(define (report token)
+  (print "(begin")
+  (print " (define consumer-key \"" (token-key (token-consumer token)) "\")")
+  (print " (define consumer-secret \""
+	 (token-secret (token-consumer token))"\")")
+  (print " (define access-token \""(token-key token)"\")")
+  (print " (define access-token-secret \""(token-secret token)"\")")
+  (print ")"))
+<p />(define (main args)
+  (let1 pin (get-pin (make-authorization-uri
+		      "http://api.twitter.com/oauth/authorize"
+		      token))
+    ;; authorize the request token manually.
+    (authorize-request-token token pin)
+    ;; obtain the access token
+    (let1 access-token (obtain-access-token 
+			"http://api.twitter.com/oauth/access_token"
+			token)
+      (report access-token))))
+</pre>
+<p />Now you get the access token to tweet, let's tweet something on Sagittarius:
+<pre class="codeblock">(import (rnrs) (srfi :26 cut) (text sxml ssax) (net oauth) (sagittarius io))
+(define consumer-key "your consumer key")
+(define consumer-secret "your consumer secret")
+(define access-token "your access token")
+(define access-token-secret "your access token secret")
+<p />;; creates an access token to tweet.
+(define access-token
+  (make-access-token :key access-token
+		     :secret access-token-secret
+		     :consumer
+		     (make-consumer-token
+		      :key consumer-key
+		      :secret consumer-secret)))
+<p />(define (call/twitter-api-&gt;sxml token method path params . opts)
+  (define (call)
+    (access-protected-resource 
+     (string-append "http://api.twitter.com" path)
+     token
+     :request-method method
+     :user-parameters params))
+  (define (retrieve body status hint advice)
+    (if hint (print hint))
+    (if advice (print advice))
+    (call-with-input-string body (cut ssax:xml-&gt;sxml &lt;&gt; '())))
+  (call-with-values call retrieve))
+<p />(define (twitter-update/sxml token message . opts)
+  (call/twitter-api-&gt;sxml 
+   token 'POST "/1/statuses/update.xml" 
+   `(("status" ,message))))
+<p />;; if you want to use this from command line.
+(import (getopt))
+<p />(define (main args)
+  (with-args args
+      ((message (#\m "message") #t (usage)))
+    (print (twitter-update/sxml access-token message))))
+</pre>
+<p />The examples explain basic flows. To obtain an access token, and access to
+protected resource with it.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(odbc)1715">
-      <span class="name" name="(odbc)">(odbc)</span>
+    <a name="(net oauth)1705">
+      <span class="name" name="(net oauth)">(net oauth)</span>
     </a>
   </div>
-<div class="desc">This library provides ODBC access procedures.
-<p />ODBC is a common database access interface so that it doesn't depend on specific
-APIs. This library is for implementing ODBC DBD for <a href="section77.html#dbi">DBI</a>, using
-this library directly is not recommended.
-<p />NOTE: the library is supported only your platform is supporting ODBC.
+<div class="desc">This library provides OAuth 1.0 procedures. The API's names are compatible
+with cl-oauth.
 </div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="create-odbc-env1716">
-      <span class="name" name="create-odbc-env">create-odbc-env</span>
-    </a>
-  </div>
-<div class="desc">Creates and returns ODBC environment object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="odbc-env?1717">
-    <span class="name" name="odbc-env?">odbc-env?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is ODBC environment object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="free-handle1718">
-    <span class="name" name="free-handle">free-handle</span>
-  </a> <span class="args">odbc-ctx</span></div>
-<div class="desc">Releases given ODBC resource.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="connect!1719">
-    <span class="name" name="connect!">connect!</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="obtain-request-token1706">
+    <span class="name" name="obtain-request-token">obtain-request-token</span>
   </a>
- <span class="args">ocbc-env server username password :optional (auto-commit #t)</span></div>
-<div class="desc"><var>odbc-env</var> must be an ODBC environment object created by
-<code>create-odbc-env</code>.
-<p /><var>server</var> must be a string indicating ODBC database name.
-<p /><var>username</var> and <var>password</var> must be string.
-<p />Connects to <var>server</var> with authentication of <var>username</var> and
-<var>password</var> and returns ODBC database connection object. If optional
-argument <var>auto-commit</var> is #f then the connection won't commit transaction
-automatically.
+ <span class="args">uri consumer-token :key (version :1.0) (user-parameters '())
+ (timestamp (time-second (current-time))) (auth-location :header)
+ (request-method 'POST) (callback-uri #f) (additional-headers '())
+ (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
+<div class="desc"><var>uri</var> must be string and URI format.
+<p /><var>consumer-token</var> must be a consumer token object.
+<p />Obtains request token from given uri with given consumer token.
+<p />if the keyword arguments are specified:
+<p /><var>version</var> specifies which version uses. We only support 1.0 so this must not
+be specified.
+<p /><var>user-parameters</var> is an alist of the extra parameters to be sent to the
+server. This parameters are in the body message if the <var>request-method</var> is
+<code>POST</code> or query string if the <var>request-method</var> is <code>GET</code>.
+<p /><var>timestamp</var> specifies timestamp to send to the server. 
+<p /><var>auth-location</var> specifies the place where the authentication information
+located. This can be either <code>:header</code> or <code>:parameters</code>.
+<p /><var>request-method</var> specifies which request method is used. This can be either
+<code>GET</code> or <code>POST</code>. <code>POST</code> is recommended.
+<p /><var>callback-uri</var> specifies call back uri described in OAuth specification. If
+users don't use specific location to be redirected, this must not be specified.
+<p /><var>additional-headers</var> is alist of additional header to be sent to the server.
+<p /><var>signature-method</var> specifies which hash method is used. For now we only
+support <code>:hmac-sha1</code>.
+<p /><var>error-translator</var> specifies how to treat the error message sent by the
+server when error occurred. This must be a procedure which accepts 3 arguments,
+http status, headers and body respectively.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="odbc-connection?1720">
-    <span class="name" name="odbc-connection?">odbc-connection?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is ODBC connection object.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="disconnect!1721">
-    <span class="name" name="disconnect!">disconnect!</span>
-  </a> <span class="args">odbc-dbc</span></div>
-<div class="desc">Disconnect from the database.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="connection-open?1722">
-    <span class="name" name="connection-open?">connection-open?</span>
-  </a> <span class="args">odbc-dbc</span></div>
-<div class="desc">Returns #t if the given ODBC connection is available, otherwise #f.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="prepare1723">
-    <span class="name" name="prepare">prepare</span>
-  </a> <span class="args">odbc-dbc sql</span></div>
-<div class="desc">Creates and returns a ODBC statement object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="odbc-statement?1724">
-    <span class="name" name="odbc-statement?">odbc-statement?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is ODBC statement object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="statement-open?1725">
-    <span class="name" name="statement-open?">statement-open?</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Returns #t if the given ODBC statement is available, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="num-prams1726">
-    <span class="name" name="num-prams">num-prams</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Returns number of parameters in an SQL statement.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bind-parameter!1727">
-    <span class="name" name="bind-parameter!">bind-parameter!</span>
-  </a> <span class="args">odbc-stmt index value</span></div>
-<div class="desc">Binds the given <var>value</var> at position <var>index</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="execute!1728">
-    <span class="name" name="execute!">execute!</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Execute given ODBC statement.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="fetch!1729">
-    <span class="name" name="fetch!">fetch!</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Forwarding current cursor to next and returns #t if there is data
-otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="get-data!1730">
-    <span class="name" name="get-data!">get-data!</span>
-  </a> <span class="args">odbc-stmt index</span></div>
-<div class="desc">Retrieve data from statement at position <var>index</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="row-count1731">
-    <span class="name" name="row-count">row-count</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Returns the number of rows affected by UPDATE, INSERT or DELETE
-statement.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="column-count1732">
-    <span class="name" name="column-count">column-count</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Returns the number of columns in a result statement.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="result-columns1733">
-    <span class="name" name="result-columns">result-columns</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Returns the column names in a result statement.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="commit!1734">
-    <span class="name" name="commit!">commit!</span>
-  </a> <span class="args">odbc-ctx</span></div>
-<div class="define"><span class="define-category">Function</span><a name="rollback!1735">
-    <span class="name" name="rollback!">rollback!</span>
-  </a> <span class="args">odbc-ctx</span></div>
-<div class="desc">Commits/rollbacks given ODBC context.</div>
-<p />
-<section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="dbd.odbc"><span class="section-number">7.18.1</span>(dbd odbc) - DBD for ODBC</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(dbd odbc)1736">
-      <span class="name" name="(dbd odbc)">(dbd odbc)</span>
-    </a>
-  </div>
-<div class="desc">This library provides database driver (DBD) for ODBC .
-<p />Importing this library is done by DBI automatically so users should not
-use this directly.
-<p />The DSN should specify the connecting database name with <code>server</code> keyword.
-Following DSN is connecting <var>foo</var> database configured in ODBC.
-<p /><code>"dbi:odbc:server=<var>foo</var>"</code>
-<p />The <code>dbi-connect</code> supports <code>:username</code>, <code>:password</code> and
-<code>:auto-commit</code> keyword arguments. The detail about DBI see
-<a href="section77.html#dbi">(dbi) - Database independent access layer</a>.
-<p /></div>
-<p />
-</section></section>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-authorization-uri1707">
+    <span class="name" name="make-authorization-uri">make-authorization-uri</span>
+  </a>
+ <span class="args">uri request-token :key (version :1.0) (callback-uri #f)
+ (user-parameters '())</span></div>
+<div class="desc"><var>uri</var> must be string and URI format.
+<p /><var>request-token</var> must be a request token retrieved by the procedure
+<code>obtain-request-token</code>.
+<p />Creates a authorization URI which user must agree.
+<p />The other keyword arguments are the same as <code>obtain-request-token</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="authorize-request-token1708">
+    <span class="name" name="authorize-request-token">authorize-request-token</span>
+  </a>
+ <span class="args">request-token verificateion-code</span></div>
+<div class="desc"><var>request-token</var> must be a request token which retrieved by the
+procedure <code>obtain-request-token</code>.
+<p /><var>verificateion-code</var> must be a string returned by the URI generated by the
+procedure <code>make-authorization-uri</code>
+<p />Sets the given <var>verificateion-code</var> to the request token and authorized flag
+#t, manually.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="obtain-access-token1709">
+    <span class="name" name="obtain-access-token">obtain-access-token</span>
+  </a> 
+ <span class="args">uri token :key (consumer-token (token-consumer token))
+ (version :1.0) (user-parameters '())
+ (timestamp (time-second (current-time))) (auth-location :header)
+ (request-method 'POST) (callback-uri #f) (additional-headers '())
+ (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
+<div class="desc"><var>uri</var> must a string URI formatted.
+<p /><var>token</var> must be either request token or access token.
+<p />Obtains access token from the given URI.
+<p />The keyword arguments <var>consumer-token</var> specifies which consumer token is
+used. And must the same one as when you request the request token.
+<p />The rest keyword arguments are the same as <code>obtain-request-token</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="access-protected-resource1710">
+    <span class="name" name="access-protected-resource">access-protected-resource</span>
+  </a>
+ <span class="args">uri access-token :key (consumer-token (token-consumer access-token))
+ (on-refresh #f)
+ (version :1.0) (user-parameters '())
+ (timestamp (time-second (current-time))) (auth-location :header)
+ (request-method 'POST) (callback-uri #f) (additional-headers '())
+ (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
+<div class="desc"><var>uri</var> must a string URI formatted.
+<p /><var>access-token</var> must be an access token which obtained by the procedure
+<code>obtain-access-token</code> or created by <code>make-access-token</code>.
+<p />Accesses to protected resource.
+<p />The keyword argument <var>on-refresh</var> is a hook for when token is expired and
+refreshed. It must accept be a procedure which accepts 1 argument that is a
+refreshed access token.
+<p />The rest keyword arguments are the same as the <code>obtain-request-token</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="oauth-uri-encode1711">
+    <span class="name" name="oauth-uri-encode">oauth-uri-encode</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Encodes given URI and make it OAuth required form.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="oauth-compose-query1712">
+    <span class="name" name="oauth-compose-query">oauth-compose-query</span>
+  </a> <span class="args">parameters</span></div>
+<div class="desc">Composes given alist to http query form and make it OAuth required form.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-consumer-token1713">
+    <span class="name" name="make-consumer-token">make-consumer-token</span>
+  </a>
+ <span class="args">:key (key (random-key)) (secret random-secret) (user-data #f)
+ (last-timestamp 0)</span></div>
+<div class="desc">Creates a consumer token.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-access-token1714">
+    <span class="name" name="make-access-token">make-access-token</span>
+  </a>
+ <span class="args">:key (key (random-key)) (secret random-secret) (user-data #f)
+ consumer (session-handle #f) (expires #f) (authorization-expires #f)
+ (origin-uri #f)</span></div>
+<div class="desc">Creates a access token.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="token-consumer1715">
+    <span class="name" name="token-consumer">token-consumer</span>
+  </a> <span class="args">token</span></div>
+<div class="desc"><var>token</var> must be an access token or request token.
+<p />Retrieves consumer token from given <var>token</var>.
+</div>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section717.html">(net oauth) - OAuth library</a>
+    <a class="prev" href="section717.html">(math) - Mathematics library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section719.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="next" href="section719.html">(odbc) - ODBC binding</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-08-15T07:41:24+0100</i></div>
   </div>
 </html>

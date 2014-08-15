@@ -6,305 +6,746 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section76.html">(crypto) - Cryptographic library</a>
+    <a class="prev" href="section76.html">(util bytevector) - Bytevector utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section78.html">(dbm) - Generic DBM interface</a>
+    <a class="next" href="section78.html">(dbi) - Database independent access layer</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="dbi"><span class="section-number">7.7</span>(dbi) - Database independent access layer</a>
+    <a class="section.anchor" name="crypto"><span class="section-number">7.7</span>(crypto) - Cryptographic library</a>
   </h3>
+<p />This documentation does not describe cryptography itself. For example, it does
+not describe what initial vector is and how long it must be. So users must know
+about cryptography's this library supports.
+<p />This library uses <code>libtomcrypt</code>'s functionalities. The library is public
+domain. Thank you for the great library.
+<p />Note: the <code>libtomcrypt</code> is a huge cryptographic library and I am not so 
+good with cryptographics, so the <code>(crypto)</code> library is not totally tested.
+Just the functionalities which I usually use are tested. If you find a bug or
+wrong documentation, pleas report it.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(dbi)1487">
-      <span class="name" name="(dbi)">(dbi)</span>
+    <a name="(crypto)1402">
+      <span class="name" name="(crypto)">(crypto)</span>
     </a>
   </div>
-<div class="desc">This library provides database independent access procedures. The
-database specific operations are provided in database driver (DBD) libraries.
+<div class="desc">This library is the top most library, it exports all the other libraries
+procedures. Users must import only this and not to use the others.
+<p /><code>(crypto)</code> library supports both symmetric cryptography and public/private
+key mechanism. For public/private key, it only supports RSA for now.
 </div>
-<p />Following example describes how to query a database using <code>(dbd odbc)</code>
-DBD library.
-<p /><pre class="codeblock">(import (dbi))
-(define conn (dbi-connect "dbi:odbc:server=XE"
-                          :username "username"
-                          :password "password"))
-(let* ((query (dbi-prepare conn "SELECT * FROM table WHERE id &gt; ?"))
-       (result (dbi-execute-query! query 1)))
-  (do ((row (dbi-fetch! result) (dbi-fetch! result)))
-      ((not row))
-   (vector-for-each (lambda (col) (print col)) row)))
-</pre>
-<p />There is nothing specific to the underlying database system except the
-argument <code>"dbi:odbc:server=XE"</code> passed to <code>dbi-connect</code>, from which
-<code>dbi</code> library figures out that it is an access to <code>odbc</code>, loads
-<code>(dbd odbc)</code> library and let it handle the specific operations.
-<p />If you want to use other database named <var>boo</var>, then you just need to pass
-<code>"dbi:<var>boo</var>:<var>parameter</var>"</code> to <code>dbi-connect</code> instead. As long
-as you have <code>(dbd boo)</code> installed then everything stays the same.
+<p /><div class="define"><span class="define-category">Function</span><a name="crypto-object?1403">
+    <span class="name" name="crypto-object?">crypto-object?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is <code>crypto-object</code>.
+<p /><code>crypto-object</code> can be either <code>cipher</code> or <code>key</code>.
+</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1488"><span class="section-number">7.7.1</span>DBI user API</a>
+    <a class="section.anchor" name="G1404"><span class="section-number">7.7.1</span>Cipher operations</a>
   </h4>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1489"><span class="section-number">7.7.1.1</span>Database connection</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="dbi-connect1490">
-    <span class="name" name="dbi-connect">dbi-connect</span>
-  </a> <span class="args">dsn . rest</span></div>
-<div class="desc">Connects to a database using a data source specified by <var>dsn</var> 
-(data source name). <var>dsn</var> is a string with the following syntax.
-<p /><code>dbi:<var>driver</var>:<var>options</var></code>
-<p /><var>driver</var> part names a specific driver. You need to have a corresponding
-driver library, <code>(dbd <var>driver</var>)</code>, installed in your system.
-<p />Interpretation of the <var>options</var> part is up to the driver. Usually it is
-in the form of <code>key1=value1;key2=value2;...</code>. However the DBD
-implementations can have different format so you need to check the document
-of each driver for exact specification of <var>options</var>.
-<p /><var>rest</var> argument will be passed to the underlying procedure.
-<p />NOTE: <var>username</var>, <var>password</var> and <var>auto-commit</var> are strongly
-encouraged to be implemented in the DBD library.
-<p />If a connection to the database is successfully established, a connection
-object is returned.
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher1405">
+    <span class="name" name="cipher">cipher</span>
+  </a>
+ <span class="args">type key
+ :key (mode MODE_ECB) (iv #f) (padder pkcs5-padder)
+      (rounds 0) (ctr-mode CTR_COUNTER_LITTLE_ENDIAN)
+ :rest options</span></div>
+<div class="desc">Creates a cipher object.
+<p /><var>type</var> must be known cryptographic algorithm. Currently, <code>(crypto)</code>
+library exports the algorithm below.
+<p />The symmetric key algorithms.
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Blowfish1406">
+      <span class="name" name="Blowfish">Blowfish</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="X-Tea1407">
+      <span class="name" name="X-Tea">X-Tea</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RC21408">
+      <span class="name" name="RC2">RC2</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RC5-32/12/b1409">
+      <span class="name" name="RC5-32/12/b">RC5-32/12/b</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RC6-32/20/b1410">
+      <span class="name" name="RC6-32/20/b">RC6-32/20/b</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SAFER+1411">
+      <span class="name" name="SAFER+">SAFER+</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SAFER-K641412">
+      <span class="name" name="SAFER-K64">SAFER-K64</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SAFER-SK641413">
+      <span class="name" name="SAFER-SK64">SAFER-SK64</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SAFER-K1281414">
+      <span class="name" name="SAFER-K128">SAFER-K128</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SAFER-SK1281415">
+      <span class="name" name="SAFER-SK128">SAFER-SK128</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="AES1416">
+      <span class="name" name="AES">AES</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Twofish1417">
+      <span class="name" name="Twofish">Twofish</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="DES1418">
+      <span class="name" name="DES">DES</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="DES31419">
+      <span class="name" name="DES3">DES3</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="DESede1420">
+      <span class="name" name="DESede">DESede</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="CAST51421">
+      <span class="name" name="CAST5">CAST5</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="CAST-1281422">
+      <span class="name" name="CAST-128">CAST-128</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Noekeon1423">
+      <span class="name" name="Noekeon">Noekeon</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Skipjack1424">
+      <span class="name" name="Skipjack">Skipjack</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Khazad1425">
+      <span class="name" name="Khazad">Khazad</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SEED1426">
+      <span class="name" name="SEED">SEED</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="KASUMI1427">
+      <span class="name" name="KASUMI">KASUMI</span>
+    </a>
+  </div>
+<p />The public key algorithm
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RSA1428">
+      <span class="name" name="RSA">RSA</span>
+    </a>
+  </div>
+<p /><var>key</var> must be a key object which will be created by key generate procedures
+described below.
+<p /><var>mode</var> specifies the <bold>symmetric cipher</bold>'s encryption and description
+mode. If the cipher type is public key cipher, it will be ignored. Some modes
+require initial vector <var>iv</var>. The possible mods are below.
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MODE_ECB1429">
+      <span class="name" name="MODE_ECB">MODE_ECB</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MODE_CBC1430">
+      <span class="name" name="MODE_CBC">MODE_CBC</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MODE_CFB1431">
+      <span class="name" name="MODE_CFB">MODE_CFB</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MODE_OFB1432">
+      <span class="name" name="MODE_OFB">MODE_OFB</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MODE_CTR1433">
+      <span class="name" name="MODE_CTR">MODE_CTR</span>
+    </a>
+  </div>
+<p /><var>iv</var> must be a bytevector or #f. This is an initial vector which some modes
+require. cf) <code>MODE_CBC</code>.
+<p /><var>rounds</var> specify how many times the cipher rounds the key.
+<p /><var>ctr-mode</var> specifies counter mode. The possible mode is blow.
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="CTR_COUNTER_LITTLE_ENDIAN1434">
+      <span class="name" name="CTR_COUNTER_LITTLE_ENDIAN">CTR_COUNTER_LITTLE_ENDIAN</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="CTR_COUNTER_BIG_ENDIAN1435">
+      <span class="name" name="CTR_COUNTER_BIG_ENDIAN">CTR_COUNTER_BIG_ENDIAN</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="LTC_CTR_RFC36861436">
+      <span class="name" name="LTC_CTR_RFC3686">LTC_CTR_RFC3686</span>
+    </a>
+  </div>
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1491">
-    <span class="name" name="dbi-open?">dbi-open?</span>
-  </a> <span class="args">c &lt;dbi-connection&gt;</span></div>
-<div class="desc">Checks if the given connection is still open.
-<p />The method shall return #t if the given connection is still open, otherwise
-it shall return #f.
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-keysize1437">
+    <span class="name" name="cipher-keysize">cipher-keysize</span>
+  </a> <span class="args">cipher test</span></div>
+<div class="desc">Returns given cipher type's recommended keysize.
+<p /><var>cipher</var> must cipher object created by <code>cipher</code> procedure.
+<p /><var>test</var> must be fixnum.
+<p />If <var>test</var> is too small for the cipher, it will raise an error.
+<p />Note: this procedure is for helper. It is designed to use check keysize you want
+to use.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-close1492">
-    <span class="name" name="dbi-close">dbi-close</span>
-  </a> <span class="args">c &lt;dbi-connection&gt;</span></div>
-<div class="desc">Closes a connection to the database.
-<p />NOTE: Users are strongly encouraged to close a connection explicitly. DBD
-might not close opened connections automatically.
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher?1438">
+    <span class="name" name="cipher?">cipher?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is cipher object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="encrypt1439">
+    <span class="name" name="encrypt">encrypt</span>
+  </a> <span class="args">cipher pt</span></div>
+<div class="desc"><var>cipher</var> must be a cipher object.
+<p /><var>pt</var> must be a bytevector.
+<p /><code>encrypt</code> encrypts given plain text <var>pt</var> according to the given
+<var>cipher</var>.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1493">
-    <span class="name" name="dbi-commit!">dbi-commit!</span>
-  </a> <span class="args">(c &lt;dbi-connection&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1494">
-    <span class="name" name="dbi-rollback!">dbi-rollback!</span>
-  </a> <span class="args">(c &lt;dbi-connection&gt;)</span></div>
-<div class="desc">Commits or rollback transactions on the given connection, respectively.</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1495"><span class="section-number">7.7.1.2</span>Preparing and executing queries </a>
-  </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-prepare1496">
-    <span class="name" name="dbi-prepare">dbi-prepare</span>
-  </a> <span class="args">conn sql . args</span></div>
-<div class="desc">From a string representation of SQL <var>sql</var>, creates and returns a
-query object for the database connection <var>conn</var>.
-<p /><var>sql</var> may contain parameter slot, denoted by <code>?</code>.
-<p /><pre class="snipet"><span class="snipet-code">(dbi-prepare conn "insert into tab (col1, col2) values (?, ?)")</span></pre>
-<pre class="snipet"><span class="snipet-code">(dbi-prepare conn "select * from tab where col1 = ?")</span></pre>
-<p />If <var>args</var> is not null, then the procedure shall bind given parameters
-to the place holder.
+<p /><div class="define"><span class="define-category">Function</span><a name="decrypt1440">
+    <span class="name" name="decrypt">decrypt</span>
+  </a> <span class="args">cipher ct</span></div>
+<div class="desc"><var>cipher</var> must be a cipher object.
+<p /><var>ct</var> must be a bytevector.
+<p /><code>decrypt</code> decrypts given encrypted text <var>ct</var> according to the given
+<var>cipher</var>.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1497">
-    <span class="name" name="dbi-open?">dbi-open?</span>
-  </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
-<div class="desc">Checks if the given query is still open.
-<p />The method shall return #t if the given query is still open, otherwise
-it shall return #f.
+<p /><div class="define"><span class="define-category">Function</span><a name="sign1441">
+    <span class="name" name="sign">sign</span>
+  </a> <span class="args">public-cipher data :optional opt</span></div>
+<div class="desc"><var>public-cipher</var> must be a cipher object created with public/private
+key algorithm.
+<p /><var>data</var> must be a bytevector.
+<p />Signs given <var>data</var>. This procedure is just a wrapper for the real
+implementations. Currently Sagittarius supports only RSA sign.
+<p /><var>opt</var> can specify the signer behaviour. Default supported RSA cipher can
+accept keyword argument <var>encode</var>.
+<p /><var>encode</var> specifies the encoder. The default encoder is
+<code>pkcs1-emsa-pss-encode</code>. And the rest keyword arguments will be passed to
+encoder. Supported encoders are described below.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-close1498">
-    <span class="name" name="dbi-close">dbi-close</span>
-  </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
-<div class="desc">Closes a query.
-<p />NOTE: Users are strongly encouraged to close a query explicitly. DBD
-might not close opened query automatically.
+<p /><div class="define"><span class="define-category">Function</span><a name="verify1442">
+    <span class="name" name="verify">verify</span>
+  </a> <span class="args">public-cipher M S :optional opt</span></div>
+<div class="desc"><var>public-cipher</var> must be a cipher object created with public/private
+key algorithm.
+<p /><var>M</var> and <var>S</var> must be bytevectors.
+<p /><var>M</var> is master message which will be compared with encoded message.
+<p /><var>S</var> is signed message.
+<p />The <cod>verity</cod> procedure verifies two messages.
+<p /><var>opt</var> can specify the verifier behaviour. Default supported RSA cipher can
+accept keyword argument <var>verify</var>.
+<p /><var>verify</var> specifies the verifier. The defaule verifier is
+<code>pkcs1-emsa-pss-verify</code>. And the rest keyword arguments will be passed to
+verifier. Supported verifiers are described below.
 </div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1443"><span class="section-number">7.7.2</span>Key operations</a>
+  </h4>
 <p />
-<div class="define"><span class="define-category">Method</span><a name="dbi-bind-parameter!1499">
-    <span class="name" name="dbi-bind-parameter!">dbi-bind-parameter!</span>
-  </a> <span class="args">query index value</span></div>
-<div class="desc">Binds the given <var>value</var> to <var>query</var> at <var>index</var>.
-<p />The procedure shall accept integer <var>index</var> and may accept other type of
-<var>index</var>.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-execute!1500">
-    <span class="name" name="dbi-execute!">dbi-execute!</span>
-  </a> <span class="args">query . args</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-execute-query!1501">
-    <span class="name" name="dbi-execute-query!">dbi-execute-query!</span>
-  </a> <span class="args">query . args</span></div>
-<div class="desc">Executes given <var>query</var>. If the <var>args</var> is not null, then
-procedure shall bind the given <var>args</var> as its parameters.
-<p />The <code>dbi-execute!</code> shall return a integer value representing affected
-row count.
-<p />The <code>dbi-execute-query!</code> shall return a result set object which can be
-used with <code>dbi-fetch!</code> or <code>dbi-fetch-all!</code>. The implementation may
-allow to return a specific result set object and it is users' responsibility
-to use it with fetching the result.
-<p />NOTE: There is a default implementation of <code>dbi-execute-query!</code> and 
-returns the given <var>query</var> as a result set object.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-fetch!1502">
-    <span class="name" name="dbi-fetch!">dbi-fetch!</span>
-  </a> <span class="args">query</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-fetch-all!1503">
-    <span class="name" name="dbi-fetch-all!">dbi-fetch-all!</span>
-  </a> <span class="args">query</span></div>
-<div class="desc">Fetches a row or all rows from the given <var>query</var>.
-<p />The <code>dbi-fetch!</code> shall return a vector representing the query result, if
-there is no more data available it shall return #f.
-<p />The <code>dbi-fetch-all!</code> shall return a list of vectors representing the
-query result.
-<p />NOTE: There is a default implementation of <code>dbi-fetch-all!</code>, it calls
-<code>dbi-fetch!</code> until it returns #f.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1504">
-    <span class="name" name="dbi-commit!">dbi-commit!</span>
-  </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1505">
-    <span class="name" name="dbi-rollback!">dbi-rollback!</span>
-  </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
-<div class="desc">Commits or rollback transactions on the given query, respectively.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-columns1506">
-    <span class="name" name="dbi-columns">dbi-columns</span>
-  </a> <span class="args">query</span></div>
-<div class="desc">Returns a column names affected by the given <var>query</var>.
-<p />The procedure shall return a vector as its result.</div>
-<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1507"><span class="section-number">7.7.2</span>Writing drivers for DBI</a>
-  </h4>
-<p />Writing a driver for specific data base system means implementing a library
-<code>(dbd <var>foo</var>)</code> where <var>foo</var> is the name of the driver.
-<p />The library have to implement a creating a driver procedure and several 
-classes and methods as explained below.
-<p />The method described above section must behave as it expected there, especially
-behaviours described with <b>shall</b>.
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1508"><span class="section-number">7.7.2.1</span>DBI driver procedure</a>
-  </h5>
-<p />The driver will be created by the procedure named <code>make-<var>foo</var>-driver</code>.
-And it is strongly encouraged to be implemented as a subclass of
-<code>&lt;dbi-driver&gt;</code> for future extension.
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1509"><span class="section-number">7.7.2.2</span>DBI classes to implement</a>
-  </h5>
-<p />You have to define the following classes.
-<p /><ul class="itemlist"><li class="itemlist-item">Subclass <code>&lt;dbi-connection&gt;</code>. An instance of this class is created
-by <code>dbi-make-connection</code>. It needs to keep the information about the
-actual connections.</li>
-<li class="itemlist-item">Optional: subclass <code>&lt;dbi-driver&gt;</code> for actual driver instance.</li>
-<li class="itemlist-item">Optional: subclass <code>&lt;dbi-query&gt;</code> to keep driver specific information
-of prepared statement.</li>
-</ul>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1510"><span class="section-number">7.7.2.3</span>DBI methods to implement</a>
-  </h5>
-<p />The driver needs to implement the following methods.
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-make-connection1511">
-    <span class="name" name="dbi-make-connection">dbi-make-connection</span>
+<div class="define"><span class="define-category">Generic</span><a name="generate-secret-key1444">
+    <span class="name" name="generate-secret-key">generate-secret-key</span>
   </a>
- <span class="args">driver (options &lt;string&gt;) (options-alist &lt;list&gt;) . rest</span></div>
-<div class="desc">This method is called from <code>dbi-connect</code>, and responsible to connect
-to the database and to create a connection object. It must return a connection
-object or raise an error which should be a sub condition of <code>&amp;dbi-error</code>.
-<p /><var>options</var> is the option part of the data source name (DSN) given to
-<code>dbi-connect</code>. <var>options-alist</var> is an assoc list of the result of
-parsing <var>options</var>. Both are provided so that the driver may interpret
-<var>options</var> string in nontrivial way.
-<p />For example, given <code>"dbi:foo:myaddressbook;host=dbhost;port=8998"</code> 
-as DSN, foo's <code>dbi-make-connection</code> will receive 
-<code>"myaddressbook;host=dbhost;port=8998"</code> as <var>options</var>, and 
-<code>(("myaddressbook" . #t) ("host" . "dbhost") ("port" . "8998"))</code> as
-<var>options-alist</var>.
-<p />After <var>options-alist</var>, whatever given to <code>dbi-connect</code> are passed.
-The driver is strongly encouraged to implement <code>:username</code>,
-<code>:password</code> and <code>:auto-commit</code> (if the database is supported)
-keyword arguments to specify the authentication information and commit mode.
+ <span class="args">(type &lt;string&gt;) (key &lt;bytevector&gt;)</span></div>
+<div class="desc"><var>type</var> must be one of the supported symmetric algorithm.
+<p /><var>key</var> must be a bytevector and its length must satisfy the keysize which
+the given algorithm requires.
+<p />Returns a sercret key object.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-prepare1512">
-    <span class="name" name="dbi-prepare">dbi-prepare</span>
+<div class="define"><span class="define-category">Generic</span><a name="generate-key-pair1445">
+    <span class="name" name="generate-key-pair">generate-key-pair</span>
   </a>
- <span class="args">(c &lt;foo-connection&gt;) (sql &lt;string&gt;) . rest</span></div>
-<div class="desc">The method must create and return a prepared query object which is an
-instance of <code>&lt;dbi-query&gt;</code> or its subclass.
-<p /><var>sql</var> is an SQL statement. It may contain placeholders represented by
-<code>'?'</code>. The implementation must accept it to keep DBI portable even though
-the database doesn't.
+ <span class="args">(type &lt;top&gt;) . options</span></div>
+<div class="desc"><var>type</var> is for despatch. For default implementation, it must be
+<code>RSA</code>.
+<p />Generates a key pair object.
+<p />Default implementation supports RSA key geneartion and <var>options</var> can be
+keyword arguments described below.
+<p /><var>size</var> keyword argument is decides key length. Default value is 1024.
+<p /><var>prng</var> keyword argument is given, it will be passed to <code>random-prime</code>.
+For more detail, see <a href="#math.random">(math random)</a> library. Default
+value is <code>(secure-random RC4)</code>.
+<p /><var>e</var> keyword argument is an exponent. Usually it does not have to be
+specified with other number. Default value is 65537.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-bind-parameter!1513">
-    <span class="name" name="dbi-bind-parameter!">dbi-bind-parameter!</span>
+<p /><div class="define"><span class="define-category">Generic</span><a name="generate-private-key1446">
+    <span class="name" name="generate-private-key">generate-private-key</span>
   </a>
- <span class="args">(q &lt;foo-query&gt;) index value</span></div>
-<div class="desc">Binds a parameter <var>value</var> at the place <var>index</var>.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1514">
-    <span class="name" name="dbi-open?">dbi-open?</span>
-  </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-open?1515">
-    <span class="name" name="dbi-open?">dbi-open?</span>
-  </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-close1516">
-    <span class="name" name="dbi-close">dbi-close</span>
-  </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-close1517">
-    <span class="name" name="dbi-close">dbi-close</span>
-  </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
-<div class="desc">Queries open/close status of a connection and a query, and closes
-a connection and a query. The close method should cause releasing resources
-used by connection/query. The driver has to allow <code>dbi-close</code> to be
-called on a connection or a query which has already been closed.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1518">
-    <span class="name" name="dbi-commit!">dbi-commit!</span>
-  </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-commit!1519">
-    <span class="name" name="dbi-commit!">dbi-commit!</span>
-  </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1520">
-    <span class="name" name="dbi-rollback!">dbi-rollback!</span>
-  </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-rollback1521">
-    <span class="name" name="dbi-rollback">dbi-rollback</span>
-  </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
-<div class="desc">Commits/rollbacks a connection or a query.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-execute!1522">
-    <span class="name" name="dbi-execute!">dbi-execute!</span>
-  </a> <span class="args">(q &lt;foo-query&gt;) . args</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-fetch!1523">
-    <span class="name" name="dbi-fetch!">dbi-fetch!</span>
-  </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-columns1524">
-    <span class="name" name="dbi-columns">dbi-columns</span>
-  </a> <span class="args">q &lt;foo-query&gt;</span></div>
-<div class="desc">Implementation must behave as described above section.</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1525"><span class="section-number">7.7.2.4</span>Data conversion guide</a>
-  </h5>
-<p />Database data type and Scheme type are usually not the same. However to keep
-DBI portable it is important to follow a guideline. Here I suggest the data
-conversion between a database and Scheme object.
-<p />Following is database data type to Scheme type conversion guideline. The driver
-implementation should follow.
-<p /><div class="dl-list-wrapper">
+ <span class="args">type . options</span></div>
+<div class="desc"><var>type</var> is for despatch. For default implementation, it must be
+<code>RSA</code>.
+<p />Returns private key object.
+<p />Default RSA implementation <var>options</var> can be these arguments.
+<div class="dl-list-wrapper">
     <dl class="dl-list">
-      <dt class="dl-item-title">Text (VARCHAR2 etc)</dt>
-      <dd class="dl-item-desc">String</dd>
-      <dt class="dl-item-title">Binary (BINARY etc)</dt>
-      <dd class="dl-item-desc">Bytevector</dd>
-      <dt class="dl-item-title">Date</dt>
-      <dd class="dl-item-desc">Date from SRFI-19</dd>
-      <dt class="dl-item-title">Time and Timestamp</dt>
-      <dd class="dl-item-desc">Time from SRFI-19</dd>
-      <dt class="dl-item-title">Blob</dt>
-      <dd class="dl-item-desc">Binary port, preferably not retrieving all data at once.</dd>
-      <dt class="dl-item-title">Clob</dt>
-      <dd class="dl-item-desc">Textual port, preferably not retrieving all data at once.</dd>
+      <dt class="dl-item-title">modulus</dt>
+      <dd class="dl-item-desc">The private key's modulus</dd>
+      <dt class="dl-item-title">private-exponent</dt>
+      <dd class="dl-item-desc">The private key's exponent</dd>
+      <dt class="dl-item-title">public-exponent</dt>
+      <dd class="dl-item-desc">keyword argument. Used for CRT private key object.</dd>
+      <dt class="dl-item-title">p</dt>
+      <dd class="dl-item-desc">keyword argument. Used for CRT private key object.</dd>
+      <dt class="dl-item-title">q</dt>
+      <dd class="dl-item-desc">keyword argument. Used for CRT private key object.</dd>
     </dl>
   </div>
+<p /></div>
+<div class="define"><span class="define-category">Function</span><a name="generate-public-key1447">
+    <span class="name" name="generate-public-key">generate-public-key</span>
+  </a> <span class="args">type :optional opt</span></div>
+<div class="desc"><var>type</var> is for despatch. For default implementation, it must be
+<code>RSA</code>.
+<p />Returns public key object.
+<p />Default RSA implementation <var>opt</var> can be these arguments.
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">modulus</dt>
+      <dd class="dl-item-desc">The public key's modulus</dd>
+      <dt class="dl-item-title">exponent</dt>
+      <dd class="dl-item-desc">The public key's exponent</dd>
+    </dl>
+  </div>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="keypair?1448">
+    <span class="name" name="keypair?">keypair?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is keypair object, otherwise #f</div>
+<div class="define"><span class="define-category">Function</span><a name="keypair-private1449">
+    <span class="name" name="keypair-private">keypair-private</span>
+  </a> <span class="args">keypair</span></div>
+<div class="desc">Returns private key from <var>keypair</var></div>
+<div class="define"><span class="define-category">Function</span><a name="keypair-public1450">
+    <span class="name" name="keypair-public">keypair-public</span>
+  </a> <span class="args">keypair</span></div>
+<div class="desc">Returns public key from <var>keypair</var></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="key?1451">
+    <span class="name" name="key?">key?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is key object, otherwise #f</div>
+<div class="define">
+    <span class="define-category">Class</span>
+    <a name="<private-key&gt;1452">
+      <span class="name" name="<private-key&gt;">&lt;private-key&gt;</span>
+    </a>
+  </div>
+<div class="desc">CLOS class of private key object.</div>
+<div class="define">
+    <span class="define-category">Class</span>
+    <a name="<public-key&gt;1453">
+      <span class="name" name="<public-key&gt;">&lt;public-key&gt;</span>
+    </a>
+  </div>
+<div class="desc">CLOS class of public key object.</div>
+<div class="define"><span class="define-category">Function</span><a name="private-key?1454">
+    <span class="name" name="private-key?">private-key?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is private key object, otherwise #f</div>
+<div class="define"><span class="define-category">Function</span><a name="public-key?1455">
+    <span class="name" name="public-key?">public-key?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is public key object, otherwise #f</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="split-key1456">
+    <span class="name" name="split-key">split-key</span>
+  </a>
+ <span class="args">key :optional (count 3) (prng (secure-random RC4))</span></div>
+<div class="desc"><var>key</var> must be a bytevector and plain key.
+<p />Splits the given <var>key</var> to <var>count</var> components and returns <var>count</var>
+values as key components.
+<p />The return values might be different each time.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="combine-key-components1457">
+    <span class="name" name="combine-key-components">combine-key-components</span>
+  </a>
+ <span class="args">component1 components ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="combine-key-components!1458">
+    <span class="name" name="combine-key-components!">combine-key-components!</span>
+  </a>
+ <span class="args">result component1 components ...</span></div>
+<div class="desc">Renaming export of <code>bytevector-xor</code> and <code>bytevector-xor!</code>
+respectively.
+<p />For more detail, see <a href="section76.html#util.bytevector">(util bytevector)</a>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1459"><span class="section-number">7.7.3</span>PKCS operations</a>
+  </h4>
+<p />The procedures described in this section is implemented according to PKCS#1. I
+don't have any intend to describe functionality. If you need to know what
+exactly these procedures do, please see the PKCS#1 document.
+<p /><div class="define"><span class="define-category">Function</span><a name="pkcs5-padder1460">
+    <span class="name" name="pkcs5-padder">pkcs5-padder</span>
+  </a> <span class="args">bv block-size padding?</span></div>
+<div class="desc"><var>bv</var> must be a bytevector.
+<p /><var>block-size</var> must be a non negative exact integer.
+<p /><var>padding?</var> must be a boolean.
+<p />Pads or Unpads paddings from <var>bv</var> according to PKCS#5.
+<p />If <var>padding?</var> is #t, the procedure will pad. otherwise it will unpad.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="pkcs-v1.5-padding1461">
+    <span class="name" name="pkcs-v1.5-padding">pkcs-v1.5-padding</span>
+  </a> <span class="args">prng key block-type</span></div>
+<div class="desc"><var>prng</var> must be prng object. See <a href="#math.random">(math random)</a>.
+<p /><var>key</var> must be either private or public key object.
+<p /><var>block-type</var> must be one of these.
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="PKCS-1-EME1462">
+      <span class="name" name="PKCS-1-EME">PKCS-1-EME</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="PKCS-1-EMSA1463">
+      <span class="name" name="PKCS-1-EMSA">PKCS-1-EMSA</span>
+    </a>
+  </div>
+<p />Returns a padding procedure. The procedure signature is the same as
+<var>pkcs5-padder</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-pss-encode1464">
+    <span class="name" name="pkcs1-emsa-pss-encode">pkcs1-emsa-pss-encode</span>
+  </a>
+ <span class="args">m em-bits
+      :key (hash <code>(hash-algorithm SHA-1)</code>) (mgf mgf-1) (salt-length #f)
+           (prng <code>(secure-random RC4)</code>)</span></div>
+<div class="desc"><var>m</var> must be a bytevector.
+<p /><var>em-bits</var> must be non negative exact integer.
+<p />Encodes given message <var>m</var> according to the PKCS#1 section 9.1.1.
+<p />The keyword arguments specified some behaviour.
+<p /><var>hash</var> specifies the hash algorithm. For more detail, see
+<a href="section717.html#math.hash">(math hash)</a> library.
+<p /><var>mgf</var> specifies mask generation procedure. 
+<p />Note: PKCS#1 only specifies MGF-1.
+<p /><var>salt-length</var> specifies salt's length. If it's #f encoder does not use salt.
+<p /><var>prng</var> is a pseudo random see <a href="#math.random">(math random)</a>.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-pss-verify1465">
+    <span class="name" name="pkcs1-emsa-pss-verify">pkcs1-emsa-pss-verify</span>
+  </a>
+ <span class="args">m em-bits
+      :key (hash <code>(hash-algorithm SHA-1)</code>) (mgf mgf-1)
+           (prng <code>(secure-random RC4)</code>)</span></div>
+<div class="desc"><var>m</var> must be a bytevector.
+<p /><var>em-bits</var> must be non negative exact integer.
+<p />Verify given message <var>m</var> according to the PKCS#1 section 9.1.1.
+<p />Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="mgf-11466">
+    <span class="name" name="mgf-1">mgf-1</span>
+  </a> <span class="args">mgf-seed mask-length hasher</span></div>
+<div class="desc"><var>mgf-seed</var> must be a bytevector.
+<p /><var>mask-length</var> must be a non negative exact integer.
+<p /><var>hasher</var> must be a hash algorithm. See
+<a href="#math.random">(math random)</a>.
+<p />Creates a mask bytevector, according to PKCS#1 MGF-1.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-v1.5-encode1467">
+    <span class="name" name="pkcs1-emsa-v1.5-encode">pkcs1-emsa-v1.5-encode</span>
+  </a>
+ <span class="args">m em-bits :key (hash <code>(hash-algorithm SHA-1)</code>)</span></div>
+<div class="desc"><var>m</var> must be a bytevector.
+<p /><var>em-bits</var> must be non negative exact integer.
+<p />Encodes given message <var>m</var> according to the PKCS#1 section 9.2.
+<p />Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-v1.5-verify1468">
+    <span class="name" name="pkcs1-emsa-v1.5-verify">pkcs1-emsa-v1.5-verify</span>
+  </a>
+ <span class="args">m em-bits :key (hash <code>(hash-algorithm SHA-1)</code>)</span></div>
+<div class="desc"><var>m</var> must be a bytevector.
+<p /><var>em-bits</var> must be non negative exact integer.
+<p />Verify given message <var>m</var> according to the PKCS#1 section 9.2.
+Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1469"><span class="section-number">7.7.4</span>Cryptographic conditions</a>
+  </h4>
+<div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;crypto-error1470">
+      <span class="name" name="&amp;crypto-error">&amp;crypto-error</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="crypto-error?1471">
+    <span class="name" name="crypto-error?">crypto-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Subcondition of <code>&amp;error</code>.
+<p />Base condition type of all cryptographic conditions.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;encrypt-error1472">
+      <span class="name" name="&amp;encrypt-error">&amp;encrypt-error</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="encrypt-error?1473">
+    <span class="name" name="encrypt-error?">encrypt-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="condition-encrypt-mechanism1474">
+    <span class="name" name="condition-encrypt-mechanism">condition-encrypt-mechanism</span>
+  </a> <span class="args">encrypt-error</span></div>
+<div class="desc">This condition will be raised when encrypt operation is failed.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;decrypt-error1475">
+      <span class="name" name="&amp;decrypt-error">&amp;decrypt-error</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="decrypt-error?1476">
+    <span class="name" name="decrypt-error?">decrypt-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="condition-decrypt-mechanism1477">
+    <span class="name" name="condition-decrypt-mechanism">condition-decrypt-mechanism</span>
+  </a> <span class="args">decrypt-error</span></div>
+<div class="desc">This condition will be raised when decrypt operation is failed.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;encode-error1478">
+      <span class="name" name="&amp;encode-error">&amp;encode-error</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="encode-error?1479">
+    <span class="name" name="encode-error?">encode-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">This condition will be raised when encoding operation is failed.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;decode-error1480">
+      <span class="name" name="&amp;decode-error">&amp;decode-error</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="decode-error?1481">
+    <span class="name" name="decode-error?">decode-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">This condition will be raised when decoding operation is failed.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="raise-encrypt-error1482">
+    <span class="name" name="raise-encrypt-error">raise-encrypt-error</span>
+  </a>
+ <span class="args">who message mechanism :optional irritants</span></div>
+<div class="desc"><var>who</var>, <var>message</var> and <var>irritants</var> are the same as
+<code>assertion-violation</code>.
+<p /><var>mechanism</var> should be a name of cryptographic algorithm.
+<p />Raises <code>&amp;encrypt-error</code>.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="raise-decrypt-error1483">
+    <span class="name" name="raise-decrypt-error">raise-decrypt-error</span>
+  </a>
+ <span class="args">who message mechanism :optional irritants</span></div>
+<div class="desc"><var>who</var>, <var>message</var> and <var>irritants</var> are the same as
+<code>assertion-violation</code>.
+<p /><var>mechanism</var> should be a name of cryptographic algorithm.
+<p />Raises <code>&amp;decrypt-error</code>.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="raise-encode-error1484">
+    <span class="name" name="raise-encode-error">raise-encode-error</span>
+  </a>
+ <span class="args">who message :optional irritants</span></div>
+<div class="desc"><var>who</var>, <var>message</var> and <var>irritants</var> are the same as
+<code>assertion-violation</code>.
+<p />Raises <code>&amp;encode-error</code>.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="raise-decode-error1485">
+    <span class="name" name="raise-decode-error">raise-decode-error</span>
+  </a>
+ <span class="args">who message :optional irritants</span></div>
+<div class="desc"><var>who</var>, <var>message</var> and <var>irritants</var> are the same as
+<code>assertion-violation</code>.
+<p />Raises <code>&amp;decode-error</code>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="custom.cipher"><span class="section-number">7.7.5</span>Creating own cipher</a>
+  </h4>
+<p />If Sagittarius does not support sufficient cipher algorithm for you, then you
+can write own cipher such as DSA. For this purpose, you might need to know how
+this library works. It will be described the bottom of this section. If you just
+want to create a new cipher, you just need to follow the example.
+<p /><pre class="codeblock">(import (rnrs) (crypto) (clos user) (sagittarius))
+<p />(define (sample-encrypt pt key) pt)
+(define (sample-decrypt ct key) ct)
+<p />(define-class &lt;sample-cipher-spi&gt; (&lt;cipher-spi&gt;) ())
+(define-method initialize ((o &lt;sample-cipher-spi&gt;) initargs)
+  (slot-set! o 'name 'sample)
+  (slot-set! o 'key #f)
+  (slot-set! o 'encrypt sample-encrypt)
+  (slot-set! o 'decrypt sample-decrypt)
+  (slot-set! o 'padder #f)
+  (slot-set! o 'signer (lambda _ #vu8()))
+  (slot-set! o 'verifier (lambda _ #t))
+  (slot-set! o 'keysize (lambda _ 0)))
+(define-class &lt;sample&gt; () ())
+(define sample (make &lt;sample&gt;))
+(register-spi sample &lt;sample-cipher-spi&gt;)
+;; test sample-cipher
+(define sample-cipher (cipher sample #f))
+(define message (string-&gt;utf8 "sample message"))
+(let ((encrypted-message (encrypt sample-cipher message)))
+  (decrypt sample-cipher encrypted-message))
+;; -&gt; #vu8(115 97 109 112 108 101 32 109 101 115 115 97 103 101)
+</pre>
+<p />The sample code actually does nothing. If you want to see real working code,
+<code>ext/crypto/crypto/key/rsa.scm</code> might be a good example for you.
+<p />The basic idea of creating a new cipher is that you need to define own subclass
+of <code>&lt;cipher-spi&gt;</code> and register it. 
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<cipher-spi&gt;1486">
+      <span class="name" name="<cipher-spi&gt;">&lt;cipher-spi&gt;</span>
+    </a>
+  </div>
+<div class="desc">The base class for all SPI (Service Provider Interface).
+<p />Subclass must set these slots.
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">encrypt</dt>
+      <dd class="dl-item-desc">The value must be a procedure which takes 2 arguments.</dd>
+      <dt class="dl-item-title">decrypt</dt>
+      <dd class="dl-item-desc">The value must be a procedure which takes 2 arguments.</dd>
+      <dt class="dl-item-title">padder</dt>
+      <dd class="dl-item-desc">The value must be #f or a procedure which takes 2
+    arguments.
+  </dd>
+    </dl>
+  </div>
+<p />NOTE: Default symmetric key ciphers use <code>pkcs5-padder</code> which takes 3
+arguments, bytevector, block-size and padding flag. This is because the
+procedure can be used by multi ciphers. And custom cipher must know its own
+block size.
+<p />These slots are optional.
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">name</dt>
+      <dd class="dl-item-desc">Describe the cipher.</dd>
+      <dt class="dl-item-title">key</dt>
+      <dd class="dl-item-desc">The value will be passed to <code>encrypt</code>, <code>decrypt</code>,
+    <code>sign</code> and <code>verify</code> to be used.</dd>
+      <dt class="dl-item-title">signer</dt>
+      <dd class="dl-item-desc">A procedure for signing. The given procedure must accept at
+    least 2 arguments.
+  </dd>
+      <dt class="dl-item-title">verifier</dt>
+      <dd class="dl-item-desc">A procedure for verifying. The given procedure must
+    accept at least 3 arguments.
+  </dd>
+      <dt class="dl-item-title">keysize</dt>
+      <dd class="dl-item-desc">A procedure to get recommended keysize of this cipher. The
+    given procedure must accept 1 argument.
+  </dd>
+    </dl>
+  </div>
+<p />NOTE: Even required slots, Sagittarius does not check if it's set or not.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="register-spi1487">
+    <span class="name" name="register-spi">register-spi</span>
+  </a> <span class="args">mark spi</span></div>
+<div class="desc">Register custom cipher spi.
+<p /><var>mark</var> can be any thing which returns #t then compared by <code>equal?</code>
+<p /><var>spi</var> must be subclass of <code>&lt;cipher-spi&gt;</code>
+<p />NOTE: We recommend to make <var>mark</var> the same as example code does and export
+the registered <var>mark</var>.
+</div>
+<p />The concept of this SPI is influenced by Java's JCE. The toplevel of cipher is
+just a wrapper for real implementaion (SPI). When a cipher is created, the
+<code>cipher</code> procedure actually creates an instance of SPI class and set it to
+the cipher object. So users need not to know about the implementation and if the
+implementation supply default parameter then users even can use it by default.
+<p />This is the class hierarchy of these crypto objects.
+<p /><pre class="codeblock">+ &lt;top&gt;
+  + &lt;crypto&gt;
+      + &lt;cipher&gt;
+      + &lt;cipher-spi&gt;
+          + &lt;builtin-cipher-spi&gt; &lt;- default implementations of symmetric keys.
+          + &lt;rsa-cipher-spi&gt;     &lt;- default RSA implementation
+      + &lt;key&gt;
+          + &lt;symmetric-key&gt;
+              + &lt;builtin-symmetric-key&gt; &lt;- default symmetric key. ex. DES
+          + &lt;asymmetric-key&gt;
+              + &lt;private-key&gt;
+                  + &lt;rsa-private-key&gt;
+                      + &lt;rsa-private-crt-key&gt;
+              + &lt;public-key&gt;
+                  + &lt;rsa-public-key&gt;
+</pre>
+<p />The <code>&lt;cipher&gt;</code> and <code>builtin-</code> prefixed classes can not have any
+subclass.
 
-</section></section></section>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section76.html">(crypto) - Cryptographic library</a>
+    <a class="prev" href="section76.html">(util bytevector) - Bytevector utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section78.html">(dbm) - Generic DBM interface</a>
+    <a class="next" href="section78.html">(dbi) - Database independent access layer</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-08-15T07:41:24+0100</i></div>
   </div>
 </html>

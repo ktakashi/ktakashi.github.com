@@ -6,129 +6,159 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section735.html">(text csv) - Comma separated values parser library</a>
+    <a class="prev" href="section735.html">RPC support framework</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section737.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section737.html">(text csv) - Comma separated values parser library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.html-lite"><span class="section-number">7.36</span>(text html-lite) - Simple HTML document builder library</a>
+    <a class="section.anchor" name="lib.rpc.json"><span class="section-number">7.36</span>(rpc json) - JSON RPC library</a>
   </h3>
-<p />
-<div class="define">
+<p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text html-lite)2015">
-      <span class="name" name="(text html-lite)">(text html-lite)</span>
+    <a name="(rpc json)1998">
+      <span class="name" name="(rpc json)">(rpc json)</span>
     </a>
   </div>
-<div class="desc">This library provides simple HTML builder procedures based on HTML5.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-escape2016">
-    <span class="name" name="html-escape">html-escape</span>
-  </a> <span class="args">:optional (in (current-input-port))</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-escape-string2017">
-    <span class="name" name="html-escape-string">html-escape-string</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Escapes the unsafe characters in HTML and returns escaped string.
-<p />The <code>html-escape</code> reads the string from optional argument <var>in</var> which
-must be an textual input port and returns an escaped string.
-<p />The <code>html-escape-string</code> takes a string and returns an escaped string.
+<div class="desc">This library provides procedures handling 
+<a href="http://www.jsonrpc.org/specification">JSON RPC 2.0</a>.
+<p />This library doesn't provide transport layer. To send request and receive
+response, use <a href="section735.html#utils.rpc.transport.http">Http transport</a>.
+<p />This library uses <a href="section86.html#ported.json">JSON parser library</a> and its
+JSON representation.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-doctype2018">
-    <span class="name" name="html-doctype">html-doctype</span>
-  </a> <span class="args">:key (type :html-4.01-strict)</span></div>
-<div class="desc">Returns a doctype declaration for an HTML document. <var>type</var> can be one
-of the followings;
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>:html-5</code>
-      </dt>
-      <dd class="dl-item-desc">    HTML 5
-  </dd>
-      <dt class="dl-item-title">
-        <code>:html-4.01-strict :html-4.01, :strict, :html-strict</code>
-      </dt>
-      <dd class="dl-item-desc">    HTML 4.01 Strict DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:html-4.01-transitional :html-transitional, :transitional</code>
-      </dt>
-      <dd class="dl-item-desc">    HTML 4.01 Transitional DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.0-strict :xhtml-1.0</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Strict DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.0-transitional</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Transitional DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.0-frameset</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Frameset DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.1</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.1 DTD
-  </dd>
-    </dl>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html:element2019">
-    <span class="name" name="html:element">html:<var>element</var></span>
-  </a> <span class="args">args ...</span></div>
-<div class="desc">Construct an HTML element <var>element</var>. Currently following elements are
-provided. 
-<p /><pre class="codeblock">   a       abbr    address  area       article  aside
-   audio   b       base     bdi        bdo      blockquote
-   body    br      button   canvas     caption  cite
-   code    col     colgroup command    datalist dd
-   del     details dfn      div        dl       dt
-   em      embed   fieldset figcaption figure   footer
-   form
-   h1      h2      h3       h4         h5       h6
-   head    header  hgroup   hr         html
-   i       iframe  img      input      ins      kbd
-   keygen  label   legend   li         link     map
-   mark    menu    meta     meter      nav      noscript
-   object  ol      optgroup option     output   p
-   param   pre     progress q          rp       rt
-   ruby    s       samp     script     section  select
-   small   source  span     strong     style    sub
-   summary sup     table    tbody      td       textarea
-   tfoot   th      thead    time       title    tr
-   track   u       ul       var        video    wbr
+<p />Following piece of code describes how to use;
+<pre class="codeblock">(import (rnrs) (rpc json) (rpc transport http))
+<p />(define (json-rpc-send&amp;request url method param)
+  (let ((request (make-json-request method :param param)))
+    (let-values (((status header response) (rpc-http-request url request)))
+      ;; rpc-http-request unmarshalls only when HTTP status starts with "2"
+      ;; for this example we don't check it.
+      (json-response-result response))))
+<p />(json-rpc-send&amp;request "http://localhost/json-rpc" "sample" "parameter")
+;; -&gt; result of method execution
 </pre>
-<p />The result of these functions is a tree of text segments, which can be written
-out to a port by <code>write-tree</code> or can be converted to a string by
-<code>tree-&gt;string</code> <a href="section737.html#text.tree">(text tree) - Lightweight text generation</a>.
-<p />You can specify attributes of the element by using a keyword-value notation
-before the actual content.
-<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:a :href "http://example.com" "example"))
-</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;a href="http://example.com"&gt;example&lt;/a&gt;</span></pre>
-<p />The boolean value given to the attribute has special meaning. If #t is given,
-the attribute is rendered without a value. If #f is given, the attribute is not
-rendered.
-<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:table :border #t))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;table border&gt;&lt;/table&gt;</span></pre>
-<pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:table :border #f))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;table&gt;&lt;/table&gt;</span></pre>
-<p />Special characters in attribute values are escaped by the function, but the
-ones in the content are not.
-<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:div :foo "&lt;&gt;&amp;\"" "&lt;not escaped&gt;"))
-</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;div foo="&amp;lt;&amp;gt;&amp;amp;&amp;quot;"&gt;&lt;not escaped&gt;&lt;/div&gt;</span></pre>
-<p />
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<json-request&gt;1999">
+      <span class="name" name="<json-request&gt;">&lt;json-request&gt;</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Class</span>
+    <a name="<json-response&gt;2000">
+      <span class="name" name="<json-response&gt;">&lt;json-response&gt;</span>
+    </a>
+  </div>
+<div class="desc">These classes represents JSON RPC request and response respectively.
+<p />The class instance should be created by <code>make-json-request</code>,
+<code>json-string-&gt;json-request</code> or <code>json-string-&gt;json-response</code>. Users
+should not create an instance directly using <code>make</code>.
 </div>
-</section>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2001"><span class="section-number">7.36.1</span>Predicates</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-request?2002">
+    <span class="name" name="json-request?">json-request?</span>
+  </a> <span class="args">object</span></div>
+<div class="define"><span class="define-category">Function</span><a name="json-response?2003">
+    <span class="name" name="json-response?">json-response?</span>
+  </a> <span class="args">object</span></div>
+<div class="desc">Returns #t if the given <var>object</var> is an instance of 
+<code>&lt;json-request&gt;</code> and <code>&lt;json-response&gt;</code> respectively.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2004"><span class="section-number">7.36.2</span>Constructors</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-json-request2005">
+    <span class="name" name="make-json-request">make-json-request</span>
+  </a> <span class="args">method :key (params '()) id</span></div>
+<div class="desc">Creates a JSON RPC request.
+<p /><var>method</var> must be a symbol or string represents method name to be invoked.
+<p />The keyword argument <var>params</var> is the <code>params</code> field of the JSON
+RPC protocol.
+<p />The keyword argument <var>id</var> is the <code>id</code> field of the JSON RPC protocol.
+If this is not specified then a value generated by UUID v4 will be used.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-string-&gt;json-request2006">
+    <span class="name" name="json-string-&gt;json-request">json-string-&gt;json-request</span>
+  </a> <span class="args">json</span></div>
+<div class="define"><span class="define-category">Function</span><a name="json-string-&gt;json-response2007">
+    <span class="name" name="json-string-&gt;json-response">json-string-&gt;json-response</span>
+  </a> <span class="args">json</span></div>
+<div class="desc">Creates JSON RPC request and response from given JSON string <var>json</var>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2008"><span class="section-number">7.36.3</span>Accessors</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-request-method2009">
+    <span class="name" name="json-request-method">json-request-method</span>
+  </a> <span class="args">json-request</span></div>
+<div class="define"><span class="define-category">Function</span><a name="json-request-params2010">
+    <span class="name" name="json-request-params">json-request-params</span>
+  </a> <span class="args">json-request</span></div>
+<div class="define"><span class="define-category">Function</span><a name="json-request-id2011">
+    <span class="name" name="json-request-id">json-request-id</span>
+  </a> <span class="args">json-request</span></div>
+<div class="desc">Retrieves JSON RPC request's method, params and id respectively from given
+json request object <var>json-request</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-response-result2012">
+    <span class="name" name="json-response-result">json-response-result</span>
+  </a> <span class="args">json-response</span></div>
+<div class="define"><span class="define-category">Function</span><a name="json-response-id2013">
+    <span class="name" name="json-response-id">json-response-id</span>
+  </a> <span class="args">json-response</span></div>
+<div class="desc">Retrieves JSON RPC response's result and id respectively from given
+json response object <var>json-response</var>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2014"><span class="section-number">7.36.4</span>Converters</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-request-&gt;json-string2015">
+    <span class="name" name="json-request-&gt;json-string">json-request-&gt;json-string</span>
+  </a> <span class="args">json-request</span></div>
+<div class="define"><span class="define-category">Function</span><a name="json-response-&gt;json-string2016">
+    <span class="name" name="json-response-&gt;json-string">json-response-&gt;json-string</span>
+  </a> <span class="args">json-response</span></div>
+<div class="desc">Converts given <var>json-request</var> and <var>json-response</var> to JSON string.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2017"><span class="section-number">7.36.5</span>Implemented methods</a>
+  </h4>
+<p />Following methods are currently used only in <code>(rpc http transport)</code>.
+When we support other transport, this implementation may change.
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2018"><span class="section-number">7.36.5.1</span>Message methods</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-marshall-message2019">
+    <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
+  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
+<div class="desc">Converts to given JSON RPC request object to UTF8 bytes.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-unmarshall-message2020">
+    <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
+  </a> <span class="args">(type (eql 'json)) body</span></div>
+<div class="desc">Converts to given UTF8 bytes to JSON RPC response object.</div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2021"><span class="section-number">7.36.5.2</span>Transport methods</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type2022">
+    <span class="name" name="rpc-http-content-type">rpc-http-content-type</span>
+  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
+<div class="desc">Returns <code>application/json</code> content type header value</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type2023">
+    <span class="name" name="rpc-http-response-type">rpc-http-response-type</span>
+  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
+<div class="desc">Returns <code>json</code> symbol.</div>
+<p />
+</section></section></section>
   <div class="prev-next">
-    <a class="prev" href="section735.html">(text csv) - Comma separated values parser library</a>
+    <a class="prev" href="section735.html">RPC support framework</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section737.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section737.html">(text csv) - Comma separated values parser library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-08-15T07:41:24+0100</i></div>
   </div>
 </html>

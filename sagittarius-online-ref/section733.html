@@ -6,106 +6,109 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section732.html">(rfc zlib) - zlib compression library</a>
+    <a class="prev" href="section732.html">(rfc uuid) - UUID generate library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section734.html">(rpc json) - JSON RPC library</a>
+    <a class="next" href="section734.html">(rfc zlib) - zlib compression library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="utils.rpc"><span class="section-number">7.33</span>RPC support framework</a>
+    <a class="section.anchor" name="rfc.x.509"><span class="section-number">7.33</span>(rfc x.509) - X.509 certificate utility library</a>
   </h3>
-<p />RPC is basically separated in 2 parts. One is message marshalling and other 
-one is transporting. Following sections and libraries provide some framework
-for generic use.
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1959"><span class="section-number">7.33.1</span>Message framework</a>
-  </h4>
+<p />This library does not support whole feature of X.509, it just parse and verify
+a message and signature. So it can not verify certificate itself.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rpc message)1960">
-      <span class="name" name="(rpc message)">(rpc message)</span>
+    <a name="(rfc x.509)1950">
+      <span class="name" name="(rfc x.509)">(rfc x.509)</span>
     </a>
   </div>
-<div class="desc">This library provides generic functions for marshalling message.</div>
-<p /><div class="define">
-    <span class="define-category">Generic</span>
-    <a name="rpc-marshall-message1961">
-      <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Generic</span>
-    <a name="rpc-unmarshall-message1962">
-      <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
-    </a>
-  </div>
-<div class="desc">These generic function will be used transport layer to marshall or
-unmarshall messages.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="utils.rpc.transport.http"><span class="section-number">7.33.2</span>Http transport</a>
-  </h4>
-<p />Currently there is no generic transport framework and support HTTP transport.
-<p />For future, we may provide more generic way to send/receive request 
-and response.
-<p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(rpc transport http)1963">
-      <span class="name" name="(rpc transport http)">(rpc transport http)</span>
-    </a>
-  </div>
-<div class="desc">This library provides procedures and generic function of 
-HTTP transport for RCP</div>.
-<p /><div class="define"><span class="define-category">Function</span><a name="rpc-http-request1964">
-    <span class="name" name="rpc-http-request">rpc-http-request</span>
+<div class="desc">Exports X.509 utility procedures.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate1951">
+    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
+  </a> <span class="args">(in &lt;port&gt;)</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate1952">
+    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
   </a>
- <span class="args">url message :key (unmarshall? #t) :allow-other-keys options</span></div>
-<div class="desc">Send given <var>message</var> to <var>url</var> and returns 3 values,
-http status, header and response.
-<p />If the keyword argument <var>unmarshall?</var> is #f then the returning response
-value will not be unmarshalled.
-<p /><var>options</var> will be passed to <code>http-request</code> procedure.
+ <span class="args">(sequence &lt;asn.1-sequence&gt;)</span></div>
+<div class="desc">Creates an X.509 certificate object from given binary input port or ASN.1
+sequence object (second form).
 </div>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1965"><span class="section-number">7.33.2.1</span>Http transport hook</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-method1966">
-    <span class="name" name="rpc-http-method">rpc-http-method</span>
-  </a> <span class="args">request</span></div>
-<div class="desc">Returns http method. Default implementation returns <code>POST</code></div>.
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type1967">
-    <span class="name" name="rpc-http-content-type">rpc-http-content-type</span>
-  </a> <span class="args">request</span></div>
-<div class="desc">Returns content type. Default implementation returns 
-<code>application/octet-stream</code></div>.
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-sender1968">
-    <span class="name" name="rpc-http-sender">rpc-http-sender</span>
-  </a> <span class="args">request</span></div>
-<div class="desc">Returns http sender. Default implementation returns
-<code>http-blob-sender</code> with marshalled request</div>.
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-receiver1969">
-    <span class="name" name="rpc-http-receiver">rpc-http-receiver</span>
-  </a> <span class="args">request</span></div>
-<div class="desc">Returns http receiver. Default implementation returns
-<code>http-binary-receiver</code></div>.
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type1970">
-    <span class="name" name="rpc-http-response-type">rpc-http-response-type</span>
-  </a> <span class="args">request</span></div>
-<div class="desc">Returns a marker type to be used <code>rpc-http-unmarshall-message</code>.
-Default implementation returns given <var>request</var> itself</div>.
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-unmarshall-message1971">
-    <span class="name" name="rpc-http-unmarshall-message">rpc-http-unmarshall-message</span>
-  </a> <span class="args">type header body</span></div>
-<div class="desc">Unmarshall the given <var>body</var> according to the given <var>type</var>.
-Default implementation ignores <var>header</var> and passes <var>type</var> and
-<var>body</var> to <code>rpc-unmarshall-message</code>.</div>
-<p /></section></section></section>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate?1953">
+    <span class="name" name="x509-certificate?">x509-certificate?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Return #t if the <var>o</var> is X.509 certificate object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-version1954">
+    <span class="name" name="x509-certificate-get-version">x509-certificate-get-version</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return version of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-serial-number1955">
+    <span class="name" name="x509-certificate-get-serial-number">x509-certificate-get-serial-number</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return serial number of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-issuer-dn1956">
+    <span class="name" name="x509-certificate-get-issuer-dn">x509-certificate-get-issuer-dn</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return issuer DN of given X.509 certificate object as X.509 principal.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-subject-dn1957">
+    <span class="name" name="x509-certificate-get-subject-dn">x509-certificate-get-subject-dn</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return subject DN of given X.509 certificate object as X.509 principal.
+<p />NOTE: These Issuer DN and Subject DN getters return &lt;x.509-principal&gt; object,
+however I did not implement any utility for this class, so it's just useless
+for now.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-before1958">
+    <span class="name" name="x509-certificate-get-not-before">x509-certificate-get-not-before</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return start date of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-after1959">
+    <span class="name" name="x509-certificate-get-not-after">x509-certificate-get-not-after</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return end date of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature1960">
+    <span class="name" name="x509-certificate-get-signature">x509-certificate-get-signature</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return signature of given X.509 certificate object. 
+<p />NOTE: This signature is not for <code>verify</code> described below.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature-algorithm1961">
+    <span class="name" name="x509-certificate-get-signature-algorithm">x509-certificate-get-signature-algorithm</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return signature algorithm of given X.509 certificate object as an OID
+string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-public-key1962">
+    <span class="name" name="x509-certificate-get-public-key">x509-certificate-get-public-key</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return public key of given X.509 certificate object. The return value is
+<code>&lt;public-key&gt;</code> described in the section
+<a href="section77.html#crypto">(crypto) - Cryptographic library</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="verify1963">
+    <span class="name" name="verify">verify</span>
+  </a> <span class="args">x509 message signature
+  :key (verify pkcs1-emsa-v1.5-verify) (hash SHA-1)</span></div>
+<div class="desc"><var>message</var> and <var>signature</var> must be bytevector.
+<p />Verify given <var>message</var> with <var>signature</var> and <var>x509</var> certificate.
+<p />This procedure uses the <code>verify</code> procedure in <code>(crypto)</code> library. The
+keyword arguments will be passed to it. For more detail, see
+<a href="section77.html#crypto">(crypto) - Cryptographic library</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="check-validity1964">
+    <span class="name" name="check-validity">check-validity</span>
+  </a>
+ <span class="args">x509 :optional (date (current-date))</span></div>
+<div class="desc">Validate if the given certificate is valid in given <var>date</var>. Return #t
+if it's valid, otherwise raises <code>&amp;assertion</code>.
+</div>
+
+</section>
   <div class="prev-next">
-    <a class="prev" href="section732.html">(rfc zlib) - zlib compression library</a>
+    <a class="prev" href="section732.html">(rfc uuid) - UUID generate library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section734.html">(rpc json) - JSON RPC library</a>
+    <a class="next" href="section734.html">(rfc zlib) - zlib compression library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-08-15T07:41:24+0100</i></div>
   </div>
 </html>

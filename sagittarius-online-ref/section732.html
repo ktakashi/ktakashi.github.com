@@ -6,232 +6,161 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section731.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="prev" href="section731.html">(rfc uri) - Parse and construct URIs</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section733.html">RPC support framework</a>
+    <a class="next" href="section733.html">(rfc x.509) - X.509 certificate utility library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.zlib"><span class="section-number">7.32</span>(rfc zlib) - zlib compression library</a>
+    <a class="section.anchor" name="rfc.uuid"><span class="section-number">7.32</span>(rfc uuid) - UUID generate library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc zlib)1939">
-      <span class="name" name="(rfc zlib)">(rfc zlib)</span>
+    <a name="(rfc uuid)1926">
+      <span class="name" name="(rfc uuid)">(rfc uuid)</span>
     </a>
   </div>
-<div class="desc">This library provides the binding for zlib compression library. For now,
-it only provides the highest level APIs.
+<div class="desc">This library provides RFC 4122 a Universally Unique IDentifier (UUID)
+URN Namespace procedures.</div>
+<p />
+<div class="define">
+    <span class="define-category">Class</span>
+    <a name="<uuid&gt;1927">
+      <span class="name" name="<uuid&gt;">&lt;uuid&gt;</span>
+    </a>
+  </div>
+<div class="desc">The class representing UUID.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1928"><span class="section-number">7.32.1</span>Predicates</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid?1929">
+    <span class="name" name="uuid?">uuid?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;uuid&gt;</code>, otherwise
+ #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid=?1930">
+    <span class="name" name="uuid=?">uuid=?</span>
+  </a> <span class="args">uuid1 uuid2</span></div>
+<div class="desc">Compares given 2 uuids and return #t if both have the same values,
+otherwise #f.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1931"><span class="section-number">7.32.2</span>Constructors</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="make-null-uuid1932">
+      <span class="name" name="make-null-uuid">make-null-uuid</span>
+    </a>
+  </div>
+<div class="desc">Creates a null (empty) uuid.
+<p />The returning object will be represented like this UUID;
+<p /><code>00000000-0000-0000-0000-000000000000</code>.
 </div>
 <p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;zlib-error1940">
-      <span class="name" name="&amp;zlib-error">&amp;zlib-error</span>
+    <span class="define-category">Function</span>
+    <a name="make-v1-uuid1933">
+      <span class="name" name="make-v1-uuid">make-v1-uuid</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="zlib-error?1941">
-    <span class="name" name="zlib-error?">zlib-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-zlib-stream1942">
-    <span class="name" name="condition-zlib-stream">condition-zlib-stream</span>
-  </a> <span class="args">zlib-error</span></div>
-<div class="desc">Subcondition of <code>&amp;error</code>.
-<p />This condition is raised when zlib process is finished unsuccessfully. You can
-obtain the cause z-stream with the <code>condition-zlib-stream</code> procedure and
-get the detail message with the <code>zlib-error-message</code> procedure. When error
-occurred, however, it is raised with <code>message-condition</code> and it has the
-error message with. So you can simply get it with <code>condition-message</code>
-procedure.
+<div class="define"><span class="define-category">Function</span><a name="make-v3-uuid1934">
+    <span class="name" name="make-v3-uuid">make-v3-uuid</span>
+  </a> <span class="args">namespace name</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-v4-uuid1935">
+    <span class="name" name="make-v4-uuid">make-v4-uuid</span>
+  </a> <span class="args">:optional prng</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-v5-uuid1936">
+    <span class="name" name="make-v5-uuid">make-v5-uuid</span>
+  </a> <span class="args">namespace name</span></div>
+<div class="desc">Creates version 1, 3, 4 and 5 UUIDs respectively.
+<p />For version 3 and 5, procedures need to take 2 arguments, <var>namespace</var>
+and <var>name</var>. <var>namespace</var> must be a UUID object, and <var>name</var> must be a
+string.
+<p />For version 4, it can take an optional argument <var>prng</var> which specifies
+pseudo random generator. The default value is <code>(*uuid-random-state*)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="zlib-error-message1943">
-    <span class="name" name="zlib-error-message">zlib-error-message</span>
-  </a> <span class="args">z-stream</span></div>
-<div class="desc"><var>Z-stream</var> must be z-stream object.
-<p />Retrieve error message from <var>z-stream</var>. If <var>z-stream</var> does not have any
-error message and this procedure is called, the behaviour is unspecified.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-deflating-output-port1944">
-    <span class="name" name="open-deflating-output-port">open-deflating-output-port</span>
-  </a>
- <span class="args">sink :key compression-level buffer-size window-bits memory-level
- strategy dictionary owner?</span></div>
-<div class="desc"><var>Sink</var> must be binary output port. Creates a custom binary output
-port. The port deflates its input and put the result to <var>sink</var>. With the
-optional keys, you can specify the following conditions:
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <var>compression-level</var>
-      </dt>
-      <dd class="dl-item-desc">You can specify an exact integer between 1 and 9 (inclusive) to
-<var>compression-level</var>. When it is omitted, a default compression level is
-used, which is usually 6.
-<p />The following constants are defined to specify <var>compression-level</var>
-conveniently:
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_NO_COMPRESSION1945">
-          <span class="name" name="Z_NO_COMPRESSION">Z_NO_COMPRESSION</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_BEST_SPEED1946">
-          <span class="name" name="Z_BEST_SPEED">Z_BEST_SPEED</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_BEST_COMPRESSION1947">
-          <span class="name" name="Z_BEST_COMPRESSION">Z_BEST_COMPRESSION</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_DEFAULT_COMPRESSION1948">
-          <span class="name" name="Z_DEFAULT_COMPRESSION">Z_DEFAULT_COMPRESSION</span>
-        </a>
-      </div>
-</dd>
-      <dt class="dl-item-title">
-        <var>buffer-size</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies the buffer size of the port in bytes.
-The default is 4096.
-</dd>
-      <dt class="dl-item-title">
-        <var>window-bits</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies the size of the window in exact
-integer. Typically the value should be between 8 and 15, inclusive, and it
-specifies the base two logarithm of the window size used in compression. Larger
-number yields better compression ratio, but more memory usage. The default value
-is 15.
-</dd>
-      <dt class="dl-item-title">
-        <var>memory-level</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies how much memory should be allocated to
-keep the internal state during compression. 1 means smallest memory which causes
-slow and less compression. 9 means fastest and best compression with the largest
-amount of memory. The default value is 8.
-</dd>
-      <dt class="dl-item-title">
-        <var>strategy</var>
-      </dt>
-      <dd class="dl-item-desc">To fine tune compression algorithm, you can use the
-<var>strategy</var> argument. The following constants are defined as the valid value
-as <var>strategy</var>.
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_DEFAULT_STRATEGY1949">
-          <span class="name" name="Z_DEFAULT_STRATEGY">Z_DEFAULT_STRATEGY</span>
-        </a>
-      </div>
-<div class="desc">The default strategy, suitable for most ordinary data.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_FILTERED1950">
-          <span class="name" name="Z_FILTERED">Z_FILTERED</span>
-        </a>
-      </div>
-<div class="desc">Suitable for data generated by filters (or predictors). Filtered data
-consists mostly of small values with a somewhat compress them better. The
-effect of this is to force more huffman coding and less string matching.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_HUFFMAN_ONLY1951">
-          <span class="name" name="Z_HUFFMAN_ONLY">Z_HUFFMAN_ONLY</span>
-        </a>
-      </div>
-<div class="desc">Force to use huffman encoding only.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_RLE1952">
-          <span class="name" name="Z_RLE">Z_RLE</span>
-        </a>
-      </div>
-<div class="desc">This is designed to be almost as fast as Z_HUFFMAN_ONLY, but gives better
-compression for PNG image data.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_FIXED1953">
-          <span class="name" name="Z_FIXED">Z_FIXED</span>
-        </a>
-      </div>
-<div class="desc">This prevents the use of dynamic huffman codes, allowing for a simpler
-decoder for special applications.</div>
-The choice of <var>strategy</var> only affects compression ratio and speed. Any
-choice produces correct and decompressable data.
-</dd>
-      <dt class="dl-item-title">
-        <var>dictionary</var>
-      </dt>
-      <dd class="dl-item-desc">You can give an initial dictionary to the
-<var>dictionary</var> argument to be used in compression. The compressor and
-decompressor must use exactly the same dictionary.
-</dd>
-      <dt class="dl-item-title">
-        <var>owner?</var>
-      </dt>
-      <dd class="dl-item-desc">If this argument is specified true value, the created
-port automatically closes the given output port <var>sink</var> when it is closed.
-</dd>
-    </dl>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1937"><span class="section-number">7.32.3</span>Predefined namespaces and parameters</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-dns+1938">
+      <span class="name" name="+namespace-dns+">+namespace-dns+</span>
+    </a>
   </div>
-<p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-inflating-input-port1954">
-    <span class="name" name="open-inflating-input-port">open-inflating-input-port</span>
-  </a>
- <span class="args">source :key buffer-size window-bits dictionary owner?</span></div>
-<div class="desc"><var>Source</var> must be a binary input port.
-<p />The <code>open-inflating-input-port</code> creates a custom binary input port, which
-reads compressed binary data from the given port <var>source</var> and decompresses
-the read data. When <var>source</var> port supports both <code>port-position</code> and
-<code>set-port-position!</code> then the procedure will set <var>source</var> position
-to offset of used bytes length when the created custom port is being closed.
-Thus if the <var>source</var> port contains mixture of deflated data and non
-deflated data then the custom port will only read deflated data and won't
-forward the original port position beyond it no matter how big the
-<var>buffer-size</var> is specified.
-<p />The meaning of <var>buffer-size</var> is the same as
- <code>open-deflating-output-port</code>.
-<p />The meaning of <var>window-bits</var> is almost the same, except if a value increased
-by 32 is given, the inflating port automatically detecs whether the source
-stream is zlib or gzip by its header.
-<p />If the input data is compressed with specified dictionary, the same dictionary
-must be given to <var>dictionary</var> argument. Otherwise &amp;zlib-error condition is
-raised.
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-url+1939">
+      <span class="name" name="+namespace-url+">+namespace-url+</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-oid+1940">
+      <span class="name" name="+namespace-oid+">+namespace-oid+</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-x500+1941">
+      <span class="name" name="+namespace-x500+">+namespace-x500+</span>
+    </a>
+  </div>
+<div class="desc">Constant predefined namespace of UUIDs.</div>
+<p /><div class="define">
+    <span class="define-category">Variable</span>
+    <a name="*uuid-random-state*1942">
+      <span class="name" name="*uuid-random-state*">*uuid-random-state*</span>
+    </a>
+  </div>
+<div class="desc">Pseudo random generator used by version 4 UUID.</div>
+<p /><div class="define">
+    <span class="define-category">Variable</span>
+    <a name="*uuids-per-tick*1943">
+      <span class="name" name="*uuids-per-tick*">*uuids-per-tick*</span>
+    </a>
+  </div>
+<div class="desc">The number of allowed UUIDs in the same time. Used by version 1 UUID.
+<p />The default value is 1000.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="inflate-bytevector1955">
-    <span class="name" name="inflate-bytevector">inflate-bytevector</span>
-  </a> <span class="args">bv opts ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deflate-bytevector1956">
-    <span class="name" name="deflate-bytevector">deflate-bytevector</span>
-  </a> <span class="args">bv opts ...</span></div>
-<div class="desc">Inflate/deflate given bytevector <var>bv</var> respectively.
-<p />These are convenient procedures. It uses <code>open-inflating-input-port</code> or
-<code>open-deflating-output-port</code> to inflate/deflate.
-<p />The <var>opts</var> will be passed to underlying procedures.
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1944"><span class="section-number">7.32.4</span>Converters</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;bytevector1945">
+    <span class="name" name="uuid-&gt;bytevector">uuid-&gt;bytevector</span>
+  </a> <span class="args">uuid</span></div>
+<div class="desc">Returns bytevector converted from given <var>uuid</var>.
+<p /><pre class="snipet"><span class="snipet-code">(uuid-&gt;bytevector (make-null-uuid))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="crc321957">
-    <span class="name" name="crc32">crc32</span>
-  </a> <span class="args">bv :optional (checksum 0)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="adler321958">
-    <span class="name" name="adler32">adler32</span>
-  </a> <span class="args">bv :optional (checksum 0)</span></div>
-<div class="desc">Returns CSC32/Adler32 checksum of bytevector <var>bv</var>, respectively.
-<p />If optional <var>checksum</var> is given, then returned checksum is an update of
-<var>checksum</var> by <var>bv</var>.
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;string1946">
+    <span class="name" name="uuid-&gt;string">uuid-&gt;string</span>
+  </a> <span class="args">uuid</span></div>
+<div class="desc">Returns string represented uuid converted from given <var>uuid</var>.
+<p /><pre class="snipet"><span class="snipet-code">(uuid-&gt;string (make-null-uuid))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">00000000-0000-0000-0000-000000000000</span></pre>
 </div>
-</section>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;uuid1947">
+    <span class="name" name="bytevector-&gt;uuid">bytevector-&gt;uuid</span>
+  </a> <span class="args">bv</span></div>
+<div class="desc">Returns uuid object generated from <var>bv</var>.
+<p />Given bytevector must have length at least 16.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;uuid1948">
+    <span class="name" name="string-&gt;uuid">string-&gt;uuid</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Returns uuid object generated from <var>string</var>.
+<p />Given <var>string</var> must be proper format of UUID defined in RFC 4122.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;urn-format1949">
+    <span class="name" name="uuid-&gt;urn-format">uuid-&gt;urn-format</span>
+  </a> <span class="args">uuid</span></div>
+<div class="desc">Returns URN formatted string of given <var>uuid</var>.
+</div>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section731.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="prev" href="section731.html">(rfc uri) - Parse and construct URIs</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section733.html">RPC support framework</a>
+    <a class="next" href="section733.html">(rfc x.509) - X.509 certificate utility library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-08-15T07:41:24+0100</i></div>
   </div>
 </html>

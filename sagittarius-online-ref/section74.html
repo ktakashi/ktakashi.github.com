@@ -8,124 +8,36 @@
   <div class="prev-next">
     <a class="prev" href="section73.html">(binary data) - Binary data read/write</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section75.html">(util bytevector) - Bytevector utility library</a>
+    <a class="next" href="section75.html">(binary pack) - Packing binary data</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.binary.pack"><span class="section-number">7.4</span>(binary pack) - Packing binary data</a>
+    <a class="section.anchor" name="util.binary.io"><span class="section-number">7.4</span>(binary io) - Binary I/O utilities</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(binary pack)1381">
-      <span class="name" name="(binary pack)">(binary pack)</span>
+    <a name="(binary data)1380">
+      <span class="name" name="(binary data)">(binary data)</span>
     </a>
   </div>
-<div class="desc">This library provides an interface for packing and unpacking (writing
-and reading) binary data with template. The functionality is inspired by
-<a href="https://weinholt.se/industria/">Industria</a>'s
-<code>(weinholt struct pack)</code> library.
+<div class="desc">Binary I/O utility. In real world you sometimes want to treat
+binary port like textual port (e.g. <code>get-line</code> for binary port).
+This library exports those convenient procedures
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="pack1382">
-    <span class="name" name="pack">pack</span>
-  </a> <span class="args">template args ...</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Construct a bytevector with given <var>args</var> according to the given
-<var>template</var>. Template characters are described below.
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="pack!1383">
-    <span class="name" name="pack!">pack!</span>
-  </a> <span class="args">template bv offset args ...</span></div>
-<div class="desc"><var>template</var> must be a string. 
-<p /><var>bv</var> must be a bytevector.
-<p /><var>offset</var> must a non-negative exact integer.
-<p />Converts given <var>args</var> and put it into <var>bv</var> starting from <var>offset</var>.
-The conversion is done according to the <var>template</var> string.
-<p />The template characters are extensible so following description can only cover
-predefined characters.
-<p />x: padding; c: s8; C: u8; s: s16; S: u16; l: s32; L: u32; q: s64; Q: u64;
-f: ieee-single; d: ieee-double; ! or &gt;: big-endian; &lt;: little-endian;
-=: native-endian; u: disable natural alignment; a: enable natural alignment.
-Whitespace is ignored.
-<p /><pre class="snipet"><span class="snipet-code">(pack "!c" 128)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(128)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "s" 100)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(100 0)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!s" 100)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 100)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!d" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(64 9 30 184 81 235 133 31)</span></pre>
-<p />Fields are by default aligned to their natural alignment and NUL bytes are
-inserted as necessary to have a field's index to be aligned to its size.
-<p /><pre class="snipet"><span class="snipet-code">(pack "!xd" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 0 0 0 0 0 0 0 64 9 30 184 81 235 133 31)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!uxd" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 64 9 30 184 81 235 133 31)</span></pre>
-<p />Digits in front of the syntax characters means repetition. And <code>#\*</code> means
-indefinite length repetition.
-<p /><pre class="snipet"><span class="snipet-code">(pack "3c" 1 2 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "*c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3 4)</span></pre>
-<p />When the macro detects the given template is string, then it tries to expand
-as much as possible. So it might raises the different condition even if the
-template strings are the same.
-<p /><pre class="snipet"><span class="snipet-code">(pack "3c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&amp;syntax</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack (car '("3c")) 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&amp;error</span></pre>
-<p /></div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="unpack1384">
-    <span class="name" name="unpack">unpack</span>
-  </a> <span class="args">template bv</span></div>
-<div class="define"><span class="define-category">Macro</span><a name="unpack1385">
-    <span class="name" name="unpack">unpack</span>
-  </a> <span class="args">template bv offset</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Unpack the given bytevector according to the given <var>template</var> and returns
-the values. The template syntax are the same as <code>pack!</code>.
-<p />If the second form is used, then unpacking is done from the given <var>offset</var>.
-<p /><pre class="snipet"><span class="snipet-code">(unpack "!SS" #vu8(0 1 0 2))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">1 2</span></pre>
-<pre class="snipet"><span class="snipet-code">(unpack "!SS" #vu8(0 1 0 2 0 3) 1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">2 3</span></pre>
-<pre class="snipet"><span class="snipet-code">(unpack "!uSS" #vu8(0 1 0 2 0 3) 1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">256 512</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="get-unpack1386">
-    <span class="name" name="get-unpack">get-unpack</span>
-  </a> <span class="args">port template</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Utility unpacking macro for binary port.
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="format-size1387">
-    <span class="name" name="format-size">format-size</span>
-  </a> <span class="args">template</span></div>
-<div class="define"><span class="define-category">Macro</span><a name="format-size1388">
-    <span class="name" name="format-size">format-size</span>
-  </a> <span class="args">template args ...</span></div>
-<div class="desc"><var>template</var> must be a string.
-<p />Calculate the size of the result bytevector. If the second form is used, then
-macro can calculate even if the template contains indefinite length syntax
-<code>#\*</code>, otherwise #f is returned.
-<p /><pre class="snipet"><span class="snipet-code">(format-size "!xd")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">16</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "!uxd")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">9</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "*c")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "*c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">4</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="define-**-packer1389">
-    <span class="name" name="define-**-packer">define-<var>**</var>-packer</span>
-  </a>
- <span class="args">(char arg) (<code>pack</code> expr1 ...) (<code>unpack</code> expr2 ...)</span></div>
-<div class="desc"><var>char</var> must character.
-<p /><code>pack</code> and <code>unpack</code> are syntactic keywords.
-<p />Defines packing extension to given <var>char</var>. This macro can not overwrite
-the predefined characters. <var>**</var> can be followings;
-<p /><code>s8</code>, <code>u8</code>, <code>s16</code>, <code>u16</code>, <code>s32</code>, <code>u32</code>,
-<code>s64</code>, <code>u64</code>, <code>f32</code>, and <code>f64</code>.
-<p /><pre class="codeblock">;; defining char to u8 converter
-(define-u8-packer (#\A v)
-  (pack (char-&gt;integer v))
-  (unpack (integer-&gt;char v)))
-(pack "AA" #\a #\b)       ;; =&gt; #vu8(97 98)
-(unpack "AA" #vu8(97 98)) ;; =&gt; #\a #\b
-</pre>
-<p /></div>
-
-</section>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1381"><span class="section-number">7.4.1</span>Binary I/O</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+  </div>
+</section></section>
   <div class="prev-next">
     <a class="prev" href="section73.html">(binary data) - Binary data read/write</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section75.html">(util bytevector) - Bytevector utility library</a>
+    <a class="next" href="section75.html">(binary pack) - Packing binary data</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-08-15T07:41:24+0100</i></div>
   </div>
 </html>

@@ -6,159 +6,232 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section733.html">RPC support framework</a>
+    <a class="prev" href="section733.html">(rfc x.509) - X.509 certificate utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section735.html">(text csv) - Comma separated values parser library</a>
+    <a class="next" href="section735.html">RPC support framework</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="lib.rpc.json"><span class="section-number">7.34</span>(rpc json) - JSON RPC library</a>
+    <a class="section.anchor" name="rfc.zlib"><span class="section-number">7.34</span>(rfc zlib) - zlib compression library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rpc json)1972">
-      <span class="name" name="(rpc json)">(rpc json)</span>
+    <a name="(rfc zlib)1965">
+      <span class="name" name="(rfc zlib)">(rfc zlib)</span>
     </a>
   </div>
-<div class="desc">This library provides procedures handling 
-<a href="http://www.jsonrpc.org/specification">JSON RPC 2.0</a>.
-<p />This library doesn't provide transport layer. To send request and receive
-response, use <a href="section733.html#utils.rpc.transport.http">Http transport</a>.
-<p />This library uses <a href="section86.html#ported.json">JSON parser library</a> and its
-JSON representation.
+<div class="desc">This library provides the binding for zlib compression library. For now,
+it only provides the highest level APIs.
 </div>
-<p />Following piece of code describes how to use;
-<pre class="codeblock">(import (rnrs) (rpc json) (rpc transport http))
-<p />(define (json-rpc-send&amp;request url method param)
-  (let ((request (make-json-request method :param param)))
-    (let-values (((status header response) (rpc-http-request url request)))
-      ;; rpc-http-request unmarshalls only when HTTP status starts with "2"
-      ;; for this example we don't check it.
-      (json-response-result response))))
-<p />(json-rpc-send&amp;request "http://localhost/json-rpc" "sample" "parameter")
-;; -&gt; result of method execution
-</pre>
 <p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<json-request&gt;1973">
-      <span class="name" name="<json-request&gt;">&lt;json-request&gt;</span>
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;zlib-error1966">
+      <span class="name" name="&amp;zlib-error">&amp;zlib-error</span>
     </a>
   </div>
+<div class="define"><span class="define-category">Function</span><a name="zlib-error?1967">
+    <span class="name" name="zlib-error?">zlib-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="condition-zlib-stream1968">
+    <span class="name" name="condition-zlib-stream">condition-zlib-stream</span>
+  </a> <span class="args">zlib-error</span></div>
+<div class="desc">Subcondition of <code>&amp;error</code>.
+<p />This condition is raised when zlib process is finished unsuccessfully. You can
+obtain the cause z-stream with the <code>condition-zlib-stream</code> procedure and
+get the detail message with the <code>zlib-error-message</code> procedure. When error
+occurred, however, it is raised with <code>message-condition</code> and it has the
+error message with. So you can simply get it with <code>condition-message</code>
+procedure.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="zlib-error-message1969">
+    <span class="name" name="zlib-error-message">zlib-error-message</span>
+  </a> <span class="args">z-stream</span></div>
+<div class="desc"><var>Z-stream</var> must be z-stream object.
+<p />Retrieve error message from <var>z-stream</var>. If <var>z-stream</var> does not have any
+error message and this procedure is called, the behaviour is unspecified.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-deflating-output-port1970">
+    <span class="name" name="open-deflating-output-port">open-deflating-output-port</span>
+  </a>
+ <span class="args">sink :key compression-level buffer-size window-bits memory-level
+ strategy dictionary owner?</span></div>
+<div class="desc"><var>Sink</var> must be binary output port. Creates a custom binary output
+port. The port deflates its input and put the result to <var>sink</var>. With the
+optional keys, you can specify the following conditions:
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <var>compression-level</var>
+      </dt>
+      <dd class="dl-item-desc">You can specify an exact integer between 1 and 9 (inclusive) to
+<var>compression-level</var>. When it is omitted, a default compression level is
+used, which is usually 6.
+<p />The following constants are defined to specify <var>compression-level</var>
+conveniently:
 <div class="define">
-    <span class="define-category">Class</span>
-    <a name="<json-response&gt;1974">
-      <span class="name" name="<json-response&gt;">&lt;json-response&gt;</span>
-    </a>
+        <span class="define-category">Constant</span>
+        <a name="Z_NO_COMPRESSION1971">
+          <span class="name" name="Z_NO_COMPRESSION">Z_NO_COMPRESSION</span>
+        </a>
+      </div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_BEST_SPEED1972">
+          <span class="name" name="Z_BEST_SPEED">Z_BEST_SPEED</span>
+        </a>
+      </div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_BEST_COMPRESSION1973">
+          <span class="name" name="Z_BEST_COMPRESSION">Z_BEST_COMPRESSION</span>
+        </a>
+      </div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_DEFAULT_COMPRESSION1974">
+          <span class="name" name="Z_DEFAULT_COMPRESSION">Z_DEFAULT_COMPRESSION</span>
+        </a>
+      </div>
+</dd>
+      <dt class="dl-item-title">
+        <var>buffer-size</var>
+      </dt>
+      <dd class="dl-item-desc">It specifies the buffer size of the port in bytes.
+The default is 4096.
+</dd>
+      <dt class="dl-item-title">
+        <var>window-bits</var>
+      </dt>
+      <dd class="dl-item-desc">It specifies the size of the window in exact
+integer. Typically the value should be between 8 and 15, inclusive, and it
+specifies the base two logarithm of the window size used in compression. Larger
+number yields better compression ratio, but more memory usage. The default value
+is 15.
+</dd>
+      <dt class="dl-item-title">
+        <var>memory-level</var>
+      </dt>
+      <dd class="dl-item-desc">It specifies how much memory should be allocated to
+keep the internal state during compression. 1 means smallest memory which causes
+slow and less compression. 9 means fastest and best compression with the largest
+amount of memory. The default value is 8.
+</dd>
+      <dt class="dl-item-title">
+        <var>strategy</var>
+      </dt>
+      <dd class="dl-item-desc">To fine tune compression algorithm, you can use the
+<var>strategy</var> argument. The following constants are defined as the valid value
+as <var>strategy</var>.
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_DEFAULT_STRATEGY1975">
+          <span class="name" name="Z_DEFAULT_STRATEGY">Z_DEFAULT_STRATEGY</span>
+        </a>
+      </div>
+<div class="desc">The default strategy, suitable for most ordinary data.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_FILTERED1976">
+          <span class="name" name="Z_FILTERED">Z_FILTERED</span>
+        </a>
+      </div>
+<div class="desc">Suitable for data generated by filters (or predictors). Filtered data
+consists mostly of small values with a somewhat compress them better. The
+effect of this is to force more huffman coding and less string matching.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_HUFFMAN_ONLY1977">
+          <span class="name" name="Z_HUFFMAN_ONLY">Z_HUFFMAN_ONLY</span>
+        </a>
+      </div>
+<div class="desc">Force to use huffman encoding only.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_RLE1978">
+          <span class="name" name="Z_RLE">Z_RLE</span>
+        </a>
+      </div>
+<div class="desc">This is designed to be almost as fast as Z_HUFFMAN_ONLY, but gives better
+compression for PNG image data.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_FIXED1979">
+          <span class="name" name="Z_FIXED">Z_FIXED</span>
+        </a>
+      </div>
+<div class="desc">This prevents the use of dynamic huffman codes, allowing for a simpler
+decoder for special applications.</div>
+The choice of <var>strategy</var> only affects compression ratio and speed. Any
+choice produces correct and decompressable data.
+</dd>
+      <dt class="dl-item-title">
+        <var>dictionary</var>
+      </dt>
+      <dd class="dl-item-desc">You can give an initial dictionary to the
+<var>dictionary</var> argument to be used in compression. The compressor and
+decompressor must use exactly the same dictionary.
+</dd>
+      <dt class="dl-item-title">
+        <var>owner?</var>
+      </dt>
+      <dd class="dl-item-desc">If this argument is specified true value, the created
+port automatically closes the given output port <var>sink</var> when it is closed.
+</dd>
+    </dl>
   </div>
-<div class="desc">These classes represents JSON RPC request and response respectively.
-<p />The class instance should be created by <code>make-json-request</code>,
-<code>json-string-&gt;json-request</code> or <code>json-string-&gt;json-response</code>. Users
-should not create an instance directly using <code>make</code>.
+<p /></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-inflating-input-port1980">
+    <span class="name" name="open-inflating-input-port">open-inflating-input-port</span>
+  </a>
+ <span class="args">source :key buffer-size window-bits dictionary owner?</span></div>
+<div class="desc"><var>Source</var> must be a binary input port.
+<p />The <code>open-inflating-input-port</code> creates a custom binary input port, which
+reads compressed binary data from the given port <var>source</var> and decompresses
+the read data. When <var>source</var> port supports both <code>port-position</code> and
+<code>set-port-position!</code> then the procedure will set <var>source</var> position
+to offset of used bytes length when the created custom port is being closed.
+Thus if the <var>source</var> port contains mixture of deflated data and non
+deflated data then the custom port will only read deflated data and won't
+forward the original port position beyond it no matter how big the
+<var>buffer-size</var> is specified.
+<p />The meaning of <var>buffer-size</var> is the same as
+ <code>open-deflating-output-port</code>.
+<p />The meaning of <var>window-bits</var> is almost the same, except if a value increased
+by 32 is given, the inflating port automatically detecs whether the source
+stream is zlib or gzip by its header.
+<p />If the input data is compressed with specified dictionary, the same dictionary
+must be given to <var>dictionary</var> argument. Otherwise &amp;zlib-error condition is
+raised.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1975"><span class="section-number">7.34.1</span>Predicates</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request?1976">
-    <span class="name" name="json-request?">json-request?</span>
-  </a> <span class="args">object</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response?1977">
-    <span class="name" name="json-response?">json-response?</span>
-  </a> <span class="args">object</span></div>
-<div class="desc">Returns #t if the given <var>object</var> is an instance of 
-<code>&lt;json-request&gt;</code> and <code>&lt;json-response&gt;</code> respectively.
+<p /><div class="define"><span class="define-category">Function</span><a name="inflate-bytevector1981">
+    <span class="name" name="inflate-bytevector">inflate-bytevector</span>
+  </a> <span class="args">bv opts ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="deflate-bytevector1982">
+    <span class="name" name="deflate-bytevector">deflate-bytevector</span>
+  </a> <span class="args">bv opts ...</span></div>
+<div class="desc">Inflate/deflate given bytevector <var>bv</var> respectively.
+<p />These are convenient procedures. It uses <code>open-inflating-input-port</code> or
+<code>open-deflating-output-port</code> to inflate/deflate.
+<p />The <var>opts</var> will be passed to underlying procedures.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1978"><span class="section-number">7.34.2</span>Constructors</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-json-request1979">
-    <span class="name" name="make-json-request">make-json-request</span>
-  </a> <span class="args">method :key (params '()) id</span></div>
-<div class="desc">Creates a JSON RPC request.
-<p /><var>method</var> must be a symbol or string represents method name to be invoked.
-<p />The keyword argument <var>params</var> is the <code>params</code> field of the JSON
-RPC protocol.
-<p />The keyword argument <var>id</var> is the <code>id</code> field of the JSON RPC protocol.
-If this is not specified then a value generated by UUID v4 will be used.
+<p /><div class="define"><span class="define-category">Function</span><a name="crc321983">
+    <span class="name" name="crc32">crc32</span>
+  </a> <span class="args">bv :optional (checksum 0)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="adler321984">
+    <span class="name" name="adler32">adler32</span>
+  </a> <span class="args">bv :optional (checksum 0)</span></div>
+<div class="desc">Returns CSC32/Adler32 checksum of bytevector <var>bv</var>, respectively.
+<p />If optional <var>checksum</var> is given, then returned checksum is an update of
+<var>checksum</var> by <var>bv</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-string-&gt;json-request1980">
-    <span class="name" name="json-string-&gt;json-request">json-string-&gt;json-request</span>
-  </a> <span class="args">json</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-string-&gt;json-response1981">
-    <span class="name" name="json-string-&gt;json-response">json-string-&gt;json-response</span>
-  </a> <span class="args">json</span></div>
-<div class="desc">Creates JSON RPC request and response from given JSON string <var>json</var>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1982"><span class="section-number">7.34.3</span>Accessors</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request-method1983">
-    <span class="name" name="json-request-method">json-request-method</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-request-params1984">
-    <span class="name" name="json-request-params">json-request-params</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-request-id1985">
-    <span class="name" name="json-request-id">json-request-id</span>
-  </a> <span class="args">json-request</span></div>
-<div class="desc">Retrieves JSON RPC request's method, params and id respectively from given
-json request object <var>json-request</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-response-result1986">
-    <span class="name" name="json-response-result">json-response-result</span>
-  </a> <span class="args">json-response</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response-id1987">
-    <span class="name" name="json-response-id">json-response-id</span>
-  </a> <span class="args">json-response</span></div>
-<div class="desc">Retrieves JSON RPC response's result and id respectively from given
-json response object <var>json-response</var>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1988"><span class="section-number">7.34.4</span>Converters</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request-&gt;json-string1989">
-    <span class="name" name="json-request-&gt;json-string">json-request-&gt;json-string</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response-&gt;json-string1990">
-    <span class="name" name="json-response-&gt;json-string">json-response-&gt;json-string</span>
-  </a> <span class="args">json-response</span></div>
-<div class="desc">Converts given <var>json-request</var> and <var>json-response</var> to JSON string.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1991"><span class="section-number">7.34.5</span>Implemented methods</a>
-  </h4>
-<p />Following methods are currently used only in <code>(rpc http transport)</code>.
-When we support other transport, this implementation may change.
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1992"><span class="section-number">7.34.5.1</span>Message methods</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-marshall-message1993">
-    <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Converts to given JSON RPC request object to UTF8 bytes.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-unmarshall-message1994">
-    <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
-  </a> <span class="args">(type (eql 'json)) body</span></div>
-<div class="desc">Converts to given UTF8 bytes to JSON RPC response object.</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1995"><span class="section-number">7.34.5.2</span>Transport methods</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type1996">
-    <span class="name" name="rpc-http-content-type">rpc-http-content-type</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Returns <code>application/json</code> content type header value</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type1997">
-    <span class="name" name="rpc-http-response-type">rpc-http-response-type</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Returns <code>json</code> symbol.</div>
-<p />
-</section></section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section733.html">RPC support framework</a>
+    <a class="prev" href="section733.html">(rfc x.509) - X.509 certificate utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section735.html">(text csv) - Comma separated values parser library</a>
+    <a class="next" href="section735.html">RPC support framework</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-07-18T08:06:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-08-15T07:41:24+0100</i></div>
   </div>
 </html>
