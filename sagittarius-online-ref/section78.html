@@ -15,7 +15,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(dbi)1412">
+    <a name="(dbi)1416">
       <span class="name" name="(dbi)">(dbi)</span>
     </a>
   </div>
@@ -42,12 +42,12 @@ argument <code>"dbi:odbc:server=XE"</code> passed to <code>dbi-connect</code>, f
 <code>"dbi:<var>boo</var>:<var>parameter</var>"</code> to <code>dbi-connect</code> instead. As long
 as you have <code>(dbd boo)</code> installed then everything stays the same.
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1413"><span class="section-number">7.8.1</span>DBI user API</a>
+    <a class="section.anchor" name="G1417"><span class="section-number">7.8.1</span>DBI user API</a>
   </h4>
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1414"><span class="section-number">7.8.1.1</span>Database connection</a>
+    <a class="section.anchor" name="G1418"><span class="section-number">7.8.1.1</span>Database connection</a>
   </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="dbi-connect1415">
+<p /><div class="define"><span class="define-category">Function</span><a name="dbi-connect1419">
     <span class="name" name="dbi-connect">dbi-connect</span>
   </a> <span class="args">dsn . rest</span></div>
 <div class="desc">Connects to a database using a data source specified by <var>dsn</var> 
@@ -65,31 +65,31 @@ encouraged to be implemented in the DBD library.
 <p />If a connection to the database is successfully established, a connection
 object is returned.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1416">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1420">
     <span class="name" name="dbi-open?">dbi-open?</span>
   </a> <span class="args">c &lt;dbi-connection&gt;</span></div>
 <div class="desc">Checks if the given connection is still open.
 <p />The method shall return #t if the given connection is still open, otherwise
 it shall return #f.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-close1417">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-close1421">
     <span class="name" name="dbi-close">dbi-close</span>
   </a> <span class="args">c &lt;dbi-connection&gt;</span></div>
 <div class="desc">Closes a connection to the database.
 <p />NOTE: Users are strongly encouraged to close a connection explicitly. DBD
 might not close opened connections automatically.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1418">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1422">
     <span class="name" name="dbi-commit!">dbi-commit!</span>
   </a> <span class="args">(c &lt;dbi-connection&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1419">
+<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1423">
     <span class="name" name="dbi-rollback!">dbi-rollback!</span>
   </a> <span class="args">(c &lt;dbi-connection&gt;)</span></div>
 <div class="desc">Commits or rollback transactions on the given connection, respectively.</div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1420"><span class="section-number">7.8.1.2</span>Preparing and executing queries </a>
+    <a class="section.anchor" name="G1424"><span class="section-number">7.8.1.2</span>Preparing and executing queries </a>
   </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-prepare1421">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-prepare1425">
     <span class="name" name="dbi-prepare">dbi-prepare</span>
   </a> <span class="args">conn sql . args</span></div>
 <div class="desc">From a string representation of SQL <var>sql</var>, creates and returns a
@@ -100,14 +100,14 @@ query object for the database connection <var>conn</var>.
 <p />If <var>args</var> is not null, then the procedure shall bind given parameters
 to the place holder.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1422">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1426">
     <span class="name" name="dbi-open?">dbi-open?</span>
   </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
 <div class="desc">Checks if the given query is still open.
 <p />The method shall return #t if the given query is still open, otherwise
 it shall return #f.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-close1423">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-close1427">
     <span class="name" name="dbi-close">dbi-close</span>
   </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
 <div class="desc">Closes a query.
@@ -115,17 +115,17 @@ it shall return #f.
 might not close opened query automatically.
 </div>
 <p />
-<div class="define"><span class="define-category">Method</span><a name="dbi-bind-parameter!1424">
+<div class="define"><span class="define-category">Method</span><a name="dbi-bind-parameter!1428">
     <span class="name" name="dbi-bind-parameter!">dbi-bind-parameter!</span>
   </a> <span class="args">query index value</span></div>
 <div class="desc">Binds the given <var>value</var> to <var>query</var> at <var>index</var>.
 <p />The procedure shall accept integer <var>index</var> and may accept other type of
 <var>index</var>.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-execute!1425">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-execute!1429">
     <span class="name" name="dbi-execute!">dbi-execute!</span>
   </a> <span class="args">query . args</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-execute-query!1426">
+<div class="define"><span class="define-category">Method</span><a name="dbi-execute-query!1430">
     <span class="name" name="dbi-execute-query!">dbi-execute-query!</span>
   </a> <span class="args">query . args</span></div>
 <div class="desc">Executes given <var>query</var>. If the <var>args</var> is not null, then
@@ -139,10 +139,10 @@ to use it with fetching the result.
 <p />NOTE: There is a default implementation of <code>dbi-execute-query!</code> and 
 returns the given <var>query</var> as a result set object.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-fetch!1427">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-fetch!1431">
     <span class="name" name="dbi-fetch!">dbi-fetch!</span>
   </a> <span class="args">query</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-fetch-all!1428">
+<div class="define"><span class="define-category">Method</span><a name="dbi-fetch-all!1432">
     <span class="name" name="dbi-fetch-all!">dbi-fetch-all!</span>
   </a> <span class="args">query</span></div>
 <div class="desc">Fetches a row or all rows from the given <var>query</var>.
@@ -153,20 +153,20 @@ query result.
 <p />NOTE: There is a default implementation of <code>dbi-fetch-all!</code>, it calls
 <code>dbi-fetch!</code> until it returns #f.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1429">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1433">
     <span class="name" name="dbi-commit!">dbi-commit!</span>
   </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1430">
+<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1434">
     <span class="name" name="dbi-rollback!">dbi-rollback!</span>
   </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
 <div class="desc">Commits or rollback transactions on the given query, respectively.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-columns1431">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-columns1435">
     <span class="name" name="dbi-columns">dbi-columns</span>
   </a> <span class="args">query</span></div>
 <div class="desc">Returns a column names affected by the given <var>query</var>.
 <p />The procedure shall return a vector as its result.</div>
 <p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1432"><span class="section-number">7.8.2</span>Writing drivers for DBI</a>
+    <a class="section.anchor" name="G1436"><span class="section-number">7.8.2</span>Writing drivers for DBI</a>
   </h4>
 <p />Writing a driver for specific data base system means implementing a library
 <code>(dbd <var>foo</var>)</code> where <var>foo</var> is the name of the driver.
@@ -175,13 +175,13 @@ classes and methods as explained below.
 <p />The method described above section must behave as it expected there, especially
 behaviours described with <b>shall</b>.
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1433"><span class="section-number">7.8.2.1</span>DBI driver procedure</a>
+    <a class="section.anchor" name="G1437"><span class="section-number">7.8.2.1</span>DBI driver procedure</a>
   </h5>
 <p />The driver will be created by the procedure named <code>make-<var>foo</var>-driver</code>.
 And it is strongly encouraged to be implemented as a subclass of
 <code>&lt;dbi-driver&gt;</code> for future extension.
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1434"><span class="section-number">7.8.2.2</span>DBI classes to implement</a>
+    <a class="section.anchor" name="G1438"><span class="section-number">7.8.2.2</span>DBI classes to implement</a>
   </h5>
 <p />You have to define the following classes.
 <p /><ul class="itemlist"><li class="itemlist-item">Subclass <code>&lt;dbi-connection&gt;</code>. An instance of this class is created
@@ -192,10 +192,10 @@ actual connections.</li>
 of prepared statement.</li>
 </ul>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1435"><span class="section-number">7.8.2.3</span>DBI methods to implement</a>
+    <a class="section.anchor" name="G1439"><span class="section-number">7.8.2.3</span>DBI methods to implement</a>
   </h5>
 <p />The driver needs to implement the following methods.
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-make-connection1436">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-make-connection1440">
     <span class="name" name="dbi-make-connection">dbi-make-connection</span>
   </a>
  <span class="args">driver (options &lt;string&gt;) (options-alist &lt;list&gt;) . rest</span></div>
@@ -216,7 +216,7 @@ The driver is strongly encouraged to implement <code>:username</code>,
 <code>:password</code> and <code>:auto-commit</code> (if the database is supported)
 keyword arguments to specify the authentication information and commit mode.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-prepare1437">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-prepare1441">
     <span class="name" name="dbi-prepare">dbi-prepare</span>
   </a>
  <span class="args">(c &lt;foo-connection&gt;) (sql &lt;string&gt;) . rest</span></div>
@@ -226,21 +226,21 @@ instance of <code>&lt;dbi-query&gt;</code> or its subclass.
 <code>'?'</code>. The implementation must accept it to keep DBI portable even though
 the database doesn't.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-bind-parameter!1438">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-bind-parameter!1442">
     <span class="name" name="dbi-bind-parameter!">dbi-bind-parameter!</span>
   </a>
  <span class="args">(q &lt;foo-query&gt;) index value</span></div>
 <div class="desc">Binds a parameter <var>value</var> at the place <var>index</var>.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1439">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1443">
     <span class="name" name="dbi-open?">dbi-open?</span>
   </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-open?1440">
+<div class="define"><span class="define-category">Method</span><a name="dbi-open?1444">
     <span class="name" name="dbi-open?">dbi-open?</span>
   </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-close1441">
+<div class="define"><span class="define-category">Method</span><a name="dbi-close1445">
     <span class="name" name="dbi-close">dbi-close</span>
   </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-close1442">
+<div class="define"><span class="define-category">Method</span><a name="dbi-close1446">
     <span class="name" name="dbi-close">dbi-close</span>
   </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
 <div class="desc">Queries open/close status of a connection and a query, and closes
@@ -248,31 +248,31 @@ a connection and a query. The close method should cause releasing resources
 used by connection/query. The driver has to allow <code>dbi-close</code> to be
 called on a connection or a query which has already been closed.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1443">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1447">
     <span class="name" name="dbi-commit!">dbi-commit!</span>
   </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-commit!1444">
+<div class="define"><span class="define-category">Method</span><a name="dbi-commit!1448">
     <span class="name" name="dbi-commit!">dbi-commit!</span>
   </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1445">
+<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1449">
     <span class="name" name="dbi-rollback!">dbi-rollback!</span>
   </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-rollback1446">
+<div class="define"><span class="define-category">Method</span><a name="dbi-rollback1450">
     <span class="name" name="dbi-rollback">dbi-rollback</span>
   </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
 <div class="desc">Commits/rollbacks a connection or a query.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbi-execute!1447">
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-execute!1451">
     <span class="name" name="dbi-execute!">dbi-execute!</span>
   </a> <span class="args">(q &lt;foo-query&gt;) . args</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-fetch!1448">
+<div class="define"><span class="define-category">Method</span><a name="dbi-fetch!1452">
     <span class="name" name="dbi-fetch!">dbi-fetch!</span>
   </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
-<div class="define"><span class="define-category">Method</span><a name="dbi-columns1449">
+<div class="define"><span class="define-category">Method</span><a name="dbi-columns1453">
     <span class="name" name="dbi-columns">dbi-columns</span>
   </a> <span class="args">q &lt;foo-query&gt;</span></div>
 <div class="desc">Implementation must behave as described above section.</div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1450"><span class="section-number">7.8.2.4</span>Data conversion guide</a>
+    <a class="section.anchor" name="G1454"><span class="section-number">7.8.2.4</span>Data conversion guide</a>
   </h5>
 <p />Database data type and Scheme type are usually not the same. However to keep
 DBI portable it is important to follow a guideline. Here I suggest the data
@@ -305,6 +305,6 @@ implementation should follow.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-09-19T07:27:39+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
   </div>
 </html>

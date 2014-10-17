@@ -6,246 +6,217 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section720.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="prev" href="section720.html">(net oauth) - OAuth library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section722.html">(rfc :5322) - Internet message format library</a>
+    <a class="next" href="section722.html">(odbc) - ODBC binding</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.queue"><span class="section-number">7.21</span>(util queue) - Queue</a>
+    <a class="section.anchor" name="net.server"><span class="section-number">7.21</span>(net server) - Simple server framework</a>
   </h3>
-<p />
-<div class="define">
+<p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util queue)1676">
-      <span class="name" name="(util queue)">(util queue)</span>
+    <a name="(net server)1677">
+      <span class="name" name="(net server)">(net server)</span>
     </a>
   </div>
-<div class="desc">This library provides queue (FIFO) data structure and its operations.
-<p />You can create a simple queue, which is not thread-safe, or an MT queue, a
-thread-safe queue. Basic queue operations work on both type of queues. When
-a mtqueue is passed to the procedures listed in this section, each operation
-is done in atomic way, unless otherwise noted.
-<p />There are also a set of procedures for mtqueues that can be used for thread
-synchronisation; for example, you can let the consumer thread block if an
-mtqueue is empty, and/or the producer thread block if the number of items in
-the mtqueue reaches a specified limit. Using these procedures allows the
-program to use an mtqueue as a <var>channel</var>.
-<p />The simple queue API is a super set of SLIB's queue implementation.
-<p />NOTE: <a href="section710.html#util.deque">(util deque)</a> is used as underlying library.
-</div>
+<div class="desc">This library provides simple server framework.</div>
+<p />Following example describes how to write a simple echo server with the APIs
+this library provides.
+<pre class="codeblock">(import (net server) (sagittarius socket))
+<p />(define (handler server socket)
+  ;; echo message is limited to 255 bytes in this example
+  (let ((r (socket-recv socket 255)))
+    (socket-send socket r)))
+<p />(define server (make-simple-server handler))
+<p />(server-start! server)
+</pre>
+<p />Above example creates only one thread and if there are more than one
+connection, then the latter one needs to wait until first one is done.
+The library also provides mult threading server. Following example describes
+how to make multi threading server.
+<pre class="codeblock">(import (net server) (sagittarius socket))
+<p />;; specifies maximum thread number
+(define server-config (make-server-config :max-thread 5))
+<p />(define (handler server socket)
+  (let ((r (socket-recv socket 255)))
+    (socket-send socket r)))
+<p />(define server (make-simple-server handler :config server-config))
+<p />(server-start! server)
+</pre>
+If the server gets more than 5 connection simultaneously, then it tries to
+wait until one of the connection's task finishes. If it doesn't finish in
+time, then connection will be refused.
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1678"><span class="section-number">7.21.1</span>Server</a>
+  </h4>
 <p /><div class="define">
     <span class="define-category">Class</span>
-    <a name="<queue&gt;1677">
-      <span class="name" name="<queue&gt;">&lt;queue&gt;</span>
+    <a name="<simple-server&gt;1679">
+      <span class="name" name="<simple-server&gt;">&lt;simple-server&gt;</span>
     </a>
   </div>
-<div class="desc">A class of simple queue. </div>
+<div class="desc">Simple server class.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="server?1680">
+    <span class="name" name="server?">server?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;simple-server&gt;</code>,
+otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-simple-server1681">
+    <span class="name" name="make-simple-server">make-simple-server</span>
+  </a>
+ <span class="args">service handler :key server-class config :allow-other-keys</span></div>
+<div class="desc">Creates a server object.
+<p /><var>service</var> must be a string and indicates the service name or port number.
+<p /><var>handler</var> must be a procedure accepts 2 arguments, server object 
+<var>server</var> created with this procedure and socket object <var>socket</var>.
+<p />Keyword argument <var>server-class</var> is specified, it must be a class
+inherits <code>&lt;simple-server&gt;</code>, then the procedure uses the class to
+instantiate. And during instantiation, given other keys are passed.
+<p />Keyword argument <var>config</var> is specified, it must be an instance
+of <var>&lt;server-config&gt;</var> or subclass of it, then the server is created
+according to the configuration.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="server-config1682">
+    <span class="name" name="server-config">server-config</span>
+  </a> <span class="args">server</span></div>
+<div class="desc">Returns configuration object used to create given server object
+<var>server</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="server-stopped?1683">
+    <span class="name" name="server-stopped?">server-stopped?</span>
+  </a> <span class="args">server</span></div>
+<div class="desc">Returns #t if given server is stopped.
+<p />NOTE: this also returns #t if the server is not started.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="server-start!1684">
+    <span class="name" name="server-start!">server-start!</span>
+  </a>
+ <span class="args">server :key background :allow-other-keys</span></div>
+<div class="desc">Starts the given <var>server</var>.
+<p />Keyword argument <var>background</var> is true value then the server is started
+background. By default it's #f.
+<p />The rest of keywords are passed to <code>on-server-start!</code>.
+<p />NOTE: Server object is not reusable thus once server is started, it is
+impossible to restart the server.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="server-stop!1685">
+    <span class="name" name="server-stop!">server-stop!</span>
+  </a>
+ <span class="args">server :allow-other-keys</span></div>
+<div class="desc">Stops the given <var>server</var>.
+<p />The rest of keywords are passed to <code>on-server-stop!</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="wait-server-stop!1686">
+    <span class="name" name="wait-server-stop!">wait-server-stop!</span>
+  </a> <span class="args">server :optional timeout</span></div>
+<div class="desc">Waits until the <var>server</var> stops.
+<p />The <var>server</var> must be stopping by accessing shutdown port otherwise
+this procedure waits forever/for <var>timeout</var> period.
+<p />Optional argument <var>timeout</var> must be #f, time object or real number.
+If the value is #f then this procedure waits forever until the <var>server</var>
+stops. By default #f.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="on-server-start!1687">
+    <span class="name" name="on-server-start!">on-server-start!</span>
+  </a>
+ <span class="args">(server &lt;simple-server&gt;) rest ...</span></div>
+<div class="define"><span class="define-category">Method</span><a name="on-server-stop!1688">
+    <span class="name" name="on-server-stop!">on-server-stop!</span>
+  </a>
+ <span class="args">(server &lt;simple-server&gt;) rest ...</span></div>
+<div class="desc">Hook methods for subclasses.
+<p />The first method is called when server is starting.
+<p />The second method is called after server is stopped.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1689"><span class="section-number">7.21.2</span>Configuration</a>
+  </h4>
 <p /><div class="define">
     <span class="define-category">Class</span>
-    <a name="<mtqueue&gt;1678">
-      <span class="name" name="<mtqueue&gt;">&lt;mtqueue&gt;</span>
+    <a name="<server-config&gt;1690">
+      <span class="name" name="<server-config&gt;">&lt;server-config&gt;</span>
     </a>
   </div>
-<div class="desc">A class of mtqueue. Inherits <code>&lt;queue&gt;</code>.</div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="make-queue1679">
-      <span class="name" name="make-queue">make-queue</span>
-    </a>
+<div class="desc">Server configuration class.</div>
+<div class="define"><span class="define-category">Function</span><a name="server-config?1691">
+    <span class="name" name="server-config?">server-config?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;server-config&gt;</code>,
+otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-server-config1692">
+    <span class="name" name="make-server-config">make-server-config</span>
+  </a>
+ <span class="args">:key shutdown-port shutdown-handler exception-handler max-thread
+            max-retry use-ipv6? secure? certificates</span></div>
+<div class="desc">Creates a server config object.
+<p />Following is the description of keyword arguments.
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <var>shutdown-port</var>
+      </dt>
+      <dd class="dl-item-desc">    Specifying shutdown port. The value must be a string. If this is not
+    specified, then the server doesn't have shutdown port.
+  </dd>
+      <dt class="dl-item-title">
+        <var>shutdown-handler</var>
+      </dt>
+      <dd class="dl-item-desc">    This is only used then <var>shutdown-port</var> is specified. The value
+    must be a procedure takes 2 arguments, <var>server</var> and <var>socket</var>.
+    When the procedure returns true value then server will be stopped.
+    By default, it's a procedure always returns #t.
+  </dd>
+      <dt class="dl-item-title">
+        <var>exception-handler</var>
+      </dt>
+      <dd class="dl-item-desc">    Specifying exception handler. The value must be a procedure accepts
+    3 arguments, <var>server</var>, <var>socket</var> and <var>condition</var>. This
+    is called when the server <var>handler</var> raises an error. 
+<p />    NOTE: The passing <var>socket</var> is <b>not</b> closed so that the handler can
+    send messages to client socket.
+  </dd>
+      <dt class="dl-item-title">
+        <var>max-thread</var>
+      </dt>
+      <dd class="dl-item-desc">    Specifying max thread count. Default value is 1.
+  </dd>
+      <dt class="dl-item-title">
+        <var>max-retry</var>
+      </dt>
+      <dd class="dl-item-desc">    Specifying max retry count. When connection reached <var>max-thread</var>,
+    then the server waits if the one of the connections finishes. The
+    waiting period is half second (500 ms) and this value specifies
+    how many times server waits.
+<p />    Default value is 10.
+  </dd>
+      <dt class="dl-item-title">
+        <var>use-ipv6?</var>
+      </dt>
+      <dd class="dl-item-desc">    Specifying whether or not the server uses IPv6.
+<p />    Default value is #f. (only IPv4)
+  </dd>
+      <dt class="dl-item-title">
+        <var>secure?</var>
+      </dt>
+      <dt class="dl-item-title">
+        <var>certificates</var>
+      </dt>
+      <dd class="dl-item-desc">    If <var>secure?</var> is true value and <var>certificates</var> is a list of
+    X509 certificates, then the server uses TLS.
+  </dd>
+    </dl>
   </div>
-<div class="desc">Creates and return an empty simple queue.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-mtqueue1680">
-    <span class="name" name="make-mtqueue">make-mtqueue</span>
-  </a> <span class="args">:key max-length</span></div>
-<div class="desc">Creates and return an empty mtqueue.
-<p />The keyword argument <var>max-length</var> specifies the maximum entry count of
-the queue. Negative number indicates unlimited number of entry. If the given
-number is zero then the queue cannot hold any item.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue?1681">
-    <span class="name" name="queue?">queue?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is a queue (either a simple queue or an mtqueue).</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue?1682">
-    <span class="name" name="mtqueue?">mtqueue?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is an mtqueue.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue-empty?1683">
-    <span class="name" name="queue-empty?">queue-empty?</span>
-  </a> <span class="args">queue</span></div>
-<div class="desc">Returns #t if <var>queue</var> is an empty queue.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue-length1684">
-    <span class="name" name="queue-length">queue-length</span>
-  </a> <span class="args">queue</span></div>
-<div class="desc">Returns the number of the items in the queue.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue-max-length1685">
-    <span class="name" name="mtqueue-max-length">mtqueue-max-length</span>
-  </a> <span class="args">mtqueue</span></div>
-<div class="desc">Returns the maximum number of items <var>mtqueue</var> can hold. 
-#f indicates unlimited.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue-room1686">
-    <span class="name" name="mtqueue-room">mtqueue-room</span>
-  </a> <span class="args">mtqueue</span></div>
-<div class="desc">Returns the number of elements <var>mtqueue</var> can accept at this moment
-before it hits its maximum length. If the queue has unlimited capacity then
-the procedure returns <code>+inf.0</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="copy-queue1687">
-    <span class="name" name="copy-queue">copy-queue</span>
-  </a> <span class="args">queue</span></div>
-<div class="desc">Returns a copy of <var>queue</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="enqueue!1688">
-    <span class="name" name="enqueue!">enqueue!</span>
-  </a> <span class="args">queue obj more-objs ...</span></div>
-<div class="desc">Adds <var>obj</var> to the end of  <var>queue</var>. You may give more than
-one object, and each of them are enqueued in order.
-<p />If <var>queue</var> is an mtqueue, all the objects are enqueued atomically; no
-other objects from other threads can be inserted between the objects given
-to a single <code>enqueue!</code> call. Besides, if the value of the result of
-<code>mtqueue-max-length</code> is positive, and adding <var>objs</var> makes the
-number of element in <var>queue</var> exceeds it, an error is raised and 
-<var>queue</var> won't be modified. (If the maximum length is zero, this procedure
-always fail. Use <code>enqueue/wait!</code> below.)
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue-push!1689">
-    <span class="name" name="queue-push!">queue-push!</span>
-  </a> <span class="args">queue obj more-objs ...</span></div>
-<div class="desc">Adds <var>obj</var> to in front of <var>queue</var>. You may give more than
-one object, and each of them are pushed in order.
-<p />Like <code>enqueue!</code>, when <var>queue</var> is an mtqueue, all objects are added
-atomically, and the value of max length is checked. See <code>enqueue!</code> above
-for more detail.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="enqueue-unique!1690">
-    <span class="name" name="enqueue-unique!">enqueue-unique!</span>
-  </a>
- <span class="args">queue eq-proc obj more-objs ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="queue-push-unique!1691">
-    <span class="name" name="queue-push-unique!">queue-push-unique!</span>
-  </a>
- <span class="args">queue eq-proc obj more-objs ...</span></div>
-<div class="desc">Like <code>enqueue!</code> and <code>queue-push!</code>, respectively, except that
-these don't modify <var>queue</var> if it already contains <var>objs</var> (elements are
-compared by two-argument procedure <var>eq-proc</var>).
-<p />When <var>queue</var> is an mtqueue, all objects are added atomically, and the max
-length is checked. See <code>enqueue!</code> above for the detail.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="dequeue!1692">
-    <span class="name" name="dequeue!">dequeue!</span>
-  </a> <span class="args">queue :optional fallback</span></div>
-<div class="define"><span class="define-category">Function</span><a name="queue-pop!1693">
-    <span class="name" name="queue-pop!">queue-pop!</span>
-  </a> <span class="args">queue :optional fallback</span></div>
-<div class="desc">Take one object from the front of <var>queue</var> and return it. Both 
-function work the same, but <code>queue-pop!</code> may be used to emphasize it
-works with <code>queue-push!</code>.
-<p />If <var>queue</var> is empty, <var>fallback</var> is returned if give, otherwise an 
-error is raised.
-<p />If <var>queue</var> is mtqueue and its max length is zero, then the queue is
-always empty. Use <code>dequeue/wait!</code> to use such a queue as a 
-synchronisation device.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="dequeue-all!1694">
-    <span class="name" name="dequeue-all!">dequeue-all!</span>
-  </a> <span class="args">queue</span></div>
-<div class="desc">Returns the whole content of <var>queue</var> by a list, with emptying 
-<var>queue</var>. If <var>queue</var> is empty, returns an empty list. See also
-<code>queue-&gt;list</code> below.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue-front1695">
-    <span class="name" name="queue-front">queue-front</span>
-  </a> <span class="args">queue :optional fallback</span></div>
-<div class="define"><span class="define-category">Function</span><a name="queue-rear1696">
-    <span class="name" name="queue-rear">queue-rear</span>
-  </a> <span class="args">queue :optional fallback</span></div>
-<div class="desc">Peek the head or the tail of <var>queue</var> and return the object, 
-respectively.
-<p />If <var>queue</var> is empty, <var>fallback</var> is returned if give, otherwise an 
-error is raised.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="list-&gt;queue1697">
-    <span class="name" name="list-&gt;queue">list-&gt;queue</span>
-  </a> <span class="args">list :optional class :rest initargs</span></div>
-<div class="desc">Returns a new queue which content is the elements in <var>list</var>, in
-the given order.
-<p />By default the created queue is a simple queue, but you can create mtqueue
-or instance of other subclass <code>&lt;queue&gt;</code> by giving the class to the
-optional <var>class</var> arguments. The optional <var>initargs</var> arguments are
-passed to the constructor of <var>class</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue-&gt;list1698">
-    <span class="name" name="queue-&gt;list">queue-&gt;list</span>
-  </a> <span class="args">queue</span></div>
-<div class="desc">Returns a list whose content is the items in <var>queue</var> in order.
-Unlike <code>dequeue-all!</code>, the content of <var>queue</var> remains intact.
-The returning list is a copy of the content. So modifying the list won't
-affect <var>queue</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="find-in-queue1699">
-    <span class="name" name="find-in-queue">find-in-queue</span>
-  </a> <span class="args">pred queue</span></div>
-<div class="desc">Returns the first item in <var>queue</var> that satisfies a predicate
-<var>pred</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="any-in-queue1700">
-    <span class="name" name="any-in-queue">any-in-queue</span>
-  </a> <span class="args">pred queue</span></div>
-<div class="desc">Apply <var>pred</var> on each item in <var>queue</var> until it evaluates true,
-and returns that true value. If no item satisfies <var>pred</var>, #f is returned.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="every-in-queue1701">
-    <span class="name" name="every-in-queue">every-in-queue</span>
-  </a> <span class="args">pred queue</span></div>
-<div class="desc">Apply <var>pred</var> on each item in <var>queue</var>. If <var>pred</var> returns #f,
-stops iteration and returns #f immediately. Otherwise, returns the result of
-<var>pred</var> on the last item of <var>queue</var>. If the queue is empty, #t is
-returned.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="remove-from-queue!1702">
-    <span class="name" name="remove-from-queue!">remove-from-queue!</span>
-  </a> <span class="args">pred queue</span></div>
-<div class="desc">Removes all items in <var>queue</var> that satisfies <var>pred</var>. Returns
-#t if any item is removed. Otherwise #f.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="enqueue/wait!1703">
-    <span class="name" name="enqueue/wait!">enqueue/wait!</span>
-  </a>
- <span class="args">mtqueue obj :optional timeout timeout-val</span></div>
-<div class="define"><span class="define-category">Function</span><a name="queue-push/wait!1704">
-    <span class="name" name="queue-push/wait!">queue-push/wait!</span>
-  </a>
- <span class="args">mtqueue obj :optional timeout timeout-val</span></div>
-<div class="define"><span class="define-category">Function</span><a name="dequeue/wait!1705">
-    <span class="name" name="dequeue/wait!">dequeue/wait!</span>
-  </a>
- <span class="args">mtqueue :optional timeout timeout-val</span></div>
-<div class="define"><span class="define-category">Function</span><a name="queue-pop/wait!1706">
-    <span class="name" name="queue-pop/wait!">queue-pop/wait!</span>
-  </a>
- <span class="args">mtqueue :optional timeout timeout-val</span></div>
-<div class="desc">These synchronising variants work on an mtqueue and make the caller
-thread block when the mtqueue has reached its maximum length (for
-<code>enqueue/wait!</code> and <var>queue-push/wait!</var>), or the mtqueue is empty
-(for <code>dequeue/wait!</code> and <var>queue-pop/wait!</var>). The blocked caller
-thread is unblocked either the blocking condition is resolved, or the
-timeout condition is met.
-<p />The optional <var>timeout</var> argument specifies the timeout condition. If it
-is #f, those procedure wait indefinitely. If it is a real number, they wait
-at least the given number of seconds.
-<p />In case the call is blocked then timed out, the value of <var>timeout-val</var> is
-returned, which default value is #t.
-<p />When <code>enqueue/wait!</code> and <code>queue-push/wait!</code> succeeds without hitting
-timeout, they return #t.
-</div>
-
-</section>
+<p />
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section720.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="prev" href="section720.html">(net oauth) - OAuth library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section722.html">(rfc :5322) - Internet message format library</a>
+    <a class="next" href="section722.html">(odbc) - ODBC binding</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-09-19T07:27:39+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
   </div>
 </html>

@@ -6,129 +6,106 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section737.html">(text csv) - Comma separated values parser library</a>
+    <a class="prev" href="section737.html">(rfc zlib) - zlib compression library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section739.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section739.html">(rpc json) - JSON RPC library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.html-lite"><span class="section-number">7.38</span>(text html-lite) - Simple HTML document builder library</a>
+    <a class="section.anchor" name="utils.rpc"><span class="section-number">7.38</span>RPC support framework</a>
   </h3>
-<p />
-<div class="define">
+<p />RPC is basically separated in 2 parts. One is message marshalling and other 
+one is transporting. Following sections and libraries provide some framework
+for generic use.
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1962"><span class="section-number">7.38.1</span>Message framework</a>
+  </h4>
+<p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text html-lite)1965">
-      <span class="name" name="(text html-lite)">(text html-lite)</span>
+    <a name="(rpc message)1963">
+      <span class="name" name="(rpc message)">(rpc message)</span>
     </a>
   </div>
-<div class="desc">This library provides simple HTML builder procedures based on HTML5.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-escape1966">
-    <span class="name" name="html-escape">html-escape</span>
-  </a> <span class="args">:optional (in (current-input-port))</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-escape-string1967">
-    <span class="name" name="html-escape-string">html-escape-string</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Escapes the unsafe characters in HTML and returns escaped string.
-<p />The <code>html-escape</code> reads the string from optional argument <var>in</var> which
-must be an textual input port and returns an escaped string.
-<p />The <code>html-escape-string</code> takes a string and returns an escaped string.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-doctype1968">
-    <span class="name" name="html-doctype">html-doctype</span>
-  </a> <span class="args">:key (type :html-4.01-strict)</span></div>
-<div class="desc">Returns a doctype declaration for an HTML document. <var>type</var> can be one
-of the followings;
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>:html-5</code>
-      </dt>
-      <dd class="dl-item-desc">    HTML 5
-  </dd>
-      <dt class="dl-item-title">
-        <code>:html-4.01-strict :html-4.01, :strict, :html-strict</code>
-      </dt>
-      <dd class="dl-item-desc">    HTML 4.01 Strict DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:html-4.01-transitional :html-transitional, :transitional</code>
-      </dt>
-      <dd class="dl-item-desc">    HTML 4.01 Transitional DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.0-strict :xhtml-1.0</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Strict DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.0-transitional</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Transitional DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.0-frameset</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Frameset DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.1</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.1 DTD
-  </dd>
-    </dl>
+<div class="desc">This library provides generic functions for marshalling message.</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="rpc-marshall-message1964">
+      <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
+    </a>
   </div>
+<div class="define">
+    <span class="define-category">Generic</span>
+    <a name="rpc-unmarshall-message1965">
+      <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
+    </a>
+  </div>
+<div class="desc">These generic function will be used transport layer to marshall or
+unmarshall messages.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="utils.rpc.transport.http"><span class="section-number">7.38.2</span>Http transport</a>
+  </h4>
+<p />Currently there is no generic transport framework and support HTTP transport.
+<p />For future, we may provide more generic way to send/receive request 
+and response.
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rpc transport http)1966">
+      <span class="name" name="(rpc transport http)">(rpc transport http)</span>
+    </a>
+  </div>
+<div class="desc">This library provides procedures and generic function of 
+HTTP transport for RCP</div>.
+<p /><div class="define"><span class="define-category">Function</span><a name="rpc-http-request1967">
+    <span class="name" name="rpc-http-request">rpc-http-request</span>
+  </a>
+ <span class="args">url message :key (unmarshall? #t) :allow-other-keys options</span></div>
+<div class="desc">Send given <var>message</var> to <var>url</var> and returns 3 values,
+http status, header and response.
+<p />If the keyword argument <var>unmarshall?</var> is #f then the returning response
+value will not be unmarshalled.
+<p /><var>options</var> will be passed to <code>http-request</code> procedure.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html:element1969">
-    <span class="name" name="html:element">html:<var>element</var></span>
-  </a> <span class="args">args ...</span></div>
-<div class="desc">Construct an HTML element <var>element</var>. Currently following elements are
-provided. 
-<p /><pre class="codeblock">   a       abbr    address  area       article  aside
-   audio   b       base     bdi        bdo      blockquote
-   body    br      button   canvas     caption  cite
-   code    col     colgroup command    datalist dd
-   del     details dfn      div        dl       dt
-   em      embed   fieldset figcaption figure   footer
-   form
-   h1      h2      h3       h4         h5       h6
-   head    header  hgroup   hr         html
-   i       iframe  img      input      ins      kbd
-   keygen  label   legend   li         link     map
-   mark    menu    meta     meter      nav      noscript
-   object  ol      optgroup option     output   p
-   param   pre     progress q          rp       rt
-   ruby    s       samp     script     section  select
-   small   source  span     strong     style    sub
-   summary sup     table    tbody      td       textarea
-   tfoot   th      thead    time       title    tr
-   track   u       ul       var        video    wbr
-</pre>
-<p />The result of these functions is a tree of text segments, which can be written
-out to a port by <code>write-tree</code> or can be converted to a string by
-<code>tree-&gt;string</code> <a href="section739.html#text.tree">(text tree) - Lightweight text generation</a>.
-<p />You can specify attributes of the element by using a keyword-value notation
-before the actual content.
-<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:a :href "http://example.com" "example"))
-</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;a href="http://example.com"&gt;example&lt;/a&gt;</span></pre>
-<p />The boolean value given to the attribute has special meaning. If #t is given,
-the attribute is rendered without a value. If #f is given, the attribute is not
-rendered.
-<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:table :border #t))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;table border&gt;&lt;/table&gt;</span></pre>
-<pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:table :border #f))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;table&gt;&lt;/table&gt;</span></pre>
-<p />Special characters in attribute values are escaped by the function, but the
-ones in the content are not.
-<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:div :foo "&lt;&gt;&amp;\"" "&lt;not escaped&gt;"))
-</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;div foo="&amp;lt;&amp;gt;&amp;amp;&amp;quot;"&gt;&lt;not escaped&gt;&lt;/div&gt;</span></pre>
-<p />
-</div>
-</section>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1968"><span class="section-number">7.38.2.1</span>Http transport hook</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-method1969">
+    <span class="name" name="rpc-http-method">rpc-http-method</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http method. Default implementation returns <code>POST</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type1970">
+    <span class="name" name="rpc-http-content-type">rpc-http-content-type</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns content type. Default implementation returns 
+<code>application/octet-stream</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-sender1971">
+    <span class="name" name="rpc-http-sender">rpc-http-sender</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http sender. Default implementation returns
+<code>http-blob-sender</code> with marshalled request</div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-receiver1972">
+    <span class="name" name="rpc-http-receiver">rpc-http-receiver</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http receiver. Default implementation returns
+<code>http-binary-receiver</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type1973">
+    <span class="name" name="rpc-http-response-type">rpc-http-response-type</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns a marker type to be used <code>rpc-http-unmarshall-message</code>.
+Default implementation returns given <var>request</var> itself</div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-unmarshall-message1974">
+    <span class="name" name="rpc-http-unmarshall-message">rpc-http-unmarshall-message</span>
+  </a> <span class="args">type header body</span></div>
+<div class="desc">Unmarshall the given <var>body</var> according to the given <var>type</var>.
+Default implementation ignores <var>header</var> and passes <var>type</var> and
+<var>body</var> to <code>rpc-unmarshall-message</code>.</div>
+<p /></section></section></section>
   <div class="prev-next">
-    <a class="prev" href="section737.html">(text csv) - Comma separated values parser library</a>
+    <a class="prev" href="section737.html">(rfc zlib) - zlib compression library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section739.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section739.html">(rpc json) - JSON RPC library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-09-19T07:27:39+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
   </div>
 </html>

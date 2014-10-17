@@ -6,106 +6,161 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section734.html">(rfc zlib) - zlib compression library</a>
+    <a class="prev" href="section734.html">(rfc uri) - Parse and construct URIs</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section736.html">(rpc json) - JSON RPC library</a>
+    <a class="next" href="section736.html">(rfc x.509) - X.509 certificate utility library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="utils.rpc"><span class="section-number">7.35</span>RPC support framework</a>
+    <a class="section.anchor" name="rfc.uuid"><span class="section-number">7.35</span>(rfc uuid) - UUID generate library</a>
   </h3>
-<p />RPC is basically separated in 2 parts. One is message marshalling and other 
-one is transporting. Following sections and libraries provide some framework
-for generic use.
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1909"><span class="section-number">7.35.1</span>Message framework</a>
-  </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rpc message)1910">
-      <span class="name" name="(rpc message)">(rpc message)</span>
+    <a name="(rfc uuid)1903">
+      <span class="name" name="(rfc uuid)">(rfc uuid)</span>
     </a>
   </div>
-<div class="desc">This library provides generic functions for marshalling message.</div>
+<div class="desc">This library provides RFC 4122 a Universally Unique IDentifier (UUID)
+URN Namespace procedures.</div>
+<p />
+<div class="define">
+    <span class="define-category">Class</span>
+    <a name="<uuid&gt;1904">
+      <span class="name" name="<uuid&gt;">&lt;uuid&gt;</span>
+    </a>
+  </div>
+<div class="desc">The class representing UUID.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1905"><span class="section-number">7.35.1</span>Predicates</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid?1906">
+    <span class="name" name="uuid?">uuid?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;uuid&gt;</code>, otherwise
+ #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid=?1907">
+    <span class="name" name="uuid=?">uuid=?</span>
+  </a> <span class="args">uuid1 uuid2</span></div>
+<div class="desc">Compares given 2 uuids and return #t if both have the same values,
+otherwise #f.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1908"><span class="section-number">7.35.2</span>Constructors</a>
+  </h4>
 <p /><div class="define">
-    <span class="define-category">Generic</span>
-    <a name="rpc-marshall-message1911">
-      <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
+    <span class="define-category">Function</span>
+    <a name="make-null-uuid1909">
+      <span class="name" name="make-null-uuid">make-null-uuid</span>
+    </a>
+  </div>
+<div class="desc">Creates a null (empty) uuid.
+<p />The returning object will be represented like this UUID;
+<p /><code>00000000-0000-0000-0000-000000000000</code>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="make-v1-uuid1910">
+      <span class="name" name="make-v1-uuid">make-v1-uuid</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="make-v3-uuid1911">
+    <span class="name" name="make-v3-uuid">make-v3-uuid</span>
+  </a> <span class="args">namespace name</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-v4-uuid1912">
+    <span class="name" name="make-v4-uuid">make-v4-uuid</span>
+  </a> <span class="args">:optional prng</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-v5-uuid1913">
+    <span class="name" name="make-v5-uuid">make-v5-uuid</span>
+  </a> <span class="args">namespace name</span></div>
+<div class="desc">Creates version 1, 3, 4 and 5 UUIDs respectively.
+<p />For version 3 and 5, procedures need to take 2 arguments, <var>namespace</var>
+and <var>name</var>. <var>namespace</var> must be a UUID object, and <var>name</var> must be a
+string.
+<p />For version 4, it can take an optional argument <var>prng</var> which specifies
+pseudo random generator. The default value is <code>(*uuid-random-state*)</code>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1914"><span class="section-number">7.35.3</span>Predefined namespaces and parameters</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-dns+1915">
+      <span class="name" name="+namespace-dns+">+namespace-dns+</span>
     </a>
   </div>
 <div class="define">
-    <span class="define-category">Generic</span>
-    <a name="rpc-unmarshall-message1912">
-      <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
+    <span class="define-category">Constant</span>
+    <a name="+namespace-url+1916">
+      <span class="name" name="+namespace-url+">+namespace-url+</span>
     </a>
   </div>
-<div class="desc">These generic function will be used transport layer to marshall or
-unmarshall messages.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="utils.rpc.transport.http"><span class="section-number">7.35.2</span>Http transport</a>
-  </h4>
-<p />Currently there is no generic transport framework and support HTTP transport.
-<p />For future, we may provide more generic way to send/receive request 
-and response.
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-oid+1917">
+      <span class="name" name="+namespace-oid+">+namespace-oid+</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-x500+1918">
+      <span class="name" name="+namespace-x500+">+namespace-x500+</span>
+    </a>
+  </div>
+<div class="desc">Constant predefined namespace of UUIDs.</div>
 <p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(rpc transport http)1913">
-      <span class="name" name="(rpc transport http)">(rpc transport http)</span>
+    <span class="define-category">Variable</span>
+    <a name="*uuid-random-state*1919">
+      <span class="name" name="*uuid-random-state*">*uuid-random-state*</span>
     </a>
   </div>
-<div class="desc">This library provides procedures and generic function of 
-HTTP transport for RCP</div>.
-<p /><div class="define"><span class="define-category">Function</span><a name="rpc-http-request1914">
-    <span class="name" name="rpc-http-request">rpc-http-request</span>
-  </a>
- <span class="args">url message :key (unmarshall? #t) :allow-other-keys options</span></div>
-<div class="desc">Send given <var>message</var> to <var>url</var> and returns 3 values,
-http status, header and response.
-<p />If the keyword argument <var>unmarshall?</var> is #f then the returning response
-value will not be unmarshalled.
-<p /><var>options</var> will be passed to <code>http-request</code> procedure.
+<div class="desc">Pseudo random generator used by version 4 UUID.</div>
+<p /><div class="define">
+    <span class="define-category">Variable</span>
+    <a name="*uuids-per-tick*1920">
+      <span class="name" name="*uuids-per-tick*">*uuids-per-tick*</span>
+    </a>
+  </div>
+<div class="desc">The number of allowed UUIDs in the same time. Used by version 1 UUID.
+<p />The default value is 1000.
 </div>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1915"><span class="section-number">7.35.2.1</span>Http transport hook</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-method1916">
-    <span class="name" name="rpc-http-method">rpc-http-method</span>
-  </a> <span class="args">request</span></div>
-<div class="desc">Returns http method. Default implementation returns <code>POST</code></div>.
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type1917">
-    <span class="name" name="rpc-http-content-type">rpc-http-content-type</span>
-  </a> <span class="args">request</span></div>
-<div class="desc">Returns content type. Default implementation returns 
-<code>application/octet-stream</code></div>.
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-sender1918">
-    <span class="name" name="rpc-http-sender">rpc-http-sender</span>
-  </a> <span class="args">request</span></div>
-<div class="desc">Returns http sender. Default implementation returns
-<code>http-blob-sender</code> with marshalled request</div>.
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-receiver1919">
-    <span class="name" name="rpc-http-receiver">rpc-http-receiver</span>
-  </a> <span class="args">request</span></div>
-<div class="desc">Returns http receiver. Default implementation returns
-<code>http-binary-receiver</code></div>.
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type1920">
-    <span class="name" name="rpc-http-response-type">rpc-http-response-type</span>
-  </a> <span class="args">request</span></div>
-<div class="desc">Returns a marker type to be used <code>rpc-http-unmarshall-message</code>.
-Default implementation returns given <var>request</var> itself</div>.
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-unmarshall-message1921">
-    <span class="name" name="rpc-http-unmarshall-message">rpc-http-unmarshall-message</span>
-  </a> <span class="args">type header body</span></div>
-<div class="desc">Unmarshall the given <var>body</var> according to the given <var>type</var>.
-Default implementation ignores <var>header</var> and passes <var>type</var> and
-<var>body</var> to <code>rpc-unmarshall-message</code>.</div>
-<p /></section></section></section>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1921"><span class="section-number">7.35.4</span>Converters</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;bytevector1922">
+    <span class="name" name="uuid-&gt;bytevector">uuid-&gt;bytevector</span>
+  </a> <span class="args">uuid</span></div>
+<div class="desc">Returns bytevector converted from given <var>uuid</var>.
+<p /><pre class="snipet"><span class="snipet-code">(uuid-&gt;bytevector (make-null-uuid))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;string1923">
+    <span class="name" name="uuid-&gt;string">uuid-&gt;string</span>
+  </a> <span class="args">uuid</span></div>
+<div class="desc">Returns string represented uuid converted from given <var>uuid</var>.
+<p /><pre class="snipet"><span class="snipet-code">(uuid-&gt;string (make-null-uuid))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">00000000-0000-0000-0000-000000000000</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;uuid1924">
+    <span class="name" name="bytevector-&gt;uuid">bytevector-&gt;uuid</span>
+  </a> <span class="args">bv</span></div>
+<div class="desc">Returns uuid object generated from <var>bv</var>.
+<p />Given bytevector must have length at least 16.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;uuid1925">
+    <span class="name" name="string-&gt;uuid">string-&gt;uuid</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Returns uuid object generated from <var>string</var>.
+<p />Given <var>string</var> must be proper format of UUID defined in RFC 4122.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;urn-format1926">
+    <span class="name" name="uuid-&gt;urn-format">uuid-&gt;urn-format</span>
+  </a> <span class="args">uuid</span></div>
+<div class="desc">Returns URN formatted string of given <var>uuid</var>.
+</div>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section734.html">(rfc zlib) - zlib compression library</a>
+    <a class="prev" href="section734.html">(rfc uri) - Parse and construct URIs</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section736.html">(rpc json) - JSON RPC library</a>
+    <a class="next" href="section736.html">(rfc x.509) - X.509 certificate utility library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-09-19T07:27:39+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
   </div>
 </html>

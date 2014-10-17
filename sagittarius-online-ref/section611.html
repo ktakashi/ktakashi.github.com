@@ -207,44 +207,76 @@ returned, it means the peer connection is closed.
 <p /><section class="subsubsection"><h4 class="subsubsection">
     <a class="section.anchor" name="G1191"><span class="section-number">6.11.1</span>Socket information</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-peer1192">
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<socket-info&gt;1192">
+      <span class="name" name="<socket-info&gt;">&lt;socket-info&gt;</span>
+    </a>
+  </div>
+<div class="desc">The socket information immutable class. This class has 3 slots
+<p /><div class="define">
+    <span class="define-category">Slot</span>
+    <a name="hostname1193">
+      <span class="name" name="hostname">hostname</span>
+    </a>
+  </div>
+<div class="desc">This slot has string value represents own or peer socket host.</div>
+<div class="define">
+    <span class="define-category">Slot</span>
+    <a name="ip-address1194">
+      <span class="name" name="ip-address">ip-address</span>
+    </a>
+  </div>
+<div class="desc">This slot has ip-address object of own or peer socket.</div>
+<div class="define">
+    <span class="define-category">Slot</span>
+    <a name="port1195">
+      <span class="name" name="port">port</span>
+    </a>
+  </div>
+<div class="desc">This slot has integer value of own or peer socket port number.</div>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-peer1196">
     <span class="name" name="socket-peer">socket-peer</span>
   </a> <span class="args">socket</span></div>
 <div class="desc"><var>Socket</var> must be a socket object.
 <p />Returns socket info object or #f. The socket info object contains hostname,
 IP address and port number. These information is retrieved from getpeername(2).
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-name1193">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-name1197">
     <span class="name" name="socket-name">socket-name</span>
   </a> <span class="args">socket</span></div>
 <div class="desc"><var>Socket</var> must be a socket object.
 <p />Returns the name string of socket or #f if the socket doesn't have name.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-info1194">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-info1198">
     <span class="name" name="socket-info">socket-info</span>
   </a> <span class="args">socket</span></div>
 <div class="desc"><var>Socket</var> must be a socket object.
 <p />Returns socket info object or #f. The socket info object contains hostname,
 IP address and port number. These information is retrieved from getsockname(2).
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-info-values1195">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-info-values1199">
     <span class="name" name="socket-info-values">socket-info-values</span>
-  </a> <span class="args">socket</span></div>
+  </a> <span class="args">socket :key (type 'peer)</span></div>
 <div class="desc"><var>Socket</var> must be a socket object.
 <p />Returns 3 values; hostname, IP address and port number. This procedures is
 for convenience to handle socket info object.
+<p />The keyword argument specifies which socket info it should retrieve. If the
+type is <code>peer</code> then it uses <code>socket-peer</code>. If it is <code>info</code>,
+then it uses <code>socket-info</code>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1196"><span class="section-number">6.11.2</span>IP address operations</a>
+    <a class="section.anchor" name="G1200"><span class="section-number">6.11.2</span>IP address operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="ip-address-&gt;string1197">
+<p /><div class="define"><span class="define-category">Function</span><a name="ip-address-&gt;string1201">
     <span class="name" name="ip-address-&gt;string">ip-address-&gt;string</span>
   </a> <span class="args">ip</span></div>
 <div class="desc"><var>ip</var> must be an IP address object returned from the second value 
 of <code>socket-info-values</code>.
 <p />Converts given IP address object to human readable string.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="ip-address-&gt;bytevector1198">
+<p /><div class="define"><span class="define-category">Function</span><a name="ip-address-&gt;bytevector1202">
     <span class="name" name="ip-address-&gt;bytevector">ip-address-&gt;bytevector</span>
   </a> <span class="args">ip</span></div>
 <div class="desc"><var>ip</var> must be an IP address object returned from the second value 
@@ -261,6 +293,6 @@ of <code>socket-info-values</code>.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-09-19T07:27:39+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
   </div>
 </html>
