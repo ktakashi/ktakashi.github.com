@@ -6,188 +6,246 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section722.html">(odbc) - ODBC binding</a>
+    <a class="prev" href="section722.html">(rsa pkcs :5) - Password Based Cryptography library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section724.html">(util queue) - Queue</a>
+    <a class="next" href="section724.html">(rfc :5322) - Internet message format library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="pkcs.5"><span class="section-number">7.23</span>(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="section.anchor" name="util.queue"><span class="section-number">7.23</span>(util queue) - Queue</a>
   </h3>
-<p />This section describes the implementation of PKCS#5 specification library.
-However we do not describe PKCS#5 itself and I don't think it is necessary to
-know it if you just want to use it.
-<p />This example is the simplest way to use.
-<p /><pre class="codeblock">(import (rnrs) (crypto) (rsa pkcs :5))
-(define salt (string-&gt;utf8 "salt"))
-(define iteration-count 1024)
-(define pbe-parameter (make-pbe-parameter salt iteration-count))
-(define pbe-key (generate-secret-key pbe-with-sha1-and-des "password"))
-(define pbe-cipher (cipher pbe-with-sha1-and-des pbe-key 
-                           :parameter pbe-parameter))
-(encrypt pbe-cipher (string-&gt;utf8 "This is an example."))
-;; -&gt; #vu8(254 229 155 168 167 192 249 43 33 192 161 215 28 117
-;;         169 129 147 60 16 52 235 79 90 23)
-(decrypt pbe-cipher 
-	 #vu8(254 229 155 168 167 192 249 43 33 192 161 215
-              28 117 169 129 147 60 16 52 235 79 90 23))
-;; -&gt; #vu8(84 104 105 115 32 105 115 32 97 110 32 101 120 97
-;;         109 112 108 101 46)
-</pre>
-<p />The library itself defines simply its cipher and key generate methods. Hence
-user can use it with (crypto) library (see 
-<a href="section77.html#crypto">(crypto) - Cryptographic library</a>)
-<p />NOTE: Currently the library only supports encryption and decryption, not MAC
-generation nor verification.
-<p />NOTE: When you create cipher object with PBE related algorithms, the you need 
-to pass <code>:parameter</code> keyword to <code>cipher</code> procedure, otherwise raises
-an error.
-<p /><div class="define">
+<p />
+<div class="define">
     <span class="define-category">Library</span>
-    <a name="(rsa pkcs :5)1715">
-      <span class="name" name="(rsa pkcs :5)">(rsa pkcs :5)</span>
+    <a name="(util queue)1752">
+      <span class="name" name="(util queue)">(util queue)</span>
     </a>
   </div>
-<div class="desc">This library exports PKCS#5 related cryptographic procedures.</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1716"><span class="section-number">7.23.1</span>User level APIs</a>
-  </h4>
+<div class="desc">This library provides queue (FIFO) data structure and its operations.
+<p />You can create a simple queue, which is not thread-safe, or an MT queue, a
+thread-safe queue. Basic queue operations work on both type of queues. When
+a mtqueue is passed to the procedures listed in this section, each operation
+is done in atomic way, unless otherwise noted.
+<p />There are also a set of procedures for mtqueues that can be used for thread
+synchronisation; for example, you can let the consumer thread block if an
+mtqueue is empty, and/or the producer thread block if the number of items in
+the mtqueue reaches a specified limit. Using these procedures allows the
+program to use an mtqueue as a <var>channel</var>.
+<p />The simple queue API is a super set of SLIB's queue implementation.
+<p />NOTE: <a href="section710.html#util.deque">(util deque)</a> is used as underlying library.
+</div>
 <p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-md5-and-des1717">
-      <span class="name" name="pbe-with-md5-and-des">pbe-with-md5-and-des</span>
+    <span class="define-category">Class</span>
+    <a name="<queue&gt;1753">
+      <span class="name" name="<queue&gt;">&lt;queue&gt;</span>
     </a>
   </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-md5-and-rc21718">
-      <span class="name" name="pbe-with-md5-and-rc2">pbe-with-md5-and-rc2</span>
+<div class="desc">A class of simple queue. </div>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<mtqueue&gt;1754">
+      <span class="name" name="<mtqueue&gt;">&lt;mtqueue&gt;</span>
     </a>
   </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-sha1-and-des1719">
-      <span class="name" name="pbe-with-sha1-and-des">pbe-with-sha1-and-des</span>
+<div class="desc">A class of mtqueue. Inherits <code>&lt;queue&gt;</code>.</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="make-queue1755">
+      <span class="name" name="make-queue">make-queue</span>
     </a>
   </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-sha1-and-rc21720">
-      <span class="name" name="pbe-with-sha1-and-rc2">pbe-with-sha1-and-rc2</span>
-    </a>
-  </div>
-<div class="desc">The algorithms used in PBES1 encryption and decryption and key generation.
-<p />The names describe the using hash functions and cryptographic schemes. For
-example, <code>pbe-with-md5-and-des</code> uses MD5 hash and DES algorithm.
+<div class="desc">Creates and return an empty simple queue.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-mtqueue1756">
+    <span class="name" name="make-mtqueue">make-mtqueue</span>
+  </a> <span class="args">:key max-length</span></div>
+<div class="desc">Creates and return an empty mtqueue.
+<p />The keyword argument <var>max-length</var> specifies the maximum entry count of
+the queue. Negative number indicates unlimited number of entry. If the given
+number is zero then the queue cannot hold any item.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-pbe-parameter1721">
-    <span class="name" name="make-pbe-parameter">make-pbe-parameter</span>
-  </a> <span class="args">salt iteration-count</span></div>
-<div class="desc"><var>salt</var> must be a bytevector.
-<p /><var>iteration-count</var> must be a non negative exact integer.
-<p />Creates a parameter for PBE key generation. <var>salt</var> is salt and
-<var>iteration-count</var> is the iteration count  for key derivation.
+<p /><div class="define"><span class="define-category">Function</span><a name="queue?1757">
+    <span class="name" name="queue?">queue?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is a queue (either a simple queue or an mtqueue).</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue?1758">
+    <span class="name" name="mtqueue?">mtqueue?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is an mtqueue.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="queue-empty?1759">
+    <span class="name" name="queue-empty?">queue-empty?</span>
+  </a> <span class="args">queue</span></div>
+<div class="desc">Returns #t if <var>queue</var> is an empty queue.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="queue-length1760">
+    <span class="name" name="queue-length">queue-length</span>
+  </a> <span class="args">queue</span></div>
+<div class="desc">Returns the number of the items in the queue.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue-max-length1761">
+    <span class="name" name="mtqueue-max-length">mtqueue-max-length</span>
+  </a> <span class="args">mtqueue</span></div>
+<div class="desc">Returns the maximum number of items <var>mtqueue</var> can hold. 
+#f indicates unlimited.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue-room1762">
+    <span class="name" name="mtqueue-room">mtqueue-room</span>
+  </a> <span class="args">mtqueue</span></div>
+<div class="desc">Returns the number of elements <var>mtqueue</var> can accept at this moment
+before it hits its maximum length. If the queue has unlimited capacity then
+the procedure returns <code>+inf.0</code>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="copy-queue1763">
+    <span class="name" name="copy-queue">copy-queue</span>
+  </a> <span class="args">queue</span></div>
+<div class="desc">Returns a copy of <var>queue</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="enqueue!1764">
+    <span class="name" name="enqueue!">enqueue!</span>
+  </a> <span class="args">queue obj more-objs ...</span></div>
+<div class="desc">Adds <var>obj</var> to the end of  <var>queue</var>. You may give more than
+one object, and each of them are enqueued in order.
+<p />If <var>queue</var> is an mtqueue, all the objects are enqueued atomically; no
+other objects from other threads can be inserted between the objects given
+to a single <code>enqueue!</code> call. Besides, if the value of the result of
+<code>mtqueue-max-length</code> is positive, and adding <var>objs</var> makes the
+number of element in <var>queue</var> exceeds it, an error is raised and 
+<var>queue</var> won't be modified. (If the maximum length is zero, this procedure
+always fail. Use <code>enqueue/wait!</code> below.)
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="generate-secret-key1722">
-    <span class="name" name="generate-secret-key">generate-secret-key</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="queue-push!1765">
+    <span class="name" name="queue-push!">queue-push!</span>
+  </a> <span class="args">queue obj more-objs ...</span></div>
+<div class="desc">Adds <var>obj</var> to in front of <var>queue</var>. You may give more than
+one object, and each of them are pushed in order.
+<p />Like <code>enqueue!</code>, when <var>queue</var> is an mtqueue, all objects are added
+atomically, and the value of max length is checked. See <code>enqueue!</code> above
+for more detail.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="enqueue-unique!1766">
+    <span class="name" name="enqueue-unique!">enqueue-unique!</span>
   </a>
- <span class="args">algorithm (password &lt;string&gt;)</span></div>
-<div class="desc"><var>algorithm</var> must be one of the algorithms describes above.
-<p />Creates PBE secret key based on given <var>password</var> and <var>algorithm</var>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1723"><span class="section-number">7.23.2</span>Low level APIs</a>
-  </h4>
-<p />These APIs are for users who want to create own PBE mechanism such as PKCS#12.
-<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-11724">
-    <span class="name" name="pbkdf-1">pbkdf-1</span>
+ <span class="args">queue eq-proc obj more-objs ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="queue-push-unique!1767">
+    <span class="name" name="queue-push-unique!">queue-push-unique!</span>
   </a>
- <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)</span></div>
-<div class="desc">Implementation of PBKDF1 describes in PKCS#5 specification.
-<p />The arguments are plain text (bytevector), salt (bytevector), iteration count
-(non negative exact integer) and key length (non negative exact integer)
+ <span class="args">queue eq-proc obj more-objs ...</span></div>
+<div class="desc">Like <code>enqueue!</code> and <code>queue-push!</code>, respectively, except that
+these don't modify <var>queue</var> if it already contains <var>objs</var> (elements are
+compared by two-argument procedure <var>eq-proc</var>).
+<p />When <var>queue</var> is an mtqueue, all objects are added atomically, and the max
+length is checked. See <code>enqueue!</code> above for the detail.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="dequeue!1768">
+    <span class="name" name="dequeue!">dequeue!</span>
+  </a> <span class="args">queue :optional fallback</span></div>
+<div class="define"><span class="define-category">Function</span><a name="queue-pop!1769">
+    <span class="name" name="queue-pop!">queue-pop!</span>
+  </a> <span class="args">queue :optional fallback</span></div>
+<div class="desc">Take one object from the front of <var>queue</var> and return it. Both 
+function work the same, but <code>queue-pop!</code> may be used to emphasize it
+works with <code>queue-push!</code>.
+<p />If <var>queue</var> is empty, <var>fallback</var> is returned if give, otherwise an 
+error is raised.
+<p />If <var>queue</var> is mtqueue and its max length is zero, then the queue is
+always empty. Use <code>dequeue/wait!</code> to use such a queue as a 
+synchronisation device.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="dequeue-all!1770">
+    <span class="name" name="dequeue-all!">dequeue-all!</span>
+  </a> <span class="args">queue</span></div>
+<div class="desc">Returns the whole content of <var>queue</var> by a list, with emptying 
+<var>queue</var>. If <var>queue</var> is empty, returns an empty list. See also
+<code>queue-&gt;list</code> below.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="queue-front1771">
+    <span class="name" name="queue-front">queue-front</span>
+  </a> <span class="args">queue :optional fallback</span></div>
+<div class="define"><span class="define-category">Function</span><a name="queue-rear1772">
+    <span class="name" name="queue-rear">queue-rear</span>
+  </a> <span class="args">queue :optional fallback</span></div>
+<div class="desc">Peek the head or the tail of <var>queue</var> and return the object, 
 respectively.
-<p />The keyword argument <var>hash</var> specifies which hash algorithm will be used. The
-default is SHA-1. 
+<p />If <var>queue</var> is empty, <var>fallback</var> is returned if give, otherwise an 
+error is raised.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-21725">
-    <span class="name" name="pbkdf-2">pbkdf-2</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="list-&gt;queue1773">
+    <span class="name" name="list-&gt;queue">list-&gt;queue</span>
+  </a> <span class="args">list :optional class :rest initargs</span></div>
+<div class="desc">Returns a new queue which content is the elements in <var>list</var>, in
+the given order.
+<p />By default the created queue is a simple queue, but you can create mtqueue
+or instance of other subclass <code>&lt;queue&gt;</code> by giving the class to the
+optional <var>class</var> arguments. The optional <var>initargs</var> arguments are
+passed to the constructor of <var>class</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="queue-&gt;list1774">
+    <span class="name" name="queue-&gt;list">queue-&gt;list</span>
+  </a> <span class="args">queue</span></div>
+<div class="desc">Returns a list whose content is the items in <var>queue</var> in order.
+Unlike <code>dequeue-all!</code>, the content of <var>queue</var> remains intact.
+The returning list is a copy of the content. So modifying the list won't
+affect <var>queue</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="find-in-queue1775">
+    <span class="name" name="find-in-queue">find-in-queue</span>
+  </a> <span class="args">pred queue</span></div>
+<div class="desc">Returns the first item in <var>queue</var> that satisfies a predicate
+<var>pred</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="any-in-queue1776">
+    <span class="name" name="any-in-queue">any-in-queue</span>
+  </a> <span class="args">pred queue</span></div>
+<div class="desc">Apply <var>pred</var> on each item in <var>queue</var> until it evaluates true,
+and returns that true value. If no item satisfies <var>pred</var>, #f is returned.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="every-in-queue1777">
+    <span class="name" name="every-in-queue">every-in-queue</span>
+  </a> <span class="args">pred queue</span></div>
+<div class="desc">Apply <var>pred</var> on each item in <var>queue</var>. If <var>pred</var> returns #f,
+stops iteration and returns #f immediately. Otherwise, returns the result of
+<var>pred</var> on the last item of <var>queue</var>. If the queue is empty, #t is
+returned.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="remove-from-queue!1778">
+    <span class="name" name="remove-from-queue!">remove-from-queue!</span>
+  </a> <span class="args">pred queue</span></div>
+<div class="desc">Removes all items in <var>queue</var> that satisfies <var>pred</var>. Returns
+#t if any item is removed. Otherwise #f.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="enqueue/wait!1779">
+    <span class="name" name="enqueue/wait!">enqueue/wait!</span>
   </a>
- <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)
- (prf (hash-algorithm HMAC :key P :hash hash))</span></div>
-<div class="desc">Implementation of PBKDF2 describes in PKCS#5 specification.
-<p />The arguments are plain text (bytevector), salt (bytevector), iteration count
-(non negative exact integer) and key length (non negative exact integer)
-respectively.
-<p />The keyword argument <var>hash</var> specifies which hash algorithm will be used in
-PRF function. The default is SHA-1 and if you don't have any reasonable reason,
-this must not be changed.
-<p />The keyword argument <var>prf</var> specifies underlying pseudo random function which
-must be hash object implemented with <code>&lt;user-hash-algorithm&gt;</code> describes in
-<a href="section717.html#custom.hash">Custom hash algorithm</a>. The default is HMAC and if you
-don't have any reasonable reason, this must not be changed.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="derive-key1726">
-    <span class="name" name="derive-key">derive-key</span>
+ <span class="args">mtqueue obj :optional timeout timeout-val</span></div>
+<div class="define"><span class="define-category">Function</span><a name="queue-push/wait!1780">
+    <span class="name" name="queue-push/wait!">queue-push/wait!</span>
   </a>
- <span class="args">P S c dk-len :key (kdf pbkdf-2) :allow-other-keys</span></div>
-<div class="desc">The implementation of key derive function. The required arguments are
-the same as above <code>pbkdf-1</code> and <code>pbkdf-2</code>.
-<p />This procedure just calls given <var>kdf</var> with given arguments and returns
-derived key bytevector.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="derive-key&amp;iv1727">
-    <span class="name" name="derive-key&amp;iv">derive-key&amp;iv</span>
+ <span class="args">mtqueue obj :optional timeout timeout-val</span></div>
+<div class="define"><span class="define-category">Function</span><a name="dequeue/wait!1781">
+    <span class="name" name="dequeue/wait!">dequeue/wait!</span>
   </a>
- <span class="args">marker (key &lt;pbe-secret-key&gt;) (parameter &lt;pbe-parameter&gt;)</span></div>
-<div class="desc"><var>marker</var> is user defined cipher type. <var>key</var> must be subclass of
-<code>&lt;pbe-secret-key&gt;</code>. <var>parameter</var> must be subclss of
-<code>&lt;pbe-parameter&gt;</code>.
-<p />This method is called in the <code>initialize</code> method of
-<code>&lt;pbe-cipher-spi&gt;</code> and must return 2 values; the first one is derived key
-as bytevector and second one is initial vector as bytevector.
-<p />The PKCS#5 encryption and decryption procedures require to derive both
-key and initial vector from given password and parameter (salt and iteration
-count). This method is used in PBE cipher to derive key and initial vector.
-<p />The purpose of this method is to re-use <code>&lt;pbe-cipher-spi&gt;</code>. For example,
-PKCS#12 can use this cipher, however it requires different key derivation
-mechanism.
+ <span class="args">mtqueue :optional timeout timeout-val</span></div>
+<div class="define"><span class="define-category">Function</span><a name="queue-pop/wait!1782">
+    <span class="name" name="queue-pop/wait!">queue-pop/wait!</span>
+  </a>
+ <span class="args">mtqueue :optional timeout timeout-val</span></div>
+<div class="desc">These synchronising variants work on an mtqueue and make the caller
+thread block when the mtqueue has reached its maximum length (for
+<code>enqueue/wait!</code> and <var>queue-push/wait!</var>), or the mtqueue is empty
+(for <code>dequeue/wait!</code> and <var>queue-pop/wait!</var>). The blocked caller
+thread is unblocked either the blocking condition is resolved, or the
+timeout condition is met.
+<p />The optional <var>timeout</var> argument specifies the timeout condition. If it
+is #f, those procedure wait indefinitely. If it is a real number, they wait
+at least the given number of seconds.
+<p />In case the call is blocked then timed out, the value of <var>timeout-val</var> is
+returned, which default value is #t.
+<p />When <code>enqueue/wait!</code> and <code>queue-push/wait!</code> succeeds without hitting
+timeout, they return #t.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1728"><span class="section-number">7.23.3</span>Supporting PBES2 functionality</a>
-  </h4>
-<p />Since I could not find any standard implementation, Sagittarius actually does
-not support PBES2 encryption and decryption. However supporting it is not so
-difficult. This is the sample code to support it.
-<p /><pre class="codeblock">(import (rnrs) (clos user) (rfc hmac) (math))
-(define-class &lt;pbkef2-with-hmac-sha1-des3&gt; () ())
-(define pbkdf2-with-hmac-sha1-des3 (make &lt;pbkef2-with-hmac-sha1-des3&gt;))
-(define-method generate-secret-key ((mark &lt;pbkef2-with-hmac-sha1-des3&gt;)
-				    (password &lt;string&gt;))
-  (make &lt;pbe-secret-key&gt; :password  password :hash (hash-algorithm HMAC)
-	:scheme DES3 :iv-size 8 :length 24
-	:type PKCS5-S2))
-(register-spi pbkdf2-with-hmac-sha1-des3 &lt;pbe-cipher-spi&gt;)
-</pre>
-<p />And using this supported PBES2 cipher is like this;
-<p /><pre class="codeblock">(let* ((param (make-pbe-parameter (string-&gt;utf8 "saltsalt") 1024))
-       (key (generate-secret-key pbkdf2-with-hmac-sha1-des3 "password"))
-       (pbe-cipher (cipher pbkdf2-with-hmac-sha1-des3 key :parameter param))
-       (ciphertext (encrypt pbe-cipher (string-&gt;utf8 "This is an example."))))
-  (utf8-&gt;string (decrypt pbe-cipher ciphertext)))
-</pre>
-<p />I suppose this is correct, but I could not find any implementation which
-supports PBES2. I usually test with JCE, so if you have some recommendation,
-please let me know.
 
-</section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section722.html">(odbc) - ODBC binding</a>
+    <a class="prev" href="section722.html">(rsa pkcs :5) - Password Based Cryptography library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section724.html">(util queue) - Queue</a>
+    <a class="next" href="section724.html">(rfc :5322) - Internet message format library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-11-24T08:30:47+0100</i></div>
   </div>
 </html>

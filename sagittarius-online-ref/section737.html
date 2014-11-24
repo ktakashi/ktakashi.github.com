@@ -6,232 +6,106 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section736.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="prev" href="section736.html">(rfc zlib) - zlib compression library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section738.html">RPC support framework</a>
+    <a class="next" href="section738.html">(rpc json) - JSON RPC library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.zlib"><span class="section-number">7.37</span>(rfc zlib) - zlib compression library</a>
+    <a class="section.anchor" name="utils.rpc"><span class="section-number">7.37</span>RPC support framework</a>
   </h3>
+<p />RPC is basically separated in 2 parts. One is message marshalling and other 
+one is transporting. Following sections and libraries provide some framework
+for generic use.
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1985"><span class="section-number">7.37.1</span>Message framework</a>
+  </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc zlib)1942">
-      <span class="name" name="(rfc zlib)">(rfc zlib)</span>
+    <a name="(rpc message)1986">
+      <span class="name" name="(rpc message)">(rpc message)</span>
     </a>
   </div>
-<div class="desc">This library provides the binding for zlib compression library. For now,
-it only provides the highest level APIs.
-</div>
+<div class="desc">This library provides generic functions for marshalling message.</div>
 <p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;zlib-error1943">
-      <span class="name" name="&amp;zlib-error">&amp;zlib-error</span>
+    <span class="define-category">Generic</span>
+    <a name="rpc-marshall-message1987">
+      <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="zlib-error?1944">
-    <span class="name" name="zlib-error?">zlib-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-zlib-stream1945">
-    <span class="name" name="condition-zlib-stream">condition-zlib-stream</span>
-  </a> <span class="args">zlib-error</span></div>
-<div class="desc">Subcondition of <code>&amp;error</code>.
-<p />This condition is raised when zlib process is finished unsuccessfully. You can
-obtain the cause z-stream with the <code>condition-zlib-stream</code> procedure and
-get the detail message with the <code>zlib-error-message</code> procedure. When error
-occurred, however, it is raised with <code>message-condition</code> and it has the
-error message with. So you can simply get it with <code>condition-message</code>
-procedure.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="zlib-error-message1946">
-    <span class="name" name="zlib-error-message">zlib-error-message</span>
-  </a> <span class="args">z-stream</span></div>
-<div class="desc"><var>Z-stream</var> must be z-stream object.
-<p />Retrieve error message from <var>z-stream</var>. If <var>z-stream</var> does not have any
-error message and this procedure is called, the behaviour is unspecified.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-deflating-output-port1947">
-    <span class="name" name="open-deflating-output-port">open-deflating-output-port</span>
-  </a>
- <span class="args">sink :key compression-level buffer-size window-bits memory-level
- strategy dictionary owner?</span></div>
-<div class="desc"><var>Sink</var> must be binary output port. Creates a custom binary output
-port. The port deflates its input and put the result to <var>sink</var>. With the
-optional keys, you can specify the following conditions:
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <var>compression-level</var>
-      </dt>
-      <dd class="dl-item-desc">You can specify an exact integer between 1 and 9 (inclusive) to
-<var>compression-level</var>. When it is omitted, a default compression level is
-used, which is usually 6.
-<p />The following constants are defined to specify <var>compression-level</var>
-conveniently:
 <div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_NO_COMPRESSION1948">
-          <span class="name" name="Z_NO_COMPRESSION">Z_NO_COMPRESSION</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_BEST_SPEED1949">
-          <span class="name" name="Z_BEST_SPEED">Z_BEST_SPEED</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_BEST_COMPRESSION1950">
-          <span class="name" name="Z_BEST_COMPRESSION">Z_BEST_COMPRESSION</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_DEFAULT_COMPRESSION1951">
-          <span class="name" name="Z_DEFAULT_COMPRESSION">Z_DEFAULT_COMPRESSION</span>
-        </a>
-      </div>
-</dd>
-      <dt class="dl-item-title">
-        <var>buffer-size</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies the buffer size of the port in bytes.
-The default is 4096.
-</dd>
-      <dt class="dl-item-title">
-        <var>window-bits</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies the size of the window in exact
-integer. Typically the value should be between 8 and 15, inclusive, and it
-specifies the base two logarithm of the window size used in compression. Larger
-number yields better compression ratio, but more memory usage. The default value
-is 15.
-</dd>
-      <dt class="dl-item-title">
-        <var>memory-level</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies how much memory should be allocated to
-keep the internal state during compression. 1 means smallest memory which causes
-slow and less compression. 9 means fastest and best compression with the largest
-amount of memory. The default value is 8.
-</dd>
-      <dt class="dl-item-title">
-        <var>strategy</var>
-      </dt>
-      <dd class="dl-item-desc">To fine tune compression algorithm, you can use the
-<var>strategy</var> argument. The following constants are defined as the valid value
-as <var>strategy</var>.
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_DEFAULT_STRATEGY1952">
-          <span class="name" name="Z_DEFAULT_STRATEGY">Z_DEFAULT_STRATEGY</span>
-        </a>
-      </div>
-<div class="desc">The default strategy, suitable for most ordinary data.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_FILTERED1953">
-          <span class="name" name="Z_FILTERED">Z_FILTERED</span>
-        </a>
-      </div>
-<div class="desc">Suitable for data generated by filters (or predictors). Filtered data
-consists mostly of small values with a somewhat compress them better. The
-effect of this is to force more huffman coding and less string matching.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_HUFFMAN_ONLY1954">
-          <span class="name" name="Z_HUFFMAN_ONLY">Z_HUFFMAN_ONLY</span>
-        </a>
-      </div>
-<div class="desc">Force to use huffman encoding only.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_RLE1955">
-          <span class="name" name="Z_RLE">Z_RLE</span>
-        </a>
-      </div>
-<div class="desc">This is designed to be almost as fast as Z_HUFFMAN_ONLY, but gives better
-compression for PNG image data.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_FIXED1956">
-          <span class="name" name="Z_FIXED">Z_FIXED</span>
-        </a>
-      </div>
-<div class="desc">This prevents the use of dynamic huffman codes, allowing for a simpler
-decoder for special applications.</div>
-The choice of <var>strategy</var> only affects compression ratio and speed. Any
-choice produces correct and decompressable data.
-</dd>
-      <dt class="dl-item-title">
-        <var>dictionary</var>
-      </dt>
-      <dd class="dl-item-desc">You can give an initial dictionary to the
-<var>dictionary</var> argument to be used in compression. The compressor and
-decompressor must use exactly the same dictionary.
-</dd>
-      <dt class="dl-item-title">
-        <var>owner?</var>
-      </dt>
-      <dd class="dl-item-desc">If this argument is specified true value, the created
-port automatically closes the given output port <var>sink</var> when it is closed.
-</dd>
-    </dl>
+    <span class="define-category">Generic</span>
+    <a name="rpc-unmarshall-message1988">
+      <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
+    </a>
   </div>
-<p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-inflating-input-port1957">
-    <span class="name" name="open-inflating-input-port">open-inflating-input-port</span>
+<div class="desc">These generic function will be used transport layer to marshall or
+unmarshall messages.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="utils.rpc.transport.http"><span class="section-number">7.37.2</span>Http transport</a>
+  </h4>
+<p />Currently there is no generic transport framework and support HTTP transport.
+<p />For future, we may provide more generic way to send/receive request 
+and response.
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rpc transport http)1989">
+      <span class="name" name="(rpc transport http)">(rpc transport http)</span>
+    </a>
+  </div>
+<div class="desc">This library provides procedures and generic function of 
+HTTP transport for RCP</div>.
+<p /><div class="define"><span class="define-category">Function</span><a name="rpc-http-request1990">
+    <span class="name" name="rpc-http-request">rpc-http-request</span>
   </a>
- <span class="args">source :key buffer-size window-bits dictionary owner?</span></div>
-<div class="desc"><var>Source</var> must be a binary input port.
-<p />The <code>open-inflating-input-port</code> creates a custom binary input port, which
-reads compressed binary data from the given port <var>source</var> and decompresses
-the read data. When <var>source</var> port supports both <code>port-position</code> and
-<code>set-port-position!</code> then the procedure will set <var>source</var> position
-to offset of used bytes length when the created custom port is being closed.
-Thus if the <var>source</var> port contains mixture of deflated data and non
-deflated data then the custom port will only read deflated data and won't
-forward the original port position beyond it no matter how big the
-<var>buffer-size</var> is specified.
-<p />The meaning of <var>buffer-size</var> is the same as
- <code>open-deflating-output-port</code>.
-<p />The meaning of <var>window-bits</var> is almost the same, except if a value increased
-by 32 is given, the inflating port automatically detecs whether the source
-stream is zlib or gzip by its header.
-<p />If the input data is compressed with specified dictionary, the same dictionary
-must be given to <var>dictionary</var> argument. Otherwise &amp;zlib-error condition is
-raised.
+ <span class="args">url message :key (unmarshall? #t) :allow-other-keys options</span></div>
+<div class="desc">Send given <var>message</var> to <var>url</var> and returns 3 values,
+http status, header and response.
+<p />If the keyword argument <var>unmarshall?</var> is #f then the returning response
+value will not be unmarshalled.
+<p /><var>options</var> will be passed to <code>http-request</code> procedure.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="inflate-bytevector1958">
-    <span class="name" name="inflate-bytevector">inflate-bytevector</span>
-  </a> <span class="args">bv opts ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deflate-bytevector1959">
-    <span class="name" name="deflate-bytevector">deflate-bytevector</span>
-  </a> <span class="args">bv opts ...</span></div>
-<div class="desc">Inflate/deflate given bytevector <var>bv</var> respectively.
-<p />These are convenient procedures. It uses <code>open-inflating-input-port</code> or
-<code>open-deflating-output-port</code> to inflate/deflate.
-<p />The <var>opts</var> will be passed to underlying procedures.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="crc321960">
-    <span class="name" name="crc32">crc32</span>
-  </a> <span class="args">bv :optional (checksum 0)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="adler321961">
-    <span class="name" name="adler32">adler32</span>
-  </a> <span class="args">bv :optional (checksum 0)</span></div>
-<div class="desc">Returns CSC32/Adler32 checksum of bytevector <var>bv</var>, respectively.
-<p />If optional <var>checksum</var> is given, then returned checksum is an update of
-<var>checksum</var> by <var>bv</var>.
-</div>
-</section>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1991"><span class="section-number">7.37.2.1</span>Http transport hook</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-method1992">
+    <span class="name" name="rpc-http-method">rpc-http-method</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http method. Default implementation returns <code>POST</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type1993">
+    <span class="name" name="rpc-http-content-type">rpc-http-content-type</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns content type. Default implementation returns 
+<code>application/octet-stream</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-sender1994">
+    <span class="name" name="rpc-http-sender">rpc-http-sender</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http sender. Default implementation returns
+<code>http-blob-sender</code> with marshalled request</div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-receiver1995">
+    <span class="name" name="rpc-http-receiver">rpc-http-receiver</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http receiver. Default implementation returns
+<code>http-binary-receiver</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type1996">
+    <span class="name" name="rpc-http-response-type">rpc-http-response-type</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns a marker type to be used <code>rpc-http-unmarshall-message</code>.
+Default implementation returns given <var>request</var> itself</div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-unmarshall-message1997">
+    <span class="name" name="rpc-http-unmarshall-message">rpc-http-unmarshall-message</span>
+  </a> <span class="args">type header body</span></div>
+<div class="desc">Unmarshall the given <var>body</var> according to the given <var>type</var>.
+Default implementation ignores <var>header</var> and passes <var>type</var> and
+<var>body</var> to <code>rpc-unmarshall-message</code>.</div>
+<p /></section></section></section>
   <div class="prev-next">
-    <a class="prev" href="section736.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="prev" href="section736.html">(rfc zlib) - zlib compression library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section738.html">RPC support framework</a>
+    <a class="next" href="section738.html">(rpc json) - JSON RPC library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-11-24T08:30:47+0100</i></div>
   </div>
 </html>

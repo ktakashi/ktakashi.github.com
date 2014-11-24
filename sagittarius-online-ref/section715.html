@@ -8,172 +8,137 @@
   <div class="prev-next">
     <a class="prev" href="section714.html">(util heap) - Heap</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section716.html">(util list) - Extra list utility library</a>
+    <a class="next" href="section716.html">(math) - Mathematics library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="G1542"><span class="section-number">7.15</span>Constructors, predicates and accessors</a>
+    <a class="section.anchor" name="util.list"><span class="section-number">7.15</span>(util list) - Extra list utility library</a>
   </h3>
 <p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<heap&gt;1543">
-      <span class="name" name="<heap&gt;">&lt;heap&gt;</span>
+    <span class="define-category">Library</span>
+    <a name="(util list)1591">
+      <span class="name" name="(util list)">(util list)</span>
     </a>
   </div>
-<div class="desc">A class of Fibonacci heap.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap?1544">
-    <span class="name" name="heap?">heap?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Return #t if <var>obj</var> is a heap, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-heap1545">
-    <span class="name" name="make-heap">make-heap</span>
-  </a> <span class="args">compare</span></div>
-<div class="desc"><var>compare</var> must be a procedure which takes 2 argument and
-returns an exact integer indicates the order of given arguments.
-<p />Creates a heap.
+<div class="desc">This library provides extra list utility procedures.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="copy-heap1546">
-    <span class="name" name="copy-heap">copy-heap</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Creates copy of <var>heap</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="alist-&gt;heap1547">
-    <span class="name" name="alist-&gt;heap">alist-&gt;heap</span>
-  </a> <span class="args">compare alist</span></div>
-<div class="desc"><var>compare</var> must be a procedure which takes 2 argument and
-returns an exact integer indicates the order of given arguments.
-<p />Creates a heap whose keys and values are car/cdr part of <var>alist</var>.
+<p /><div class="define"><span class="define-category">Function</span><a name="for-each-with-index1592">
+    <span class="name" name="for-each-with-index">for-each-with-index</span>
+  </a> <span class="args">proc list1 list2 ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="map-with-index1593">
+    <span class="name" name="map-with-index">map-with-index</span>
+  </a> <span class="args">proc list1 list2 ...</span></div>
+<div class="desc">Like <code>for-each</code> and <code>map</code>, expect <var>proc</var> receives the index
+as the first argument.
+<p /><pre class="snipet"><span class="snipet-code">(map-with-index list '(a b c) '(e f g))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((0 a e) (1 b f) (2 c g))</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-empty?1548">
-    <span class="name" name="heap-empty?">heap-empty?</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Returns #t if <var>heap</var> is empty, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-size1549">
-    <span class="name" name="heap-size">heap-size</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Returns the number of entries of <var>heap</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="intersperse1594">
+    <span class="name" name="intersperse">intersperse</span>
+  </a> <span class="args">item list</span></div>
+<div class="desc">Inserts <var>item</var> between elements in the <var>list</var>.
+<p /><pre class="snipet"><span class="snipet-code">(intersperse '+ '(1 2 3))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(1 + 2 + 3)</span></pre>
+<pre class="snipet"><span class="snipet-code">(intersperse '+ '(1))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(1)</span></pre>
+<pre class="snipet"><span class="snipet-code">(intersperse '+ '())</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">()</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="slices1595">
+    <span class="name" name="slices">slices</span>
+  </a> <span class="args">list k :optional fill? padding</span></div>
+<div class="desc">Splits <var>list</var> into the sublists (slices) where the length of each
+slice is <var>k</var>. If the length of <var>list</var> is not multiple of <var>k</var>, the
+last slice is dealt in the same way as <code>take*</code>; this is, it is shorter than
+<var>k</var> by default, or added <var>padding</var> if <var>fill?</var> is true.
+<p /><pre class="snipet"><span class="snipet-code">(slices '(a b c d e f g) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((a b c) (d e f) (g))</span></pre>
+<pre class="snipet"><span class="snipet-code">(slices '(a b c d e f g) 3 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">((a b c) (d e f) (g z z))</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="split-at*1596">
+    <span class="name" name="split-at*">split-at*</span>
+  </a>
+ <span class="args">list k :optional (fill? #t) (padding #f)</span></div>
+<div class="desc">Splits the list <var>list</var> at index <var>k</var>. This is more tolerant version
+of <code>split-at</code> defined in SRFI-1 library. Returns the results of
+<code>take*</code> and <code>drop*</code>.
+<p /><pre class="snipet"><span class="snipet-code">(split-at* '(a b c d) 6 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d z z) and ()</span></pre>
+</div>
 <p />
-<div class="define"><span class="define-category">Function</span><a name="heap-compare1550">
-    <span class="name" name="heap-compare">heap-compare</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Returns comparison procedure of <var>heap</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-entry?1551">
-    <span class="name" name="heap-entry?">heap-entry?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is a heap entry, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-entry-key1552">
-    <span class="name" name="heap-entry-key">heap-entry-key</span>
-  </a> <span class="args">entry</span></div>
-<div class="define"><span class="define-category">Function</span><a name="heap-entry-value1553">
-    <span class="name" name="heap-entry-value">heap-entry-value</span>
-  </a> <span class="args">entry</span></div>
-<div class="desc">Returns key and value of <var>entry</var>, respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-entry-value-set!1554">
-    <span class="name" name="heap-entry-value-set!">heap-entry-value-set!</span>
-  </a> <span class="args">entry value</span></div>
-<div class="desc">Sets <var>value</var> as <var>entry</var>'s value.</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1555"><span class="section-number">7.15.1</span>Heap operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-min1556">
-    <span class="name" name="heap-min">heap-min</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Returns the smallest entry of <var>heap</var>. If <var>heap</var> is empty,
-then #f is returned.
-<p />To get the key and value from the returning entry, use <code>heap-entry-key</code>
-and <code>heap-entry-value</code> procedures, respectively.
+<div class="define"><span class="define-category">Function</span><a name="take*1597">
+    <span class="name" name="take*">take*</span>
+  </a> <span class="args">list k :optional (fill? #f) (padding #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="drop*1598">
+    <span class="name" name="drop*">drop*</span>
+  </a> <span class="args">list k</span></div>
+<div class="desc">More tolerant version of <code>take</code> and <code>drop</code> defined in SRFI-1
+library. These won't raise an error when <var>k</var> is larger than the size of the
+given list.
+<p />If the list is shorter than <var>k</var> elements, <code>take*</code> returns a copy of
+<var>list</var> by default. If <var>fill?</var> is true, <var>padding</var> is added to the
+result to make its length <var>k</var>.
+<p />On the other hand, <code>drop*</code> just returns as empty list when the input list
+is shorter than <var>k</var> elements.
+<p /><pre class="snipet"><span class="snipet-code">(take* '(a b c d) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c)</span></pre>
+<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d)</span></pre>
+<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6 #t)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d #f #f)</span></pre>
+<pre class="snipet"><span class="snipet-code">(take* '(a b c d) 6 #t 'z)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(a b c d z z)</span></pre>
+<pre class="snipet"><span class="snipet-code">(drop* '(a b c d) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(d)</span></pre>
+<pre class="snipet"><span class="snipet-code">(drop* '(a b c d) 5)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">()</span></pre>
+<p /></div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="cond-list1599">
+    <span class="name" name="cond-list">cond-list</span>
+  </a> <span class="args">clause ...</span></div>
+<div class="desc">Construct a list by conditionally adding entries. Each <var>clause</var> must
+have a test and expressions. When its test yields true, then result of
+associated expression is used to construct the resulting list. When the test 
+yields false, nothing is inserted.
+<p /><var>Clause</var> must either one of the following form:
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <var>(test expr ...)</var>
+      </dt>
+      <dd class="dl-item-desc">	<var>Test</var> is evaluated, and when it is true, <var>expr ...</var> are
+	evaluated, and the return value becomes a part of the result. If no
+	<var>expr</var> is given, the result of test is used if it is not false.
+</dd>
+      <dt class="dl-item-title">
+        <var>(test =&gt; proc)</var>
+      </dt>
+      <dd class="dl-item-desc">	<var>Test</var> is evaluated, and if it is true, <var>proc</var> is called with
+	the value, and the return value is used to construct the result
+</dd>
+      <dt class="dl-item-title">
+        <var>(test   expr ...)</var>
+      </dt>
+      <dd class="dl-item-desc">	Like <code>(test expr ...)</code>, except that the result of the last
+	<var>expr</var> must be a list, and it is spliced into the resulting list,
+	like unquote-splicing.
+</dd>
+      <dt class="dl-item-title">
+        <var>(test =&gt;   proc)</var>
+      </dt>
+      <dd class="dl-item-desc">	Like <code>(test =&gt; proc)</code>, except that the result of the last
+	<var>proc</var> must be a list, and it is spliced into the resulting list,
+	like unquote-splicing.
+</dd>
+    </dl>
+  </div>
+<p /><pre class="codeblock">(let ((alist '((x 3) (y -1) (z 6))))
+ (cond-list ((assoc 'x alist) 'have-x)
+            ((assoc 'w alist) 'have-w)
+            ((assoc 'z alist) =&gt; cadr)))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(have-x 6)</span></pre>
+<p /><pre class="codeblock">(let ((x 2) (y #f) (z 5))
+  (cond-list (x   `(:x ,x))
+             (y   `(:y ,y))
+             (z   `(:z ,z))))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(:x 2 :z 5)</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-set!1557">
-    <span class="name" name="heap-set!">heap-set!</span>
-  </a> <span class="args">heap key value</span></div>
-<div class="desc">Inserts an entry whose key is <var>key</var>, value is <var>value</var> and
-returns the entry.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-extract-min!1558">
-    <span class="name" name="heap-extract-min!">heap-extract-min!</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Removes smallest entry and returns it. It is an error if <var>heap</var>
-is empty.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-delete!1559">
-    <span class="name" name="heap-delete!">heap-delete!</span>
-  </a> <span class="args">heap entry/key</span></div>
-<div class="desc">Removes target <var>entry/key</var> from <var>heap</var> and returns the
-removed entry.
-<p />If <var>entry/key</var> is an entry then this operation is done in amortized
-O(log n). If not, then O(n).
-<p />NOTE: If <var>entry/key</var> is an entry, then it must exist in <var>heap</var>.
-However the procedure won't check so it is user's responsibility to
-make sure.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-delete!1560">
-    <span class="name" name="heap-delete!">heap-delete!</span>
-  </a> <span class="args">heap entry/key new-key</span></div>
-<div class="desc">Change the key value of given <var>entry/key</var> to <var>new-key</var>. The
-<var>new-key</var> must be smaller than current key in sense of the returning
-value of <code>heap-compare</code>, otherwise it's an error.
-<p />If <var>entry/key</var> is an entry then this operation is done in amortized
-O(log n). If not, then O(n).
-<p />NOTE: If <var>entry/key</var> is an entry, then it must exist in <var>heap</var>.
-However the procedure won't check so it is user's responsibility to
-make sure.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-clear!1561">
-    <span class="name" name="heap-clear!">heap-clear!</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Clears all entry of <var>heap</var> and returns <var>heap</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-merge!1562">
-    <span class="name" name="heap-merge!">heap-merge!</span>
-  </a> <span class="args">heap1 heap2</span></div>
-<div class="desc">Merge <var>heap2</var> into <var>heap1</var> and empty it. Then returns <var>heap1</var>.
-<p />This procedure changes both heaps destructively, if you want to kepp
-<var>heap2</var> intact, use <code>merge-heaps</code> or <code>merge-heaps!</code> instead.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="merge-heaps1563">
-    <span class="name" name="merge-heaps">merge-heaps</span>
-  </a> <span class="args">heap1 heap2 more ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="merge-heaps!1564">
-    <span class="name" name="merge-heaps!">merge-heaps!</span>
-  </a> <span class="args">heap1 heap2 more ...</span></div>
-<div class="desc">Merges heap and returns merged heap.
-<p />If the first procedure is used then the returning heap is freshly created
-according to <var>heap1</var>. The second form merged the rest of heaps to
-<var>heap1</var>.
-<p />The running time of these procedures is O(nm) where m is number of heaps to
-merge.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-ref1565">
-    <span class="name" name="heap-ref">heap-ref</span>
-  </a> <span class="args">heap key :optional (fallback #f)</span></div>
-<div class="desc">Returns entry value associated with <var>key</var> in <var>heap</var>. If there
-is no entry, then <var>fallback</var> is returned.
-<p />The running time of this procedures is O(n).
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-update!1566">
-    <span class="name" name="heap-update!">heap-update!</span>
-  </a> <span class="args">heap key proc default</span></div>
-<div class="desc"><var>proc</var> must be a procedure accepts one argument.
-<p />Updates the entry value associated to <var>key</var> with the returned value of 
-<var>proc</var>. If the entry doesn't exist then <var>default</var> will be passed to
-the <var>proc</var>.
-<p />The running time of this procedures is O(n).
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-search1567">
-    <span class="name" name="heap-search">heap-search</span>
-  </a> <span class="args">heap key :optional finish</span></div>
-<div class="desc">Searches the entry associated to <var>key</var> and returns it. If there is
-no entry then #f is returned.
-<p />If optional argument <var>finish</var> given then it must be a procedure which
-takes one argument. The procedure is called when search process is finished.
-The given argument is either an entry of #f.
-</div>
-</section></section>
+</section>
   <div class="prev-next">
     <a class="prev" href="section714.html">(util heap) - Heap</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section716.html">(util list) - Extra list utility library</a>
+    <a class="next" href="section716.html">(math) - Mathematics library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-11-24T08:30:47+0100</i></div>
   </div>
 </html>

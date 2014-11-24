@@ -6,246 +6,161 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section723.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="prev" href="section723.html">(util queue) - Queue</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section725.html">(rfc :5322) - Internet message format library</a>
+    <a class="next" href="section725.html">(rfc base64) - Base 64 encode and decode library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.queue"><span class="section-number">7.24</span>(util queue) - Queue</a>
+    <a class="section.anchor" name="rfc.5322"><span class="section-number">7.24</span>(rfc :5322) - Internet message format library</a>
   </h3>
-<p />
-<div class="define">
+<p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util queue)1729">
-      <span class="name" name="(util queue)">(util queue)</span>
+    <a name="(rfc :5322)1783">
+      <span class="name" name="(rfc :5322)">(rfc :5322)</span>
     </a>
   </div>
-<div class="desc">This library provides queue (FIFO) data structure and its operations.
-<p />You can create a simple queue, which is not thread-safe, or an MT queue, a
-thread-safe queue. Basic queue operations work on both type of queues. When
-a mtqueue is passed to the procedures listed in this section, each operation
-is done in atomic way, unless otherwise noted.
-<p />There are also a set of procedures for mtqueues that can be used for thread
-synchronisation; for example, you can let the consumer thread block if an
-mtqueue is empty, and/or the producer thread block if the number of items in
-the mtqueue reaches a specified limit. Using these procedures allows the
-program to use an mtqueue as a <var>channel</var>.
-<p />The simple queue API is a super set of SLIB's queue implementation.
-<p />NOTE: <a href="section710.html#util.deque">(util deque)</a> is used as underlying library.
+<div class="desc">This library provides the procedures for internet message format defined
+in RFC5322(<a href="http://tools.ietf.org/html/rfc5322">RFC 5322</a>).
+</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1784"><span class="section-number">7.24.1</span>Parsing message headers</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-read-headers1785">
+    <span class="name" name="rfc5322-read-headers">rfc5322-read-headers</span>
+  </a>
+ <span class="args">input-port :key (strict? #f) reader</span></div>
+<div class="desc"><var>input-port</var> must be input port and will be passed to <var>reader</var>.
+<p />Reads RFC5322 format message from the given port until it reaches the end of the
+message header and returns a list of the following format;
+<p /><pre class="snipet"><span class="snipet-code">((name body) ...)</span></pre>
+<p /><var>name ...</var> are the field names and <var>body ...</var> are the
+correspoinding field body. Both are as string. Field names are converted to
+lower-case characters.
+<p />The keyword argument <var>strict?</var> switches the behaviour when the procedure
+encounter EOF. If it's #f, then it simply ignore the field and return the
+composed list. And if it's #t, it raises <code>&amp;rfc5322-parse-error</code>.
+<p />The keyword argument <var>reader</var> reads a line from given port. The default
+is <code>rfc5322-line-reader</code> and it treats both LF and CRLF eof style. If you
+want to read from binary port, you need to pass own reader.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-line-reader1786">
+    <span class="name" name="rfc5322-line-reader">rfc5322-line-reader</span>
+  </a> <span class="args">input-port</span></div>
+<div class="desc"><var>input-port</var> must be textual input port.
+<p />Reads a line from given port. If the last character is CR chop it off.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-header-ref1787">
+    <span class="name" name="rfc5322-header-ref">rfc5322-header-ref</span>
+  </a>
+ <span class="args">header-list field-name . maybe-default</span></div>
+<div class="desc">An utility procedure to get a specific field from the parsed header list, which is returned by <code>rfc5322-read-headers</code>.
+<p /><var>field-name</var> specifies the field name in lowercase string. If the field with
+given name is in <var>header-list</var>, the procedure returns its value in a string.
+Otherwise, if default is given, it is returned, and if not, #f is returned. 
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1788"><span class="section-number">7.24.2</span>Basic field parsers</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-next-token1789">
+    <span class="name" name="rfc5322-next-token">rfc5322-next-token</span>
+  </a>
+ <span class="args">input-port :optional tokenizer-spec</span></div>
+<div class="desc"><var>input-port</var> must be textual input port.
+<p />A basic tokenizer. First it skips whitespaces and/or comments (CFWS) from 
+<var>input-port</var>, if any. Then reads one token according to 
+var{tokenizer-specs}. If <var>input-port</var> reaches EOF before any token is read,
+EOF is returned.
+<p /><var>tokenizer-specs</var> is a list of tokenizer spec. which is a cons of a char-set
+and a procedure.
+<p />After skipping CFWS, the procedure peeks a character at the head of
+<var>input-port</var>, and checks it against the char-sets in <var>tokenizer-specs</var>
+one by one. If a char-set that contains the character belongs to is found, then
+a token is retrieved with calling the procedure with <var>input-port</var> to read a
+token.
+<p />If the head character doesn’t match any char-sets, the character is taken from
+<var>input-port</var> and returned.
+<p />The default <var>tokenizer-specs</var> is as follows:
+ 	
+<pre class="snipet"><span class="snipet-code">(list (cons (string-&gt;char-set ":") rfc5322-quoted-string)
+      (cons *rfc5322-atext-chars* rfc5322-dot-atom))
+</span></pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-field-&gt;tokens1790">
+    <span class="name" name="rfc5322-field-&gt;tokens">rfc5322-field-&gt;tokens</span>
+  </a>
+ <span class="args">field :optional tokenizer-spec</span></div>
+<div class="desc">A convenience procedure. Creates a string input port from given
+<var>field</var> and calls <code>rfc5322-next-token</code> repeatedly on it until it
+consumes all input, and returns a list of tokens.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-skip-cfws1791">
+    <span class="name" name="rfc5322-skip-cfws">rfc5322-skip-cfws</span>
+  </a> <span class="args">input-port</span></div>
+<div class="desc">Consumes whitespace characters and/or any comments from <var>input-port</var>
+and returns a non comment and whitespace character. The returned character
+remains in <var>input-port</var>.
 </div>
 <p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<queue&gt;1730">
-      <span class="name" name="<queue&gt;">&lt;queue&gt;</span>
+    <span class="define-category">Variable</span>
+    <a name="*rfc5322-atext-chars*1792">
+      <span class="name" name="*rfc5322-atext-chars*">*rfc5322-atext-chars*</span>
     </a>
   </div>
-<div class="desc">A class of simple queue. </div>
+<div class="desc">A character set which is defined RFC 5322 section 3.2.3 Atom.</div>
 <p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<mtqueue&gt;1731">
-      <span class="name" name="<mtqueue&gt;">&lt;mtqueue&gt;</span>
+    <span class="define-category">Variable</span>
+    <a name="*rfc5322-standard-tokenizers*1793">
+      <span class="name" name="*rfc5322-standard-tokenizers*">*rfc5322-standard-tokenizers*</span>
     </a>
   </div>
-<div class="desc">A class of mtqueue. Inherits <code>&lt;queue&gt;</code>.</div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="make-queue1732">
-      <span class="name" name="make-queue">make-queue</span>
-    </a>
-  </div>
-<div class="desc">Creates and return an empty simple queue.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-mtqueue1733">
-    <span class="name" name="make-mtqueue">make-mtqueue</span>
-  </a> <span class="args">:key max-length</span></div>
-<div class="desc">Creates and return an empty mtqueue.
-<p />The keyword argument <var>max-length</var> specifies the maximum entry count of
-the queue. Negative number indicates unlimited number of entry. If the given
-number is zero then the queue cannot hold any item.
+<div class="desc">Default tokenizer.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-dot-atom1794">
+    <span class="name" name="rfc5322-dot-atom">rfc5322-dot-atom</span>
+  </a> <span class="args">input-port</span></div>
+<div class="define"><span class="define-category">Function</span><a name="rfc5322-quoted-string1795">
+    <span class="name" name="rfc5322-quoted-string">rfc5322-quoted-string</span>
+  </a> <span class="args">input-port</span></div>
+<div class="desc">Tokenizers for <code>dot-atom</code> and <code>quoted-string</code> respectively.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1796"><span class="section-number">7.24.3</span>Specific field parsers</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-parse-date1797">
+    <span class="name" name="rfc5322-parse-date">rfc5322-parse-date</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Takes RFC-5322 type date string and returns eight values:
+<p /><code>year, month, day-of-month, hour, minute, second, time-zone, day-of-week.</code>
+<p /><var>time-zone</var> is an offset from UT in minutes. <var>day-of-week</var> is a day from
+sunday, and may be #f if that information is not available. <var>month</var> is an
+integer between 1 and 12, inclusive. If the <var>string</var> is not parsable, all
+the elements are #f. 
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue?1734">
-    <span class="name" name="queue?">queue?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is a queue (either a simple queue or an mtqueue).</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue?1735">
-    <span class="name" name="mtqueue?">mtqueue?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is an mtqueue.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue-empty?1736">
-    <span class="name" name="queue-empty?">queue-empty?</span>
-  </a> <span class="args">queue</span></div>
-<div class="desc">Returns #t if <var>queue</var> is an empty queue.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue-length1737">
-    <span class="name" name="queue-length">queue-length</span>
-  </a> <span class="args">queue</span></div>
-<div class="desc">Returns the number of the items in the queue.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue-max-length1738">
-    <span class="name" name="mtqueue-max-length">mtqueue-max-length</span>
-  </a> <span class="args">mtqueue</span></div>
-<div class="desc">Returns the maximum number of items <var>mtqueue</var> can hold. 
-#f indicates unlimited.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue-room1739">
-    <span class="name" name="mtqueue-room">mtqueue-room</span>
-  </a> <span class="args">mtqueue</span></div>
-<div class="desc">Returns the number of elements <var>mtqueue</var> can accept at this moment
-before it hits its maximum length. If the queue has unlimited capacity then
-the procedure returns <code>+inf.0</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="copy-queue1740">
-    <span class="name" name="copy-queue">copy-queue</span>
-  </a> <span class="args">queue</span></div>
-<div class="desc">Returns a copy of <var>queue</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="enqueue!1741">
-    <span class="name" name="enqueue!">enqueue!</span>
-  </a> <span class="args">queue obj more-objs ...</span></div>
-<div class="desc">Adds <var>obj</var> to the end of  <var>queue</var>. You may give more than
-one object, and each of them are enqueued in order.
-<p />If <var>queue</var> is an mtqueue, all the objects are enqueued atomically; no
-other objects from other threads can be inserted between the objects given
-to a single <code>enqueue!</code> call. Besides, if the value of the result of
-<code>mtqueue-max-length</code> is positive, and adding <var>objs</var> makes the
-number of element in <var>queue</var> exceeds it, an error is raised and 
-<var>queue</var> won't be modified. (If the maximum length is zero, this procedure
-always fail. Use <code>enqueue/wait!</code> below.)
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue-push!1742">
-    <span class="name" name="queue-push!">queue-push!</span>
-  </a> <span class="args">queue obj more-objs ...</span></div>
-<div class="desc">Adds <var>obj</var> to in front of <var>queue</var>. You may give more than
-one object, and each of them are pushed in order.
-<p />Like <code>enqueue!</code>, when <var>queue</var> is an mtqueue, all objects are added
-atomically, and the value of max length is checked. See <code>enqueue!</code> above
-for more detail.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="enqueue-unique!1743">
-    <span class="name" name="enqueue-unique!">enqueue-unique!</span>
+<p />
+</section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1798"><span class="section-number">7.24.4</span>Message constructors</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-write-headers1799">
+    <span class="name" name="rfc5322-write-headers">rfc5322-write-headers</span>
   </a>
- <span class="args">queue eq-proc obj more-objs ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="queue-push-unique!1744">
-    <span class="name" name="queue-push-unique!">queue-push-unique!</span>
-  </a>
- <span class="args">queue eq-proc obj more-objs ...</span></div>
-<div class="desc">Like <code>enqueue!</code> and <code>queue-push!</code>, respectively, except that
-these don't modify <var>queue</var> if it already contains <var>objs</var> (elements are
-compared by two-argument procedure <var>eq-proc</var>).
-<p />When <var>queue</var> is an mtqueue, all objects are added atomically, and the max
-length is checked. See <code>enqueue!</code> above for the detail.
+ <span class="args">headers :key (output (current-output-port))
+ (check :error) (continue #f)</span></div>
+<div class="desc">Writes the given <var>header</var> to the port <var>output</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="dequeue!1745">
-    <span class="name" name="dequeue!">dequeue!</span>
-  </a> <span class="args">queue :optional fallback</span></div>
-<div class="define"><span class="define-category">Function</span><a name="queue-pop!1746">
-    <span class="name" name="queue-pop!">queue-pop!</span>
-  </a> <span class="args">queue :optional fallback</span></div>
-<div class="desc">Take one object from the front of <var>queue</var> and return it. Both 
-function work the same, but <code>queue-pop!</code> may be used to emphasize it
-works with <code>queue-push!</code>.
-<p />If <var>queue</var> is empty, <var>fallback</var> is returned if give, otherwise an 
-error is raised.
-<p />If <var>queue</var> is mtqueue and its max length is zero, then the queue is
-always empty. Use <code>dequeue/wait!</code> to use such a queue as a 
-synchronisation device.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="dequeue-all!1747">
-    <span class="name" name="dequeue-all!">dequeue-all!</span>
-  </a> <span class="args">queue</span></div>
-<div class="desc">Returns the whole content of <var>queue</var> by a list, with emptying 
-<var>queue</var>. If <var>queue</var> is empty, returns an empty list. See also
-<code>queue-&gt;list</code> below.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue-front1748">
-    <span class="name" name="queue-front">queue-front</span>
-  </a> <span class="args">queue :optional fallback</span></div>
-<div class="define"><span class="define-category">Function</span><a name="queue-rear1749">
-    <span class="name" name="queue-rear">queue-rear</span>
-  </a> <span class="args">queue :optional fallback</span></div>
-<div class="desc">Peek the head or the tail of <var>queue</var> and return the object, 
-respectively.
-<p />If <var>queue</var> is empty, <var>fallback</var> is returned if give, otherwise an 
-error is raised.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="list-&gt;queue1750">
-    <span class="name" name="list-&gt;queue">list-&gt;queue</span>
-  </a> <span class="args">list :optional class :rest initargs</span></div>
-<div class="desc">Returns a new queue which content is the elements in <var>list</var>, in
-the given order.
-<p />By default the created queue is a simple queue, but you can create mtqueue
-or instance of other subclass <code>&lt;queue&gt;</code> by giving the class to the
-optional <var>class</var> arguments. The optional <var>initargs</var> arguments are
-passed to the constructor of <var>class</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="queue-&gt;list1751">
-    <span class="name" name="queue-&gt;list">queue-&gt;list</span>
-  </a> <span class="args">queue</span></div>
-<div class="desc">Returns a list whose content is the items in <var>queue</var> in order.
-Unlike <code>dequeue-all!</code>, the content of <var>queue</var> remains intact.
-The returning list is a copy of the content. So modifying the list won't
-affect <var>queue</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="find-in-queue1752">
-    <span class="name" name="find-in-queue">find-in-queue</span>
-  </a> <span class="args">pred queue</span></div>
-<div class="desc">Returns the first item in <var>queue</var> that satisfies a predicate
-<var>pred</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="any-in-queue1753">
-    <span class="name" name="any-in-queue">any-in-queue</span>
-  </a> <span class="args">pred queue</span></div>
-<div class="desc">Apply <var>pred</var> on each item in <var>queue</var> until it evaluates true,
-and returns that true value. If no item satisfies <var>pred</var>, #f is returned.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="every-in-queue1754">
-    <span class="name" name="every-in-queue">every-in-queue</span>
-  </a> <span class="args">pred queue</span></div>
-<div class="desc">Apply <var>pred</var> on each item in <var>queue</var>. If <var>pred</var> returns #f,
-stops iteration and returns #f immediately. Otherwise, returns the result of
-<var>pred</var> on the last item of <var>queue</var>. If the queue is empty, #t is
-returned.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="remove-from-queue!1755">
-    <span class="name" name="remove-from-queue!">remove-from-queue!</span>
-  </a> <span class="args">pred queue</span></div>
-<div class="desc">Removes all items in <var>queue</var> that satisfies <var>pred</var>. Returns
-#t if any item is removed. Otherwise #f.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="enqueue/wait!1756">
-    <span class="name" name="enqueue/wait!">enqueue/wait!</span>
-  </a>
- <span class="args">mtqueue obj :optional timeout timeout-val</span></div>
-<div class="define"><span class="define-category">Function</span><a name="queue-push/wait!1757">
-    <span class="name" name="queue-push/wait!">queue-push/wait!</span>
-  </a>
- <span class="args">mtqueue obj :optional timeout timeout-val</span></div>
-<div class="define"><span class="define-category">Function</span><a name="dequeue/wait!1758">
-    <span class="name" name="dequeue/wait!">dequeue/wait!</span>
-  </a>
- <span class="args">mtqueue :optional timeout timeout-val</span></div>
-<div class="define"><span class="define-category">Function</span><a name="queue-pop/wait!1759">
-    <span class="name" name="queue-pop/wait!">queue-pop/wait!</span>
-  </a>
- <span class="args">mtqueue :optional timeout timeout-val</span></div>
-<div class="desc">These synchronising variants work on an mtqueue and make the caller
-thread block when the mtqueue has reached its maximum length (for
-<code>enqueue/wait!</code> and <var>queue-push/wait!</var>), or the mtqueue is empty
-(for <code>dequeue/wait!</code> and <var>queue-pop/wait!</var>). The blocked caller
-thread is unblocked either the blocking condition is resolved, or the
-timeout condition is met.
-<p />The optional <var>timeout</var> argument specifies the timeout condition. If it
-is #f, those procedure wait indefinitely. If it is a real number, they wait
-at least the given number of seconds.
-<p />In case the call is blocked then timed out, the value of <var>timeout-val</var> is
-returned, which default value is #t.
-<p />When <code>enqueue/wait!</code> and <code>queue-push/wait!</code> succeeds without hitting
-timeout, they return #t.
+<p /><div class="define"><span class="define-category">Function</span><a name="date-&gt;rfc5322-date1800">
+    <span class="name" name="date-&gt;rfc5322-date">date-&gt;rfc5322-date</span>
+  </a> <span class="args">date</span></div>
+<div class="desc"><var>date</var> must be SRFI-19 date.
+<p />Returns RFC 5322 date formatted string.
 </div>
 
-</section>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section723.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="prev" href="section723.html">(util queue) - Queue</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section725.html">(rfc :5322) - Internet message format library</a>
+    <a class="next" href="section725.html">(rfc base64) - Base 64 encode and decode library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-11-24T08:30:47+0100</i></div>
   </div>
 </html>

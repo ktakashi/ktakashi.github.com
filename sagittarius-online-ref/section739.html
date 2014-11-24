@@ -6,159 +6,130 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section738.html">RPC support framework</a>
+    <a class="prev" href="section738.html">(rpc json) - JSON RPC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section740.html">(text csv) - Comma separated values parser library</a>
+    <a class="next" href="section740.html">(text html-lite) - Simple HTML document builder library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="lib.rpc.json"><span class="section-number">7.39</span>(rpc json) - JSON RPC library</a>
+    <a class="section.anchor" name="text.csv"><span class="section-number">7.39</span>(text csv) - Comma separated values parser library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rpc json)1975">
-      <span class="name" name="(rpc json)">(rpc json)</span>
+    <a name="(text csv)2024">
+      <span class="name" name="(text csv)">(text csv)</span>
     </a>
   </div>
-<div class="desc">This library provides procedures handling 
-<a href="http://www.jsonrpc.org/specification">JSON RPC 2.0</a>.
-<p />This library doesn't provide transport layer. To send request and receive
-response, use <a href="section738.html#utils.rpc.transport.http">Http transport</a>.
-<p />This library uses <a href="section86.html#ported.json">JSON parser library</a> and its
-JSON representation.
-</div>
-<p />Following piece of code describes how to use;
-<pre class="codeblock">(import (rnrs) (rpc json) (rpc transport http))
-<p />(define (json-rpc-send&amp;request url method param)
-  (let ((request (make-json-request method :param param)))
-    (let-values (((status header response) (rpc-http-request url request)))
-      ;; rpc-http-request unmarshalls only when HTTP status starts with "2"
-      ;; for this example we don't check it.
-      (json-response-result response))))
-<p />(json-rpc-send&amp;request "http://localhost/json-rpc" "sample" "parameter")
-;; -&gt; result of method execution
-</pre>
-<p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<json-request&gt;1976">
-      <span class="name" name="<json-request&gt;">&lt;json-request&gt;</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<json-response&gt;1977">
-      <span class="name" name="<json-response&gt;">&lt;json-response&gt;</span>
-    </a>
-  </div>
-<div class="desc">These classes represents JSON RPC request and response respectively.
-<p />The class instance should be created by <code>make-json-request</code>,
-<code>json-string-&gt;json-request</code> or <code>json-string-&gt;json-response</code>. Users
-should not create an instance directly using <code>make</code>.
+<div class="desc">This library provides comma separated values parser and write procedures.
+The implementation conforms RFC 4180.
 </div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1978"><span class="section-number">7.39.1</span>Predicates</a>
+    <a class="section.anchor" name="G2025"><span class="section-number">7.39.1</span>High level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request?1979">
-    <span class="name" name="json-request?">json-request?</span>
+<p />The high level APIs are implemented as object oriented style. So we have CSV
+object and its accessors.
+<p /><div class="define"><span class="define-category">Function</span><a name="csv?2026">
+    <span class="name" name="csv?">csv?</span>
   </a> <span class="args">object</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response?1980">
-    <span class="name" name="json-response?">json-response?</span>
-  </a> <span class="args">object</span></div>
-<div class="desc">Returns #t if the given <var>object</var> is an instance of 
-<code>&lt;json-request&gt;</code> and <code>&lt;json-response&gt;</code> respectively.
+<div class="desc">Returns #t if <var>object</var> is csv object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="csv-header2027">
+    <span class="name" name="csv-header">csv-header</span>
+  </a> <span class="args">(csv &lt;csv&gt;)</span></div>
+<div class="desc">Retrieves CSV header from given CSV object <var>csv</var> if it has, otherwise
+'().
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1981"><span class="section-number">7.39.2</span>Constructors</a>
+<p /><div class="define"><span class="define-category">Generic</span><a name="csv-records2028">
+    <span class="name" name="csv-records">csv-records</span>
+  </a> <span class="args">(csv &lt;csv&gt;)</span></div>
+<div class="desc">Retrieves CSV records from given CSV object <var>csv</var> if it has, otherwise
+'().
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="csv-read2029">
+    <span class="name" name="csv-read">csv-read</span>
+  </a> <span class="args">(port &lt;port&gt;) . option</span>
+<div class="define"><span class="define-category">Generic</span><a name="csv-read2030">
+    <span class="name" name="csv-read">csv-read</span>
+  </a> <span class="args">(string &lt;string&gt;) . option</span>
+<div class="desc">Reads CSV data from given <var>port</var> and returns csv object.
+<p />If the second form is called, the procedure opens string input port from given
+<var>string</var> and passes it to the first form.
+<p />The <var>option</var> will be passed to <code>csv-&gt;list</code> described below.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="csv-write2031">
+    <span class="name" name="csv-write">csv-write</span>
+  </a>
+ <span class="args">(csv &lt;csv&gt;) :optional (out (current-output-port))</span></div>
+<div class="desc">Writes given CSV object <var>csv</var> to the output port <var>port</var>.</div>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G2032"><span class="section-number">7.39.2</span>Middle level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-json-request1982">
-    <span class="name" name="make-json-request">make-json-request</span>
-  </a> <span class="args">method :key (params '()) id</span></div>
-<div class="desc">Creates a JSON RPC request.
-<p /><var>method</var> must be a symbol or string represents method name to be invoked.
-<p />The keyword argument <var>params</var> is the <code>params</code> field of the JSON
-RPC protocol.
-<p />The keyword argument <var>id</var> is the <code>id</code> field of the JSON RPC protocol.
-If this is not specified then a value generated by UUID v4 will be used.
+<p /><div class="define"><span class="define-category">Function</span><a name="csv-&gt;list2033">
+    <span class="name" name="csv-&gt;list">csv-&gt;list</span>
+  </a>
+ <span class="args">port :optional (first-line-is-header? #f)</span></div>
+<div class="desc">Reads CSV data from given input port <var>port</var> and returns alist
+representing CSV data.
+<p />If optional argument <var>first-line-is-header?</var> is #t, then the procedure reads
+the first line as header line.
+<p />The returning alist is following format;
+<p /><pre class="codeblock">alist  := (header{0,1} record*)
+header := (:header value*)
+record := (:record value*)
+value  := string
+</pre>
+<p />Note: the value returning from <code>csv-records</code> or <code>csv-header</code> do not
+have meta values <code>:record</code> and <code>:header</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-string-&gt;json-request1983">
-    <span class="name" name="json-string-&gt;json-request">json-string-&gt;json-request</span>
-  </a> <span class="args">json</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-string-&gt;json-response1984">
-    <span class="name" name="json-string-&gt;json-response">json-string-&gt;json-response</span>
-  </a> <span class="args">json</span></div>
-<div class="desc">Creates JSON RPC request and response from given JSON string <var>json</var>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1985"><span class="section-number">7.39.3</span>Accessors</a>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G2034"><span class="section-number">7.39.3</span>Low level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request-method1986">
-    <span class="name" name="json-request-method">json-request-method</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-request-params1987">
-    <span class="name" name="json-request-params">json-request-params</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-request-id1988">
-    <span class="name" name="json-request-id">json-request-id</span>
-  </a> <span class="args">json-request</span></div>
-<div class="desc">Retrieves JSON RPC request's method, params and id respectively from given
-json request object <var>json-request</var>.
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<csv&gt;2035">
+      <span class="name" name="<csv&gt;">&lt;csv&gt;</span>
+    </a>
+  </div>
+<div class="desc">The class representing CSV. If you need to create empty CSV object, you
+can do like following code;
+<p /><pre class="snipet"><span class="snipet-code">(make &lt;csv&gt;)</span></pre>.
+<p />Make sure, you import <code>(clos user)</code> library.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-response-result1989">
-    <span class="name" name="json-response-result">json-response-result</span>
-  </a> <span class="args">json-response</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response-id1990">
-    <span class="name" name="json-response-id">json-response-id</span>
-  </a> <span class="args">json-response</span></div>
-<div class="desc">Retrieves JSON RPC response's result and id respectively from given
-json response object <var>json-response</var>.
+<p /><div class="define"><span class="define-category">Generic</span><a name="add-record!2036">
+    <span class="name" name="add-record!">add-record!</span>
+  </a> <span class="args">(csv &lt;csv&gt;) (list &lt;list&gt;)</span></div>
+<div class="desc">Adds a CSV representing record <var>list</var> to given CSV object <var>csv</var>.
+<p />The record must have <code>:record</code> keyword in the first element of the list.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="set-header!2037">
+    <span class="name" name="set-header!">set-header!</span>
+  </a> <span class="args">(csv &lt;csv&gt;) (list &lt;list&gt;)</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="set-header!2038">
+    <span class="name" name="set-header!">set-header!</span>
+  </a> <span class="args">(csv &lt;csv&gt;) (string &lt;string&gt;)</span></div>
+<div class="desc">Sets a CSV header <var>list</var> to given CSV object <var>csv</var>.
+<p />If the second form is called, then first parse the string to CSV header and
+calls the first form with parsed CSV header.
+<p />The <var>list</var> must have <code>:header</code> keyword in the first element of the
+list.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="add-records!2039">
+    <span class="name" name="add-records!">add-records!</span>
+  </a> <span class="args">(csv &lt;csv&gt;) (list &lt;list&gt;)</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="add-records!2040">
+    <span class="name" name="add-records!">add-records!</span>
+  </a> <span class="args">(csv &lt;csv&gt;) (string &lt;string&gt;)</span></div>
+<div class="desc">Convenient procedures.
+<p />Adds given CSV records <var>list</var> to given CSV object <var>csv</var>.
+<p />If the second form is called, then first parse the given string to CSV
+representing list and call the first form.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1991"><span class="section-number">7.39.4</span>Converters</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request-&gt;json-string1992">
-    <span class="name" name="json-request-&gt;json-string">json-request-&gt;json-string</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response-&gt;json-string1993">
-    <span class="name" name="json-response-&gt;json-string">json-response-&gt;json-string</span>
-  </a> <span class="args">json-response</span></div>
-<div class="desc">Converts given <var>json-request</var> and <var>json-response</var> to JSON string.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1994"><span class="section-number">7.39.5</span>Implemented methods</a>
-  </h4>
-<p />Following methods are currently used only in <code>(rpc http transport)</code>.
-When we support other transport, this implementation may change.
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1995"><span class="section-number">7.39.5.1</span>Message methods</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-marshall-message1996">
-    <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Converts to given JSON RPC request object to UTF8 bytes.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-unmarshall-message1997">
-    <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
-  </a> <span class="args">(type (eql 'json)) body</span></div>
-<div class="desc">Converts to given UTF8 bytes to JSON RPC response object.</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1998"><span class="section-number">7.39.5.2</span>Transport methods</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type1999">
-    <span class="name" name="rpc-http-content-type">rpc-http-content-type</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Returns <code>application/json</code> content type header value</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type2000">
-    <span class="name" name="rpc-http-response-type">rpc-http-response-type</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Returns <code>json</code> symbol.</div>
-<p />
-</section></section></section>
+<p /></div></div>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section738.html">RPC support framework</a>
+    <a class="prev" href="section738.html">(rpc json) - JSON RPC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section740.html">(text csv) - Comma separated values parser library</a>
+    <a class="next" href="section740.html">(text html-lite) - Simple HTML document builder library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-11-24T08:30:47+0100</i></div>
   </div>
 </html>

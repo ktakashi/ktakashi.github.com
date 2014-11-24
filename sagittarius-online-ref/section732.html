@@ -6,294 +6,276 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section731.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="prev" href="section731.html">(rfc sftp) - SFTP library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section733.html">(rfc tls) - TLS protocol library</a>
+    <a class="next" href="section733.html">(rfc uri) - Parse and construct URIs</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.sftp"><span class="section-number">7.32</span>(rfc sftp) - SFTP library</a>
+    <a class="section.anchor" name="rfc.tls"><span class="section-number">7.32</span>(rfc tls) - TLS protocol library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="rfc sftp1829">
-      <span class="name" name="rfc sftp">rfc sftp</span>
+    <a name="(rfc tls)1880">
+      <span class="name" name="(rfc tls)">(rfc tls)</span>
     </a>
   </div>
-<div class="desc">This library provides SFTP programmatic operations.</div>
-<p />Following example code describes how to use in high level.
-<pre class="codeblock">(import (rfc sftp) (pp) (srfi :26))
-<p />(call-with-sftp-connection 
-  "localhost"    ;; hostname
-  "23"           ;; port number
-  (lambda (conn)
-    ;; read directory
-    (pp (sftp-readdir conn "."))
-    ;; only short names
-    (pp (sftp-readdir-as-filenames conn "."))
-    ;; only long names (usually POSIX 'ls -l' format)
-    (pp (sftp-readdir-as-longnames conn "."))
-<p />    ;; retrieve a file as a bytevector
-    (print (utf8-&gt;string (sftp-read! conn "reading/file" 
-                                    (sftp-binary-receiver))))
-    ;; store a file to local file directly
-    (sftp-read conn "/a/file/path"
-	(sftp-file-receiver "where/to/store" :options (file-options no-fail)))
-<p />    ;; upload a file
-    (let ((handle (sftp-open conn "boo" 
-                    (bitwise-ior +ssh-fxf-creat+ +ssh-fxf-write+))))
-     (call-with-input-file "a/local/file" (cut sftp-write! conn handle &lt;&gt;)))
-<p />    ;; rename a file
-    (sftp-rename! conn "boo" "foo")
-    ;; remove a file
-    (sftp-remove! conn "foo")
-    ;; create a directory
-    (sftp-mkdir! conn "boo")
-    ;; remove a directory
-    (sftp-rmdir! conn "boo")
-<p />    ;; create a symbolic link
-    (pp (sftp-symlink! conn "/tmp" "tmp"))
-    ;; get a actual path of symbolic link
-    (pp (sftp-readlink conn "tmp"))
-    ;; get a real path. (usually an absolute path)
-    (pp (sftp-realpath conn "../")))
-  :username "username" :password "password")
-</pre>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1830"><span class="section-number">7.32.1</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="call-with-sftp-connection1831">
-    <span class="name" name="call-with-sftp-connection">call-with-sftp-connection</span>
+<div class="desc">This library provides TLS protocol socket APIs.
+<p />CAUTION: This library is not well tested. So it may have security hole or
+incompatible behaviour. If you find such bugs, please let me know.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-client-tls-socket1881">
+    <span class="name" name="make-client-tls-socket">make-client-tls-socket</span>
   </a>
- <span class="args">server port proc . opts</span></div>
-<div class="desc"><var>server</var> and <var>port</var> must be string, indicating hostname,
-port number/service name respectively.
-<var>proc</var> must accept one argument.
-<p />Creates a SFTP connection, executes given <var>proc</var> with the connection
-and closes it after the execution.
-<p />The <var>opts</var> will be passed to <code>make-client-sftp-connection</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-open1832">
-    <span class="name" name="sftp-open">sftp-open</span>
-  </a> <span class="args">conn filename pflags</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection. 
-<var>filename</var> must be a string.
-<var>pflags</var> must be an exact integer which value must be the result of
-inclusive or of following values;
-<p /><div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-read+1833">
-      <span class="name" name="+ssh-fxf-read+">+ssh-fxf-read+</span>
-    </a>
-  </div>
-<div class="desc">Open the given <var>filename</var> read mode.</div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-write+1834">
-      <span class="name" name="+ssh-fxf-write+">+ssh-fxf-write+</span>
-    </a>
-  </div>
-<div class="desc">Open the given <var>filename</var> write mode.</div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-append+1835">
-      <span class="name" name="+ssh-fxf-append+">+ssh-fxf-append+</span>
-    </a>
-  </div>
-<div class="desc">Open the given <var>filename</var> append mode.</div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-creat+1836">
-      <span class="name" name="+ssh-fxf-creat+">+ssh-fxf-creat+</span>
-    </a>
-  </div>
-<div class="desc">Creates the given <var>filename</var> if it doesn't exist.</div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-trunc+1837">
-      <span class="name" name="+ssh-fxf-trunc+">+ssh-fxf-trunc+</span>
-    </a>
-  </div>
-<div class="desc">Truncate the given <var>filename</var> if it exists. <code>+ssh-fxf-creat+</code> 
-      must be specified as well.</div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-excl+1838">
-      <span class="name" name="+ssh-fxf-excl+">+ssh-fxf-excl+</span>
-    </a>
-  </div>
-<div class="desc">Raises and error <var>filename</var> if it exists. <code>+ssh-fxf-creat+</code> 
-      must be specified as well.</div>
-<p />If <var>filename</var> opened successfully, the procedure will return a handle.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-close1839">
-    <span class="name" name="sftp-close">sftp-close</span>
-  </a> <span class="args">conn handle</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection. 
-<p />Closes given <var>handle</var> created by <code>sftp-open</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-read1840">
-    <span class="name" name="sftp-read">sftp-read</span>
-  </a>
- <span class="args">conn handle/filename receiver :key (offset 0) buffer-size</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>handle/filename</var> must be either a handle or string.
-<var>receiver</var> must be a procedure accepts 2 arguments, <var>offset</var> which
-is an integer and <var>data</var> which is a binary input port, respectively.
-<p />Reads the given <var>handle/filename</var> content from the server and
-call <var>receiver</var> with the returned value. When it reaches the end of file,
-then it will pass -1 as offset and eof value as data.
-<p />The keyword argument <var>offset</var> specifies starting where to read. It
-is useful to read only diff.
-<p />The keyword argument <var>buffer-size</var> specifies how many bytes it tries to
-read in one read call. The default value is 1048576 (1MB). This value is only
-an indication so that server can decide actual data length to send.
-<p />The return value of this procedure is the result value of <var>receiver</var>.
-<p />Receiver must return 2 values, one if processed octet count and the other
-one is result value. Following is the <var>sftp-binary-receiver</var> definition;
-<pre class="codeblock">(define (sftp-binary-receiver)
-  (let-values (((out extract) (open-bytevector-output-port)))
-    (lambda (offset data)
-      (if (&lt; offset 0)
-          (values -1 (extract))
-          (values (copy-binary-port out data) #f)))))
-</pre>
+ <span class="args">node service :key (prng (secure-randome RC4))
+ (version *tls-version-1.2*) (session #f) (handshake #t)
+  (certificates '()) (private-key #f)
+ :allow-other-keys opt</span></div>
+<div class="desc"><var>node</var> and <var>service</var> must be string.
+<p />Creates a client TLS socket. <var>node</var>, <var>service</var> and <var>opt</var> will be
+passed to <code>make-client-socket</code> described in
+<a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+<p />The keyword argument <var>prng</var> specifies which pseudo random algorithm will
+be used for generating security parameters.
+<p />The keyword argument <var>version</var> specifies which TLS protocol version will be
+used for negotiation. However the real version will be decided by target server.
+<p />The keyword argument <var>session</var> is for future extension, so do not specify.
+<p />If the keyword argument <var>handshake</var> #f then the procedure won't do
+TLS handshake after the socket creation so users must do it manually with
+<code>tls-client-handshake</code> procedure described below.
+<p />
+The keyword argument <var>certificates</var> is for certificate request message.
+The value must be a list of x509 certificates. If the certificates argument
+is null, then the procedures send empty certificate list to the server as
+a response of certificate request message.
+<p />The keyword argument <var>private-key</var> specifies which private key is used.
+The value must be private key object described in <a href="section77.html#crypto">"(crypto)"</a>.
+This is needed if the target server only supports RSA key exchange protocol.
 </div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="sftp-binary-receiver1841">
-      <span class="name" name="sftp-binary-receiver">sftp-binary-receiver</span>
+    <a name="tls-client-handshake tls-socket1882">
+      <span class="name" name="tls-client-handshake tls-socket">tls-client-handshake <span class="args">tls-socket</span></span>
     </a>
   </div>
-<div class="desc">Creates a in memory receiver for <code>sftp-read</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-file-receiver1842">
-    <span class="name" name="sftp-file-receiver">sftp-file-receiver</span>
-  </a> <span class="args">filename :key options</span></div>
-<div class="desc">Creates a file receiver for <code>sftp-read</code>.
-<p />The keyword argument <var>option</var> must be created by <code>file-options</code>.
-By default no option.
+<div class="desc">Do client side handshake and return a TLS socket. The procedure must
+*NOT* be called if the socket is created with <var>handshake</var> keyword argument
+#t.
+<p />CAUTION: This procedure needs to be called only once and calling more than once
+might cause infinite loop or raise an error.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-oport-receiver1843">
-    <span class="name" name="sftp-oport-receiver">sftp-oport-receiver</span>
-  </a> <span class="args">output-port</span></div>
-<div class="desc"><var>output-port</var> must be a binary output port.
-<p />Creates a output port receiver for <code>sftp-read</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-write!1844">
-    <span class="name" name="sftp-write!">sftp-write!</span>
-  </a> 
- <span class="args">conn handle input-port :key (offset 0) buffer-size</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>handle</var> must be a handle.
-<var>input-port</var> must be a binary input port.
-<p />Reads the content from given <var>input-port</var> and writes it to given
-<var>handle</var>.
-<p />The keyword argument <var>offset</var> specifies where to write. This is useful
-to write a file separately or simply append.
-<p />The keyword argument <var>buffer-size</var> specifies how many bytes of data
-the procedure sends in one packet. The default value is 131072 (128KB).
-The RFC defines the minimum value 32768 (3KB) so it is safe to use the
-value. However too small buffer size makes writing extremely slow so
-we use a bit larger value to make performance better. If you meet a
-problem with writing a file, consider to change this size.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-exists?1845">
-    <span class="name" name="sftp-exists?">sftp-exists?</span>
-  </a> <span class="args">conn filename</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>filename</var> must be a string indicating existing filename.
-<p />Checks if the given <var>filename</var> exists.
-</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="sftp-remove!1846">
-    <span class="name" name="sftp-remove!">sftp-remove!</span>
-  </a> <span class="args">conn filename</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>filename</var> must be a string indicating existing filename.
-<p />Removes the given <var>filename</var>. It is an error if the file doesn't exist
-or user doesn't have proper permission to remove.
-<p />The result value is raw SFTP status object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-rename!1847">
-    <span class="name" name="sftp-rename!">sftp-rename!</span>
-  </a> <span class="args">conn oldpath newpath</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>oldpath</var> and <var>newpath</var>  must be strings indicating existing path.
-<p />Renames the given <var>oldpath</var> to <var>newpath</var>. It is an error if the 
-file doesn't exist or user doesn't have proper permission to rename.
-<p />The result value is raw SFTP status object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-mkdir!1848">
-    <span class="name" name="sftp-mkdir!">sftp-mkdir!</span>
-  </a> <span class="args">conn path</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>path</var> must be a string.
-<p />Creates the given <var>path</var> directory. It is an error if the 
-directory exists or user doesn't have proper permission to create.
-<p />The result value is raw SFTP status object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-rmdir!1849">
-    <span class="name" name="sftp-rmdir!">sftp-rmdir!</span>
-  </a> <span class="args">conn path</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>path</var> must be a string.
-<p />Removes the given <var>path</var> directory. It is an error if the 
-directory doesn't exists, user doesn't have proper permission to create or
-the directory isn't empty.
-<p />The result value is raw SFTP status object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-opendir1850">
-    <span class="name" name="sftp-opendir">sftp-opendir</span>
-  </a> <span class="args">conn path</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>path</var> must be a string indicating existing path.
-<p />Opens the given <var>path</var> directory and returns its handle.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-readdir1851">
-    <span class="name" name="sftp-readdir">sftp-readdir</span>
-  </a> <span class="args">conn handle/path</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>handle/path</var> must be either a handle opened by <code>sftp-opendir</code> or
-a string indicating existing path.
-<p />Reads the given <var>handle/path</var> and returns the list of contents. The content
-is an object of <code>&lt;sftp-name&gt;</code> which has <code>filename</code>, <code>longname</code>
-and <code>attribute</code> slots.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-readdir-as-filenames1852">
-    <span class="name" name="sftp-readdir-as-filenames">sftp-readdir-as-filenames</span>
-  </a> <span class="args">conn handle/path</span></div>
-<div class="define"><span class="define-category">Function</span><a name="sftp-readdir-as-longnames1853">
-    <span class="name" name="sftp-readdir-as-longnames">sftp-readdir-as-longnames</span>
-  </a> <span class="args">conn handle/path</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>handle/path</var> must be either a handle opened by <code>sftp-opendir</code> or
-a string indicating existing path.
-<p />Calls <code>sftp-readdir</code> and strips out the result object to string by
-calling <code>(slot-ref <var>c</var> 'filename)</code> or 
-<code>(slot-ref <var>c</var> 'longname)</code> respectively.
-</div>
-<p />
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1854"><span class="section-number">7.32.2</span>Mid level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-client-sftp-connection1855">
-    <span class="name" name="make-client-sftp-connection">make-client-sftp-connection</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-server-tls-socket1883">
+    <span class="name" name="make-server-tls-socket">make-server-tls-socket</span>
   </a>
- <span class="args">server port :key (username #f) (password #f)</span></div>
-<div class="desc">Creates a SFTP connection object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-close-connection1856">
-    <span class="name" name="sftp-close-connection">sftp-close-connection</span>
-  </a> <span class="args">connection</span></div>
-<div class="desc">Closes the given SFTP connection object.</div>
+ <span class="args">service certificates :key (prng (secure-randome RC4))
+ (version *tls-version-1.2*)
+ (private-key #f) (authorities '())
+ :allow-other-keys opt</span></div>
+<div class="desc"><var>service</var> must be string. <var>certificates</var> must be a
+list of x509 certificate.
+<p />Creates a server TLS socket. <var>service</var> and <var>opt</var> will be passed to
+<code>make-server-socket</code> described in 
+<a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+<p />The keyword arguments <var>prng</var> and <var>version</var> are the same meaning as
+<code>make-client-tls-socket</code>.
+<p />The keyword argument <var>private-key</var> is used the same as client socket
+the difference is that it is used if the client side only supports RSA key
+exchange.
+<p />The keyword argument <var>authorities</var> must be a list of x509 certificate and
+if this is not empty list then the server socket will send certificate request
+message to the client. 
+<p />CAUTION: the <var>authorities</var> keyword argument currently doesn't check
+the certificate signature but only issuer DN.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="tls-socket-send tls-socket bytevector flags1884">
+      <span class="name" name="tls-socket-send tls-socket bytevector flags">tls-socket-send <span class="args">tls-socket bytevector flags</span></span>
+    </a>
+  </div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p /><var>flags</var> must be non negative exact integer.
+<p />Sends given bytevector to <var>tls-socket</var>. <var>flags</var> are described in
+the section <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>. The packet
+will be encrypted by <var>tls-socket</var>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="tls-socket-recv tls-socket size flags1885">
+      <span class="name" name="tls-socket-recv tls-socket size flags">tls-socket-recv <span class="args">tls-socket size flags</span></span>
+    </a>
+  </div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p /><var>size</var> and <var>flags</var> must be non negative exact integer.
+<p />Receives decrypted packet from <var>tls-socket</var>. <var>size</var> indicates how many
+octets the procedure should receive, however it might return less octet.
+<var>flags</var> will be passed to <code>socket-recv</code>.
+<p />NOTE: <var>tls-socket</var> have its own buffer to return the value, so that the
+procedure can take <var>size</var> argument.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-close1886">
+    <span class="name" name="tls-socket-close">tls-socket-close</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Sends close notify alert to the socket and close it.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-closed?1887">
+    <span class="name" name="tls-socket-closed?">tls-socket-closed?</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Returns #t if the given socket is closed, otherwise #f.
+<p />NOTE: this procedure checks if session is closed. So the real socket might not
+be closed yet.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-accept1888">
+    <span class="name" name="tls-socket-accept">tls-socket-accept</span>
+  </a>
+ <span class="args">tls-socket :key (handshake #t) (raise-error #t)</span></div>
+<div class="desc"><var>tls-socket</var> must be a server TLS socket created by
+<code>make-server-tls-socket</code>.
+<p />Wait for an incoming connection request and returns a fresh connected client
+socket.
+<p />If the keyword argument <var>handshake</var> is #f then the handshake must be done
+by manually with <code>tls-server-handshake</code> described blow.
+<p />The keyword argument <var>raise-error</var> will be passed to
+<code>tls-server-handshake</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-server-handshake1889">
+    <span class="name" name="tls-server-handshake">tls-server-handshake</span>
+  </a>
+ <span class="args">tls-socket :key (raise-error #t)</span></div>
+<div class="desc">Do server side TLS handshake and returns a TLS socket. The procedure must
+*NOT* be called if the socket is created with <var>handshake</var> keyword argument
+#t.
+<p />If the keyword argument <var>raise-error</var> is #f then it won't raise an error
+when something happens.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1890">
+    <span class="name" name="tls-socket-peer">tls-socket-peer</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1891">
+    <span class="name" name="tls-socket-peer">tls-socket-peer</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-peer</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-name1892">
+    <span class="name" name="tls-socket-name">tls-socket-name</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-name</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-info-values1893">
+    <span class="name" name="tls-socket-info-values">tls-socket-info-values</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-info-values</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.2*1894">
+      <span class="name" name="*tls-version-1.2*">*tls-version-1.2*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0303</code> for TLS 1.2</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.1*1895">
+      <span class="name" name="*tls-version-1.1*">*tls-version-1.1*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0302</code> for TLS 1.1</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.0*1896">
+      <span class="name" name="*tls-version-1.0*">*tls-version-1.0*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0301</code> for TLS 1.0</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-port1897">
+    <span class="name" name="tls-socket-port">tls-socket-port</span>
+  </a>
+ <span class="args">tls-socket :optional (close? #t)</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Returns input/output-port of given <var>tls-socket</var>.
+<p />If optional argument <var>close?</var> is #f then it won't close the socket when the
+port is closed or GCed.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-input-port1898">
+    <span class="name" name="tls-socket-input-port">tls-socket-input-port</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="define"><span class="define-category">Function</span><a name="tls-socket-output-port1899">
+    <span class="name" name="tls-socket-output-port">tls-socket-output-port</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Convert the given TLS socket to input and output port, respectively.
+<p />The given socket won't be closed when the port is closed or GCed. So it is the
+users responsibility to close.
+</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1900"><span class="section-number">7.32.1</span>Integration methods</a>
+  </h4>
+<p />The methods listed below are convenience methods to use TLS socket and
+usual socket without changing code.
+<p /><div class="define"><span class="define-category">Method</span><a name="socket-close1901">
+    <span class="name" name="socket-close">socket-close</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-send1902">
+    <span class="name" name="socket-send">socket-send</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) data :optional (flags 0)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-recv1903">
+    <span class="name" name="socket-recv">socket-recv</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) size :optional (flags 0)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-accept1904">
+    <span class="name" name="socket-accept">socket-accept</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;) . opt</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-accept1905">
+    <span class="name" name="socket-accept">socket-accept</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) (key &lt;keyword&gt;) . dummy</span></div>
+<div class="define"><span class="define-category">Method</span><a name="call-with-socket1906">
+    <span class="name" name="call-with-socket">call-with-socket</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;) proc</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-peer1907">
+    <span class="name" name="socket-peer">socket-peer</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-name1908">
+    <span class="name" name="socket-name">socket-name</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-info-values1909">
+    <span class="name" name="socket-info-values">socket-info-values</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-port1910">
+    <span class="name" name="socket-port">socket-port</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) :optional (close? #t)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-input-port1911">
+    <span class="name" name="socket-input-port">socket-input-port</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-output-port1912">
+    <span class="name" name="socket-output-port">socket-output-port</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
 
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section731.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="prev" href="section731.html">(rfc sftp) - SFTP library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section733.html">(rfc tls) - TLS protocol library</a>
+    <a class="next" href="section733.html">(rfc uri) - Parse and construct URIs</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2014-10-17T07:46:17+0100</i></div>
+    <div id="footer-date">Generated date: <i>2014-11-24T08:30:47+0100</i></div>
   </div>
 </html>
