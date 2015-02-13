@@ -6,157 +6,98 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section743.html">(tlv) - TLV library</a>
+    <a class="prev" href="section743.html">(text tree) - Lightweight text generation</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section8.html">Ported libraries</a>
+    <a class="next" href="section745.html">(tlv) - TLV library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.treemap"><span class="section-number">7.44</span>(util treemap) - Treemap</a>
+    <a class="section.anchor" name="util.timer"><span class="section-number">7.44</span>(util timer) - Timer</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util treemap)2233">
-      <span class="name" name="(util treemap)">(util treemap)</span>
+    <a name="(util timer)2151">
+      <span class="name" name="(util timer)">(util timer)</span>
     </a>
   </div>
-<div class="desc">This library provides treemap data structure and operations.
-<p />This section uses the following name convention;
-<p /><var>tm</var> - treemap
-<p /></div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2234"><span class="section-number">7.44.1</span>Predicate and constructurs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap?2235">
-    <span class="name" name="treemap?">treemap?</span>
-  </a> <span class="args">object</span></div>
-<div class="desc">Returns #t when given <var>object</var> is a treemap.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-rb-treemap2236">
-    <span class="name" name="make-rb-treemap">make-rb-treemap</span>
-  </a> <span class="args">compare</span></div>
-<div class="desc"><var>compare</var> must be a procedure which accepts 2 arguments and
-returns integer indicating the order of given 2 arguments.
-<p />Creates red black treemap.
+<div class="desc">This library provides timer functionality.
+<p />Timer is the mechanism to trigger an event on specified time.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2237"><span class="section-number">7.44.2</span>Basic operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-ref2238">
-    <span class="name" name="treemap-ref">treemap-ref</span>
-  </a> <span class="args">tm key :optional (fallback #f)</span></div>
-<div class="desc">Returns a value associated with <var>key</var> in <var>tm</var>. If it doesn't
-exist, then <var>fallback</var> will be returned.
+<p />The following describes how to use;
+<pre class="codeblock">(import (util timer))
+<p />(let ((timer (make-timer)))
+  (timer-start! timer) ;; start timer
+  ;; execute given thunk starting after 1000ms and each 1000ms
+  (timer-schedule! timer (lambda () (display "timer!") (newline)) 1000 1000)
+  ;; do something
+  (timer-cancel! timer))
+</pre>
+<p />A timer is kind of task queue running on a timer thread. Once it's started,
+then it waits until its queue is not empty or the first task reaches the
+configured time. The tasks are executed sequentially however its order is
+not reliable if there are multiple tasks queued on the same time.
+<p /><div class="define"><span class="define-category">Function</span><a name="timer?2152">
+    <span class="name" name="timer?">timer?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is a timer object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-timer2153">
+    <span class="name" name="make-timer">make-timer</span>
+  </a> <span class="args">:key error-handler</span></div>
+<div class="desc">Creates a timer object.
+<p />If keyword argument <var>error-handler</var> is specified, then it must be
+a procedure accepts one argument. The <var>error-handler</var> is called
+when timer procedure raises an error. If this is not specified, then
+timer stops when one of the tasks raised an error.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-contains?2239">
-    <span class="name" name="treemap-contains?">treemap-contains?</span>
-  </a> <span class="args">tm key</span></div>
-<div class="desc">Returns #t if there is an entry associated to the given <var>key</var>,
-otherwise #f.
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-start!2154">
+    <span class="name" name="timer-start!">timer-start!</span>
+  </a> <span class="args">timer</span></div>
+<div class="desc">Starts the given <var>timer</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-stop!2155">
+    <span class="name" name="timer-stop!">timer-stop!</span>
+  </a> <span class="args">timer</span></div>
+<div class="desc">Stops the given <var>time</var>.
+<p />NOTE: Once the timer is stopped, it is not reusable.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-schedule!2156">
+    <span class="name" name="timer-schedule!">timer-schedule!</span>
+  </a>
+ <span class="args">timer thunk first :optional (period 0)</span></div>
+<div class="desc">Schedules a timer task.
+<p /><var>first</var> can be time object or exact integer. If this is time object,
+then the timer executes the <var>thunk</var> with given time (absolute time).
+If this is an exact integer, then the timer executes the <var>thunk</var> after
+the given number milliseconds from current time.
+<p />Optional argument <var>period</var> specifies if the <var>thunk</var> is periodically 
+executed or not. 0 is not periodical task.
+<p />The returning value is an ID of scheduled task. This is needed for
+<code>timer-remove!</code> and <code>timer-exists?</code> procedures.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-set!2240">
-    <span class="name" name="treemap-set!">treemap-set!</span>
-  </a> <span class="args">tm key value</span></div>
-<div class="desc">Associate the <var>value</var> to <var>key</var> in <var>tm</var> and returns
-unspecified value.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-update!2241">
-    <span class="name" name="treemap-update!">treemap-update!</span>
-  </a> <span class="args">tm key proc default</span></div>
-<div class="desc"><var>proc</var> must be a procedure accepts one argument.
-<p />Updates the entry value associated to <var>key</var> with the returned value of 
-<var>proc</var>. If the entry doesn't exist then <var>default</var> will be passed to
-the <var>proc</var>.
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-reschedule!2157">
+    <span class="name" name="timer-reschedule!">timer-reschedule!</span>
+  </a>
+ <span class="args">timer timer-id first :optional (period 0)</span></div>
+<div class="desc">Reschedules the timer task associated with <var>timer-id</var> and 
+returns <var>timer-id</var>
+<p />The <var>first</var> and <var>period</var> are the same as <code>timer-schedule!</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-delete!2242">
-    <span class="name" name="treemap-delete!">treemap-delete!</span>
-  </a> <span class="args">tm key</span></div>
-<div class="desc">Deletes entry of <var>key</var> in <var>tm</var> and returns unspecified value.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-clear!2243">
-    <span class="name" name="treemap-clear!">treemap-clear!</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Removes all entries and returns unspecified value.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-copy2244">
-    <span class="name" name="treemap-copy">treemap-copy</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns the copy of given <var>tm</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-size2245">
-    <span class="name" name="treemap-size">treemap-size</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns the number of entry in the given <var>tm</var>.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2246"><span class="section-number">7.44.3</span>Conversions</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-&gt;alist2247">
-    <span class="name" name="treemap-&gt;alist">treemap-&gt;alist</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns an alist of key and value in <var>tm</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="alist-&gt;treemap2248">
-    <span class="name" name="alist-&gt;treemap">alist-&gt;treemap</span>
-  </a> <span class="args">alist compare</span></div>
-<div class="desc"><var>alist</var> must be an alist.
-<var>compare</var> must be a procedure which accepts 2 arguments.
-<p />Converts <var>alist</var> to a treemap. The car part of an element of <var>alist</var>
-is a key, then cdr part of an element of <var>alist</var> is a value.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2249"><span class="section-number">7.44.4</span>Keys and values</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-keys2250">
-    <span class="name" name="treemap-keys">treemap-keys</span>
-  </a> <span class="args">tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-keys-list2251">
-    <span class="name" name="treemap-keys-list">treemap-keys-list</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns a vector or a list of keys in <var>tm</var>, respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-values2252">
-    <span class="name" name="treemap-values">treemap-values</span>
-  </a> <span class="args">tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-values-list2253">
-    <span class="name" name="treemap-values-list">treemap-values-list</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns a vector or a list of entry values in <var>tm</var>, respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-entries2254">
-    <span class="name" name="treemap-entries">treemap-entries</span>
-  </a> <span class="args">tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-entries-list2255">
-    <span class="name" name="treemap-entries-list">treemap-entries-list</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns vectors or lists of entry key and values in <var>tm</var>, 
-respectively. This procedure returns 2 values. </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2256"><span class="section-number">7.44.5</span>Iterations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-fold2257">
-    <span class="name" name="treemap-fold">treemap-fold</span>
-  </a> <span class="args">kons tm knil</span></div>
-<div class="desc"><var>kons</var> must be a procedure which accepts 3 arguments.
-<p />Iterates all keys and values in the given <var>tm</var> and passes them
-and the result of <var>kons</var> to <var>kons</var> respectively. The first iteration
-of the third argument is <var>knil</var>. The procedure returns the result of
-all iterations.
-<p />Analogous to <code>fold</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-map2258">
-    <span class="name" name="treemap-map">treemap-map</span>
-  </a> <span class="args">proc tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-for-each2259">
-    <span class="name" name="treemap-for-each">treemap-for-each</span>
-  </a> <span class="args">proc tm</span></div>
-<div class="desc"><var>proc</var> must be a procedure which accepts 2 arguments.
-<p />Iterates all keys and values in the given <var>tm</var> and passes them
-to <var>proc</var> respectively.
-<p />The <code>treemap-for-each</code> returns unspecified value. The 
-<code>treemap-map</code> returns a list of the <var>proc</var> result.
-<p />These procedures are analogous to <code>for-each</code> and <code>map</code> respectively.
-</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-remove!2158">
+    <span class="name" name="timer-remove!">timer-remove!</span>
+  </a> <span class="args">timer id</span></div>
+<div class="desc">Removes given <var>id</var> task from the <var>timer</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-exists?2159">
+    <span class="name" name="timer-exists?">timer-exists?</span>
+  </a> <span class="args">timer id</span></div>
+<div class="desc">Returns #t if given <var>id</var> task exists in the <var>timer</var>, 
+otherwise #f.</div>
 
-</section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section743.html">(tlv) - TLV library</a>
+    <a class="prev" href="section743.html">(text tree) - Lightweight text generation</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section8.html">Ported libraries</a>
+    <a class="next" href="section745.html">(tlv) - TLV library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-01-16T08:31:04+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-02-13T18:46:23+0100</i></div>
   </div>
 </html>
