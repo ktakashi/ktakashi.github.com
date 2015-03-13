@@ -15,7 +15,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(sagittarius ffi)1050">
+    <a name="(sagittarius ffi)1052">
       <span class="name" name="(sagittarius ffi)">(sagittarius ffi)</span>
     </a>
   </div>
@@ -114,9 +114,9 @@ avoid those errors.
 The document describes higher APIs to lower APIs.
 <p /></div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1051"><span class="section-number">6.3.1</span>Shared library  operations</a>
+    <a class="section.anchor" name="G1053"><span class="section-number">6.3.1</span>Shared library  operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-shared-library1052">
+<p /><div class="define"><span class="define-category">Function</span><a name="open-shared-library1054">
     <span class="name" name="open-shared-library">open-shared-library</span>
   </a> <span class="args">file :optional (raise #f)</span></div>
 <div class="desc"><var>file</var> must be a string.
@@ -128,7 +128,7 @@ absolute path of the shared library, then it's always better to use it.
 <p />If then internal process of the procedure failed and <var>raise</var> is #f then it
 returns NULL pointer, if <var>raise</var> is #t then it raises an error.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="close-shared-library1053">
+<p /><div class="define"><span class="define-category">Function</span><a name="close-shared-library1055">
     <span class="name" name="close-shared-library">close-shared-library</span>
   </a> <span class="args">pointer</span></div>
 <div class="desc">Closes given shared library pointer and returns unspecified value.
@@ -137,7 +137,7 @@ is platform dependent. It might cause SEGV.
 </div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="shared-object-suffix1054">
+    <a name="shared-object-suffix1056">
       <span class="name" name="shared-object-suffix">shared-object-suffix</span>
     </a>
   </div>
@@ -145,10 +145,10 @@ is platform dependent. It might cause SEGV.
 eg. <code>".dll"</code> in Windows, <code>".so"</code> in Linux or Unix.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1055"><span class="section-number">6.3.2</span>Creating C functions</a>
+    <a class="section.anchor" name="G1057"><span class="section-number">6.3.2</span>Creating C functions</a>
   </h4>
 <p />This section describes more details to create a corresponding C functions.
-<p /><div class="define"><span class="define-category">Macro</span><a name="c-function1056">
+<p /><div class="define"><span class="define-category">Macro</span><a name="c-function1058">
     <span class="name" name="c-function">c-function</span>
   </a>
  <span class="args">shared-library return-type name (argument-types ...)</span></div>
@@ -298,7 +298,7 @@ for that purpose.
 <p /><code>___</code> is for variable length argument and it must be the last position
 of the argument type list, otherwise it raises an error.
 <p /></div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="address1057">
+<p /><div class="define"><span class="define-category">Macro</span><a name="address1059">
     <span class="name" name="address">address</span>
   </a> <span class="args">pointer</span></div>
 <div class="desc">Convenient macro for address passing.
@@ -309,7 +309,7 @@ this;
 <pre class="snipet"><span class="snipet-code">c_func(&amp;pointer)</span></pre>
 <p />NOTE: this works only FFI pointer object.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="c-callback1058">
+<p /><div class="define"><span class="define-category">Macro</span><a name="c-callback1060">
     <span class="name" name="c-callback">c-callback</span>
   </a>
  <span class="args">return-type (argument-types ...) proc</span></div>
@@ -336,30 +336,30 @@ it is users responsibility to handle it.
 <p /><var>proc</var> must be a procedure takes the same number of arguments as
 <var>argument-types</var> list.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="free-c-callback1059">
+<p /><div class="define"><span class="define-category">Function</span><a name="free-c-callback1061">
     <span class="name" name="free-c-callback">free-c-callback</span>
   </a> <span class="args">callback</span></div>
 <div class="desc">Release <var>callback</var>.</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1060"><span class="section-number">6.3.3</span>Pointer operations</a>
+    <a class="section.anchor" name="G1062"><span class="section-number">6.3.3</span>Pointer operations</a>
   </h4>
 <p />Using C functions, users can not avoid to use raw pointers. This section
 describes how to create or convert a pointer.
-<p /><div class="define"><span class="define-category">Function</span><a name="pointer?1061">
+<p /><div class="define"><span class="define-category">Function</span><a name="pointer?1063">
     <span class="name" name="pointer?">pointer?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if <var>obj</var> is FFI pointer object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="integer-&gt;pointer1062">
+<p /><div class="define"><span class="define-category">Function</span><a name="integer-&gt;pointer1064">
     <span class="name" name="integer-&gt;pointer">integer-&gt;pointer</span>
   </a> <span class="args">integer</span></div>
 <div class="desc">Converts given <var>integer</var> to pointer object.
 <p />To represents NULL pointer, you can write like this;
 <pre class="snipet"><span class="snipet-code">(integer-&gt;pointer 0)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#&lt;pointer 0x0&gt;</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pointer-&gt;integer1063">
+<p /><div class="define"><span class="define-category">Function</span><a name="pointer-&gt;integer1065">
     <span class="name" name="pointer-&gt;integer">pointer-&gt;integer</span>
   </a> <span class="args">pointer :optional bits</span></div>
-<div class="define"><span class="define-category">Function</span><a name="pointer-&gt;uinteger1064">
+<div class="define"><span class="define-category">Function</span><a name="pointer-&gt;uinteger1066">
     <span class="name" name="pointer-&gt;uinteger">pointer-&gt;uinteger</span>
   </a> <span class="args">pointer :optional bits</span></div>
 <div class="desc">Converts given <var>pointer</var> to integer/uinteger, respectively.
@@ -377,7 +377,7 @@ pointer is 32 bit value's pointer returning value's upper 32 bit would be
 0xFFFFFFFF. If the optional argument is specified to 32 then the procedure
 only returns lower 32 bit value.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pointer-&gt;string1065">
+<p /><div class="define"><span class="define-category">Function</span><a name="pointer-&gt;string1067">
     <span class="name" name="pointer-&gt;string">pointer-&gt;string</span>
   </a>
  <span class="args">pointer :optional (transcoder (native-transcoder))</span></div>
@@ -386,7 +386,7 @@ only returns lower 32 bit value.
 it reaches 0.
 <p />If NULL pointer is given, it raises <code>&amp;assertion</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pointer-&gt;bytevector1066">
+<p /><div class="define"><span class="define-category">Function</span><a name="pointer-&gt;bytevector1068">
     <span class="name" name="pointer-&gt;bytevector">pointer-&gt;bytevector</span>
   </a>
  <span class="args">pointer size</span></div>
@@ -394,10 +394,10 @@ it reaches 0.
 <p />Converts given <var>pointer</var> to Scheme bytevector.
 <p />If NULL pointer is given, it raises <code>&amp;assertion</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="object-&gt;pointer1067">
+<p /><div class="define"><span class="define-category">Function</span><a name="object-&gt;pointer1069">
     <span class="name" name="object-&gt;pointer">object-&gt;pointer</span>
   </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="pointer-&gt;object1068">
+<div class="define"><span class="define-category">Function</span><a name="pointer-&gt;object1070">
     <span class="name" name="pointer-&gt;object">pointer-&gt;object</span>
   </a> <span class="args">pointer</span></div>
 <div class="desc">CAUTION: These operations are really dangerous especially
@@ -406,7 +406,7 @@ it reaches 0.
 The operations are useful to pass Scheme object to callbacks and restore
 it.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="deref1069">
+<p /><div class="define"><span class="define-category">Function</span><a name="deref1071">
     <span class="name" name="deref">deref</span>
   </a> <span class="args">pointer offset</span></div>
 <div class="desc"><var>offset</var> must be a fixnum.
@@ -418,7 +418,7 @@ following C code;
 </pre>
 If NULL pointer is given, it raises <code>&amp;assertion</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pointer-address1070">
+<p /><div class="define"><span class="define-category">Function</span><a name="pointer-address1072">
     <span class="name" name="pointer-address">pointer-address</span>
   </a> <span class="args">pointer</span></div>
 <div class="desc">Returns an address of given <var>pointer</var>.
@@ -426,14 +426,14 @@ If NULL pointer is given, it raises <code>&amp;assertion</code>.
 <p />NOTE: If the returned value is modified then given <var>pointer</var> will be
 affected.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="allocate-pointer1071">
+<p /><div class="define"><span class="define-category">Function</span><a name="allocate-pointer1073">
     <span class="name" name="allocate-pointer">allocate-pointer</span>
   </a> <span class="args">size</span></div>
 <div class="desc"><var>size</var> must be a fixnum.
 <p />Allocates a <var>size</var> of byte memory and returns an pointer object.
 <p />The allocated memory will be GCed.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="c-malloc1072">
+<p /><div class="define"><span class="define-category">Function</span><a name="c-malloc1074">
     <span class="name" name="c-malloc">c-malloc</span>
   </a> <span class="args">size</span></div>
 <div class="desc"><var>size</var> must be a fixnum.
@@ -442,7 +442,7 @@ C's <code>malloc</code>.
 <p />The allocated memory won't be GCed. So releasing the memory is users'
 responsibility.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="c-free1073">
+<p /><div class="define"><span class="define-category">Function</span><a name="c-free1075">
     <span class="name" name="c-free">c-free</span>
   </a> <span class="args">pointer</span></div>
 <div class="desc"><var>pointer</var> must be a pointer created by <var>c-malloc</var>.
@@ -452,7 +452,7 @@ And the behaviour when GCable pointer is passed is undefined.
 </div>
 <p /><div class="define">
     <span class="define-category">Variable</span>
-    <a name="null-pointer1074">
+    <a name="null-pointer1076">
       <span class="name" name="null-pointer">null-pointer</span>
     </a>
   </div>
@@ -460,18 +460,18 @@ And the behaviour when GCable pointer is passed is undefined.
 <p />This value is not a constant and if you modify this by using <code>address</code>,
 you might break some codes.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="null-pointer?1075">
+<p /><div class="define"><span class="define-category">Function</span><a name="null-pointer?1077">
     <span class="name" name="null-pointer?">null-pointer?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t when <var>obj</var> is a pointer representing NULL otherwise #f.</div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="empty-pointer1076">
+    <a name="empty-pointer1078">
       <span class="name" name="empty-pointer">empty-pointer</span>
     </a>
   </div>
 <div class="desc">Creates a NULL pointer. This is for convenience.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pointer-ref-c-type1077">
+<p /><div class="define"><span class="define-category">Function</span><a name="pointer-ref-c-type1079">
     <span class="name" name="pointer-ref-c-type">pointer-ref-c-<var>type</var></span>
   </a> <span class="args">pointer offset</span></div>
 <div class="desc"><var>offset</var> must be a fixnum.
@@ -490,7 +490,7 @@ NOTE: if the <var>type</var> is <code>flonum</code> or <code>double</code>, then
 Scheme flonum
 <p />NOTE: if the <var>type</var> is <code>pointer</code>, then it returns Scheme FFI pointer.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pointer-set-c-type!1078">
+<p /><div class="define"><span class="define-category">Function</span><a name="pointer-set-c-type!1080">
     <span class="name" name="pointer-set-c-type!">pointer-set-c-<var>type</var>!</span>
   </a> <span class="args">pointer offset value</span></div>
 <div class="desc"><var>offset</var> must be a fixnum.
@@ -531,7 +531,7 @@ of how to handle array of pointers;
         (bytevector-u16-ref bv i (endianness little))))))
 </pre>
 <p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="set-pointer-value!1079">
+<p /><div class="define"><span class="define-category">Function</span><a name="set-pointer-value!1081">
     <span class="name" name="set-pointer-value!">set-pointer-value!</span>
   </a> <span class="args">pointer value</span></div>
 <div class="desc"><var>value</var> must be exact integer up to <code>size-of-void*</code> bytes.
@@ -539,13 +539,13 @@ of how to handle array of pointers;
 <p />CAUTION: this operation is really dangerous so be aware of it!
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1080"><span class="section-number">6.3.4</span>C struct operations</a>
+    <a class="section.anchor" name="G1082"><span class="section-number">6.3.4</span>C struct operations</a>
   </h4>
 <p />C's struct is mere memory chunk so it is possible to access its member directly,
 if you know exact offset of it. However it is convenient if you can operate 
 similar structure. This section describes how to define C structure in Scheme
 world.
-<p /><div class="define"><span class="define-category">Macro</span><a name="define-c-struct1081">
+<p /><div class="define"><span class="define-category">Macro</span><a name="define-c-struct1083">
     <span class="name" name="define-c-struct">define-c-struct</span>
   </a> <span class="args">name clauses ...</span></div>
 <div class="desc">Defines C structure.
@@ -608,21 +608,21 @@ applied;
 <li class="itemlist-item">For setter: <var>name</var>-<var>member-name</var>-set!</li>
 </ul>
 <p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="size-of-c-struct1082">
+<p /><div class="define"><span class="define-category">Function</span><a name="size-of-c-struct1084">
     <span class="name" name="size-of-c-struct">size-of-c-struct</span>
   </a> <span class="args">struct</span></div>
 <div class="desc"><var>struct</var> must be a C structure defined by <code>define-c-struct</code>.
 <p />Returns the size of given <var>struct</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="allocate-c-struct1083">
+<p /><div class="define"><span class="define-category">Function</span><a name="allocate-c-struct1085">
     <span class="name" name="allocate-c-struct">allocate-c-struct</span>
   </a> <span class="args">struct</span></div>
 <div class="desc">Allocates memory for <var>struct</var> and returns a pointer.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="struct-name-member-name-ref1084">
+<p /><div class="define"><span class="define-category">Function</span><a name="struct-name-member-name-ref1086">
     <span class="name" name="struct-name-member-name-ref"><var>struct-name</var>-<var>member-name</var>-ref</span>
   </a>
  <span class="args">struct-pointer inner-member-names ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="struct-name-member-name-set!1085">
+<div class="define"><span class="define-category">Function</span><a name="struct-name-member-name-set!1087">
     <span class="name" name="struct-name-member-name-set!"><var>struct-name</var>-<var>member-name</var>-set!</span>
   </a>
  <span class="args">struct-pointer value inner-member-names ...</span></div>
@@ -646,9 +646,9 @@ struct values.
 </pre>
 </div>
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1086"><span class="section-number">6.3.4.1</span>Low level C struct accessors</a>
+    <a class="section.anchor" name="G1088"><span class="section-number">6.3.4.1</span>Low level C struct accessors</a>
   </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="c-struct-ref1087">
+<p /><div class="define"><span class="define-category">Function</span><a name="c-struct-ref1089">
     <span class="name" name="c-struct-ref">c-struct-ref</span>
   </a> <span class="args">pointer struct name</span></div>
 <div class="desc"><var>struct</var> must be a C structure defined with <code>define-c-struct</code>.
@@ -657,7 +657,7 @@ struct values.
 <var>struct</var>.
 <p />Returns a member <var>name</var>'s value of <var>struct</var> from <var>pointer</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="c-struct-set!1088">
+<p /><div class="define"><span class="define-category">Function</span><a name="c-struct-set!1090">
     <span class="name" name="c-struct-set!">c-struct-set!</span>
   </a> <span class="args">pointer struct name value</span></div>
 <div class="desc"><var>struct</var> must be a C structure defined with <code>define-c-struct</code>.
@@ -667,9 +667,9 @@ struct values.
 <p />Sets <var>value</var> to <var>pointer</var> offset of member <var>name</var> of <var>struct</var>.
 </div>
 <p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1089"><span class="section-number">6.3.5</span>Typedef operations</a>
+    <a class="section.anchor" name="G1091"><span class="section-number">6.3.5</span>Typedef operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Macro</span><a name="define-c-typedef1090">
+<p /><div class="define"><span class="define-category">Macro</span><a name="define-c-typedef1092">
     <span class="name" name="define-c-typedef">define-c-typedef</span>
   </a> <span class="args">original new-names ...</span></div>
 <div class="desc">Convenient macro.
@@ -697,17 +697,17 @@ define.
 </pre>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1091"><span class="section-number">6.3.6</span>Sizes and aligns</a>
+    <a class="section.anchor" name="G1093"><span class="section-number">6.3.6</span>Sizes and aligns</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Constant</span>
-    <a name="size-of-type1092">
+    <a name="size-of-type1094">
       <span class="name" name="size-of-type">size-of-<var>type</var></span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="align-of-type1093">
+    <a name="align-of-type1095">
       <span class="name" name="align-of-type">align-of-<var>type</var></span>
     </a>
   </div>
@@ -725,13 +725,13 @@ define.
 The values are platform dependent.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1094"><span class="section-number">6.3.7</span>Finalizer operations</a>
+    <a class="section.anchor" name="G1096"><span class="section-number">6.3.7</span>Finalizer operations</a>
   </h4>
 <p />Some of C resource must be released but if you can not decide or do not want to
 restrict when, then you can release it at GC time.
 <p />NOTE: GC might not happen if your script is very short, so it is better not to
 relay these procedures too much.
-<p /><div class="define"><span class="define-category">Function</span><a name="register-ffi-finalizer1095">
+<p /><div class="define"><span class="define-category">Function</span><a name="register-ffi-finalizer1097">
     <span class="name" name="register-ffi-finalizer">register-ffi-finalizer</span>
   </a> <span class="args">pointer proc</span></div>
 <div class="desc"><var>pointer</var> must be a pointer allocated with GCable memory.
@@ -739,7 +739,7 @@ relay these procedures too much.
 the <var>pointer</var>.
 <p />Register <var>proc</var> as <var>pointer</var>'s finalizer and returns <var>pointer</var>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="unregister-ffi-finalizer1096">
+<div class="define"><span class="define-category">Function</span><a name="unregister-ffi-finalizer1098">
     <span class="name" name="unregister-ffi-finalizer">unregister-ffi-finalizer</span>
   </a> <span class="args">pointer</span></div>
 <div class="desc"><var>pointer</var> must be a pointer allocated with GCable memory.
@@ -754,6 +754,6 @@ the <var>pointer</var>.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-02-13T19:26:31+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
   </div>
 </html>

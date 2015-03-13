@@ -6,164 +6,129 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section741.html">(text json) -- JSON parser</a>
+    <a class="prev" href="section741.html">(text csv) - Comma separated values parser library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section743.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section743.html">(text json) -- JSON parser</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.html-parser"><span class="section-number">7.42</span>(text sxml html-parser) - Flxible HTML parser</a>
+    <a class="section.anchor" name="text.html-lite"><span class="section-number">7.42</span>(text html-lite) - Simple HTML document builder library</a>
   </h3>
 <p />
 <div class="define">
     <span class="define-category">Library</span>
-    <a name="(text sxml html-parser)2125">
-      <span class="name" name="(text sxml html-parser)">(text sxml html-parser)</span>
+    <a name="(text html-lite)2152">
+      <span class="name" name="(text html-lite)">(text html-lite)</span>
     </a>
   </div>
-<div class="desc">This library provides HTML parser and printer procedures.
-<p />The provided procedures are compatible with HTMLPrag.
+<div class="desc">This library provides simple HTML builder procedures based on HTML5.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="html-escape2153">
+    <span class="name" name="html-escape">html-escape</span>
+  </a> <span class="args">:optional (in (current-input-port))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="html-escape-string2154">
+    <span class="name" name="html-escape-string">html-escape-string</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Escapes the unsafe characters in HTML and returns escaped string.
+<p />The <code>html-escape</code> reads the string from optional argument <var>in</var> which
+must be an textual input port and returns an escaped string.
+<p />The <code>html-escape-string</code> takes a string and returns an escaped string.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2126"><span class="section-number">7.42.1</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-0nf2127">
-    <span class="name" name="html-&gt;sxml-0nf">html-&gt;sxml-0nf</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-1nf2128">
-    <span class="name" name="html-&gt;sxml-1nf">html-&gt;sxml-1nf</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-2nf2129">
-    <span class="name" name="html-&gt;sxml-2nf">html-&gt;sxml-2nf</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml2130">
-    <span class="name" name="html-&gt;sxml">html-&gt;sxml</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;shtml2131">
-    <span class="name" name="html-&gt;shtml">html-&gt;shtml</span>
-  </a> <span class="args">in</span></div>
-<div class="desc">Parse given input port to SHTML. The <var>in</var> must be a textual input
-port.
-<p />The <code>html-&gt;sxml-2nf</code> procedure normalizes attributes if it doesn't have
-value. Others don't. Normalization in this context means adding attribute name
-as its value.
+<p /><div class="define"><span class="define-category">Function</span><a name="html-doctype2155">
+    <span class="name" name="html-doctype">html-doctype</span>
+  </a> <span class="args">:key (type :html-4.01-strict)</span></div>
+<div class="desc">Returns a doctype declaration for an HTML document. <var>type</var> can be one
+of the followings;
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>:html-5</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 5
+  </dd>
+      <dt class="dl-item-title">
+        <code>:html-4.01-strict :html-4.01, :strict, :html-strict</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 4.01 Strict DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:html-4.01-transitional :html-transitional, :transitional</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 4.01 Transitional DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-strict :xhtml-1.0</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Strict DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-transitional</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Transitional DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-frameset</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Frameset DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.1</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.1 DTD
+  </dd>
+    </dl>
+  </div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="write-shtml-as-html2132">
-    <span class="name" name="write-shtml-as-html">write-shtml-as-html</span>
-  </a>
- <span class="args">shtml :optional out error-filter</span></div>
-<div class="desc">Writes given <var>shtml</var> to <var>out</var>.
-<p />If optional argument <var>out</var> is given, it must be a textual output port,
-then the procedure writes to given output port. Otherwise 
-<code>current-output-port</code> is used.
-<p />Optional argument <var>error-filter</var> is used when unexpected SHTML entity is
-met. It must be a procedure takes 2 arguments, unexpected entity and boolean
-flag indicates if the entity is attribute or not. By default, it raises an
-error.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shtml-&gt;html2133">
-    <span class="name" name="shtml-&gt;html">shtml-&gt;html</span>
-  </a> <span class="args">shtml</span></div>
-<div class="desc">Converts <var>shtml</var> to string represented HTML.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2134"><span class="section-number">7.42.2</span>Low level APIs</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-comment-symbol2135">
-      <span class="name" name="shtml-comment-symbol">shtml-comment-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-decl-symbol2136">
-      <span class="name" name="shtml-decl-symbol">shtml-decl-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-empty-symbol2137">
-      <span class="name" name="shtml-empty-symbol">shtml-empty-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-end-symbol2138">
-      <span class="name" name="shtml-end-symbol">shtml-end-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-entity-symbol2139">
-      <span class="name" name="shtml-entity-symbol">shtml-entity-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-pi-symbol2140">
-      <span class="name" name="shtml-pi-symbol">shtml-pi-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-start-symbol2141">
-      <span class="name" name="shtml-start-symbol">shtml-start-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-text-symbol2142">
-      <span class="name" name="shtml-text-symbol">shtml-text-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-top-symbol2143">
-      <span class="name" name="shtml-top-symbol">shtml-top-symbol</span>
-    </a>
-  </div>
-<div class="desc">SXML entity symbols: <code>*COMMENT*</code>, <code>*DECL*</code>, <code>*EMPTY*</code>,
-<code>*END*</code>, <code>*ENTITY*</code>, <code>*PI*</code>, <code>*START*</code>, <code>*TEXT*</code> and
-<code>*TOP*</code> respectively.
-</div>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-named-char-id2144">
-      <span class="name" name="shtml-named-char-id">shtml-named-char-id</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-numeric-char-id2145">
-      <span class="name" name="shtml-numeric-char-id">shtml-numeric-char-id</span>
-    </a>
-  </div>
-<div class="desc">These variables are used in <code>*ENTITY*</code> as public identifier.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-shtml-entity2146">
-    <span class="name" name="make-shtml-entity">make-shtml-entity</span>
-  </a> <span class="args">value</span></div>
-<div class="desc">Makes SHTML character entity. The <var>value</var> must be a symbol, string
-or integer.
-<p /><pre class="snipet"><span class="snipet-code">(make-shtml-entity 151)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(&amp; 151)</span></pre>
-</div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="shtml-entity-value2147">
-      <span class="name" name="shtml-entity-value">shtml-entity-value</span>
-    </a>
-  </div>
-<div class="desc">Retrieve SHTML entity value.
-</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="html:element2156">
+    <span class="name" name="html:element">html:<var>element</var></span>
+  </a> <span class="args">args ...</span></div>
+<div class="desc">Construct an HTML element <var>element</var>. Currently following elements are
+provided. 
+<p /><pre class="codeblock">   a       abbr    address  area       article  aside
+   audio   b       base     bdi        bdo      blockquote
+   body    br      button   canvas     caption  cite
+   code    col     colgroup command    datalist dd
+   del     details dfn      div        dl       dt
+   em      embed   fieldset figcaption figure   footer
+   form
+   h1      h2      h3       h4         h5       h6
+   head    header  hgroup   hr         html
+   i       iframe  img      input      ins      kbd
+   keygen  label   legend   li         link     map
+   mark    menu    meta     meter      nav      noscript
+   object  ol      optgroup option     output   p
+   param   pre     progress q          rp       rt
+   ruby    s       samp     script     section  select
+   small   source  span     strong     style    sub
+   summary sup     table    tbody      td       textarea
+   tfoot   th      thead    time       title    tr
+   track   u       ul       var        video    wbr
+</pre>
+<p />The result of these functions is a tree of text segments, which can be written
+out to a port by <code>write-tree</code> or can be converted to a string by
+<code>tree-&gt;string</code> <a href="section745.html#text.tree">(text tree) - Lightweight text generation</a>.
+<p />You can specify attributes of the element by using a keyword-value notation
+before the actual content.
+<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:a :href "http://example.com" "example"))
+</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;a href="http://example.com"&gt;example&lt;/a&gt;</span></pre>
+<p />The boolean value given to the attribute has special meaning. If #t is given,
+the attribute is rendered without a value. If #f is given, the attribute is not
+rendered.
+<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:table :border #t))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;table border&gt;&lt;/table&gt;</span></pre>
+<pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:table :border #f))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;table&gt;&lt;/table&gt;</span></pre>
+<p />Special characters in attribute values are escaped by the function, but the
+ones in the content are not.
+<p /><pre class="snipet"><span class="snipet-code">(tree-&gt;string (html:div :foo "&lt;&gt;&amp;\"" "&lt;not escaped&gt;"))
+</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&lt;div foo="&amp;lt;&amp;gt;&amp;amp;&amp;quot;"&gt;&lt;not escaped&gt;&lt;/div&gt;</span></pre>
 <p />
-</section></section>
+</div>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section741.html">(text json) -- JSON parser</a>
+    <a class="prev" href="section741.html">(text csv) - Comma separated values parser library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section743.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section743.html">(text json) -- JSON parser</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-02-13T19:26:31+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
   </div>
 </html>

@@ -6,171 +6,276 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section732.html">(rfc tls) - TLS protocol library</a>
+    <a class="prev" href="section732.html">(rfc sftp) - SFTP library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section734.html">(rfc uuid) - UUID generate library</a>
+    <a class="next" href="section734.html">(rfc uri) - Parse and construct URIs</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.uri"><span class="section-number">7.33</span>(rfc uri) - Parse and construct URIs</a>
+    <a class="section.anchor" name="rfc.tls"><span class="section-number">7.33</span>(rfc tls) - TLS protocol library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc uri)1988">
-      <span class="name" name="(rfc uri)">(rfc uri)</span>
+    <a name="(rfc tls)1974">
+      <span class="name" name="(rfc tls)">(rfc tls)</span>
     </a>
   </div>
-<div class="desc">This library provides RFC3986 'URI Generic Syntax' procedures.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-parse1989">
-    <span class="name" name="uri-parse">uri-parse</span>
-  </a> <span class="args">uri</span></div>
-<div class="desc"><var>uri</var> must be string.
-<p />Parses given <var>uri</var> and returns following 7 values;
-<ul class="itemlist"><li class="itemlist-item">
-    <var>scheme</var>
-  </li>
-<li class="itemlist-item">
-    <var>user-info</var>
-  </li>
-<li class="itemlist-item">
-    <var>host</var>
-  </li>
-<li class="itemlist-item">
-    <var>port</var>
-  </li>
-<li class="itemlist-item">
-    <var>path</var>
-  </li>
-<li class="itemlist-item">
-    <var>query</var>
-  </li>
-<li class="itemlist-item">
-    <var>fragment</var>
-  </li>
-</ul>
-<p />Following examples are from RFC3986 text;
-<pre class="codeblock">   foo://example.com:8042/over/there?name=ferret#nose
-   \_/   \______________/\_________/ \_________/ \__/
-    |           |            |            |        |
- scheme     authority       path        query   fragment
-    |   _____________________|__
-   / \ /                        \
-   urn:example:animal:ferret:nose
-</pre>
-<p />authority = [ <var>user-info</var> "@" ] <var>host</var> [ ":" <var>port</var> ]
-<p />If given <var>uri</var> does not contain the part described above, it will be #f.
-ex)
-<pre class="snipet"><span class="snipet-code">(uri-parse "http://localhost")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(values http #f localhost #f #f #f #f)</span></pre>
-<p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-scheme&amp;specific1990">
-    <span class="name" name="uri-scheme&amp;specific">uri-scheme&amp;specific</span>
-  </a> <span class="args">uri</span></div>
-<div class="desc"><var>uri</var> must be string.
-<p />Parse given <var>uri</var> into scheme and rest. Returns the 2 values.
+<div class="desc">This library provides TLS protocol socket APIs.
+<p />CAUTION: This library is not well tested. So it may have security hole or
+incompatible behaviour. If you find such bugs, please let me know.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-decompose-hierarchical1991">
-    <span class="name" name="uri-decompose-hierarchical">uri-decompose-hierarchical</span>
-  </a> <span class="args">specific</span></div>
-<div class="desc"><var>specific</var> must be string.
-<p /><var>specific</var> is a URI without scheme. For example, the specific of following 
-URI 'http://localhost/foo.html' if '//localhost/foo.html'.
-<p />Parse given <var>specific</var> into 4 values <var>authority</var>, <var>path</var>,
-<var>query</var> and <var>fragment</var>.
-<p />If the <var>specific</var> does not contain the part, it will be #f.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-decompose-authority1992">
-    <span class="name" name="uri-decompose-authority">uri-decompose-authority</span>
-  </a> <span class="args">authority</span></div>
-<div class="desc"><var>authority</var> must be string.
-<p />Parse given <var>authority</var> into  3 values, <var>user-info</var>, <var>host</var> and
-<var>post</var>.
-<p />If the <var>authority</var> does not contain the part, it will be #f.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-decode1993">
-    <span class="name" name="uri-decode">uri-decode</span>
-  </a> <span class="args">in out :key (cgi-decode #f)</span></div>
-<div class="desc"><var>in</var> must be binary input port.
-<p /><var>out</var> must binary output port.
-<p />Reads and decodes given <var>in</var> and put the result into <var>out</var>.
-<p />If the keyword argument <var>cgi-decode</var> is #t, the procedure decodes
-<code>#x2b</code>('+') to <code>#x20</code>('#\space').
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-decode-string1994">
-    <span class="name" name="uri-decode-string">uri-decode-string</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-client-tls-socket1975">
+    <span class="name" name="make-client-tls-socket">make-client-tls-socket</span>
   </a>
- <span class="args">string :key (encoding 'utf-8) (cgi-decode #f)</span></div>
-<div class="desc">Decodes given <var>string</var> and returns decoded string.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-encode1995">
-    <span class="name" name="uri-encode">uri-encode</span>
-  </a>
- <span class="args">in out :key (noescape *rfc3986-unreserved-char-set*) (upper-case #t)</span></div>
-<div class="desc"><var>in</var> must be binary input port.
-<p /><var>out</var> must binary output port.
-<p />Reads and encodes given <var>in</var> and put the result into <var>out</var>.
-<p />The keyword argument <var>noescape</var> specifies which character must be escaped.
-<p />The keyword argument <var>upper-case</var> specifies the result case of encoded
-value. If the value is true value then it encodes to upper case (default),
-otherwise lower case.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-encode-string1996">
-    <span class="name" name="uri-encode-string">uri-encode-string</span>
-  </a>
- <span class="args">string :key (encoding 'utf-8) :allow-other-keys</span></div>
-<div class="desc">Encodes given <var>string</var> and returns encoded string.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-compose1997">
-    <span class="name" name="uri-compose">uri-compose</span>
-  </a>
- <span class="args">:key (scheme #f) (userinfo #f) (host #f) (port #f) (authority #f)
-            (path #f) (path* #f) (query #f) (fragment #f) (specific #f)</span></div>
-<div class="desc">Composes URI from given arguments.
-<p />If all keyword arguments are #f, the procedure returns empty string.
-<p />The procedure put priority on bigger chunk of URI part. For example, if keyword
-argument <var>specific</var> is specified, the procedure uses only <var>scheme</var> and
-<var>specific</var>. Following describes the priority hierarchy;
-<pre class="codeblock"><var>scheme</var>
-<var>specific</var>
-  +- <var>authority</var>
-       +- <var>userinfo</var>
-       +- <var>host</var>
-       +- <var>port</var>
-  +- <var>path*</var>
-       +- <var>path</var>
-       +- <var>query</var>
-       +- <var>fragment</var>
-</pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="uri-merge1998">
-    <span class="name" name="uri-merge">uri-merge</span>
-  </a>
- <span class="args">base-uri relative-uri1 relative-uri2 ...</span></div>
-<div class="desc">Merges given <var>relative-uris</var> to <var>base-uri</var> according to RFC 3986
-section 5.
+ <span class="args">node service :key (prng (secure-randome RC4))
+ (version *tls-version-1.2*) (session #f) (handshake #t)
+  (certificates '()) (private-key #f)
+ :allow-other-keys opt</span></div>
+<div class="desc"><var>node</var> and <var>service</var> must be string.
+<p />Creates a client TLS socket. <var>node</var>, <var>service</var> and <var>opt</var> will be
+passed to <code>make-client-socket</code> described in
+<a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+<p />The keyword argument <var>prng</var> specifies which pseudo random algorithm will
+be used for generating security parameters.
+<p />The keyword argument <var>version</var> specifies which TLS protocol version will be
+used for negotiation. However the real version will be decided by target server.
+<p />The keyword argument <var>session</var> is for future extension, so do not specify.
+<p />If the keyword argument <var>handshake</var> #f then the procedure won't do
+TLS handshake after the socket creation so users must do it manually with
+<code>tls-client-handshake</code> procedure described below.
+<p />
+The keyword argument <var>certificates</var> is for certificate request message.
+The value must be a list of x509 certificates. If the certificates argument
+is null, then the procedures send empty certificate list to the server as
+a response of certificate request message.
+<p />The keyword argument <var>private-key</var> specifies which private key is used.
+The value must be private key object described in <a href="section77.html#crypto">"(crypto)"</a>.
+This is needed if the target server only supports RSA key exchange protocol.
 </div>
 <p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="*rfc3986-unreserved-char-set*1999">
-      <span class="name" name="*rfc3986-unreserved-char-set*">*rfc3986-unreserved-char-set*</span>
+    <span class="define-category">Function</span>
+    <a name="tls-client-handshake tls-socket1976">
+      <span class="name" name="tls-client-handshake tls-socket">tls-client-handshake <span class="args">tls-socket</span></span>
     </a>
   </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="*rfc2396-unreserved-char-set*2000">
-      <span class="name" name="*rfc2396-unreserved-char-set*">*rfc2396-unreserved-char-set*</span>
-    </a>
-  </div>
-<div class="desc">Charsets which contains no escape needed characters.
-<p />There is slight difference between RFC2396 and RFC3986. This library uses
-RFC3986 charset by default to encode.
+<div class="desc">Do client side handshake and return a TLS socket. The procedure must
+*NOT* be called if the socket is created with <var>handshake</var> keyword argument
+#t.
+<p />CAUTION: This procedure needs to be called only once and calling more than once
+might cause infinite loop or raise an error.
 </div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-server-tls-socket1977">
+    <span class="name" name="make-server-tls-socket">make-server-tls-socket</span>
+  </a>
+ <span class="args">service certificates :key (prng (secure-randome RC4))
+ (version *tls-version-1.2*)
+ (private-key #f) (authorities '())
+ :allow-other-keys opt</span></div>
+<div class="desc"><var>service</var> must be string. <var>certificates</var> must be a
+list of x509 certificate.
+<p />Creates a server TLS socket. <var>service</var> and <var>opt</var> will be passed to
+<code>make-server-socket</code> described in 
+<a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+<p />The keyword arguments <var>prng</var> and <var>version</var> are the same meaning as
+<code>make-client-tls-socket</code>.
+<p />The keyword argument <var>private-key</var> is used the same as client socket
+the difference is that it is used if the client side only supports RSA key
+exchange.
+<p />The keyword argument <var>authorities</var> must be a list of x509 certificate and
+if this is not empty list then the server socket will send certificate request
+message to the client. 
+<p />CAUTION: the <var>authorities</var> keyword argument currently doesn't check
+the certificate signature but only issuer DN.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="tls-socket-send tls-socket bytevector flags1978">
+      <span class="name" name="tls-socket-send tls-socket bytevector flags">tls-socket-send <span class="args">tls-socket bytevector flags</span></span>
+    </a>
+  </div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p /><var>flags</var> must be non negative exact integer.
+<p />Sends given bytevector to <var>tls-socket</var>. <var>flags</var> are described in
+the section <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>. The packet
+will be encrypted by <var>tls-socket</var>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="tls-socket-recv tls-socket size flags1979">
+      <span class="name" name="tls-socket-recv tls-socket size flags">tls-socket-recv <span class="args">tls-socket size flags</span></span>
+    </a>
+  </div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p /><var>size</var> and <var>flags</var> must be non negative exact integer.
+<p />Receives decrypted packet from <var>tls-socket</var>. <var>size</var> indicates how many
+octets the procedure should receive, however it might return less octet.
+<var>flags</var> will be passed to <code>socket-recv</code>.
+<p />NOTE: <var>tls-socket</var> have its own buffer to return the value, so that the
+procedure can take <var>size</var> argument.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-close1980">
+    <span class="name" name="tls-socket-close">tls-socket-close</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Sends close notify alert to the socket and close it.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-closed?1981">
+    <span class="name" name="tls-socket-closed?">tls-socket-closed?</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Returns #t if the given socket is closed, otherwise #f.
+<p />NOTE: this procedure checks if session is closed. So the real socket might not
+be closed yet.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-accept1982">
+    <span class="name" name="tls-socket-accept">tls-socket-accept</span>
+  </a>
+ <span class="args">tls-socket :key (handshake #t) (raise-error #t)</span></div>
+<div class="desc"><var>tls-socket</var> must be a server TLS socket created by
+<code>make-server-tls-socket</code>.
+<p />Wait for an incoming connection request and returns a fresh connected client
+socket.
+<p />If the keyword argument <var>handshake</var> is #f then the handshake must be done
+by manually with <code>tls-server-handshake</code> described blow.
+<p />The keyword argument <var>raise-error</var> will be passed to
+<code>tls-server-handshake</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-server-handshake1983">
+    <span class="name" name="tls-server-handshake">tls-server-handshake</span>
+  </a>
+ <span class="args">tls-socket :key (raise-error #t)</span></div>
+<div class="desc">Do server side TLS handshake and returns a TLS socket. The procedure must
+*NOT* be called if the socket is created with <var>handshake</var> keyword argument
+#t.
+<p />If the keyword argument <var>raise-error</var> is #f then it won't raise an error
+when something happens.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1984">
+    <span class="name" name="tls-socket-peer">tls-socket-peer</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-peer1985">
+    <span class="name" name="tls-socket-peer">tls-socket-peer</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-peer</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-name1986">
+    <span class="name" name="tls-socket-name">tls-socket-name</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-name</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-info-values1987">
+    <span class="name" name="tls-socket-info-values">tls-socket-info-values</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Return peer of given <var>tls-socket</var> or #f. This procedure is TLS
+version of <code>socket-info-values</code>.
+<p />For more details, see <a href="section611.html#lib.sagittarius.socket">(sagittarius socket)</a>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.2*1988">
+      <span class="name" name="*tls-version-1.2*">*tls-version-1.2*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0303</code> for TLS 1.2</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.1*1989">
+      <span class="name" name="*tls-version-1.1*">*tls-version-1.1*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0302</code> for TLS 1.1</div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*tls-version-1.0*1990">
+      <span class="name" name="*tls-version-1.0*">*tls-version-1.0*</span>
+    </a>
+  </div>
+<div class="desc">Constant value of <code>#x0301</code> for TLS 1.0</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-port1991">
+    <span class="name" name="tls-socket-port">tls-socket-port</span>
+  </a>
+ <span class="args">tls-socket :optional (close? #t)</span></div>
+<div class="desc"><var>tls-socket</var> must be the socket created by the procedure
+<code>make-client-tls-socket</code>.
+<p />Returns input/output-port of given <var>tls-socket</var>.
+<p />If optional argument <var>close?</var> is #f then it won't close the socket when the
+port is closed or GCed.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="tls-socket-input-port1992">
+    <span class="name" name="tls-socket-input-port">tls-socket-input-port</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="define"><span class="define-category">Function</span><a name="tls-socket-output-port1993">
+    <span class="name" name="tls-socket-output-port">tls-socket-output-port</span>
+  </a> <span class="args">tls-socket</span></div>
+<div class="desc">Convert the given TLS socket to input and output port, respectively.
+<p />The given socket won't be closed when the port is closed or GCed. So it is the
+users responsibility to close.
+</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1994"><span class="section-number">7.33.1</span>Integration methods</a>
+  </h4>
+<p />The methods listed below are convenience methods to use TLS socket and
+usual socket without changing code.
+<p /><div class="define"><span class="define-category">Method</span><a name="socket-close1995">
+    <span class="name" name="socket-close">socket-close</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-send1996">
+    <span class="name" name="socket-send">socket-send</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) data :optional (flags 0)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-recv1997">
+    <span class="name" name="socket-recv">socket-recv</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) size :optional (flags 0)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-accept1998">
+    <span class="name" name="socket-accept">socket-accept</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;) . opt</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-accept1999">
+    <span class="name" name="socket-accept">socket-accept</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) (key &lt;keyword&gt;) . dummy</span></div>
+<div class="define"><span class="define-category">Method</span><a name="call-with-socket2000">
+    <span class="name" name="call-with-socket">call-with-socket</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;) proc</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-peer2001">
+    <span class="name" name="socket-peer">socket-peer</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-name2002">
+    <span class="name" name="socket-name">socket-name</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-info-values2003">
+    <span class="name" name="socket-info-values">socket-info-values</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-port2004">
+    <span class="name" name="socket-port">socket-port</span>
+  </a>
+ <span class="args">(socket &lt;tls-socket&gt;) :optional (close? #t)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-input-port2005">
+    <span class="name" name="socket-input-port">socket-input-port</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="socket-output-port2006">
+    <span class="name" name="socket-output-port">socket-output-port</span>
+  </a> <span class="args">(socket &lt;tls-socket&gt;)</span></div>
 
-</section>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section732.html">(rfc tls) - TLS protocol library</a>
+    <a class="prev" href="section732.html">(rfc sftp) - SFTP library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section734.html">(rfc uuid) - UUID generate library</a>
+    <a class="next" href="section734.html">(rfc uri) - Parse and construct URIs</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-02-13T19:26:31+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
   </div>
 </html>

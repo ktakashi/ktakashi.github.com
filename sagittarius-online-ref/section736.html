@@ -6,232 +6,109 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section735.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="prev" href="section735.html">(rfc uuid) - UUID generate library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section737.html">RPC support framework</a>
+    <a class="next" href="section737.html">(rfc zlib) - zlib compression library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.zlib"><span class="section-number">7.36</span>(rfc zlib) - zlib compression library</a>
+    <a class="section.anchor" name="rfc.x.509"><span class="section-number">7.36</span>(rfc x.509) - X.509 certificate utility library</a>
   </h3>
+<p />This library does not support whole feature of X.509, it just parse and verify
+a message and signature. So it can not verify certificate itself.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc zlib)2040">
-      <span class="name" name="(rfc zlib)">(rfc zlib)</span>
+    <a name="(rfc x.509)2044">
+      <span class="name" name="(rfc x.509)">(rfc x.509)</span>
     </a>
   </div>
-<div class="desc">This library provides the binding for zlib compression library. For now,
-it only provides the highest level APIs.
-</div>
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;zlib-error2041">
-      <span class="name" name="&amp;zlib-error">&amp;zlib-error</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Function</span><a name="zlib-error?2042">
-    <span class="name" name="zlib-error?">zlib-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-zlib-stream2043">
-    <span class="name" name="condition-zlib-stream">condition-zlib-stream</span>
-  </a> <span class="args">zlib-error</span></div>
-<div class="desc">Subcondition of <code>&amp;error</code>.
-<p />This condition is raised when zlib process is finished unsuccessfully. You can
-obtain the cause z-stream with the <code>condition-zlib-stream</code> procedure and
-get the detail message with the <code>zlib-error-message</code> procedure. When error
-occurred, however, it is raised with <code>message-condition</code> and it has the
-error message with. So you can simply get it with <code>condition-message</code>
-procedure.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="zlib-error-message2044">
-    <span class="name" name="zlib-error-message">zlib-error-message</span>
-  </a> <span class="args">z-stream</span></div>
-<div class="desc"><var>Z-stream</var> must be z-stream object.
-<p />Retrieve error message from <var>z-stream</var>. If <var>z-stream</var> does not have any
-error message and this procedure is called, the behaviour is unspecified.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-deflating-output-port2045">
-    <span class="name" name="open-deflating-output-port">open-deflating-output-port</span>
+<div class="desc">Exports X.509 utility procedures.</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate2045">
+    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
+  </a> <span class="args">(in &lt;port&gt;)</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate2046">
+    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
   </a>
- <span class="args">sink :key compression-level buffer-size window-bits memory-level
- strategy dictionary owner?</span></div>
-<div class="desc"><var>Sink</var> must be binary output port. Creates a custom binary output
-port. The port deflates its input and put the result to <var>sink</var>. With the
-optional keys, you can specify the following conditions:
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <var>compression-level</var>
-      </dt>
-      <dd class="dl-item-desc">You can specify an exact integer between 1 and 9 (inclusive) to
-<var>compression-level</var>. When it is omitted, a default compression level is
-used, which is usually 6.
-<p />The following constants are defined to specify <var>compression-level</var>
-conveniently:
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_NO_COMPRESSION2046">
-          <span class="name" name="Z_NO_COMPRESSION">Z_NO_COMPRESSION</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_BEST_SPEED2047">
-          <span class="name" name="Z_BEST_SPEED">Z_BEST_SPEED</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_BEST_COMPRESSION2048">
-          <span class="name" name="Z_BEST_COMPRESSION">Z_BEST_COMPRESSION</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_DEFAULT_COMPRESSION2049">
-          <span class="name" name="Z_DEFAULT_COMPRESSION">Z_DEFAULT_COMPRESSION</span>
-        </a>
-      </div>
-</dd>
-      <dt class="dl-item-title">
-        <var>buffer-size</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies the buffer size of the port in bytes.
-The default is 4096.
-</dd>
-      <dt class="dl-item-title">
-        <var>window-bits</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies the size of the window in exact
-integer. Typically the value should be between 8 and 15, inclusive, and it
-specifies the base two logarithm of the window size used in compression. Larger
-number yields better compression ratio, but more memory usage. The default value
-is 15.
-</dd>
-      <dt class="dl-item-title">
-        <var>memory-level</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies how much memory should be allocated to
-keep the internal state during compression. 1 means smallest memory which causes
-slow and less compression. 9 means fastest and best compression with the largest
-amount of memory. The default value is 8.
-</dd>
-      <dt class="dl-item-title">
-        <var>strategy</var>
-      </dt>
-      <dd class="dl-item-desc">To fine tune compression algorithm, you can use the
-<var>strategy</var> argument. The following constants are defined as the valid value
-as <var>strategy</var>.
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_DEFAULT_STRATEGY2050">
-          <span class="name" name="Z_DEFAULT_STRATEGY">Z_DEFAULT_STRATEGY</span>
-        </a>
-      </div>
-<div class="desc">The default strategy, suitable for most ordinary data.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_FILTERED2051">
-          <span class="name" name="Z_FILTERED">Z_FILTERED</span>
-        </a>
-      </div>
-<div class="desc">Suitable for data generated by filters (or predictors). Filtered data
-consists mostly of small values with a somewhat compress them better. The
-effect of this is to force more huffman coding and less string matching.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_HUFFMAN_ONLY2052">
-          <span class="name" name="Z_HUFFMAN_ONLY">Z_HUFFMAN_ONLY</span>
-        </a>
-      </div>
-<div class="desc">Force to use huffman encoding only.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_RLE2053">
-          <span class="name" name="Z_RLE">Z_RLE</span>
-        </a>
-      </div>
-<div class="desc">This is designed to be almost as fast as Z_HUFFMAN_ONLY, but gives better
-compression for PNG image data.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_FIXED2054">
-          <span class="name" name="Z_FIXED">Z_FIXED</span>
-        </a>
-      </div>
-<div class="desc">This prevents the use of dynamic huffman codes, allowing for a simpler
-decoder for special applications.</div>
-The choice of <var>strategy</var> only affects compression ratio and speed. Any
-choice produces correct and decompressable data.
-</dd>
-      <dt class="dl-item-title">
-        <var>dictionary</var>
-      </dt>
-      <dd class="dl-item-desc">You can give an initial dictionary to the
-<var>dictionary</var> argument to be used in compression. The compressor and
-decompressor must use exactly the same dictionary.
-</dd>
-      <dt class="dl-item-title">
-        <var>owner?</var>
-      </dt>
-      <dd class="dl-item-desc">If this argument is specified true value, the created
-port automatically closes the given output port <var>sink</var> when it is closed.
-</dd>
-    </dl>
-  </div>
-<p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-inflating-input-port2055">
-    <span class="name" name="open-inflating-input-port">open-inflating-input-port</span>
+ <span class="args">(sequence &lt;asn.1-sequence&gt;)</span></div>
+<div class="desc">Creates an X.509 certificate object from given binary input port or ASN.1
+sequence object (second form).
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate?2047">
+    <span class="name" name="x509-certificate?">x509-certificate?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Return #t if the <var>o</var> is X.509 certificate object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-version2048">
+    <span class="name" name="x509-certificate-get-version">x509-certificate-get-version</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return version of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-serial-number2049">
+    <span class="name" name="x509-certificate-get-serial-number">x509-certificate-get-serial-number</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return serial number of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-issuer-dn2050">
+    <span class="name" name="x509-certificate-get-issuer-dn">x509-certificate-get-issuer-dn</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return issuer DN of given X.509 certificate object as X.509 principal.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-subject-dn2051">
+    <span class="name" name="x509-certificate-get-subject-dn">x509-certificate-get-subject-dn</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return subject DN of given X.509 certificate object as X.509 principal.
+<p />NOTE: These Issuer DN and Subject DN getters return &lt;x.509-principal&gt; object,
+however I did not implement any utility for this class, so it's just useless
+for now.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-before2052">
+    <span class="name" name="x509-certificate-get-not-before">x509-certificate-get-not-before</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return start date of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-after2053">
+    <span class="name" name="x509-certificate-get-not-after">x509-certificate-get-not-after</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return end date of given X.509 certificate object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature2054">
+    <span class="name" name="x509-certificate-get-signature">x509-certificate-get-signature</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return signature of given X.509 certificate object. 
+<p />NOTE: This signature is not for <code>verify</code> described below.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature-algorithm2055">
+    <span class="name" name="x509-certificate-get-signature-algorithm">x509-certificate-get-signature-algorithm</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return signature algorithm of given X.509 certificate object as an OID
+string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-public-key2056">
+    <span class="name" name="x509-certificate-get-public-key">x509-certificate-get-public-key</span>
+  </a> <span class="args">x509</span></div>
+<div class="desc">Return public key of given X.509 certificate object. The return value is
+<code>&lt;public-key&gt;</code> described in the section
+<a href="section77.html#crypto">(crypto) - Cryptographic library</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="verify2057">
+    <span class="name" name="verify">verify</span>
+  </a> <span class="args">x509 message signature
+  :key (verify pkcs1-emsa-v1.5-verify) (hash SHA-1)</span></div>
+<div class="desc"><var>message</var> and <var>signature</var> must be bytevector.
+<p />Verify given <var>message</var> with <var>signature</var> and <var>x509</var> certificate.
+<p />This procedure uses the <code>verify</code> procedure in <code>(crypto)</code> library. The
+keyword arguments will be passed to it. For more detail, see
+<a href="section77.html#crypto">(crypto) - Cryptographic library</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="check-validity2058">
+    <span class="name" name="check-validity">check-validity</span>
   </a>
- <span class="args">source :key buffer-size window-bits dictionary owner?</span></div>
-<div class="desc"><var>Source</var> must be a binary input port.
-<p />The <code>open-inflating-input-port</code> creates a custom binary input port, which
-reads compressed binary data from the given port <var>source</var> and decompresses
-the read data. When <var>source</var> port supports both <code>port-position</code> and
-<code>set-port-position!</code> then the procedure will set <var>source</var> position
-to offset of used bytes length when the created custom port is being closed.
-Thus if the <var>source</var> port contains mixture of deflated data and non
-deflated data then the custom port will only read deflated data and won't
-forward the original port position beyond it no matter how big the
-<var>buffer-size</var> is specified.
-<p />The meaning of <var>buffer-size</var> is the same as
- <code>open-deflating-output-port</code>.
-<p />The meaning of <var>window-bits</var> is almost the same, except if a value increased
-by 32 is given, the inflating port automatically detecs whether the source
-stream is zlib or gzip by its header.
-<p />If the input data is compressed with specified dictionary, the same dictionary
-must be given to <var>dictionary</var> argument. Otherwise &amp;zlib-error condition is
-raised.
+ <span class="args">x509 :optional (date (current-date))</span></div>
+<div class="desc">Validate if the given certificate is valid in given <var>date</var>. Return #t
+if it's valid, otherwise raises <code>&amp;assertion</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="inflate-bytevector2056">
-    <span class="name" name="inflate-bytevector">inflate-bytevector</span>
-  </a> <span class="args">bv opts ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deflate-bytevector2057">
-    <span class="name" name="deflate-bytevector">deflate-bytevector</span>
-  </a> <span class="args">bv opts ...</span></div>
-<div class="desc">Inflate/deflate given bytevector <var>bv</var> respectively.
-<p />These are convenient procedures. It uses <code>open-inflating-input-port</code> or
-<code>open-deflating-output-port</code> to inflate/deflate.
-<p />The <var>opts</var> will be passed to underlying procedures.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="crc322058">
-    <span class="name" name="crc32">crc32</span>
-  </a> <span class="args">bv :optional (checksum 0)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="adler322059">
-    <span class="name" name="adler32">adler32</span>
-  </a> <span class="args">bv :optional (checksum 0)</span></div>
-<div class="desc">Returns CSC32/Adler32 checksum of bytevector <var>bv</var>, respectively.
-<p />If optional <var>checksum</var> is given, then returned checksum is an update of
-<var>checksum</var> by <var>bv</var>.
-</div>
+
 </section>
   <div class="prev-next">
-    <a class="prev" href="section735.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="prev" href="section735.html">(rfc uuid) - UUID generate library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section737.html">RPC support framework</a>
+    <a class="next" href="section737.html">(rfc zlib) - zlib compression library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-02-13T19:26:31+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
   </div>
 </html>
