@@ -8,358 +8,285 @@
   <div class="prev-next">
     <a class="prev" href="section75.html">(binary pack) - Packing binary data</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section77.html">(crypto) - Cryptographic library</a>
+    <a class="next" href="section77.html">(util bytevector) - Bytevector utility library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.bytevector"><span class="section-number">7.6</span>(util bytevector) - Bytevector utility library</a>
+    <a class="section.anchor" name="util.buffer"><span class="section-number">7.6</span>(util buffer) - Buffer utilities</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util bytevector)1379">
-      <span class="name" name="(util bytevector)">(util bytevector)</span>
+    <a name="(util buffer)1380">
+      <span class="name" name="(util buffer)">(util buffer)</span>
     </a>
   </div>
-<div class="desc">This library provides bytevector utilities which are not provided as
-builtin procedures such as <code>bytevector-&gt;integer</code>.
-<p />All procedures take bytevector as its arguments.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-xor1380">
-    <span class="name" name="bytevector-xor">bytevector-xor</span>
-  </a> <span class="args">bv1 bv2 ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-xor!1381">
-    <span class="name" name="bytevector-xor!">bytevector-xor!</span>
-  </a> <span class="args">out bv1 bv2 ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-ior1382">
-    <span class="name" name="bytevector-ior">bytevector-ior</span>
-  </a> <span class="args">bv1 bv2 ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-ior!1383">
-    <span class="name" name="bytevector-ior!">bytevector-ior!</span>
-  </a> <span class="args">out bv1 bv2 ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-and1384">
-    <span class="name" name="bytevector-and">bytevector-and</span>
-  </a> <span class="args">bv1 bv2 ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-and!1385">
-    <span class="name" name="bytevector-and!">bytevector-and!</span>
-  </a> <span class="args">out bv1 bv2 ...</span></div>
-<div class="desc">Compute exclusive or, logical or and logical and for each given
-bytevectors, respectively.
-<p />The procedures without <code>!</code> freshly allocate a new bytevector as it's return
-value. If the given bytevectors are not the same sized, then the smallest 
-size will be allocated.
-<p />The procedures with <code>!</code> takes first argument as the storage of the result
-and return it.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-slices1386">
-    <span class="name" name="bytevector-slices">bytevector-slices</span>
-  </a> <span class="args">bv k :key (padding #f)</span></div>
-<div class="desc">Slices the given bytevector <var>bv</var> into <var>k</var> size and returns
-a list of bytevectors.
-<p />The keyword argument <var>padding</var> is given and it must be a procedure accept
-one argument, then it will be called when the last chunk of bytevector is not
-size of <var>k</var>. The procedure should return padded bytevector and it doesn't
-check the returned value nor it's size so it is caller's responsibility to
-make sure the returned value is a bytevector and the size is <var>k</var>.
-<p /><pre class="snipet"><span class="snipet-code">(bytevector-slices #vu8(1 2 3 4 5 6) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(#vu8(1 2 3) #vu8(4 5 6))</span></pre>
-<pre class="snipet"><span class="snipet-code">(bytevector-slices #vu8(1 2 3 4) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(#vu8(1 2 3) #vu8(4))</span></pre>
-<pre class="codeblock">;; the given bytevector bv is #vu8(4)
-(bytevector-slices #vu8(1 2 3 4) 3 :padding (lambda (bv) #vu8(4 5 6)))
-<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(#vu8(1 2 3) #vu8(4 5 6))</span></pre>
-<pre class="codeblock">;; this is valid as well so that bytevector-slices doesn't check the 
-;; return value
-(bytevector-slices #vu8(1 2 3 4) 3 :padding (lambda (bv) #f))
-<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(#vu8(1 2 3) #f)</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-split-at*1387">
-    <span class="name" name="bytevector-split-at*">bytevector-split-at*</span>
-  </a> <span class="args">bv k :key (padding #f)</span></div>w
-<div class="desc">Splits bytevector into 2 bytevectors and returns 2 values of bytevectors.
-<p />The first returned bytevector size will be <var>k</var> and its content is given
-bytevector's value starting from 0 to <var>k</var> - 1. The second returned value
-is the rest of values of <var>bv</var>.
-<p />If size of the given bytevector <var>bv</var> is less than <var>k</var> then the second
-value of returned bytevector will be empty bytevector.
-<p />The keyword argument <var>padding</var> is given and it must be a procedure accept
-one argument, then it will be called when given bytevector's size is less than
-<var>k</var> and first returned value will the result of <var>padding</var>.
-<p /><pre class="snipet"><span class="snipet-code">(bytevector-split-at* #vu8(1 2 3 4 5) 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3) and #vu8(4 5)</span></pre>
-<pre class="codeblock">(bytevector-split-at* #vu8(1 2) 3 :padding (lambda (bv) #vu8(1 2 3)))
-<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">#vu8(1 2 3) and #vu8()</span></pre>
-<pre class="codeblock">(bytevector-split-at* #vu8(1 2) 3 :padding (lambda (bv) #f))
-<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">#f and #vu8()</span></pre>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="-&gt;odd-parity1388">
-    <span class="name" name="-&gt;odd-parity">-&gt;odd-parity</span>
-  </a>
- <span class="args">bv :optional (start 0) (end (bytevector-length bv))</span></div>
-<div class="define"><span class="define-category">Function</span><a name="-&gt;odd-parity!1389">
-    <span class="name" name="-&gt;odd-parity!">-&gt;odd-parity!</span>
-  </a>
- <span class="args">bv :optional (start 0) (end (bytevector-length bv))</span></div>
-<div class="desc">Compute odd parity of the given bytevector <var>bv</var> and return the
-result of bytevector.
-<p />If the second procedure is used, then <var>bv</var> will be modified.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector<?1390">
-    <span class="name" name="bytevector<?">bytevector&lt;?</span>
-  </a> <span class="args">bv1 bv2 rest ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector&gt;?1391">
-    <span class="name" name="bytevector&gt;?">bytevector&gt;?</span>
-  </a> <span class="args">bv1 bv2 rest ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector<=?1392">
-    <span class="name" name="bytevector<=?">bytevector&lt;=?</span>
-  </a> <span class="args">bv1 bv2 rest ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector&gt;=?1393">
-    <span class="name" name="bytevector&gt;=?">bytevector&gt;=?</span>
-  </a> <span class="args">bv1 bv2 rest ...</span></div>
-<div class="desc">Comparing given bytevectors.
-<p />The comparison is done by comparing the elements of bytevectors from
-index <code>0</code>. The comparison procedures are <code>&lt;</code>, <code>&gt;</code>, <code>&lt;=</code>
-and <code>&gt;=</code>, respectively.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;hex-string1394">
-    <span class="name" name="bytevector-&gt;hex-string">bytevector-&gt;hex-string</span>
-  </a> <span class="args">bv :key (upper? #t)</span></div>
-<div class="desc">Converts given bytevector <var>bv</var> to hex string.
-<p />The keyword argument <var>upper?</var> is specified with true value, then the
-procedures converts to upper case hex values, otherwise lower case.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hex-string-&gt;bytevector1395">
-    <span class="name" name="hex-string-&gt;bytevector">hex-string-&gt;bytevector</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Converts given hex string <var>string</var> to bytevector.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-reverse!1396">
-    <span class="name" name="bytevector-reverse!">bytevector-reverse!</span>
-  </a>
- <span class="args">bv :optional (start 0) (end (bytevector-length bv))</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-reverse1397">
-    <span class="name" name="bytevector-reverse">bytevector-reverse</span>
-  </a>
- <span class="args">bv :optional (start 0) (end (bytevector-length bv))</span></div>
-<div class="desc">Reverse the given bytevector <var>bv</var>.
-<p />Optional arguments <var>start</var> and <var>end</var> controls from and until where
-the procedure reverses the bytevector. <var>end</var> is exclusive.
-<p />The <code>bytevector-reverse!</code> reverses destructively.
+<div class="desc">This library provides buffer utitlities. Currently, it only provides
+pre-allocated buffer and its procedures.
 </div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1398"><span class="section-number">7.6.1</span>SRFI-13 convension APIs</a>
+    <a class="section.anchor" name="G1381"><span class="section-number">7.6.1</span>Pre-allocated buffer</a>
   </h4>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1399"><span class="section-number">7.6.1.1</span>U8 sets</a>
-  </h5>
-<p />U8 set is a list of integers which range is in between <code>0 &lt;= n &lt;= 255</code>.
-This is useful to handle bytevectors as if they are ASCII strings.
-<p /><div class="define"><span class="define-category">Function</span><a name="u8?1400">
-    <span class="name" name="u8?">u8?</span>
-  </a> <span class="args">o</span></div>
-<div class="desc">Returns #t if given <var>o</var> is an integer in range of 
-<code>0 &lt;= <var>o</var> &lt;= 255</code>, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="u8-set?1401">
-    <span class="name" name="u8-set?">u8-set?</span>
-  </a> <span class="args">o</span></div>
-<div class="desc">Returns #t if given <var>o</var> is a list and its all elements satisfy
-<code>u8?</code>. Otherwise #f.
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="<pre-allocated-buffer&gt;1382">
+      <span class="name" name="<pre-allocated-buffer&gt;">&lt;pre-allocated-buffer&gt;</span>
+    </a>
+  </div>
+<div class="desc">Parent type of pre-allocated buffer. This library doesn't expose
+the record constructor for this type.
+<p />This type contains <code>buffer</code> and <code>size</code> fields.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="u8-set-contains?1402">
-    <span class="name" name="u8-set-contains?">u8-set-contains?</span>
-  </a> <span class="args">u8-set u8</span></div>
-<div class="desc"><var>u8-set</var> must satisfy <code>u8-set?</code>. <var>u8</var> should satisfy
-<code>u8</code>. The procedure doesn't check if arguments satify this.
-<p />Returns #t if given <var>u8-set</var> contains <var>u8</var>.
+<p /><div class="define"><span class="define-category">Function</span><a name="pre-allocated-buffer?1383">
+    <span class="name" name="pre-allocated-buffer?">pre-allocated-buffer?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is a pre-allocated buffer. Otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="pre-allocated-buffer-buffer1384">
+    <span class="name" name="pre-allocated-buffer-buffer">pre-allocated-buffer-buffer</span>
+  </a> <span class="args">buffer</span></div>
+<div class="desc">Returns value of <code>buffer</code> field of given <var>buffer</var>.
+<p />The type of <code>buffer</code> field is implementation specific.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;u8-set1403">
-    <span class="name" name="string-&gt;u8-set">string-&gt;u8-set</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Converts given <var>string</var> to list of integers. Given <var>string</var> should
-only contains in range of ASCII characters but the procedure doesn't check. 
-Thus the procedure may return a list doesn't satify <code>u8-set?</code>.
-It is users' responsibility to pass ASCII string.
+<p /><div class="define"><span class="define-category">Function</span><a name="pre-allocated-buffer-size1385">
+    <span class="name" name="pre-allocated-buffer-size">pre-allocated-buffer-size</span>
+  </a> <span class="args">buffer</span></div>
+<div class="desc">Returns value of <code>size</code> field of given <var>buffer</var>.
+<p />The returning value shall represents how much buffer of the given <var>buffer</var>
+is consumed.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="char-set-&gt;u8-set1404">
-    <span class="name" name="char-set-&gt;u8-set">char-set-&gt;u8-set</span>
-  </a> <span class="args">cset</span></div>
-<div class="desc">Converts given char-set <var>cset</var> to u8 set. This procedure returns
-a list that satify <code>u8-set?</code> by dropping outside of ASCII characters.
-</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1405"><span class="section-number">7.6.1.2</span>Bytevectors as ASCII strings</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-fold1406">
-    <span class="name" name="bytevector-fold">bytevector-fold</span>
-  </a>
- <span class="args">kons knil bv :optional start end</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-fold-right1407">
-    <span class="name" name="bytevector-fold-right">bytevector-fold-right</span>
-  </a>
- <span class="args">kons knil bv :optional start end</span></div>
-<div class="desc">Iterate given <var>bv</var> from <var>start</var> until <var>end</var>. <var>kons</var> is
-called by each element with result of the <var>kons</var>. The inital value is
-<var>knil</var>.
-<p />This is analogy of <var>fold-left</var> and <var>fold-right</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-take1408">
-    <span class="name" name="bytevector-take">bytevector-take</span>
-  </a> <span class="args">bv n</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-take-right1409">
-    <span class="name" name="bytevector-take-right">bytevector-take-right</span>
-  </a> <span class="args">bv n</span></div>
-<div class="desc">Subtract bytevector <var>bv</var> until index <var>n</var> (exclusive).
-<p />The <code>bytevector-take</code> takes from left and the <code>bytevector-take-right</code>
-takes from right.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-drop1410">
-    <span class="name" name="bytevector-drop">bytevector-drop</span>
-  </a> <span class="args">bv n</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-drop-right1411">
-    <span class="name" name="bytevector-drop-right">bytevector-drop-right</span>
-  </a> <span class="args">bv n</span></div>
-<div class="desc">Drops given <var>bv</var> until index <var>n</var> (exclusive).
-<p />The <code>bytevector-drop</code> drops from left and the <code>bytevector-drop-right</code>
-drops from right.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-trim1412">
-    <span class="name" name="bytevector-trim">bytevector-trim</span>
-  </a>
- <span class="args">bv :optional criterion start end</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-trim-right1413">
-    <span class="name" name="bytevector-trim-right">bytevector-trim-right</span>
-  </a>
- <span class="args">bv :optional criterion start end</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-trim-both1414">
-    <span class="name" name="bytevector-trim-both">bytevector-trim-both</span>
-  </a>
- <span class="args">bv :optional criterion start end</span></div>
-<div class="desc">Trims given bytevector <var>bv</var> from left, right and both, respectively.
-<p />The optional argument <var>criterion</var> specifies how to trim. By default, it
-uses whitespaces. <code>" \r\f\v\n\t"</code>.
-<p />The optional arguments <var>start</var> and <var>end</var> specify from and until where
-the procedure trims. The default value is 0 for <var>start</var> and the length
-of given bytevector for <var>end</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-pad1415">
-    <span class="name" name="bytevector-pad">bytevector-pad</span>
-  </a> <span class="args">bv n :optional (u8 0) start end</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-pad-right1416">
-    <span class="name" name="bytevector-pad-right">bytevector-pad-right</span>
-  </a> 
- <span class="args">bv n :optional (u8 0) start end</span></div>
-<div class="desc">Pads given bytevector <var>bv</var> with <var>n</var> elements of <var>u8</var>.
-The <code>bytevector-pad</code> pads left side of given <var>bv</var>. The 
-<code>bytevector-pad-right</code> pads right side of given <var>bv</var>.
-<p />The optional arguments <var>start</var> and <var>end</var> specify from and until where
-the procedure pads. The default value is 0 for <var>start</var> and the length
-of given bytevector for <var>end</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-prefix-length1417">
-    <span class="name" name="bytevector-prefix-length">bytevector-prefix-length</span>
-  </a>
- <span class="args">bv1 bv2 :optional start1 end1 start2 end2</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-suffix-length1418">
-    <span class="name" name="bytevector-suffix-length">bytevector-suffix-length</span>
-  </a>
- <span class="args">bv1 bv2 :optional start1 end1 start2 end2</span></div>
-<div class="desc">Return the length of the longest common prefix/suffix of the two 
-bytevectors.
-<p />The optional start/end indices restrict the comparison to the indicated 
-sub bytevectors of <var>bv1</var> and <var>bv2</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-prefix?1419">
-    <span class="name" name="bytevector-prefix?">bytevector-prefix?</span>
-  </a>
- <span class="args">bv1 bv2 :optional start1 end1 start2 end2</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-suffix?1420">
-    <span class="name" name="bytevector-suffix?">bytevector-suffix?</span>
-  </a>
- <span class="args">bv1 bv2 :optional start1 end1 start2 end2</span></div>
-<div class="desc">Returns #t if <var>bv1</var> is a prefix/suffix of <var>bv2</var>. Otherwise #f. 
-<p />The optional start/end indices restrict the comparison to the indicated 
-sub bytevectors of <var>bv1</var> and <var>bv2</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-index1421">
-    <span class="name" name="bytevector-index">bytevector-index</span>
-  </a>
- <span class="args">bv criterion :optional start end</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-index-right1422">
-    <span class="name" name="bytevector-index-right">bytevector-index-right</span>
-  </a>
- <span class="args">bv criterion :optional start end</span></div>
-<div class="desc">Searches through the given bytevector <var>bv</var> from the left (right), 
-returning the index of the first occurrence of an element which satisfies
-the <var>criterion</var>.
-<p /><var>criterion</var> can be a u8 value, a u8 set or a procedure.
-<p />If the procedure doesn't find any element satisfies <var>criterion</var>, then
-returns #f.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-skip1423">
-    <span class="name" name="bytevector-skip">bytevector-skip</span>
-  </a>
- <span class="args">bv criterion :optional start end</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-skip-right1424">
-    <span class="name" name="bytevector-skip-right">bytevector-skip-right</span>
-  </a>
- <span class="args">bv criterion :optional start end</span></div>
-<div class="desc">Search through the given bytevector <var>bv</var> from the left (right), 
-returning the index of the first occurrence of an element which does not
-satisfy the <var>criterion</var>.
-<p /><var>criterion</var> can be a u8 value, a u8 set or a procedure.
-<p />If the procedure doesn't find any element which does not satisfy 
-<var>criterion</var>, then returns #f.
-</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="pre-allocated-buffer-reset!1386">
+    <span class="name" name="pre-allocated-buffer-reset!">pre-allocated-buffer-reset!</span>
+  </a> <span class="args">buffer</span></div>
+<div class="desc">Sets 0 to the <code>size</code> field of given <code>buffer</code>.</div>
 <p />
-<div class="define"><span class="define-category">Function</span><a name="bytevector-contains1425">
-    <span class="name" name="bytevector-contains">bytevector-contains</span>
-  </a>
- <span class="args">bv1 bv2 :optional start1 end1 start2 end2</span></div>
-<div class="desc">Returns index of <var>bv1</var> where <var>bv2</var> is found. If <var>bv1</var> doesn't
-contain <var>bv2</var> then returns #f.
-<p />The optional start/end indices restrict the comparison to the indicated 
-sub bytevectors of <var>bv1</var> and <var>bv2</var>.
+</section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1387"><span class="section-number">7.6.2</span>Conditions</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Condition</span>
+    <a name="&amp;pre-allocated-buffer-overflow1388">
+      <span class="name" name="&amp;pre-allocated-buffer-overflow">&amp;pre-allocated-buffer-overflow</span>
+    </a>
+  </div>
+<div class="desc">Buffer overflow condition. This is raised when an operation tries
+to put data exceed the buffer size.
+<p />This condition have <code>data</code> field which contains overflowing data.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-replace1426">
-    <span class="name" name="bytevector-replace">bytevector-replace</span>
-  </a>
- <span class="args">bv1 bv2 start1 end2 :optional start2 end2</span></div>
-<div class="desc">Returns
-<pre class="codeblock">(bytevector-append (bytevector-copy s1 0 start1)
-                   (bytevector-copy s2 start2 end2)
-                   (bytevector-copy s1 end1 (string-length s1)))
-</pre>
+<div class="define"><span class="define-category">Function</span><a name="pre-allocated-buffer-overflow?1389">
+    <span class="name" name="pre-allocated-buffer-overflow?">pre-allocated-buffer-overflow?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is <code>&amp;pre-allocated-buffer-overflow</code>
+condition, otherwise #f.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-tokenize1427">
-    <span class="name" name="bytevector-tokenize">bytevector-tokenize</span>
-  </a>
- <span class="args">bv :optional token-set start end</span></div>
-<div class="desc">Split the given bytevector <var>bv</var> into a list of sub bytevectors,
-where each sub bytevector is a maximal non-empty contigunous sequence of
-elements from the u8 set <var>token-set</var>.
-<p />Optional argument <var>token-set</var> must be a u8 set. By default, it's a
-list of bytes of ASCII graphical characters.
-<p />The optional start/end indices restrict the comparison to the indicated 
-sub bytevectors of <var>bv</var>.
+<div class="define"><span class="define-category">Function</span><a name="pre-allocated-buffer-overflow-data1390">
+    <span class="name" name="pre-allocated-buffer-overflow-data">pre-allocated-buffer-overflow-data</span>
+  </a> <span class="args">condition</span></div>
+<div class="desc">Retrieves <code>data</code> field value of <var>condition</var>.
+<p />The <var>condition</var> must be a <code>&amp;pre-allocated-buffer-overflow</code> condition.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-filter1428">
-    <span class="name" name="bytevector-filter">bytevector-filter</span>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1391"><span class="section-number">7.6.3</span>Binary pre-allocated buffer</a>
+  </h4>
+<p />Binary pre-allocated buffer can be used when users don't want to allocate
+bytevector number of times. This buffer can be used like a bytevector.
+<p /><div class="define"><span class="define-category">Function</span><a name="make-binary-pre-allocated-buffer1392">
+    <span class="name" name="make-binary-pre-allocated-buffer">make-binary-pre-allocated-buffer</span>
+  </a> <span class="args">bv</span></div>
+<div class="desc">Creates pre-allocated buffer with given bytevector <var>bv</var>.
+<p />The returning value is a subtype of <code>&lt;pre-allocated-buffer&gt;</code>.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer?1393">
+    <span class="name" name="binary-pre-allocated-buffer?">binary-pre-allocated-buffer?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is binary pre-allocated buffer, 
+otherwise #f.</div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1394"><span class="section-number">7.6.3.1</span>Operations</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-u8!1395">
+    <span class="name" name="binary-pre-allocated-buffer-put-u8!">binary-pre-allocated-buffer-put-u8!</span>
+  </a> 
+ <span class="args">binary-buffer u8</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-u16!1396">
+    <span class="name" name="binary-pre-allocated-buffer-put-u16!">binary-pre-allocated-buffer-put-u16!</span>
   </a>
- <span class="args">criterion bv :optional start end</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-delete1429">
-    <span class="name" name="bytevector-delete">bytevector-delete</span>
+ <span class="args">binary-buffer u16 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-u32!1397">
+    <span class="name" name="binary-pre-allocated-buffer-put-u32!">binary-pre-allocated-buffer-put-u32!</span>
   </a>
- <span class="args">criterion bv :optional start end</span></div>
-<div class="desc">Filter the bytevector <var>bv</var>, retaining only those elements that 
-satisfy / do not satisfy the <var>criterion</var> argument.
-<p /><var>criterion</var> can be a u8 value, a u8 set or a procedure.
-<p />The optional start/end indices restrict the comparison to the indicated 
-sub bytevectors of <var>bv</var>.
+ <span class="args">binary-buffer u32 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-u64!1398">
+    <span class="name" name="binary-pre-allocated-buffer-put-u64!">binary-pre-allocated-buffer-put-u64!</span>
+  </a>
+ <span class="args">binary-buffer u64 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-s8!1399">
+    <span class="name" name="binary-pre-allocated-buffer-put-s8!">binary-pre-allocated-buffer-put-s8!</span>
+  </a> 
+ <span class="args">binary-buffer s8</span></div>	  
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-s16!1400">
+    <span class="name" name="binary-pre-allocated-buffer-put-s16!">binary-pre-allocated-buffer-put-s16!</span>
+  </a>
+ <span class="args">binary-buffer s16 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-s32!1401">
+    <span class="name" name="binary-pre-allocated-buffer-put-s32!">binary-pre-allocated-buffer-put-s32!</span>
+  </a>
+ <span class="args">binary-buffer s32 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-s64!1402">
+    <span class="name" name="binary-pre-allocated-buffer-put-s64!">binary-pre-allocated-buffer-put-s64!</span>
+  </a>
+ <span class="args">binary-buffer s64 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-f32!1403">
+    <span class="name" name="binary-pre-allocated-buffer-put-f32!">binary-pre-allocated-buffer-put-f32!</span>
+  </a>
+ <span class="args">binary-buffer f32 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-f64!1404">
+    <span class="name" name="binary-pre-allocated-buffer-put-f64!">binary-pre-allocated-buffer-put-f64!</span>
+  </a>
+ <span class="args">binary-buffer f64 endianness</span></div>
+<div class="desc">Appending given integer or flonum to <var>binary-buffer</var>. Setting
+given values uses the following procedures, respectively:
+<p /><code>bytevector-u8-set!</code>
+<code>bytevector-u16-set!</code>
+<code>bytevector-u32-set!</code>
+<code>bytevector-u64-set!</code>
+<code>bytevector-s8-set!</code>
+<code>bytevector-s16-set!</code>
+<code>bytevector-s32-set!</code>
+<code>bytevector-s64-set!</code>
+<code>bytevector-ieee-single-set!</code>
+<code>bytevector-ieee-double-set!</code>
+<p />The <var>endianness</var> is passed to the above procedures if required.
+<p />This procedure also updates the <code>size</code> field of <var>binary-buffer</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-put-bytevector!1405">
+    <span class="name" name="binary-pre-allocated-buffer-put-bytevector!">binary-pre-allocated-buffer-put-bytevector!</span>
+  </a>
+ <span class="args">binary-buffer bv :optional start count</span></div>
+<div class="desc">Appending given bytevector <var>bv</var> to <var>binary-buffer</var>.
+<p />Optional arguments <var>start</var> and <var>count</var> specifies from where of
+<var>bv</var> and how much bytes need to be put. By default, <var>start</var> is 0
+and <var>count</var> is <code>(- (bytevector-length <var>bv</var>) <var>start</var>)</code>.
+<p />
+This procedure also updates the <code>size</code> field of <var>binary-buffer</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-u8!1406">
+    <span class="name" name="binary-pre-allocated-buffer-set-u8!">binary-pre-allocated-buffer-set-u8!</span>
+  </a> 
+ <span class="args">binary-buffer index u8</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-u16!1407">
+    <span class="name" name="binary-pre-allocated-buffer-set-u16!">binary-pre-allocated-buffer-set-u16!</span>
+  </a>
+ <span class="args">binary-buffer index u16 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-u32!1408">
+    <span class="name" name="binary-pre-allocated-buffer-set-u32!">binary-pre-allocated-buffer-set-u32!</span>
+  </a>
+ <span class="args">binary-buffer index u32 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-u64!1409">
+    <span class="name" name="binary-pre-allocated-buffer-set-u64!">binary-pre-allocated-buffer-set-u64!</span>
+  </a>
+ <span class="args">binary-buffer index u64 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-s8!1410">
+    <span class="name" name="binary-pre-allocated-buffer-set-s8!">binary-pre-allocated-buffer-set-s8!</span>
+  </a> 
+ <span class="args">binary-buffer index s8</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-s16!1411">
+    <span class="name" name="binary-pre-allocated-buffer-set-s16!">binary-pre-allocated-buffer-set-s16!</span>
+  </a>
+ <span class="args">binary-buffer index s16 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-s32!1412">
+    <span class="name" name="binary-pre-allocated-buffer-set-s32!">binary-pre-allocated-buffer-set-s32!</span>
+  </a>
+ <span class="args">binary-buffer index s32 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-s64!1413">
+    <span class="name" name="binary-pre-allocated-buffer-set-s64!">binary-pre-allocated-buffer-set-s64!</span>
+  </a>
+ <span class="args">binary-buffer index s64 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-f32!1414">
+    <span class="name" name="binary-pre-allocated-buffer-set-f32!">binary-pre-allocated-buffer-set-f32!</span>
+  </a>
+ <span class="args">binary-buffer index f32 endianness</span></div>
+<div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-f64!1415">
+    <span class="name" name="binary-pre-allocated-buffer-set-f64!">binary-pre-allocated-buffer-set-f64!</span>
+  </a>
+ <span class="args">binary-buffer index f64 endianness</span></div>
+<div class="desc">Setting given integer/flonum to <var>binary-buffer</var>. These procedures
+are anology of the following procedures, respectively:
+<p /><code>bytevector-u8-set!</code>
+<code>bytevector-s8-set!</code>
+<code>bytevector-u16-set!</code>
+<code>bytevector-u32-set!</code>
+<code>bytevector-u64-set!</code>
+<code>bytevector-s16-set!</code>
+<code>bytevector-s32-set!</code>
+<code>bytevector-s64-set!</code>
+<code>bytevector-ieee-single-set!</code>
+<code>bytevector-ieee-double-set!</code>
+<p />The <var>endianness</var> is passed to the above procedures if required.
+<p />This procedure updates the <code>size</code> field of <var>binary-buffer</var> if
+sum of given <var>index</var> and number of bytes set in the buffer exceeds
+the size of the buffer.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-set-bytevector!1416">
+    <span class="name" name="binary-pre-allocated-buffer-set-bytevector!">binary-pre-allocated-buffer-set-bytevector!</span>
+  </a>
+ <span class="args">binary-buffer index bv :optional start count</span></div>
+<div class="desc">Sets the given <var>bv</var> to <var>binary-buffer</var> at position of 
+<var>index</var>.
+<p />Optional arguments <var>start</var> and <var>count</var> specifies from where of
+<var>bv</var> and how much bytes need to be put. By default, <var>start</var> is 0
+and <var>count</var> is <code>(- (bytevector-length <var>bv</var>) <var>start</var>)</code>.
+<p />This procedure updates the <code>size</code> field of <var>binary-buffer</var> if
+sum of given <var>index</var> and number of bytes set in the buffer exceeds
+the size of the buffer.
+</div>
+<p />All above operations may raises an <code>&amp;pre-allocated-buffer-overflow</code>,
+when it tries to exceed the pre-allocated buffer.
+<p /><div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-can-store?1417">
+    <span class="name" name="binary-pre-allocated-buffer-can-store?">binary-pre-allocated-buffer-can-store?</span>
+  </a>
+ <span class="args">binary-buffer count :optional position</span></div>
+<div class="desc">Returns #t if <var>binary-buffer</var> can store <var>count</var> bytes.
+<p />If optional argument <var>position</var> is given, then the procedure check
+from the <var>position</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-swap!1418">
+    <span class="name" name="binary-pre-allocated-buffer-swap!">binary-pre-allocated-buffer-swap!</span>
+  </a>
+ <span class="args">binary-buffer new-buf new-size</span></div>
+<div class="desc">Swaps the buffer of <var>binary-buffer</var> with <var>new-buf</var>
+and <var>new-size</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="binary-pre-allocated-buffer-get-bytevector-n!1419">
+    <span class="name" name="binary-pre-allocated-buffer-get-bytevector-n!">binary-pre-allocated-buffer-get-bytevector-n!</span>
+  </a>
+ <span class="args">binary-buffer input-port n :optional position</span></div>
+<div class="desc">Reads <var>n</var> bytes from given <var>input-port</var> and store it to
+<var>binary-buffer</var>.
+<p />If optional argument <var>position</var> is given, then the procedure stores
+from the <var>position</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="crop-binary-buffer1420">
+    <span class="name" name="crop-binary-buffer">crop-binary-buffer</span>
+  </a> <span class="args">binary-buffer</span></div>
+<div class="desc">Returns newly allocated bytevector which contains range of
+0 to <code>size</code> field value of <code>buffer</code> field.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="-&gt;binary-pre-allocated-buffer-output-port1421">
+    <span class="name" name="-&gt;binary-pre-allocated-buffer-output-port">-&gt;binary-pre-allocated-buffer-output-port</span>
+  </a>
+ <span class="args">binary-buffer</span></div>
+<div class="desc">Converts the given <var>binary-buffer</var> to binary output port.
+<p />If port operations try to exceed the pre-allocated buffer, then
+it raises <code>&amp;pre-allocated-buffer-overflow</code>.
 </div>
 
 </section></section></section>
   <div class="prev-next">
     <a class="prev" href="section75.html">(binary pack) - Packing binary data</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section77.html">(crypto) - Cryptographic library</a>
+    <a class="next" href="section77.html">(util bytevector) - Bytevector utility library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-04-17T17:08:59+0100</i></div>
   </div>
 </html>

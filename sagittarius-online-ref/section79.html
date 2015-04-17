@@ -6,234 +6,305 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section78.html">(dbi) - Database independent access layer</a>
+    <a class="prev" href="section78.html">(crypto) - Cryptographic library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section710.html">(util deque) - Deque</a>
+    <a class="next" href="section710.html">(dbm) - Generic DBM interface</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="dbm"><span class="section-number">7.9</span>(dbm) - Generic DBM interface</a>
+    <a class="section.anchor" name="dbi"><span class="section-number">7.9</span>(dbi) - Database independent access layer</a>
   </h3>
-<p />
-<div class="define">
+<p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(dbm)1555">
-      <span class="name" name="(dbm)">(dbm)</span>
+    <a name="(dbi)1559">
+      <span class="name" name="(dbi)">(dbi)</span>
     </a>
   </div>
-<div class="desc">The library provides the generic interface to access DBM.
-<p />Sagittarius currently supports following DBM implementation;
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">(dbm dumb)</dt>
-      <dd class="dl-item-desc"> DBM-like library. Inspired by Python's dbm.dumb. This library must be used
- as the last resort. It has poor performance and memory usage.
-</dd>
-    </dl>
-  </div>
+<div class="desc">This library provides database independent access procedures. The
+database specific operations are provided in database driver (DBD) libraries.
 </div>
-<p />The following code shows a typical usage;
-<p /><pre class="codeblock">(import (dbm))
-<p />;; Open the database
-(define *db* (dbm-open (dbm-type-&gt;class 'dumb) :path "dumb.db"))
-<p />;; Put the value to the database
-(dbm-put! *db* "key1" "value1")
-<p />;; Get the value from the database
-(dbm-get *db* "key1")
-<p />;; Iterate over the database
-(dbm-for-each *db* (lambda (key val) #| do something useful |#))
-<p />;; Close the database
-(dbm-close *db*)
+<p />Following example describes how to query a database using <code>(dbd odbc)</code>
+DBD library.
+<p /><pre class="codeblock">(import (dbi))
+(define conn (dbi-connect "dbi:odbc:server=XE"
+                          :username "username"
+                          :password "password"))
+(let* ((query (dbi-prepare conn "SELECT * FROM table WHERE id &gt; ?"))
+       (result (dbi-execute-query! query 1)))
+  (do ((row (dbi-fetch! result) (dbi-fetch! result)))
+      ((not row))
+   (vector-for-each (lambda (col) (print col)) row)))
 </pre>
+<p />There is nothing specific to the underlying database system except the
+argument <code>"dbi:odbc:server=XE"</code> passed to <code>dbi-connect</code>, from which
+<code>dbi</code> library figures out that it is an access to <code>odbc</code>, loads
+<code>(dbd odbc)</code> library and let it handle the specific operations.
+<p />If you want to use other database named <var>boo</var>, then you just need to pass
+<code>"dbi:<var>boo</var>:<var>parameter</var>"</code> to <code>dbi-connect</code> instead. As long
+as you have <code>(dbd boo)</code> installed then everything stays the same.
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1556"><span class="section-number">7.9.1</span>Opening and closing a dbm database</a>
+    <a class="section.anchor" name="G1560"><span class="section-number">7.9.1</span>DBI user API</a>
   </h4>
-<p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<dbm&gt;1557">
-      <span class="name" name="<dbm&gt;">&lt;dbm&gt;</span>
-    </a>
-  </div>
-<div class="desc">An abstract class for DBM-like database. The class has the following
-slots. It must be filled by <code>dbm-open</code>.
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1561"><span class="section-number">7.9.1.1</span>Database connection</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Function</span><a name="dbi-connect1562">
+    <span class="name" name="dbi-connect">dbi-connect</span>
+  </a> <span class="args">dsn . rest</span></div>
+<div class="desc">Connects to a database using a data source specified by <var>dsn</var> 
+(data source name). <var>dsn</var> is a string with the following syntax.
+<p /><code>dbi:<var>driver</var>:<var>options</var></code>
+<p /><var>driver</var> part names a specific driver. You need to have a corresponding
+driver library, <code>(dbd <var>driver</var>)</code>, installed in your system.
+<p />Interpretation of the <var>options</var> part is up to the driver. Usually it is
+in the form of <code>key1=value1;key2=value2;...</code>. However the DBD
+implementations can have different format so you need to check the document
+of each driver for exact specification of <var>options</var>.
+<p /><var>rest</var> argument will be passed to the underlying procedure.
+<p />NOTE: <var>username</var>, <var>password</var> and <var>auto-commit</var> are strongly
+encouraged to be implemented in the DBD library.
+<p />If a connection to the database is successfully established, a connection
+object is returned.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1563">
+    <span class="name" name="dbi-open?">dbi-open?</span>
+  </a> <span class="args">c &lt;dbi-connection&gt;</span></div>
+<div class="desc">Checks if the given connection is still open.
+<p />The method shall return #t if the given connection is still open, otherwise
+it shall return #f.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-close1564">
+    <span class="name" name="dbi-close">dbi-close</span>
+  </a> <span class="args">c &lt;dbi-connection&gt;</span></div>
+<div class="desc">Closes a connection to the database.
+<p />NOTE: Users are strongly encouraged to close a connection explicitly. DBD
+might not close opened connections automatically.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1565">
+    <span class="name" name="dbi-commit!">dbi-commit!</span>
+  </a> <span class="args">(c &lt;dbi-connection&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1566">
+    <span class="name" name="dbi-rollback!">dbi-rollback!</span>
+  </a> <span class="args">(c &lt;dbi-connection&gt;)</span></div>
+<div class="desc">Commits or rollback transactions on the given connection, respectively.</div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1567"><span class="section-number">7.9.1.2</span>Preparing and executing queries </a>
+  </h5>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-prepare1568">
+    <span class="name" name="dbi-prepare">dbi-prepare</span>
+  </a> <span class="args">conn sql . args</span></div>
+<div class="desc">From a string representation of SQL <var>sql</var>, creates and returns a
+query object for the database connection <var>conn</var>.
+<p /><var>sql</var> may contain parameter slot, denoted by <code>?</code>.
+<p /><pre class="snipet"><span class="snipet-code">(dbi-prepare conn "insert into tab (col1, col2) values (?, ?)")</span></pre>
+<pre class="snipet"><span class="snipet-code">(dbi-prepare conn "select * from tab where col1 = ?")</span></pre>
+<p />If <var>args</var> is not null, then the procedure shall bind given parameters
+to the place holder.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1569">
+    <span class="name" name="dbi-open?">dbi-open?</span>
+  </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
+<div class="desc">Checks if the given query is still open.
+<p />The method shall return #t if the given query is still open, otherwise
+it shall return #f.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-close1570">
+    <span class="name" name="dbi-close">dbi-close</span>
+  </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
+<div class="desc">Closes a query.
+<p />NOTE: Users are strongly encouraged to close a query explicitly. DBD
+might not close opened query automatically.
+</div>
+<p />
+<div class="define"><span class="define-category">Method</span><a name="dbi-bind-parameter!1571">
+    <span class="name" name="dbi-bind-parameter!">dbi-bind-parameter!</span>
+  </a> <span class="args">query index value</span></div>
+<div class="desc">Binds the given <var>value</var> to <var>query</var> at <var>index</var>.
+<p />The procedure shall accept integer <var>index</var> and may accept other type of
+<var>index</var>.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-execute!1572">
+    <span class="name" name="dbi-execute!">dbi-execute!</span>
+  </a> <span class="args">query . args</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-execute-query!1573">
+    <span class="name" name="dbi-execute-query!">dbi-execute-query!</span>
+  </a> <span class="args">query . args</span></div>
+<div class="desc">Executes given <var>query</var>. If the <var>args</var> is not null, then
+procedure shall bind the given <var>args</var> as its parameters.
+<p />The <code>dbi-execute!</code> shall return a integer value representing affected
+row count.
+<p />The <code>dbi-execute-query!</code> shall return a result set object which can be
+used with <code>dbi-fetch!</code> or <code>dbi-fetch-all!</code>. The implementation may
+allow to return a specific result set object and it is users' responsibility
+to use it with fetching the result.
+<p />NOTE: There is a default implementation of <code>dbi-execute-query!</code> and 
+returns the given <var>query</var> as a result set object.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-fetch!1574">
+    <span class="name" name="dbi-fetch!">dbi-fetch!</span>
+  </a> <span class="args">query</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-fetch-all!1575">
+    <span class="name" name="dbi-fetch-all!">dbi-fetch-all!</span>
+  </a> <span class="args">query</span></div>
+<div class="desc">Fetches a row or all rows from the given <var>query</var>.
+<p />The <code>dbi-fetch!</code> shall return a vector representing the query result, if
+there is no more data available it shall return #f.
+<p />The <code>dbi-fetch-all!</code> shall return a list of vectors representing the
+query result.
+<p />NOTE: There is a default implementation of <code>dbi-fetch-all!</code>, it calls
+<code>dbi-fetch!</code> until it returns #f.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1576">
+    <span class="name" name="dbi-commit!">dbi-commit!</span>
+  </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1577">
+    <span class="name" name="dbi-rollback!">dbi-rollback!</span>
+  </a> <span class="args">(query &lt;dbi-query&gt;)</span></div>
+<div class="desc">Commits or rollback transactions on the given query, respectively.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-columns1578">
+    <span class="name" name="dbi-columns">dbi-columns</span>
+  </a> <span class="args">query</span></div>
+<div class="desc">Returns a column names affected by the given <var>query</var>.
+<p />The procedure shall return a vector as its result.</div>
+<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1579"><span class="section-number">7.9.2</span>Writing drivers for DBI</a>
+  </h4>
+<p />Writing a driver for specific data base system means implementing a library
+<code>(dbd <var>foo</var>)</code> where <var>foo</var> is the name of the driver.
+<p />The library have to implement a creating a driver procedure and several 
+classes and methods as explained below.
+<p />The method described above section must behave as it expected there, especially
+behaviours described with <b>shall</b>.
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1580"><span class="section-number">7.9.2.1</span>DBI driver procedure</a>
+  </h5>
+<p />The driver will be created by the procedure named <code>make-<var>foo</var>-driver</code>.
+And it is strongly encouraged to be implemented as a subclass of
+<code>&lt;dbi-driver&gt;</code> for future extension.
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1581"><span class="section-number">7.9.2.2</span>DBI classes to implement</a>
+  </h5>
+<p />You have to define the following classes.
+<p /><ul class="itemlist"><li class="itemlist-item">Subclass <code>&lt;dbi-connection&gt;</code>. An instance of this class is created
+by <code>dbi-make-connection</code>. It needs to keep the information about the
+actual connections.</li>
+<li class="itemlist-item">Optional: subclass <code>&lt;dbi-driver&gt;</code> for actual driver instance.</li>
+<li class="itemlist-item">Optional: subclass <code>&lt;dbi-query&gt;</code> to keep driver specific information
+of prepared statement.</li>
+</ul>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1582"><span class="section-number">7.9.2.3</span>DBI methods to implement</a>
+  </h5>
+<p />The driver needs to implement the following methods.
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-make-connection1583">
+    <span class="name" name="dbi-make-connection">dbi-make-connection</span>
+  </a>
+ <span class="args">driver (options &lt;string&gt;) (options-alist &lt;list&gt;) . rest</span></div>
+<div class="desc">This method is called from <code>dbi-connect</code>, and responsible to connect
+to the database and to create a connection object. It must return a connection
+object or raise an error which should be a sub condition of <code>&amp;dbi-error</code>.
+<p /><var>options</var> is the option part of the data source name (DSN) given to
+<code>dbi-connect</code>. <var>options-alist</var> is an assoc list of the result of
+parsing <var>options</var>. Both are provided so that the driver may interpret
+<var>options</var> string in nontrivial way.
+<p />For example, given <code>"dbi:foo:myaddressbook;host=dbhost;port=8998"</code> 
+as DSN, foo's <code>dbi-make-connection</code> will receive 
+<code>"myaddressbook;host=dbhost;port=8998"</code> as <var>options</var>, and 
+<code>(("myaddressbook" . #t) ("host" . "dbhost") ("port" . "8998"))</code> as
+<var>options-alist</var>.
+<p />After <var>options-alist</var>, whatever given to <code>dbi-connect</code> are passed.
+The driver is strongly encouraged to implement <code>:username</code>,
+<code>:password</code> and <code>:auto-commit</code> (if the database is supported)
+keyword arguments to specify the authentication information and commit mode.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-prepare1584">
+    <span class="name" name="dbi-prepare">dbi-prepare</span>
+  </a>
+ <span class="args">(c &lt;foo-connection&gt;) (sql &lt;string&gt;) . rest</span></div>
+<div class="desc">The method must create and return a prepared query object which is an
+instance of <code>&lt;dbi-query&gt;</code> or its subclass.
+<p /><var>sql</var> is an SQL statement. It may contain placeholders represented by
+<code>'?'</code>. The implementation must accept it to keep DBI portable even though
+the database doesn't.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-bind-parameter!1585">
+    <span class="name" name="dbi-bind-parameter!">dbi-bind-parameter!</span>
+  </a>
+ <span class="args">(q &lt;foo-query&gt;) index value</span></div>
+<div class="desc">Binds a parameter <var>value</var> at the place <var>index</var>.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-open?1586">
+    <span class="name" name="dbi-open?">dbi-open?</span>
+  </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-open?1587">
+    <span class="name" name="dbi-open?">dbi-open?</span>
+  </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-close1588">
+    <span class="name" name="dbi-close">dbi-close</span>
+  </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-close1589">
+    <span class="name" name="dbi-close">dbi-close</span>
+  </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
+<div class="desc">Queries open/close status of a connection and a query, and closes
+a connection and a query. The close method should cause releasing resources
+used by connection/query. The driver has to allow <code>dbi-close</code> to be
+called on a connection or a query which has already been closed.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-commit!1590">
+    <span class="name" name="dbi-commit!">dbi-commit!</span>
+  </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-commit!1591">
+    <span class="name" name="dbi-commit!">dbi-commit!</span>
+  </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-rollback!1592">
+    <span class="name" name="dbi-rollback!">dbi-rollback!</span>
+  </a> <span class="args">(c &lt;foo-connection&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-rollback1593">
+    <span class="name" name="dbi-rollback">dbi-rollback</span>
+  </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
+<div class="desc">Commits/rollbacks a connection or a query.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="dbi-execute!1594">
+    <span class="name" name="dbi-execute!">dbi-execute!</span>
+  </a> <span class="args">(q &lt;foo-query&gt;) . args</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-fetch!1595">
+    <span class="name" name="dbi-fetch!">dbi-fetch!</span>
+  </a> <span class="args">(q &lt;foo-query&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="dbi-columns1596">
+    <span class="name" name="dbi-columns">dbi-columns</span>
+  </a> <span class="args">q &lt;foo-query&gt;</span></div>
+<div class="desc">Implementation must behave as described above section.</div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1597"><span class="section-number">7.9.2.4</span>Data conversion guide</a>
+  </h5>
+<p />Database data type and Scheme type are usually not the same. However to keep
+DBI portable it is important to follow a guideline. Here I suggest the data
+conversion between a database and Scheme object.
+<p />Following is database data type to Scheme type conversion guideline. The driver
+implementation should follow.
 <p /><div class="dl-list-wrapper">
     <dl class="dl-list">
-      <dt class="dl-item-title">path</dt>
-      <dd class="dl-item-desc"> Pathname of the dbm database. </dd>
-      <dt class="dl-item-title">rw-mode</dt>
-      <dd class="dl-item-desc">    Specifies read/write mode. Can be one of the following keywords:
-    <div class="dl-list-wrapper">
-        <dl class="dl-list">
-          <dt class="dl-item-title">:read</dt>
-          <dd class="dl-item-desc"> The database will be opened in read-only mode.</dd>
-          <dt class="dl-item-title">:write</dt>
-          <dd class="dl-item-desc">        The database will be opened in read-write mode. If the database file
-	does not exist, <code>dbm-open</code> creates one.
-      </dd>
-          <dt class="dl-item-title">:write</dt>
-          <dd class="dl-item-desc">        The database will be opened in read-write mode. If the database file
-	exists, <code>dbm-open</code> truncates it.
-      </dd>
-        </dl>
-      </div>
-    The keywords are indication so actual implementation may not behave as it
-    described.
-  </dd>
-      <dt class="dl-item-title">key-convert</dt>
-      <dt class="dl-item-title">value-convert</dt>
-      <dd class="dl-item-desc">    By default, you can use only strings for both key and values. With
-    this option, however, you can specify how to convert other Scheme
-    values to/from string to be stored in the database. The possible values
-    are the followings: 
-    <div class="dl-list-wrapper">
-        <dl class="dl-list">
-          <dt class="dl-item-title">#f</dt>
-          <dd class="dl-item-desc">       The default value. Keys (values) are not converted.
-       They must be a string.
-      </dd>
-          <dt class="dl-item-title">#t</dt>
-          <dd class="dl-item-desc">       Keys (values) are converted to its string representation, using
-       <code>write/ss</code>, to store in the database and convert back Scheme
-       values, using <code>read/ss</code>, to retrieve from the database.
-      </dd>
-          <dt class="dl-item-title">a list of two procedures</dt>
-          <dd class="dl-item-desc">       Both procedure must take a single argument. The first procedure must
-       receive a Scheme object and returns a string. It is used to convert 
-       the keys (values) to store in the database. The second procedure must
-       receive a string and returns a Scheme object. It is used to convert
-       the stored data in the database to a Scheme object.
-      </dd>
-        </dl>
-      </div>
-  </dd>
+      <dt class="dl-item-title">Text (VARCHAR2 etc)</dt>
+      <dd class="dl-item-desc">String</dd>
+      <dt class="dl-item-title">Binary (BINARY etc)</dt>
+      <dd class="dl-item-desc">Bytevector</dd>
+      <dt class="dl-item-title">Date</dt>
+      <dd class="dl-item-desc">Date from SRFI-19</dd>
+      <dt class="dl-item-title">Time and Timestamp</dt>
+      <dd class="dl-item-desc">Time from SRFI-19</dd>
+      <dt class="dl-item-title">Blob</dt>
+      <dd class="dl-item-desc">Binary port, preferably not retrieving all data at once.</dd>
+      <dt class="dl-item-title">Clob</dt>
+      <dd class="dl-item-desc">Textual port, preferably not retrieving all data at once.</dd>
     </dl>
   </div>
-<p /></div>
-<p /><div class="define">
-    <span class="define-category">Metaclass</span>
-    <a name="<dbm-meta&gt;1558">
-      <span class="name" name="<dbm-meta&gt;">&lt;dbm-meta&gt;</span>
-    </a>
-  </div>
-<div class="desc">A metaclass of <code>&lt;dbm&gt;</code> and its subclasses.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-open1559">
-    <span class="name" name="dbm-open">dbm-open</span>
-  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
-<div class="desc">Opens a dbm database. <var>dbm</var> must be an instance of one of the
-concrete classes derived from the <code>&lt;dbm&gt;</code>.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-open1560">
-    <span class="name" name="dbm-open">dbm-open</span>
-  </a> <span class="args">(dbm-class &lt;dbm-meta&gt;) options ...</span></div>
-<div class="desc">A convenient method that creates dbm instance and opens it.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-close1561">
-    <span class="name" name="dbm-close">dbm-close</span>
-  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
-<div class="desc">Closes a dbm database <var>dbm</var>. If the database is not closed, then
-the database file may not be synchronised properly. So it is user's
-responsibility to close it.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-closed?1562">
-    <span class="name" name="dbm-closed?">dbm-closed?</span>
-  </a> <span class="args">(dbm &lt;dbm&gt;)</span></div>
-<div class="desc">Returns true if the dbm database <var>dbm</var> is closed, otherwise #f.
-<p />The returned value may be non boolean value.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="dbm-type-&gt;class1563">
-    <span class="name" name="dbm-type-&gt;class">dbm-type-&gt;class</span>
-  </a> <span class="args">dbmtype</span></div>
-<div class="desc">Returns DBM class if DBM implementation <var>dbmtype</var> exists, otherwise
-#f.
-<p />The <var>dbmtype</var> must be a symbol that names the type of dbm implementation,
-and the implementation library name must be <code>(dbm <var>dbmtype</var>)</code>. For
-example, to get the <var>foo</var> DBM then the library name must be 
-<code>(dbm foo)</code>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1564"><span class="section-number">7.9.2</span>Accessing a dbm database</a>
-  </h4>
-<p />Once a database is opened, you can use the following methods to access
-individual key/value pairs. 
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-put!1565">
-    <span class="name" name="dbm-put!">dbm-put!</span>
-  </a> <span class="args">(dbm &lt;dbm&gt;) key value</span></div>
-<div class="desc">Put a <var>value</var> with <var>key</var></div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-get1566">
-    <span class="name" name="dbm-get">dbm-get</span>
-  </a> <span class="args">(dbm &lt;dbm&gt;) key :optional default</span></div>
-<div class="desc">Get a value associated with <var>key</var>. If no value exists for <var>key</var>
-and <var>default</var> is specified, it will be returned. If no value exists for 
-<var>key</var> and <var>default</var> is not specified, then an error will be raised.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-exists?1567">
-    <span class="name" name="dbm-exists?">dbm-exists?</span>
-  </a> <span class="args">(dbm &lt;dbm&gt;) key</span></div>
-<div class="desc">Return true value if a value exists for <var>key</var>, #f otherwise.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-delete!1568">
-    <span class="name" name="dbm-delete!">dbm-delete!</span>
-  </a> <span class="args">(dbm &lt;dbm&gt;) key</span></div>
-<div class="desc">Delete a value associated with <var>key</var>.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1569"><span class="section-number">7.9.3</span>Iterating on a dbm database</a>
-  </h4>
-<p />To walk over the entire database, following methods are provided. 
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-fold1570">
-    <span class="name" name="dbm-fold">dbm-fold</span>
-  </a> <span class="args">(dbm &lt;dbm&gt;) procedure knil</span></div>
-<div class="desc">The basic iterator. For each key/value pair, <var>procedure</var> is called
-as <code><var>procedure</var> key value r</code>, where <var>r</var> is <var>knil</var> for the
-first call of <var>procedure</var>, and the return value of the previous call for
-subsequent calls. Returns the result of the last call of <var>procedure</var>.
-If no data is in the database, <var>knil</var> is returned.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-for-each1571">
-    <span class="name" name="dbm-for-each">dbm-for-each</span>
-  </a> <span class="args">(dbm &lt;dbm&gt;) procedure</span></div>
-<div class="desc">For each key/value pair in the database <var>dbm</var>, <var>procedure</var> is
-called. The <var>procedure</var> must accept 2 arguments, a key and a value
-respectively. The result of <var>procedure</var> is discarded.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-map1572">
-    <span class="name" name="dbm-map">dbm-map</span>
-  </a> <span class="args">(dbm &lt;dbm&gt;) procedure</span></div>
-<div class="desc">For each key/value pair in the database <var>dbm</var>, <var>procedure</var> is
-called. The <var>procedure</var> must accept 2 arguments, a key and a value
-respectively. The result of <var>procedure</var> is accumulated to a list which
-is returned as a result of <code>dbm-map</code>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1573"><span class="section-number">7.9.4</span>Managing dbm database instance</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-exists?1574">
-    <span class="name" name="dbm-db-exists?">dbm-db-exists?</span>
-  </a> <span class="args">(class &lt;dbm-meta&gt;) name</span></div>
-<div class="desc">Returns #t if a database of class <var>class</var> specified by <var>name</var>
-exists.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-remove1575">
-    <span class="name" name="dbm-db-remove">dbm-db-remove</span>
-  </a> <span class="args">(class &lt;dbm-meta&gt;) name</span></div>
-<div class="desc">Removes an entire database of class <var>class</var> specified by <var>name</var>.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-copy1576">
-    <span class="name" name="dbm-db-copy">dbm-db-copy</span>
-  </a> <span class="args">(class &lt;dbm-meta&gt;) from to</span></div>
-<div class="desc">Copy a database of <var>class</var> specified by <var>from</var> to <var>to</var>.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="dbm-db-move1577">
-    <span class="name" name="dbm-db-move">dbm-db-move</span>
-  </a> <span class="args">(class &lt;dbm-meta&gt;) from to</span></div>
-<div class="desc">Moves or renames a database of <var>class</var> specified by <var>from</var>
-to <var>to</var>.
-</div>
-</section></section>
+
+</section></section></section>
   <div class="prev-next">
-    <a class="prev" href="section78.html">(dbi) - Database independent access layer</a>
+    <a class="prev" href="section78.html">(crypto) - Cryptographic library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section710.html">(util deque) - Deque</a>
+    <a class="next" href="section710.html">(dbm) - Generic DBM interface</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-04-17T17:08:59+0100</i></div>
   </div>
 </html>

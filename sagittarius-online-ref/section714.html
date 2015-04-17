@@ -6,196 +6,70 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section713.html">(util hashtables) - Hashtable utilities</a>
+    <a class="prev" href="section713.html">(getopt) - Parsing command-line options</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section715.html">(util list) - Extra list utility library</a>
+    <a class="next" href="section715.html">(util heap) - Heap</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.heap"><span class="section-number">7.14</span>(util heap) - Heap</a>
+    <a class="section.anchor" name="util.hashtables"><span class="section-number">7.14</span>(util hashtables) - Hashtable utilities</a>
   </h3>
-<p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(util heap)1641">
-      <span class="name" name="(util heap)">(util heap)</span>
-    </a>
-  </div>
-<div class="desc">This library provides heap data structure and its operations. The
-implementation of heap is Fibonacci heap. Running time of heap operations
-are followings;
-<p /><ul class="itemlist">
-    <li class="itemlist-item">Insert(key, data): O(1)</li>
-    <li class="itemlist-item">FindMin(): O(1)</li>
-    <li class="itemlist-item">DeleteMin(): Amortized O(log n)</li>
-    <li class="itemlist-item">Delete(node): Amortized O(log n)</li>
-    <li class="itemlist-item">DecreaseKey(node): Amortized O(1)</li>
-    <li class="itemlist-item">Merge(heap1, heap2): O(1)</li>
-    <li class="itemlist-item">Search(key): O(n)</li>
-  </ul>
-<p /></div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1642"><span class="section-number">7.14.1</span>Constructors, predicates and accessors</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<heap&gt;1643">
-      <span class="name" name="<heap&gt;">&lt;heap&gt;</span>
-    </a>
-  </div>
-<div class="desc">A class of Fibonacci heap.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap?1644">
-    <span class="name" name="heap?">heap?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Return #t if <var>obj</var> is a heap, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-heap1645">
-    <span class="name" name="make-heap">make-heap</span>
-  </a> <span class="args">compare</span></div>
-<div class="desc"><var>compare</var> must be a procedure which takes 2 argument and
-returns an exact integer indicates the order of given arguments.
-<p />Creates a heap.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="copy-heap1646">
-    <span class="name" name="copy-heap">copy-heap</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Creates copy of <var>heap</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="alist-&gt;heap1647">
-    <span class="name" name="alist-&gt;heap">alist-&gt;heap</span>
-  </a> <span class="args">compare alist</span></div>
-<div class="desc"><var>compare</var> must be a procedure which takes 2 argument and
-returns an exact integer indicates the order of given arguments.
-<p />Creates a heap whose keys and values are car/cdr part of <var>alist</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-empty?1648">
-    <span class="name" name="heap-empty?">heap-empty?</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Returns #t if <var>heap</var> is empty, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-size1649">
-    <span class="name" name="heap-size">heap-size</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Returns the number of entries of <var>heap</var>.</div>
 <p />
-<div class="define"><span class="define-category">Function</span><a name="heap-compare1650">
-    <span class="name" name="heap-compare">heap-compare</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Returns comparison procedure of <var>heap</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-entry?1651">
-    <span class="name" name="heap-entry?">heap-entry?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is a heap entry, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-entry-key1652">
-    <span class="name" name="heap-entry-key">heap-entry-key</span>
-  </a> <span class="args">entry</span></div>
-<div class="define"><span class="define-category">Function</span><a name="heap-entry-value1653">
-    <span class="name" name="heap-entry-value">heap-entry-value</span>
-  </a> <span class="args">entry</span></div>
-<div class="desc">Returns key and value of <var>entry</var>, respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-entry-value-set!1654">
-    <span class="name" name="heap-entry-value-set!">heap-entry-value-set!</span>
-  </a> <span class="args">entry value</span></div>
-<div class="desc">Sets <var>value</var> as <var>entry</var>'s value.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1655"><span class="section-number">7.14.2</span>Heap operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-min1656">
-    <span class="name" name="heap-min">heap-min</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Returns the smallest entry of <var>heap</var>. If <var>heap</var> is empty,
-then #f is returned.
-<p />To get the key and value from the returning entry, use <code>heap-entry-key</code>
-and <code>heap-entry-value</code> procedures, respectively.
+<div class="define">
+    <span class="define-category">Library</span>
+    <a name="(util hashtables)1678">
+      <span class="name" name="(util hashtables)">(util hashtables)</span>
+    </a>
+  </div>
+<div class="desc">This library provides extra utilities for hashtable operation.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-set!1657">
-    <span class="name" name="heap-set!">heap-set!</span>
-  </a> <span class="args">heap key value</span></div>
-<div class="desc">Inserts an entry whose key is <var>key</var>, value is <var>value</var> and
-returns the entry.
+<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-for-each1679">
+    <span class="name" name="hashtable-for-each">hashtable-for-each</span>
+  </a> <span class="args">proc hashtable</span></div>
+<div class="define"><span class="define-category">Function</span><a name="hashtable-map1680">
+    <span class="name" name="hashtable-map">hashtable-map</span>
+  </a> <span class="args">proc hashtable</span></div>
+<div class="desc"><var>proc</var> must be a procedure which accepts 2 arguments.
+<var>hashtable</var> must be a hashtable.
+<p />Iterates all keys and values in the given <var>hashtable</var> and passes them
+to <var>proc</var> respectively.
+<p />The <code>hashtable-for-each</code> returns unspecified value. The 
+<code>hashtable-map</code> returns a list of the <var>proc</var> result.
+<p />These procedures are analogous to <code>for-each</code> and <code>map</code> respectively.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-extract-min!1658">
-    <span class="name" name="heap-extract-min!">heap-extract-min!</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Removes smallest entry and returns it. It is an error if <var>heap</var>
-is empty.
+<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-fold1681">
+    <span class="name" name="hashtable-fold">hashtable-fold</span>
+  </a> <span class="args">kons hashtable knil</span></div>
+<div class="desc"><var>kons</var> must be a procedure which accepts 3 arguments.
+<var>hashtable</var> must be a hashtable.
+<p />Iterates all keys and values in the given <var>hashtable</var> and passes them
+and the result of <var>kons</var> to <var>kons</var> respectively. The first iteration
+of the third argument is <var>knil</var>. The procedure returns the result of
+all iterations.
+<p />Analogous to <code>fold</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-delete!1659">
-    <span class="name" name="heap-delete!">heap-delete!</span>
-  </a> <span class="args">heap entry/key</span></div>
-<div class="desc">Removes target <var>entry/key</var> from <var>heap</var> and returns the
-removed entry.
-<p />If <var>entry/key</var> is an entry then this operation is done in amortized
-O(log n). If not, then O(n).
-<p />NOTE: If <var>entry/key</var> is an entry, then it must exist in <var>heap</var>.
-However the procedure won't check so it is user's responsibility to
-make sure.
+<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-&gt;alist1682">
+    <span class="name" name="hashtable-&gt;alist">hashtable-&gt;alist</span>
+  </a> <span class="args">hashtable</span></div>
+<div class="desc">Converts to <var>hashtable</var> to an alist.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="alist-&gt;hashtable1683">
+    <span class="name" name="alist-&gt;hashtable">alist-&gt;hashtable</span>
+  </a>
+ <span class="args">alist :key (compare eq?) (hasher symbol-hash)</span></div>
+<div class="desc">Converts <var>alist</var> to hashtable.
+<p />The keyword arguments specify how to create the returning hashtable. By
+default, it will use <code>make-eq-hashtable</code>. If it's specified then it
+will use <code>make-hashtable</code> to create a hashtable.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-delete!1660">
-    <span class="name" name="heap-delete!">heap-delete!</span>
-  </a> <span class="args">heap entry/key new-key</span></div>
-<div class="desc">Change the key value of given <var>entry/key</var> to <var>new-key</var>. The
-<var>new-key</var> must be smaller than current key in sense of the returning
-value of <code>heap-compare</code>, otherwise it's an error.
-<p />If <var>entry/key</var> is an entry then this operation is done in amortized
-O(log n). If not, then O(n).
-<p />NOTE: If <var>entry/key</var> is an entry, then it must exist in <var>heap</var>.
-However the procedure won't check so it is user's responsibility to
-make sure.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-clear!1661">
-    <span class="name" name="heap-clear!">heap-clear!</span>
-  </a> <span class="args">heap</span></div>
-<div class="desc">Clears all entry of <var>heap</var> and returns <var>heap</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-merge!1662">
-    <span class="name" name="heap-merge!">heap-merge!</span>
-  </a> <span class="args">heap1 heap2</span></div>
-<div class="desc">Merge <var>heap2</var> into <var>heap1</var> and empty it. Then returns <var>heap1</var>.
-<p />This procedure changes both heaps destructively, if you want to kepp
-<var>heap2</var> intact, use <code>merge-heaps</code> or <code>merge-heaps!</code> instead.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="merge-heaps1663">
-    <span class="name" name="merge-heaps">merge-heaps</span>
-  </a> <span class="args">heap1 heap2 more ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="merge-heaps!1664">
-    <span class="name" name="merge-heaps!">merge-heaps!</span>
-  </a> <span class="args">heap1 heap2 more ...</span></div>
-<div class="desc">Merges heap and returns merged heap.
-<p />If the first procedure is used then the returning heap is freshly created
-according to <var>heap1</var>. The second form merged the rest of heaps to
-<var>heap1</var>.
-<p />The running time of these procedures is O(nm) where m is number of heaps to
-merge.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-ref1665">
-    <span class="name" name="heap-ref">heap-ref</span>
-  </a> <span class="args">heap key :optional (fallback #f)</span></div>
-<div class="desc">Returns entry value associated with <var>key</var> in <var>heap</var>. If there
-is no entry, then <var>fallback</var> is returned.
-<p />The running time of this procedures is O(n).
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-update!1666">
-    <span class="name" name="heap-update!">heap-update!</span>
-  </a> <span class="args">heap key proc default</span></div>
-<div class="desc"><var>proc</var> must be a procedure accepts one argument.
-<p />Updates the entry value associated to <var>key</var> with the returned value of 
-<var>proc</var>. If the entry doesn't exist then <var>default</var> will be passed to
-the <var>proc</var>.
-<p />The running time of this procedures is O(n).
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="heap-search1667">
-    <span class="name" name="heap-search">heap-search</span>
-  </a> <span class="args">heap key :optional finish</span></div>
-<div class="desc">Searches the entry associated to <var>key</var> and returns it. If there is
-no entry then #f is returned.
-<p />If optional argument <var>finish</var> given then it must be a procedure which
-takes one argument. The procedure is called when search process is finished.
-The given argument is either an entry of #f.
-</div>
-</section></section>
+
+</section>
   <div class="prev-next">
-    <a class="prev" href="section713.html">(util hashtables) - Hashtable utilities</a>
+    <a class="prev" href="section713.html">(getopt) - Parsing command-line options</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section715.html">(util list) - Extra list utility library</a>
+    <a class="next" href="section715.html">(util heap) - Heap</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-04-17T17:08:59+0100</i></div>
   </div>
 </html>

@@ -6,170 +6,462 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section716.html">(math) - Mathematics library</a>
+    <a class="prev" href="section716.html">(util list) - Extra list utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section718.html">(net mq mqtt) - MQTT library</a>
+    <a class="next" href="section718.html">(net mq amqp) - AMQP library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="net.amqp"><span class="section-number">7.17</span>(net mq amqp) - AMQP library</a>
+    <a class="section.anchor" name="math"><span class="section-number">7.17</span>(math) - Mathematics library</a>
   </h3>
+<p />This section describes matheatics operations which are used by <code>(crypto)</code>
+library.
+<p />This library also uses <code>libtomcrypt</code> as its implemention except prime
+number operations.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(net mq amqp)1733">
-      <span class="name" name="(net mq amqp)">(net mq amqp)</span>
+    <a name="(math)1720">
+      <span class="name" name="(math)">(math)</span>
     </a>
   </div>
-<div class="desc">Providing APIs for <a href="http://www.amqp.org">AMQP</a>,
-Advanced Message Queuing Protocol.
-<p />Currently, the library lacks security layer such as TLS and SAML, and
-transaction support.
+<div class="desc">The top most level library of mathematics. It exports all of procedures
+from <code>(math random)</code>, <code>(math hash)</code>, <code>(math prime)</code> and
+<code>(math helper)</code>
 </div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1734"><span class="section-number">7.17.1</span>Example</a>
+    <a class="section.anchor" name="G1721"><span class="section-number">7.17.1</span>Random number operations</a>
   </h4>
-<p />Following examples describes how to send and receive messages from
-remote queues.
-<p /><pre class="codeblock">(import (rnrs) (net mq amqp api))
-<p />;; Sends text message to SAMPLE.QUEUE on localhost:5672
-(call-with-amqp-connection "localhost" "5672"
-  (lambda (conn)
-    (call-with-amqp-session conn
-      (lambda (session)
-        (let ((sender (create-amqp-sender session "SAMPLE.QUEUE"))
-              (message (create-amqp-text-message "Hello AMQP!!")))
-          (send-amqp-message sender message)
-          (destroy-amqp-sender sender))))))
-<p />;; Receives text message from SAMPLE.QUEUE on localhost:5672
-(call-with-amqp-connection "localhost" "5672"
-  (lambda (conn)
-    (call-with-amqp-session conn
-      (lambda (session)
-        (let* ((receiver (create-amqp-receiver session "SAMPLE.QUEUE"))
-               (message (receive-amqp-message receiver)
-          (destroy-amqp-sender receiver)
-          message)))))))
-</pre>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1735"><span class="section-number">7.17.2</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="amqp-connection?1736">
-    <span class="name" name="amqp-connection?">amqp-connection?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is AMQP connection. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-amqp-connection1737">
-    <span class="name" name="open-amqp-connection">open-amqp-connection</span>
-  </a> <span class="args">host port</span></div>
-<div class="desc">Creates an AMQP connection object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="close-amqp-connection!1738">
-    <span class="name" name="close-amqp-connection!">close-amqp-connection!</span>
-  </a> <span class="args">connection</span></div>
-<div class="desc">Closes given AMQP connection.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="call-with-amqp-connection1739">
-    <span class="name" name="call-with-amqp-connection">call-with-amqp-connection</span>
-  </a> <span class="args">host port proc</span></div>
-<div class="desc">Creates an AMQP connection and pass it to <var>proc</var>. Then returns
-the result of <var>proc</var>.
-<p />The created connection will be closed both <var>proc</var> returns or raises
-an error. Thus Invoking captured continuation inside of <var>proc</var> would not
-work.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="amqp-session?1740">
-    <span class="name" name="amqp-session?">amqp-session?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is AMQP session. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="begin-amqp-session!1741">
-    <span class="name" name="begin-amqp-session!">begin-amqp-session!</span>
-  </a> <span class="args">connection</span></div>
-<div class="desc">Starts AMQP session on the given <var>connection</var></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="end-amqp-session!1742">
-    <span class="name" name="end-amqp-session!">end-amqp-session!</span>
-  </a> <span class="args">session</span></div>
-<div class="desc">Ends given AMQP session.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="call-with-amqp-connection1743">
-    <span class="name" name="call-with-amqp-connection">call-with-amqp-connection</span>
-  </a> <span class="args">connection proc</span></div>
-<div class="desc">Starts an AMQP session and pass it to <var>proc</var>. Then returns
-the result of <var>proc</var>.
-<p />The stated session will be ended both <var>proc</var> returns or raises
-an error. Thus Invoking captured continuation inside of <var>proc</var> would not
-work.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="amqp-sender?1744">
-    <span class="name" name="amqp-sender?">amqp-sender?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="amqp-receiver?1745">
-    <span class="name" name="amqp-receiver?">amqp-receiver?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is AMQP sender and receiver, respectively.
-Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="create-amqp-sender1746">
-    <span class="name" name="create-amqp-sender">create-amqp-sender</span>
-  </a> <span class="args">session source-queue</span></div>
-<div class="define"><span class="define-category">Function</span><a name="create-amqp-receiver1747">
-    <span class="name" name="create-amqp-receiver">create-amqp-receiver</span>
-  </a> <span class="args">session target-queue</span></div>
-<div class="desc">Creates an AMQP sender or receiver, respectively.
-<p /><var>source-queue</var> and <var>target-queue</var> must be strings and indicating
-queue names on the remote server.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="destroy-amqp-sender1748">
-    <span class="name" name="destroy-amqp-sender">destroy-amqp-sender</span>
-  </a> <span class="args">sender</span></div>
-<div class="define"><span class="define-category">Function</span><a name="destroy-amqp-receiver1749">
-    <span class="name" name="destroy-amqp-receiver">destroy-amqp-receiver</span>
-  </a> <span class="args">receiver</span></div>
-<div class="desc">Destory given <var>sender</var> and <var>receiver</var>, respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="send-amqp-message1750">
-    <span class="name" name="send-amqp-message">send-amqp-message</span>
-  </a> <span class="args">sender message</span></div>
-<div class="desc">Sends <var>message</var> to <var>sender</var>'s queue.
-<p /><var>message</var> must be am AMQP message object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="receive-amqp-message1751">
-    <span class="name" name="receive-amqp-message">receive-amqp-message</span>
-  </a> <span class="args">receiver :key (timeout #f)</span></div>
-<div class="desc">Receives an AMQP message from <var>receiver</var>'s queue.
-<p />Keyword argument <var>timeout</var> must be #f or integer. If this is specified
-then the procedure waits only specified milliseconds.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="amqp-message?1752">
-    <span class="name" name="amqp-message?">amqp-message?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is AMQP message. Otherwise #f.</div>
 <p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="create-amqp-text-message text1753">
-      <span class="name" name="create-amqp-text-message text">create-amqp-text-message text</span>
+    <span class="define-category">Library</span>
+    <a name="(math random)1722">
+      <span class="name" name="(math random)">(math random)</span>
+    </a>
+  </div>
+<div class="desc">This library exports procedures for random numbers.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="pseudo-random1723">
+    <span class="name" name="pseudo-random">pseudo-random</span>
+  </a> <span class="args">type :key (seed #f) (reader #f)</span></div>
+<div class="desc"><var>type</var> must be a string.
+<p />Creates a pseudo random object (prng). If keyword argument <var>reader</var> is given
+it creates a custom prng. The <var>reader</var> must be a procedure which accepts two
+argument, a bytevector and integer. It must fill the given bytevector with
+random numbers.
+<p /><var>type</var> is used to specify the builtin pseudo random algorithm. The possible
+algorithms are below:
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Yarrow1724">
+      <span class="name" name="Yarrow">Yarrow</span>
     </a>
   </div>
 <div class="define">
-    <span class="define-category">Function</span>
-    <a name="create-amqp-binary-message data1754">
-      <span class="name" name="create-amqp-binary-message data">create-amqp-binary-message data</span>
+    <span class="define-category">Constant</span>
+    <a name="Fortuna1725">
+      <span class="name" name="Fortuna">Fortuna</span>
     </a>
   </div>
 <div class="define">
-    <span class="define-category">Function</span>
-    <a name="create-amqp-mime-message content-type data1755">
-      <span class="name" name="create-amqp-mime-message content-type data">create-amqp-mime-message content-type data</span>
+    <span class="define-category">Constant</span>
+    <a name="RC41726">
+      <span class="name" name="RC4">RC4</span>
     </a>
   </div>
-<div class="desc">Creates an AMQP text message, binary message and data message,
-respectively.
-<p /><var>text</var> must be a string. <var>data</var> must be a bytevector. 
-<var>content-type</var> must be a string.
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SOBER-1281727">
+      <span class="name" name="SOBER-128">SOBER-128</span>
+    </a>
+  </div>
+<p /><var>seed</var> is entropy of the pseudo random.
+<p />Note: each time if you create pseudo random, it returns exactly the same value.
+For example:
+<pre class="codeblock">(do ((i 0 (+ i 1)) (r '() (cons (random (pseudo-random RC4) 10) r)))
+    ((= i 10) r))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">'(0 0 0 0 0 0 0 0 0 0)</span></pre>
+So if you need different number as I believe, you need to reuse the prng object
+like this
+<pre class="codeblock">(let ((rc (pseudo-random RC4)))
+  (do ((i 0 (+ i 1)) (r '() (cons (random rc 10) r)))
+      ((= i 10) r)))
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">'(3 4 0 6 7 4 3 4 2 0)</span></pre>
+If you don't want to care this behaviour, use <code>secure-random</code> below.
 </div>
-<p />
+<p /><div class="define"><span class="define-category">Function</span><a name="secure-random1728">
+    <span class="name" name="secure-random">secure-random</span>
+  </a> <span class="args">type :key (bits 128)</span></div>
+<div class="desc"><var>type</var> must be one of the pseudo random algorithms.
+<p />Creates secure random object. 
+<p /><var>bit</var> is initial entropy of the pseudo random. It must be in between 64 to
+1028.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="prng?1729">
+    <span class="name" name="prng?">prng?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="pseudo-random?1730">
+    <span class="name" name="pseudo-random?">pseudo-random?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="secure-random?1731">
+    <span class="name" name="secure-random?">secure-random?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is prng object, builtin pseudo random objcet,
+custom random object or secure random object respectively.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="random-seed-set!1732">
+    <span class="name" name="random-seed-set!">random-seed-set!</span>
+  </a> <span class="args">prng seed</span></div>
+<div class="desc"><var>seed</var> must be a bytevector or integer.
+<p />Add entropy to given <var>prng</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="random1733">
+    <span class="name" name="random">random</span>
+  </a> <span class="args">prng size :key (read-size 100)</span></div>
+<div class="desc">Returns random number according to given <var>prng</var> algorithm. The result
+number will be less than <var>size</var>.
+<p />Keyword argument <var>read-size</var> will be passed to <code>read-random-bytes</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="random1734">
+    <span class="name" name="random">random</span>
+  </a> <span class="args">prng size</span></div>
+<div class="desc"><var>size</var> must a positive fixnum.
+<p />Reads <var>size</var> bytes of random byte from <var>prng</var>.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="prng-state1735">
+    <span class="name" name="prng-state">prng-state</span>
+  </a> <span class="args">(prng &lt;prng&gt;)</span></div>
+<div class="desc">Returns given <var>prng</var>'s state if the pseudo random implementation
+allows.
+<p />For default built in pseudo randoms return #f.
+<p />NOTE: if &lt;secure-random&gt; is implemented, then the pseudo random implementation
+should not return the state.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="read-random-bytes1736">
+    <span class="name" name="read-random-bytes">read-random-bytes</span>
+  </a> <span class="args">prng size</span></div>
+<div class="define"><span class="define-category">Function</span><a name="read-random-bytes!1737">
+    <span class="name" name="read-random-bytes!">read-random-bytes!</span>
+  </a> <span class="args">prng bv size</span></div>
+<div class="desc">Reads random bytes from given <var>prng</var>.
+<p />The first form creates fresh bytevector with size <var>size</var>.
+<p />The second form reads random bytes from <var>prng</var> and sets the result into the
+given <var>bv</var> destructively.
+<p />If the second form is used, <var>bv</var> must have the length at least <var>size</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="read-sys-random1738">
+    <span class="name" name="read-sys-random">read-sys-random</span>
+  </a> <span class="args">bis</span></div>
+<div class="desc">Returns given <var>bits</var> bits of random bytevector.</div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1739"><span class="section-number">7.17.1.1</span>Custom pseudo random operations</a>
+  </h5>
+<p />Since version 0.3.2, pseudo random also has custom operations. Similar with
+cipher spi or hash algorithm.
+<p />The following example describes how to make it.
+<p /><pre class="codeblock">;; the code snipet is from math/mt-random
+(define-class &lt;mersenne-twister&gt; (&lt;user-prng&gt;)
+  (;; The array for the state vector
+   ;; using bytevector, it needs to be 64 bit aligned.
+   (state :init-keyword :state :init-form (make-bytevector (* NN 8)))
+   ;; mti==NN+1 means MT[NN] is not initialized
+   (mti   :init-keyword :mti   :init-form (+ NN 1))))
+(define-method initialize ((o &lt;mersenne-twister&gt;) initargs)
+  (call-next-method)
+  (let ((seed (get-keyword :seed initargs #f)))
+    (slot-set! o 'set-seed! mt-set-seed)
+    (slot-set! o 'read-random! mt-read-random!)
+    (when seed
+      (mt-set-seed o seed))))
+</pre>
+<p />User just need to set the slots <code>set-seed!</code> and <code>read-random!</code>. Then
+other process is done by lower layer.
+<p />Following describes the meaning of these slots.
+<p />The slot <code>set-seed!</code> requires a procedure which accepts 2 arguments,
+target pseudo random and <var>seed</var>. <var>seed</var> must be bytevector.
+<p />The slot <code>read-random!</code> requires a pseudo which accepts 3 arguments,
+target pseudo random <var>buffer</var> and <var>bytes</var>. <var>buffer</var> must be a
+bytevector and have bigger size than given <var>bytes</var>. <var>bytes</var> must be
+a non negative fixnum.
+<p />NOTE: The custom pseudo random interface has been changed since version 0.3.6.
+Make sure which version of Sagittarius your application using.
+<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="math.hash"><span class="section-number">7.17.2</span>Hash operations</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(math hash)1740">
+      <span class="name" name="(math hash)">(math hash)</span>
+    </a>
+  </div>
+<div class="desc">This library exports procedures for hash (digest) operations.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-algorithm1741">
+    <span class="name" name="hash-algorithm">hash-algorithm</span>
+  </a> <span class="args">name . options</span></div>
+<div class="desc"><var>name</var> must be a string.
+<p />Creates a hash-algorithm object. <var>name</var> specifies its algorithm. The
+predefined algorithms are blow:
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="WHIRLPOOL1742">
+      <span class="name" name="WHIRLPOOL">WHIRLPOOL</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-5121743">
+      <span class="name" name="SHA-512">SHA-512</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-3841744">
+      <span class="name" name="SHA-384">SHA-384</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RIPEMD-3201745">
+      <span class="name" name="RIPEMD-320">RIPEMD-320</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-2561746">
+      <span class="name" name="SHA-256">SHA-256</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RIPEMD-2561747">
+      <span class="name" name="RIPEMD-256">RIPEMD-256</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-2241748">
+      <span class="name" name="SHA-224">SHA-224</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-2241749">
+      <span class="name" name="SHA-224">SHA-224</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Tiger-1921750">
+      <span class="name" name="Tiger-192">Tiger-192</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="SHA-11751">
+      <span class="name" name="SHA-1">SHA-1</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RIPEMD-1601752">
+      <span class="name" name="RIPEMD-160">RIPEMD-160</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="RIPEMD-1281753">
+      <span class="name" name="RIPEMD-128">RIPEMD-128</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MD51754">
+      <span class="name" name="MD5">MD5</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MD41755">
+      <span class="name" name="MD4">MD4</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="MD21756">
+      <span class="name" name="MD2">MD2</span>
+    </a>
+  </div>
+<p />If you want to use other hash algorithm, you can also create a new hash
+algorithm. It is described the section
+<a href="section717.html#custom.hash">Custom hash algorithm</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-algorithm?1757">
+    <span class="name" name="hash-algorithm?">hash-algorithm?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Return #t if <var>obj</var> is hash-algorithm object otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-oid1758">
+    <span class="name" name="hash-oid">hash-oid</span>
+  </a> <span class="args">hash-algorithm</span></div>
+<div class="desc">Return OID of given <var>hash-algorithm</var> if it has otherwise #f.</div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1759"><span class="section-number">7.17.2.1</span>User level APIs of hash operations</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash1760">
+    <span class="name" name="hash">hash</span>
+  </a> <span class="args">type bv . options</span></div>
+<div class="desc"><var>type</var> must be a string which specifies hash algorithms or
+hash-algorithm object.
+<p />The <code>hash</code> procedure generates digest from given bytevector <var>bv</var>
+according to the given algorithm. The result digest will be a bytevector.
+<p />If <var>type</var> is not a hash algorithm object nor predefined hash algorithm,
+then <var>options</var> will be passed to the custom hash algorithm creation.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-size1761">
+    <span class="name" name="hash-size">hash-size</span>
+  </a> <span class="args">hash-algorithm</span></div>
+<div class="desc">Returns hash size of given <var>hash-algorithm</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-block-size1762">
+    <span class="name" name="hash-block-size">hash-block-size</span>
+  </a> <span class="args">hash-algorithm</span></div>
+<div class="desc">Returns hash block size of given <var>hash-algorithm</var>.</div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1763"><span class="section-number">7.17.2.2</span>Low level APIs of hash operations</a>
+  </h5>
+<p />Most of the time User level APIs are sufficient enough, however for some cases,
+for example multiple input datas, you might need to use these low leve APIs.
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-init!1764">
+    <span class="name" name="hash-init!">hash-init!</span>
+  </a> <span class="args">hash-algorithm</span></div>
+<div class="desc">Initialise given <var>hash-algorithm</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-process!1765">
+    <span class="name" name="hash-process!">hash-process!</span>
+  </a>
+ <span class="args">hash-algorithm bv :optional (start 0) (end (bytevector-length bv))</span></div>
+<div class="desc"><var>bv</var> must be a bytevector.
+<p />Process hash process with input data <var>bv</var>. The result will be stored in the
+<var>hash-algorithm</var>.
+<p />Optional arguments <var>start</var> and <var>end</var> limits the input <var>bv</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="hash-done!1766">
+    <span class="name" name="hash-done!">hash-done!</span>
+  </a>
+ <span class="args">hash-algorithm out :optional (start 0) (end (bytevector-length bv))</span></div>
+<div class="desc"><var>out</var> must be a bytevector and must have hash size which the
+<code>hash-size</code> procedure returns.
+<p />Flushes stored hash result in <var>hash-algorithm</var> into <var>out</var>.
+<p />Once this procedure is called <var>hash-algorithm</var>'s state will be changed. If
+you want to reuse it, you need to call <code>hash-init!</code>.
+<p />Optional arguments <var>start</var> and <var>end</var> specifies the offset of
+output bytevector.
+</div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="custom.hash"><span class="section-number">7.17.2.3</span>Custom hash algorithm</a>
+  </h5>
+<p />Since version 0.3.1, user can create a custom hash algorithm. Similar with
+cipher spi described section <a href="section78.html#custom.cipher">Creating own cipher</a>.
+<p />The following example describes how to make it.
+<p /><pre class="codeblock">(import (rnrs) (sagittarius) (math) (clos user))
+;; hash operations
+(define (foo-init hash) #t)
+(define (foo-process hash bv)
+  (let ((len (bytevector-length bv)))
+    (bytevector-copy! bv 0 (slot-ref hash 'buffer) 0 (min len 16))))
+(define (foo-done hash out)
+  (let ((v (integer-&gt;bytevector (equal-hash (slot-ref hash 'buffer)))))
+    (bytevector-copy! v 0 out 0 (min 8 (bytevector-length v)))))
+<p />(define-class &lt;foo-hash&gt; (&lt;user-hash-algorithm&gt;)
+  ((buffer :init-form (make-bytevector 16))))
+(define-method initialize ((o &lt;foo-hash&gt;) initargs)
+  (call-next-method)
+  (slot-set! o 'init foo-init)
+  (slot-set! o 'process foo-process)
+  (slot-set! o 'done foo-done)
+  (slot-set! o 'block-size 16)
+  (slot-set! o 'hash-size 8)
+  (slot-set! o 'oid #f)
+  (slot-set! o 'state #f))
+;; marker
+(define-class &lt;foo-marker&gt; () ())
+(define FOO (make &lt;foo-marker&gt;))
+(register-hash FOO &lt;foo-hash&gt;)
+<p />;; use with APIs
+(hash FOO (string-&gt;utf8 "hash")) ;; -&gt; #vu8(245 221 54 232 0 0 0 0)
+</pre>
+<p />The slots <code>init</code>, <code>process</code> and <code>done</code> must be set with a
+procedure which will be called by <code>hash-init!</code>, <code>hash-process!</code> and
+<code>hash-done!</code> respectively. 
+<p />The procedure set to <code>process</code> and <code>done</code>  must accept 2 or 4
+arguments. If it can accept 4 arguments, then optional argumens <var>start</var>
+and <var>end</var> are passed. Implementation can use these information to 
+ptimise memory allocation. If it can accept 2 argumens, then framework 
+handles the range. In this case, uneccesarry allocation may happen.
+<p />The slots <code>block-size</code> and <code>hash-size</code> must be non negative exact
+integer and will be returned by <code>hash-block-size</code> and <code>hash-size</code>
+procedures respectively.
+<p />The slot <code>oid</code> must be set #f or string which represent OID of the custom
+hash algorithm. If you don't have it, it's better to set #f.
+<p />The slot <code>state</code> can be anything, this slot is for storing the hash state
+if you need.
+<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1767"><span class="section-number">7.17.3</span>Prime number operations</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(math prime)1768">
+      <span class="name" name="(math prime)">(math prime)</span>
+    </a>
+  </div>
+<div class="desc">This library exports procedures for prime number operations.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="prime?1769">
+    <span class="name" name="prime?">prime?</span>
+  </a>
+ <span class="args">q :optional (k 50) (rand (secure-random RC4))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="is-prime?1770">
+    <span class="name" name="is-prime?">is-prime?</span>
+  </a>
+ <span class="args">q :optional (k 50) (rand (secure-random RC4))</span></div>
+<div class="desc">Tests if given <var>q</var> is a prime number or not.
+<p />This procedure uses Miller Rabin primality test. So there is slight possibility
+to pass non prim number.
+<p />The optional argument <var>k</var> is the test times. The default 50 makes failure
+ratio very low. And <var>rand</var> specifies whith pseudo random algorithm uses in
+the test.
+<p />The latter form is for backward compatibility.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="random-prime1771">
+    <span class="name" name="random-prime">random-prime</span>
+  </a>
+ <span class="args">size :key (prng (secure-random RC4))</span></div>
+<div class="desc">Find a prime number from <var>size</var> bytes. So the minimum range will be
+<code>1 &lt;= p &lt;= 251</code>.
+<p />Keyword argument <var>prng</var> specifies which pseudo random uses to find a prime
+number.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1772"><span class="section-number">7.17.4</span>Misc arithmetic operations</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(math helper)1773">
+      <span class="name" name="(math helper)">(math helper)</span>
+    </a>
+  </div>
+<div class="desc">This library exports procedures for misc arithmetic operations.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mod-inverse1774">
+    <span class="name" name="mod-inverse">mod-inverse</span>
+  </a> <span class="args">x m</span></div>
+<div class="desc">Re exporting <code>mod-inverse</code> defined in <code>(sagittarius)</code> library.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mod-expt1775">
+    <span class="name" name="mod-expt">mod-expt</span>
+  </a> <span class="args">x e m</span></div>
+<div class="desc">Re exporting <code>mod-expt</code> defined in <code>(sagittarius)</code> library.</div>
 
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section716.html">(math) - Mathematics library</a>
+    <a class="prev" href="section716.html">(util list) - Extra list utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section718.html">(net mq mqtt) - MQTT library</a>
+    <a class="next" href="section718.html">(net mq amqp) - AMQP library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-04-17T17:08:59+0100</i></div>
   </div>
 </html>

@@ -15,7 +15,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(packrat)2363">
+    <a name="(packrat)2406">
       <span class="name" name="(packrat)">(packrat)</span>
     </a>
   </div>
@@ -35,33 +35,33 @@ implemented using the packrat parsing algorithm. The main interfaces are the
 <code>base-generator-&gt;results</code> function, and the accessors for
 <code>parse-result</code> records.
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2364"><span class="section-number">8.5.1</span>Data Structures</a>
+    <a class="section.anchor" name="G2407"><span class="section-number">8.5.1</span>Data Structures</a>
   </h4>
 <p />This section describes the data structures that make up the core of the packrat
 parsing algorithm, and some of the low-level procedures that operate on them.
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2365"><span class="section-number">8.5.1.1</span>parse-result</a>
+    <a class="section.anchor" name="G2408"><span class="section-number">8.5.1.1</span>parse-result</a>
   </h5>
 <p />A parse-result record describes the results of an attempt at a parse at a
 particular position in the input stream. It can either record a successful
 parse, in which case it contains an associated semantic-value, or a failed
 parse, in which case it contains a parse-error structure.
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-result?2366">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-result?2409">
     <span class="name" name="parse-result?">parse-result?</span>
   </a> <span class="args">object</span></div>
 <div class="desc">This is a predicate which answers #t if and only if its argument is a
 parse-result record.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-result-successful?2367">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-result-successful?2410">
     <span class="name" name="parse-result-successful?">parse-result-successful?</span>
   </a> <span class="args">parse-result</span></div>
 <div class="desc">This predicate returns #t if its argument represents a successful parse,
 or #f if it represents a failed parse.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-result-semantic-value2368">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-result-semantic-value2411">
     <span class="name" name="parse-result-semantic-value">parse-result-semantic-value</span>
   </a> <span class="args">parse-result</span></div>
 <div class="desc">If the argument represents a successful parse, this function returns the
 associated semantic-value; otherwise, it will return #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-result-next2369">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-result-next2412">
     <span class="name" name="parse-result-next">parse-result-next</span>
   </a> <span class="args">parse-result</span></div>
 <div class="desc">If the argument represents a successful parse, this function returns a
@@ -72,14 +72,14 @@ had completed successfully, consuming the [a, b, c] prefix of the input stream
 and producing some semantic value, then the parse-result returned from
 <code>parse-result-next</code> would represent all possible parses starting from the
 [d, e] suffix of the input stream.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-result-error2370">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-result-error2413">
     <span class="name" name="parse-result-error">parse-result-error</span>
   </a> <span class="args">parse-result</span></div>
 <div class="desc">If the argument represents a failed parse, this function returns a
 parse-error structure; otherwise, it may return a parse-error structure for
 internal implementation reasons (to do with propagating errors upwards for
 improved error-reporting), or it may return #f</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-result2371">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-result2414">
     <span class="name" name="make-result">make-result</span>
   </a> <span class="args">semantic-value next-parse-results</span></div>
 <div class="desc">This function constructs an instance of parse-result representing a
@@ -87,7 +87,7 @@ successful parse. The first argument is used as the semantic value to include
 with the new parse-result, and the second argument should be a parse-results
 structure representing the location in the input stream from which continue
 parsing.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-expected-result2372">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-expected-result2415">
     <span class="name" name="make-expected-result">make-expected-result</span>
   </a> <span class="args">parse-position object</span></div>
 <div class="desc">This function constructs an instance of parse-result representing a failed
@@ -95,7 +95,7 @@ parse. The parse-position in the first argument and the value in the second
 argument are used to construct a variant of a parse-error record for inclusion
 in the parse-result that reports that a particular kind of value was expected at
 the given parse-position.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-message-result2373">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-message-result2416">
     <span class="name" name="make-message-result">make-message-result</span>
   </a> <span class="args">parse-position string</span></div>
 <div class="desc">This function constructs an instance of parse-result representing a failed
@@ -103,7 +103,7 @@ parse. The parse-position in the first argument and the string in the second
 argument are used to construct a variant of a parse-error record for inclusion
 in the parse-result that reports a general error message at the given parse
 position.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="merge-result-errors2374">
+<p /><div class="define"><span class="define-category">Function</span><a name="merge-result-errors2417">
     <span class="name" name="merge-result-errors">merge-result-errors</span>
   </a> <span class="args">parse-result parse-error</span></div>
 <div class="desc">This function propagates error information through a particular parse
@@ -111,7 +111,7 @@ result. The parse-error contained in the first argument is combined with the
 parse-error from the second argument, and the resulting parse-result structure
 is returned embedded in the error field of a copy of the first argument.</div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2375"><span class="section-number">8.5.1.2</span>parse-results</a>
+    <a class="section.anchor" name="G2418"><span class="section-number">8.5.1.2</span>parse-results</a>
   </h5>
 <p />A parse-results record notionally describes all possible parses that can be
 attempted from a particular point in an input stream, and the results of those
@@ -125,41 +125,41 @@ represent the implicit successful parse of a base value at the current position.
 The <code>base</code> field contains a pair of a toke-class-identifier and a semantic
 value unless the parse-results data structure as a whole is representing the of
 the input stream, in which case it will contain #f.
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-results?2376">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-results?2419">
     <span class="name" name="parse-results?">parse-results?</span>
   </a> <span class="args">object</span></div>
 <div class="desc">This is a predicate which answer #t if and only if its argument is a
 parse-results record.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-position2377">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-position2420">
     <span class="name" name="parse-results-position">parse-results-position</span>
   </a> <span class="args">parse-results</span></div>
 <div class="desc">Returns the parse-position corresponding to the argument. An unknown
 position is represented by #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-base2378">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-base2421">
     <span class="name" name="parse-results-base">parse-results-base</span>
   </a> <span class="args">parse-results</span></div>
 <div class="desc">If the argument corresponds to the end of the input stream, this function
 returns #f; otherwise, it returns a pair, where the car is to be interpreted as
 a base lexical token class identifier (for instance, "symbol", "string",
 "number") and the cdr is to be interpreted as the semantic value of the data.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-token-kind2379">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-token-kind2422">
     <span class="name" name="parse-results-token-kind">parse-results-token-kind</span>
   </a> <span class="args">parse-results</span></div>
 <div class="desc">This function returns the car (the token class identifier) of the result 
 of <code>parse-results-base</code>, if that result is a pair; otherwise it returns
 #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-token-kind2380">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-token-kind2423">
     <span class="name" name="parse-results-token-kind">parse-results-token-kind</span>
   </a> <span class="args">parse-results</span></div>
 <div class="desc">This function returns the car (the token class identifier) of the result 
 of <code>parse-results-base</code>, if that result is a pair; otherwise it returns
 #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-token-value2381">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-token-value2424">
     <span class="name" name="parse-results-token-value">parse-results-token-value</span>
   </a> <span class="args">parse-results</span></div>
 <div class="desc">This function returns the cdr (the token value) of the result of
 <code>parse-results-base</code>, if that result is a pair; otherwise it returns #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-next2382">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-results-next2425">
     <span class="name" name="parse-results-next">parse-results-next</span>
   </a> <span class="args">parse-results</span></div>
 <div class="desc">This function returns the parse-results record representing the position
@@ -170,7 +170,7 @@ tokens represented lexemes, then this function would return a representation of
 the results obtainable starting from the next lexeme position. The value #f is
 returned if there is no next position (that is, if the argument represents the
 final possible position before the end-of-stream).</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="base-generator-&gt;results2383">
+<p /><div class="define"><span class="define-category">Function</span><a name="base-generator-&gt;results2426">
     <span class="name" name="base-generator-&gt;results">base-generator-&gt;results</span>
   </a> <span class="args">generator-function</span></div>
 <div class="desc">This function is used to set up an initial input stream of base tokens.
@@ -179,7 +179,7 @@ which is to be a parse-position record or #f, and the second of which is to be a
 base token, that is a pair of a token class identifier and a semantic value. The
 argument is called every time the parser needs to read a fresh base token from 
 the input stream.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="prepend-base2384">
+<p /><div class="define"><span class="define-category">Function</span><a name="prepend-base2427">
     <span class="name" name="prepend-base">prepend-base</span>
   </a>
  <span class="args">parse-position base-value parse-results</span></div>
@@ -195,7 +195,7 @@ token stream <code>'((b . 2) (c . 3))</code>, then the result of the call
 <p />The first argument to prepend-base, the parse-position, should be either a
 parse-position representing the location the base token being prepended, or #f
 if the input position of the base token is unknown.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="prepend-semantic-value2385">
+<p /><div class="define"><span class="define-category">Function</span><a name="prepend-semantic-value2428">
     <span class="name" name="prepend-semantic-value">prepend-semantic-value</span>
   </a>
  <span class="args">parse-position key-object semantic-value parse-results</span></div>
@@ -204,7 +204,7 @@ semantic value to a parse-results, again primarily for use in implementing
 extensible parsers. The resulting parse-results is assigned the given
 parse-position, and has an entry in its result map associating the given
 key-object with the given semantic-value and input parse-results.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="results-&gt;result2386">
+<p /><div class="define"><span class="define-category">Function</span><a name="results-&gt;result2429">
     <span class="name" name="results-&gt;result">results-&gt;result</span>
   </a>
  <span class="args">parse-results key-object result-thunk</span></div>
@@ -215,47 +215,47 @@ structure associated with the key is returned; otherwise, the nullary
 result-thunk is called, and the resulting parse-result is both stored into the
 result map and returned to the caller of <code>results-&gt;result</code>.</div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2387"><span class="section-number">8.5.1.3</span>parse-error</a>
+    <a class="section.anchor" name="G2430"><span class="section-number">8.5.1.3</span>parse-error</a>
   </h5>
 <p />Parse-error structure represent collected error information from attempted
 parses. They contain two kinds of error report, following [3]: a collection of
 "expected token" messages, and a collection of free-format message strings.
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-error?2388">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-error?2431">
     <span class="name" name="parse-error?">parse-error?</span>
   </a> <span class="args">object</span></div>
 <div class="desc">This is a predicate which answers #t if and only if its argument is a
 parse-error record.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-error-position2389">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-error-position2432">
     <span class="name" name="parse-error-position">parse-error-position</span>
   </a> <span class="args">parse-error</span></div>
 <div class="desc">Retrieves the parse-position in the input stream that this parse-error is
 describing. A #f result indicates an unknown position.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-error-expected2390">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-error-expected2433">
     <span class="name" name="parse-error-expected">parse-error-expected</span>
   </a> <span class="args">parse-error</span></div>
 <div class="desc">Retrieves the set (represented as a list) of token class identifiers that
 could have allowed the parse to continue from this point.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-error-message2391">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-error-message2434">
     <span class="name" name="parse-error-message">parse-error-message</span>
   </a> <span class="args">parse-error</span></div>
 <div class="desc">Retrieves the list of error messages associated with this parser-error.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-error-expected2392">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-error-expected2435">
     <span class="name" name="make-error-expected">make-error-expected</span>
   </a> <span class="args">object</span></div>
 <div class="desc">Constructs an "expected token" parse-error record from its arguments.
 Called by <code>make-expected-result</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-error-message2393">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-error-message2436">
     <span class="name" name="make-error-message">make-error-message</span>
   </a> <span class="args">string</span></div>
 <div class="desc">Constructs an "general error message" parse-error record from its
 arguments. Called by <code>make-message-result</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-error-empty2394">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-error-empty2437">
     <span class="name" name="parse-error-empty">parse-error-empty</span>
   </a> <span class="args">parse-error</span></div>
 <div class="desc">Returns #f if its argument contains no expected tokens, and no general
 error messages; otherwise returns #f. Used internally by
 <code>merge-result-errors</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="merge-result-errors2395">
+<p /><div class="define"><span class="define-category">Function</span><a name="merge-result-errors2438">
     <span class="name" name="merge-result-errors">merge-result-errors</span>
   </a> <span class="args">parse-error parse-error</span></div>
 <div class="desc">Merges two parse-error records, following [3]. If one record represents a
@@ -265,45 +265,45 @@ are unioned and the general message lists are appended to form a new
 parse-error record at the same position. The standard parsing combinators call
 this function as appropriate to propagate error information through the parse.</div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2396"><span class="section-number">8.5.1.4</span>parse-position</a>
+    <a class="section.anchor" name="G2439"><span class="section-number">8.5.1.4</span>parse-position</a>
   </h5>
 <p />A parse-position record represents a character location in an input stream.
-<p /><div class="define"><span class="define-category">Function</span><a name="make-parse-position2397">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-parse-position2440">
     <span class="name" name="make-parse-position">make-parse-position</span>
   </a>
  <span class="args">filename linenumber columnnumber</span></div>
 <div class="desc">Constructs a parse-position record from its arguments. The given filename
 may be #f if the filename is unknown or not appropriate for the input stream
 the parse-position is indexing into.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-position?2398">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-position?2441">
     <span class="name" name="parse-position?">parse-position?</span>
   </a> <span class="args">object</span></div>
 <div class="desc">This is a predicate which answer #t if any only if its argument is
 parse-position record.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-position-file2399">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-position-file2442">
     <span class="name" name="parse-position-file">parse-position-file</span>
   </a> <span class="args">parse-position</span></div>
 <div class="desc">Retrieves the file name associated with a parse-position record. Returns
 #f if the filename is absent or not appropriate for this input stream.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-position-line2400">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-position-line2443">
     <span class="name" name="parse-position-line">parse-position-line</span>
   </a> <span class="args">parse-position</span></div>
 <div class="desc">Retrieves the line number this parse-position represents. Line numbers
 begin at 1; that is all characters on the very first line in a file will have
 line number 1.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-position-column2401">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-position-column2444">
     <span class="name" name="parse-position-column">parse-position-column</span>
   </a> <span class="args">parse-position</span></div>
 <div class="desc">Retrieves the column number within a line that parse-position represents.
 Column numbers begin at 0; that is, the very first character of the very first
 line in a file will have line number 1 and column number 0.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="top-parse-position2402">
+<p /><div class="define"><span class="define-category">Function</span><a name="top-parse-position2445">
     <span class="name" name="top-parse-position">top-parse-position</span>
   </a> <span class="args">string</span></div>
 <div class="desc">Constructs a parse-position representing the very beginning of an input
 stream. The argument is passed into <code>make-parse-position</code> as the "filename"
 parameter, and so may be either a string or #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="update-parse-position2403">
+<p /><div class="define"><span class="define-category">Function</span><a name="update-parse-position2446">
     <span class="name" name="update-parse-position">update-parse-position</span>
   </a> <span class="args">parse-position character</span></div>
 <div class="desc">Given a position, and the character occurring at that position, returns
@@ -313,7 +313,7 @@ resets the column number to zero; <code>#\newline</code>, which both resets the 
 number to zero and increments the line number; and <code>#\tab</code>, which
 increments the column number to the nearest multiple of eight, just as terminal 
 with an eight-column tab stop setting might do.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-position-&gt;string2404">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-position-&gt;string2447">
     <span class="name" name="parse-position-&gt;string">parse-position-&gt;string</span>
   </a> <span class="args">parse-position</span></div>
 <div class="desc">Converts a parse-position record into an emacs-compatible display format.
@@ -322,7 +322,7 @@ its place. The result is of the form
 <p /><pre class="snipet"><span class="snipet-code">filename:linenumber:columnnumber</span></pre>
 <p />for example,
 <p /><pre class="snipet"><span class="snipet-code">main.c:33:7</span></pre></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-position&gt;?2405">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-position&gt;?2448">
     <span class="name" name="parse-position&gt;?">parse-position&gt;?</span>
   </a> <span class="args">parse-position parse-position</span></div>
 <div class="desc">Returns #t if the first parse-position is more than advanced in the input
@@ -333,7 +333,7 @@ associated with each parse-position is completely ignored. It is the caller's
 responsibility to ensure the two positions are associated with the same input
 stream.</div>
 <p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2406"><span class="section-number">8.5.2</span>Parsing Combinators</a>
+    <a class="section.anchor" name="G2449"><span class="section-number">8.5.2</span>Parsing Combinators</a>
   </h4>
 <p />Parsing combinators are functions taking a parse-results structure and retruning
 a parse-result structure. Each combinator attempts to parse the input stream in
@@ -343,7 +343,7 @@ an associated semantic value, or a failed parse with an associated error record.
 combinators provided as part of the library.
 <p />The type of a parser combinator, written in ML-like notation, would be
 <p /><pre class="snipet"><span class="snipet-code">parse-results -&gt; parse-result</span></pre>
-<p /><div class="define"><span class="define-category">Function</span><a name="packrat-check-base2407">
+<p /><div class="define"><span class="define-category">Function</span><a name="packrat-check-base2450">
     <span class="name" name="packrat-check-base">packrat-check-base</span>
   </a>
  <span class="args">kind-object semantic-value-acceptor</span></div>
@@ -357,7 +357,7 @@ applied to the parse-results representing the remainder of the input stream.
 <p />or more fully expanded,
 <p /><pre class="snipet"><span class="snipet-code">semanticValue -&gt; parse-results -&gt; parse-result</span></pre>
 <p />These types recall the types of functions that work with monads.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="packrat-check2408">
+<p /><div class="define"><span class="define-category">Function</span><a name="packrat-check2451">
     <span class="name" name="packrat-check">packrat-check</span>
   </a>
  <span class="args">combinator semantic-value-acceptor</span></div>
@@ -366,14 +366,14 @@ if the parse is successful, hands the resulting semantic value to the
 semantic-value-acceptor (which has the same type as the semantic-value-acceptor
 passed to <code>packrat-check-base</code> ) and continues parsing using the resulting
 combinator.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="packrat-or2409">
+<p /><div class="define"><span class="define-category">Function</span><a name="packrat-or2452">
     <span class="name" name="packrat-or">packrat-or</span>
   </a> <span class="args">combinator combinator</span></div>
 <div class="desc">Returns a combinator which attempts to parse using the first argument,
 only trying the second argument if the first argument fails to parse the input.
 This is the basic combinator used to implement a choice among several
 alternative means of parsing an input stream.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="packrat-unless2410">
+<p /><div class="define"><span class="define-category">Function</span><a name="packrat-unless2453">
     <span class="name" name="packrat-unless">packrat-unless</span>
   </a> <span class="args">string combinator combinator</span></div>
 <div class="desc">The combinator returned from this function first tries the first
@@ -382,9 +382,9 @@ containing the given string is returned as the result. This can be used to
 assert that a particular sequence of tokens does not occur at the current
 position before continuing on. (This is the "not-followed-by" matcher).</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2411"><span class="section-number">8.5.3</span>The parckrat-parser macro</a>
+    <a class="section.anchor" name="G2454"><span class="section-number">8.5.3</span>The parckrat-parser macro</a>
   </h4>
-<p /><div class="define"><span class="define-category">Macro</span><a name="packrat-parser2412">
+<p /><div class="define"><span class="define-category">Macro</span><a name="packrat-parser2455">
     <span class="name" name="packrat-parser">packrat-parser</span>
   </a>
  <span class="args">result-expr nonterminal-definition ...</span>
@@ -447,7 +447,7 @@ into invocations of <code>packrat-check</code>, with the procedure associated wi
 the named nonterminal passed in as the combinator argument.
 </div>
 <p /><h4 class="subsubsection">
-    <a class="section.anchor" name="G2413"><span class="section-number">8.5.4</span>References</a>
+    <a class="section.anchor" name="G2456"><span class="section-number">8.5.4</span>References</a>
   </h4>
 <p />[1] Alexander Birman and Jeffrey D. Ullman. Parsing algorithms with backtrack.
 <italic>Information and Control,</italic> 23(1):1 34, August 1973
@@ -468,6 +468,6 @@ Programming</italic>. Oct 2002.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-04-17T17:08:59+0100</i></div>
   </div>
 </html>

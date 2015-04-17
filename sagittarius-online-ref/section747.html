@@ -6,92 +6,98 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section746.html">(util timer) - Timer</a>
+    <a class="prev" href="section746.html">(text tree) - Lightweight text generation</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section748.html">(util treemap) - Treemap</a>
+    <a class="next" href="section748.html">(tlv) - TLV library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.tlv"><span class="section-number">7.47</span>(tlv) - TLV library</a>
+    <a class="section.anchor" name="util.timer"><span class="section-number">7.47</span>(util timer) - Timer</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(tlv)2196">
-      <span class="name" name="(tlv)">(tlv)</span>
+    <a name="(util timer)2230">
+      <span class="name" name="(util timer)">(util timer)</span>
     </a>
   </div>
-<div class="desc">This library provides TLV (tag length value) data operation procedures.
+<div class="desc">This library provides timer functionality.
+<p />Timer is the mechanism to trigger an event on specified time.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2197"><span class="section-number">7.47.1</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-emv-tlv-parser2198">
-    <span class="name" name="make-emv-tlv-parser">make-emv-tlv-parser</span>
+<p />The following describes how to use;
+<pre class="codeblock">(import (util timer))
+<p />(let ((timer (make-timer)))
+  (timer-start! timer) ;; start timer
+  ;; execute given thunk starting after 1000ms and each 1000ms
+  (timer-schedule! timer (lambda () (display "timer!") (newline)) 1000 1000)
+  ;; do something
+  (timer-cancel! timer))
+</pre>
+<p />A timer is kind of task queue running on a timer thread. Once it's started,
+then it waits until its queue is not empty or the first task reaches the
+configured time. The tasks are executed sequentially however its order is
+not reliable if there are multiple tasks queued on the same time.
+<p /><div class="define"><span class="define-category">Function</span><a name="timer?2231">
+    <span class="name" name="timer?">timer?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is a timer object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-timer2232">
+    <span class="name" name="make-timer">make-timer</span>
+  </a> <span class="args">:key error-handler</span></div>
+<div class="desc">Creates a timer object.
+<p />If keyword argument <var>error-handler</var> is specified, then it must be
+a procedure accepts one argument. The <var>error-handler</var> is called
+when timer procedure raises an error. If this is not specified, then
+timer stops when one of the tasks raised an error.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-start!2233">
+    <span class="name" name="timer-start!">timer-start!</span>
+  </a> <span class="args">timer</span></div>
+<div class="desc">Starts the given <var>timer</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-stop!2234">
+    <span class="name" name="timer-stop!">timer-stop!</span>
+  </a> <span class="args">timer</span></div>
+<div class="desc">Stops the given <var>time</var>.
+<p />NOTE: Once the timer is stopped, it is not reusable.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-schedule!2235">
+    <span class="name" name="timer-schedule!">timer-schedule!</span>
   </a>
- <span class="args">:key (object-builder tlv-builder)</span></div>
-<div class="desc">Creates EMV type TLV parser.
-<p />This procedure returns a procedure which accepts a binary port as its argument.
-<p />The keyword argument <code>object-builder</code> specifies how to construct a TLV
-object. The default value is <code>tlv-builder</code>.
+ <span class="args">timer thunk first :optional (period 0)</span></div>
+<div class="desc">Schedules a timer task.
+<p /><var>first</var> can be time object or exact integer. If this is time object,
+then the timer executes the <var>thunk</var> with given time (absolute time).
+If this is an exact integer, then the timer executes the <var>thunk</var> after
+the given number milliseconds from current time.
+<p />Optional argument <var>period</var> specifies if the <var>thunk</var> is periodically 
+executed or not. 0 is not periodical task.
+<p />The returning value is an ID of scheduled task. This is needed for
+<code>timer-remove!</code> and <code>timer-exists?</code> procedures.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-object?2199">
-    <span class="name" name="tlv-object?">tlv-object?</span>
-  </a> <span class="args">o</span></div>
-<div class="desc">Returns #t if the given object is TLV object otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-tag2200">
-    <span class="name" name="tlv-tag">tlv-tag</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV tag of given TLV object <var>tlv</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-data2201">
-    <span class="name" name="tlv-data">tlv-data</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV binary data if the given TLV object <var>tlv</var> is not
-constructed, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-components2202">
-    <span class="name" name="tlv-components">tlv-components</span>
-  </a> <span class="args">tlv</span></div>
-<div class="desc">Returns TLV components of given TLV object <var>tlv</var>. If the <var>tlv</var>
-is not constructed, this returns <code>()</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-&gt;bytevector2203">
-    <span class="name" name="tlv-&gt;bytevector">tlv-&gt;bytevector</span>
-  </a> <agrs>tlv</agrs></div>
-<div class="desc">Converts given TLV object <var>tlv</var> to bytevector.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="write-tlv2204">
-    <span class="name" name="write-tlv">write-tlv</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-reschedule!2236">
+    <span class="name" name="timer-reschedule!">timer-reschedule!</span>
   </a>
- <agrs>tlv :optional (out (current-output-port))</agrs></div>
-<div class="desc"><var>out</var> must be binary output port.
-<p />Writes given TLV object <var>tlv</var> to <var>out</var> as TLV data.
+ <span class="args">timer timer-id first :optional (period 0)</span></div>
+<div class="desc">Reschedules the timer task associated with <var>timer-id</var> and 
+returns <var>timer-id</var>
+<p />The <var>first</var> and <var>period</var> are the same as <code>timer-schedule!</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="dump-tlv2205">
-    <span class="name" name="dump-tlv">dump-tlv</span>
-  </a> <span class="args">:optional (out (current-output-port))</span></div>
-<div class="desc">Dump given TLV object <var>tlv</var> as human readable form.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2206"><span class="section-number">7.47.2</span>Custom object builder</a>
-  </h4>
-<p />Sometimes default TLV object is not convenient to use. Then users can create
-own object from TLV data passing own object builder to the
-<code>make-emv-tlv-parser</code> procedure.
-<p /><div class="define"><span class="define-category">Function</span><a name="tlv-builder2207">
-    <span class="name" name="tlv-builder">tlv-builder</span>
-  </a> <span class="args">first-byte tag data constructed?</span></div>
-<div class="desc">Default TLV object builder. User should not use this procedure directly.
-<p /><var>first-byte</var> is the first byte of the leading TLV object.
-<p /><var>tag</var> is the read tag of the TLV object.
-<p /><var>data</var> is either a list of TLV object or bytevector. User can check it with
-<var>constructed?</var> argument.
-<p /><var>constructed?</var> indicates if the TLV object is constructed or not. If this is
-#t then <var>data</var> is a list of TLV objects.
-</div>
-</section></section>
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-remove!2237">
+    <span class="name" name="timer-remove!">timer-remove!</span>
+  </a> <span class="args">timer id</span></div>
+<div class="desc">Removes given <var>id</var> task from the <var>timer</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timer-exists?2238">
+    <span class="name" name="timer-exists?">timer-exists?</span>
+  </a> <span class="args">timer id</span></div>
+<div class="desc">Returns #t if given <var>id</var> task exists in the <var>timer</var>, 
+otherwise #f.</div>
+
+</section>
   <div class="prev-next">
-    <a class="prev" href="section746.html">(util timer) - Timer</a>
+    <a class="prev" href="section746.html">(text tree) - Lightweight text generation</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section748.html">(util treemap) - Treemap</a>
+    <a class="next" href="section748.html">(tlv) - TLV library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-04-17T17:08:59+0100</i></div>
   </div>
 </html>

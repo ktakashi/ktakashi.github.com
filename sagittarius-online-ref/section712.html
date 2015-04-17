@@ -6,71 +6,224 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section711.html">(util file) - File operation utility library</a>
+    <a class="prev" href="section711.html">(util deque) - Deque</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section713.html">(util hashtables) - Hashtable utilities</a>
+    <a class="next" href="section713.html">(getopt) - Parsing command-line options</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="getopt"><span class="section-number">7.12</span>(getopt) - Parsing command-line options</a>
+    <a class="section.anchor" name="util.file"><span class="section-number">7.12</span>(util file) - File operation utility library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(getopt)1633">
-      <span class="name" name="(getopt)">(getopt)</span>
+    <a name="(util file)1653">
+      <span class="name" name="(util file)">(util file)</span>
     </a>
   </div>
-<div class="desc">This library defines a convenient way to parse command-line options.
-<p />The library exports a thin wrapper of <a href="section9.html#srfi">SRFI-37: args-fold</a>.
+<div class="desc">This library provides file operation utilities which is not exported from
+<code>(sagittarius)</code> library.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="with-args1634">
-    <span class="name" name="with-args">with-args</span>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1654"><span class="section-number">7.12.1</span>File to Scheme object operations</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;list1655">
+    <span class="name" name="file-&gt;list">file-&gt;list</span>
   </a>
- <span class="args">args (bind-spec ... [. rest]) body ...</span></div>
-<div class="desc">This macro wraps <code>args-fold</code> provided by SRFI-37. It takes a list
-of arguments, <var>args</var>, and scans it to find Unix-style command-line
-options and binds their values to local variables according to <var>bind-spec</var>,
-then executes <var>body</var>.
-<p />Following is the example how to use;
-<p /><pre class="codeblock">(define (usage args) ...)
-<p />(define (main args)
-  (with-args args
-     ((verbose (#\v "verbose") #f #f)
-      (file    (#\f "file") #t (usage args))
-      (debug-level   (#\d "debug-level") #t "0")
-      . rest)
-    ...))
-</pre>
-<p />The <var>bind-spec</var> must be one of the following forms;
-<p /><ul class="itemlist">
-    <li class="itemlist-item">
-      <var>(var (short long) value-required? default)</var>
-    </li>
-    <li class="itemlist-item">
-      <var>(var (short long) <code>*</code> default)</var>
-    </li>
-  </ul>
-<p /><var>var</var> is variable name. <var>short</var> must be a character represents the
-short argument name. <var>long</var> must be a string represents the long argument
-name. <var>value-required?</var> specifies whether or not the optional argument
-has the value. <var>default</var> is the default form of the variable so it will
-be evaluated when the input <var>args</var> didn't have the specified option.
-<p />If the second form is used, the <code>*</code> is syntactic keyword and the
-passed value will be packed to list. Thus the script can take more than one
-the same options.
-<p />If <var>rest</var> is not presented and <var>args</var> contains non listed argument,
-then it raises an <code>&amp;assertion</code>. If it is, then it will pack the rest of
-non listed argument as a list.
-<p /></div>
-
-</section>
+ <span class="args">reader path :key (transcoder (native-transcoder))</span></div>
+<div class="desc"><var>reader</var> must be a procedure accept one argument which is a port.
+<var>path</var> must be a string indicating existing file.
+<p />Returns a list which elements are read by <var>reader</var> from the given <var>path</var>
+file. <var>reader</var> reads the file contents until it reads EOF object.
+<p />The keyword argument <var>transcoder</var> can specify which transcoder will be used
+to open a port. It must be either #f or transcoder. The default value is the
+value <code>(native-transcoder)</code> returns.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;sexp-list1656">
+    <span class="name" name="file-&gt;sexp-list">file-&gt;sexp-list</span>
+  </a> <span class="args">path</span></div>
+<div class="define"><span class="define-category">Function</span><a name="file-&gt;string-list1657">
+    <span class="name" name="file-&gt;string-list">file-&gt;string-list</span>
+  </a> <span class="args">path</span></div>
+<div class="desc">Thin wrapper of <code>file-&gt;list</code>. The procedures defined as following;
+<p /><pre class="snipet"><span class="snipet-code">(file-&gt;list <code>read/ss</code> <var>path</var>)</span></pre>
+<pre class="snipet"><span class="snipet-code">(file-&gt;list <code>get-line</code> <var>path</var>)</span></pre>
+<p />respectively.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;string1658">
+    <span class="name" name="file-&gt;string">file-&gt;string</span>
+  </a> <span class="args">path</span></div>
+<div class="desc">Reads all file contents indicated <var>path</var> as a string and return it.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="file-&gt;bytevector1659">
+    <span class="name" name="file-&gt;bytevector">file-&gt;bytevector</span>
+  </a> <span class="args">path</span></div>
+<div class="desc">Reads all file contents indicated <var>path</var> as a bytevector and return
+ it.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1660"><span class="section-number">7.12.2</span>Temporary directory operations</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="temporary-directory1661">
+    <span class="name" name="temporary-directory">temporary-directory</span>
+  </a> <span class="args">:optional path</span></div>
+<div class="desc">Returns operating system specific temporary directory path.
+<p />If optional argument <var>path</var> is given, the procedure replace the temporary 
+directory path.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-temporary-file1662">
+    <span class="name" name="make-temporary-file">make-temporary-file</span>
+  </a> <span class="args">:optional prefix</span></div>
+<div class="desc">Creates temporary file and returns 2 values. One is the port, the other
+one is created file path.
+<p />The created temporary file won't be deleted automatically so it is users
+responsibility to delete.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1663"><span class="section-number">7.12.3</span>Path operations</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="decompose-path1664">
+    <span class="name" name="decompose-path">decompose-path</span>
+  </a> <span class="args">path</span></div>
+<div class="desc"><var>path</var> must be a string.
+<p />Decompose the given <var>path</var> to directory path, base name, and extension then
+returns these decomposed elements as 3 values.
+<p />The returning value can be #f if the path does not contains corresponding
+element.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="path-extension1665">
+    <span class="name" name="path-extension">path-extension</span>
+  </a> <span class="args">path</span></div>
+<div class="desc">Returns the extension of given <var>path</var>. If it does not contains
+extension then the procedure returns #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="path-sans-extension1666">
+    <span class="name" name="path-sans-extension">path-sans-extension</span>
+  </a> <span class="args">path</span></div>
+<div class="desc">Removes extension from given <var>path</var> and return it.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="path-basename1667">
+    <span class="name" name="path-basename">path-basename</span>
+  </a> <span class="args">path</span></div>
+<div class="desc">Returns the basename of given <var>path</var>. If it does not contains
+basename then the procedure returns #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="find-files1668">
+    <span class="name" name="find-files">find-files</span>
+  </a>
+ <span class="args">target :key (pattern #f) (all #t) (sort string&lt;=?) (recursive #t)</span></div>
+<div class="desc"><var>target</var> must be a string indicating existing file system path.
+<p />Find files from <var>target</var> if it's a directory and return the found files as
+a list.
+<p />Keyword arguments:
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">pattern</dt>
+      <dd class="dl-item-desc">Specifies the file pattern to be returned. This can be
+either string or regular expression pattern object.</dd>
+      <dt class="dl-item-title">all</dt>
+      <dd class="dl-item-desc">When this keyword argument is #t, then returns all files
+including hidden files which file name starting with <code>.</code>. If this is #f,
+the procedure excludes hidden files.</dd>
+      <dt class="dl-item-title">physical</dt>
+      <dd class="dl-item-desc">If this is #t, then the <var>proc</var> is only given either
+<code>directory</code> or <code>file</code>. No symbolic likes are given.</dd>
+      <dt class="dl-item-title">sort</dt>
+      <dd class="dl-item-desc">This specifies how to sort the result list. If the value is #f,
+then the result order is unspecified.</dd>
+      <dt class="dl-item-title">recursive</dt>
+      <dd class="dl-item-desc">If this keyword argument is #t then the procedure finds
+files recursively, otherwise only the first <var>target</var> directory.</dd>
+    </dl>
+  </div>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="path-for-each1669">
+    <span class="name" name="path-for-each">path-for-each</span>
+  </a>
+ <span class="args">path proc :key (physical #t) (file-only #f) (absolute-path #t)
+ (stop-on-file #f) (all #t) (recursive #t)</span></div>
+<div class="desc"><var>path</var> must be a string indicating existing file path. <var>proc</var>
+must be a procedure accepts 2 arguments, a path string and a symbol. The given
+symbol can be <code>directory</code>, <code>symbolic-link</code> or <code>file</code>.
+<p />Apply given <var>proc</var> to the found paths starting from <var>path</var> and returns
+unspecified value. The second argument of <var>proc</var> indicates the file type
+with following meaning;
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>directory</code>
+      </dt>
+      <dd class="dl-item-desc">The path is a directory.</dd>
+      <dt class="dl-item-title">
+        <code>symbolic-link</code>
+      </dt>
+      <dd class="dl-item-desc">The path is a symbolic link.</dd>
+      <dt class="dl-item-title">
+        <code>file</code>
+      </dt>
+      <dd class="dl-item-desc">The path is a file</dd>
+    </dl>
+  </div>
+<p />The keyword arguments:
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">file-only</dt>
+      <dd class="dl-item-desc">If this is #t, then the <var>proc</var> is only given a file.
+Otherwise all file types.</dd>
+      <dt class="dl-item-title">absolute-path</dt>
+      <dd class="dl-item-desc">If this is #t, then the <var>proc</var> is given absolute
+path. Otherwise only the filename.</dd>
+      <dt class="dl-item-title">stop-on-false</dt>
+      <dd class="dl-item-desc">If this is #t, then when <var>proc</var> returns #f the
+process will stop. Otherwise it continues the process.</dd>
+    </dl>
+  </div>
+The rest of the keyword arguments are the same as <code>find-files</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="path-map1670">
+    <span class="name" name="path-map">path-map</span>
+  </a>
+ <span class="args">path proc :key (physical #t) (file-only #f) (absolute-path #t) (all #t)
+  (recursive #t)</span></div>
+<div class="desc"><var>path</var> must be a string indicating existing file path. <var>proc</var>
+must be a procedure accepts 2 arguments, a path string and a symbol. The given
+symbol can be <code>directory</code>, <code>symbolic-link</code> or <code>file</code>.
+<p />Process the path string starting from <var>path</var> with given <var>proc</var> and
+returns a list which elements are the result value of <var>proc</var>.
+<p />The keyword arguments are the same as <code>path-for-each</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="build-path*1671">
+    <span class="name" name="build-path*">build-path*</span>
+  </a> <span class="args">paths ...</span></div>
+<div class="desc"><var>paths</var> must be list of strings.
+<p />Compose given list to platform specific path. This procedure doesn't put path
+separator at the end of composed string.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1672"><span class="section-number">7.12.4</span>Directory operations</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="create-directory*1673">
+    <span class="name" name="create-directory*">create-directory*</span>
+  </a> <span class="args">path</span></div>
+<div class="define"><span class="define-category">Function</span><a name="delete-directory*1674">
+    <span class="name" name="delete-directory*">delete-directory*</span>
+  </a> <span class="args">path</span></div>
+<div class="desc">Convenient procedures to create or delete directories.
+<p />These are the same as UNIX command <code>mkdir -p</code> and <code>rm -rf</code>,
+respectively.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="copy-directory1675">
+    <span class="name" name="copy-directory">copy-directory</span>
+  </a>
+ <span class="args">src dst :key (excludes '()) options ...</span></div>
+<div class="desc"><var>src</var> and <var>dst</var> must be string and <var>src</var> must indicates an
+existing path.
+<p />Copies <var>src</var> directory to <var>dst</var>. Keyword argument <var>excludes</var> must be
+a list of string and the procedure won't copy files which contain the
+<var>excludes</var> string(s).
+<p />The <var>options</var> is passed to <code>path-for-each</code>.
+</div>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section711.html">(util file) - File operation utility library</a>
+    <a class="prev" href="section711.html">(util deque) - Deque</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section713.html">(util hashtables) - Hashtable utilities</a>
+    <a class="next" href="section713.html">(getopt) - Parsing command-line options</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-04-17T17:08:59+0100</i></div>
   </div>
 </html>

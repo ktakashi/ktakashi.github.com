@@ -6,109 +6,161 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section735.html">(rfc uuid) - UUID generate library</a>
+    <a class="prev" href="section735.html">(rfc uri) - Parse and construct URIs</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section737.html">(rfc zlib) - zlib compression library</a>
+    <a class="next" href="section737.html">(rfc x.509) - X.509 certificate utility library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.x.509"><span class="section-number">7.36</span>(rfc x.509) - X.509 certificate utility library</a>
+    <a class="section.anchor" name="rfc.uuid"><span class="section-number">7.36</span>(rfc uuid) - UUID generate library</a>
   </h3>
-<p />This library does not support whole feature of X.509, it just parse and verify
-a message and signature. So it can not verify certificate itself.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc x.509)2044">
-      <span class="name" name="(rfc x.509)">(rfc x.509)</span>
+    <a name="(rfc uuid)2063">
+      <span class="name" name="(rfc uuid)">(rfc uuid)</span>
     </a>
   </div>
-<div class="desc">Exports X.509 utility procedures.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate2045">
-    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
-  </a> <span class="args">(in &lt;port&gt;)</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate2046">
-    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
-  </a>
- <span class="args">(sequence &lt;asn.1-sequence&gt;)</span></div>
-<div class="desc">Creates an X.509 certificate object from given binary input port or ASN.1
-sequence object (second form).
+<div class="desc">This library provides RFC 4122 a Universally Unique IDentifier (UUID)
+URN Namespace procedures.</div>
+<p />
+<div class="define">
+    <span class="define-category">Class</span>
+    <a name="<uuid&gt;2064">
+      <span class="name" name="<uuid&gt;">&lt;uuid&gt;</span>
+    </a>
+  </div>
+<div class="desc">The class representing UUID.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2065"><span class="section-number">7.36.1</span>Predicates</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid?2066">
+    <span class="name" name="uuid?">uuid?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;uuid&gt;</code>, otherwise
+ #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid=?2067">
+    <span class="name" name="uuid=?">uuid=?</span>
+  </a> <span class="args">uuid1 uuid2</span></div>
+<div class="desc">Compares given 2 uuids and return #t if both have the same values,
+otherwise #f.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2068"><span class="section-number">7.36.2</span>Constructors</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="make-null-uuid2069">
+      <span class="name" name="make-null-uuid">make-null-uuid</span>
+    </a>
+  </div>
+<div class="desc">Creates a null (empty) uuid.
+<p />The returning object will be represented like this UUID;
+<p /><code>00000000-0000-0000-0000-000000000000</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate?2047">
-    <span class="name" name="x509-certificate?">x509-certificate?</span>
-  </a> <span class="args">o</span></div>
-<div class="desc">Return #t if the <var>o</var> is X.509 certificate object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-version2048">
-    <span class="name" name="x509-certificate-get-version">x509-certificate-get-version</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return version of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-serial-number2049">
-    <span class="name" name="x509-certificate-get-serial-number">x509-certificate-get-serial-number</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return serial number of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-issuer-dn2050">
-    <span class="name" name="x509-certificate-get-issuer-dn">x509-certificate-get-issuer-dn</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return issuer DN of given X.509 certificate object as X.509 principal.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-subject-dn2051">
-    <span class="name" name="x509-certificate-get-subject-dn">x509-certificate-get-subject-dn</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return subject DN of given X.509 certificate object as X.509 principal.
-<p />NOTE: These Issuer DN and Subject DN getters return &lt;x.509-principal&gt; object,
-however I did not implement any utility for this class, so it's just useless
-for now.
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="make-v1-uuid2070">
+      <span class="name" name="make-v1-uuid">make-v1-uuid</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="make-v3-uuid2071">
+    <span class="name" name="make-v3-uuid">make-v3-uuid</span>
+  </a> <span class="args">namespace name</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-v4-uuid2072">
+    <span class="name" name="make-v4-uuid">make-v4-uuid</span>
+  </a> <span class="args">:optional prng</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-v5-uuid2073">
+    <span class="name" name="make-v5-uuid">make-v5-uuid</span>
+  </a> <span class="args">namespace name</span></div>
+<div class="desc">Creates version 1, 3, 4 and 5 UUIDs respectively.
+<p />For version 3 and 5, procedures need to take 2 arguments, <var>namespace</var>
+and <var>name</var>. <var>namespace</var> must be a UUID object, and <var>name</var> must be a
+string.
+<p />For version 4, it can take an optional argument <var>prng</var> which specifies
+pseudo random generator. The default value is <code>(*uuid-random-state*)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-before2052">
-    <span class="name" name="x509-certificate-get-not-before">x509-certificate-get-not-before</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return start date of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-after2053">
-    <span class="name" name="x509-certificate-get-not-after">x509-certificate-get-not-after</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return end date of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature2054">
-    <span class="name" name="x509-certificate-get-signature">x509-certificate-get-signature</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return signature of given X.509 certificate object. 
-<p />NOTE: This signature is not for <code>verify</code> described below.
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2074"><span class="section-number">7.36.3</span>Predefined namespaces and parameters</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-dns+2075">
+      <span class="name" name="+namespace-dns+">+namespace-dns+</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-url+2076">
+      <span class="name" name="+namespace-url+">+namespace-url+</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-oid+2077">
+      <span class="name" name="+namespace-oid+">+namespace-oid+</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="+namespace-x500+2078">
+      <span class="name" name="+namespace-x500+">+namespace-x500+</span>
+    </a>
+  </div>
+<div class="desc">Constant predefined namespace of UUIDs.</div>
+<p /><div class="define">
+    <span class="define-category">Variable</span>
+    <a name="*uuid-random-state*2079">
+      <span class="name" name="*uuid-random-state*">*uuid-random-state*</span>
+    </a>
+  </div>
+<div class="desc">Pseudo random generator used by version 4 UUID.</div>
+<p /><div class="define">
+    <span class="define-category">Variable</span>
+    <a name="*uuids-per-tick*2080">
+      <span class="name" name="*uuids-per-tick*">*uuids-per-tick*</span>
+    </a>
+  </div>
+<div class="desc">The number of allowed UUIDs in the same time. Used by version 1 UUID.
+<p />The default value is 1000.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature-algorithm2055">
-    <span class="name" name="x509-certificate-get-signature-algorithm">x509-certificate-get-signature-algorithm</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return signature algorithm of given X.509 certificate object as an OID
-string.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-public-key2056">
-    <span class="name" name="x509-certificate-get-public-key">x509-certificate-get-public-key</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return public key of given X.509 certificate object. The return value is
-<code>&lt;public-key&gt;</code> described in the section
-<a href="section77.html#crypto">(crypto) - Cryptographic library</a>.
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2081"><span class="section-number">7.36.4</span>Converters</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;bytevector2082">
+    <span class="name" name="uuid-&gt;bytevector">uuid-&gt;bytevector</span>
+  </a> <span class="args">uuid</span></div>
+<div class="desc">Returns bytevector converted from given <var>uuid</var>.
+<p /><pre class="snipet"><span class="snipet-code">(uuid-&gt;bytevector (make-null-uuid))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="verify2057">
-    <span class="name" name="verify">verify</span>
-  </a> <span class="args">x509 message signature
-  :key (verify pkcs1-emsa-v1.5-verify) (hash SHA-1)</span></div>
-<div class="desc"><var>message</var> and <var>signature</var> must be bytevector.
-<p />Verify given <var>message</var> with <var>signature</var> and <var>x509</var> certificate.
-<p />This procedure uses the <code>verify</code> procedure in <code>(crypto)</code> library. The
-keyword arguments will be passed to it. For more detail, see
-<a href="section77.html#crypto">(crypto) - Cryptographic library</a>.
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;string2083">
+    <span class="name" name="uuid-&gt;string">uuid-&gt;string</span>
+  </a> <span class="args">uuid</span></div>
+<div class="desc">Returns string represented uuid converted from given <var>uuid</var>.
+<p /><pre class="snipet"><span class="snipet-code">(uuid-&gt;string (make-null-uuid))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">00000000-0000-0000-0000-000000000000</span></pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="check-validity2058">
-    <span class="name" name="check-validity">check-validity</span>
-  </a>
- <span class="args">x509 :optional (date (current-date))</span></div>
-<div class="desc">Validate if the given certificate is valid in given <var>date</var>. Return #t
-if it's valid, otherwise raises <code>&amp;assertion</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;uuid2084">
+    <span class="name" name="bytevector-&gt;uuid">bytevector-&gt;uuid</span>
+  </a> <span class="args">bv</span></div>
+<div class="desc">Returns uuid object generated from <var>bv</var>.
+<p />Given bytevector must have length at least 16.
 </div>
-
-</section>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;uuid2085">
+    <span class="name" name="string-&gt;uuid">string-&gt;uuid</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Returns uuid object generated from <var>string</var>.
+<p />Given <var>string</var> must be proper format of UUID defined in RFC 4122.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uuid-&gt;urn-format2086">
+    <span class="name" name="uuid-&gt;urn-format">uuid-&gt;urn-format</span>
+  </a> <span class="args">uuid</span></div>
+<div class="desc">Returns URN formatted string of given <var>uuid</var>.
+</div>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section735.html">(rfc uuid) - UUID generate library</a>
+    <a class="prev" href="section735.html">(rfc uri) - Parse and construct URIs</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section737.html">(rfc zlib) - zlib compression library</a>
+    <a class="next" href="section737.html">(rfc x.509) - X.509 certificate utility library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-04-17T17:08:59+0100</i></div>
   </div>
 </html>

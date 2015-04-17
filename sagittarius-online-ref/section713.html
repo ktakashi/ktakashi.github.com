@@ -6,70 +6,71 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section712.html">(getopt) - Parsing command-line options</a>
+    <a class="prev" href="section712.html">(util file) - File operation utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section714.html">(util heap) - Heap</a>
+    <a class="next" href="section714.html">(util hashtables) - Hashtable utilities</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.hashtables"><span class="section-number">7.13</span>(util hashtables) - Hashtable utilities</a>
+    <a class="section.anchor" name="getopt"><span class="section-number">7.13</span>(getopt) - Parsing command-line options</a>
   </h3>
-<p />
-<div class="define">
+<p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util hashtables)1635">
-      <span class="name" name="(util hashtables)">(util hashtables)</span>
+    <a name="(getopt)1676">
+      <span class="name" name="(getopt)">(getopt)</span>
     </a>
   </div>
-<div class="desc">This library provides extra utilities for hashtable operation.
+<div class="desc">This library defines a convenient way to parse command-line options.
+<p />The library exports a thin wrapper of <a href="section9.html#srfi">SRFI-37: args-fold</a>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-for-each1636">
-    <span class="name" name="hashtable-for-each">hashtable-for-each</span>
-  </a> <span class="args">proc hashtable</span></div>
-<div class="define"><span class="define-category">Function</span><a name="hashtable-map1637">
-    <span class="name" name="hashtable-map">hashtable-map</span>
-  </a> <span class="args">proc hashtable</span></div>
-<div class="desc"><var>proc</var> must be a procedure which accepts 2 arguments.
-<var>hashtable</var> must be a hashtable.
-<p />Iterates all keys and values in the given <var>hashtable</var> and passes them
-to <var>proc</var> respectively.
-<p />The <code>hashtable-for-each</code> returns unspecified value. The 
-<code>hashtable-map</code> returns a list of the <var>proc</var> result.
-<p />These procedures are analogous to <code>for-each</code> and <code>map</code> respectively.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-fold1638">
-    <span class="name" name="hashtable-fold">hashtable-fold</span>
-  </a> <span class="args">kons hashtable knil</span></div>
-<div class="desc"><var>kons</var> must be a procedure which accepts 3 arguments.
-<var>hashtable</var> must be a hashtable.
-<p />Iterates all keys and values in the given <var>hashtable</var> and passes them
-and the result of <var>kons</var> to <var>kons</var> respectively. The first iteration
-of the third argument is <var>knil</var>. The procedure returns the result of
-all iterations.
-<p />Analogous to <code>fold</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-&gt;alist1639">
-    <span class="name" name="hashtable-&gt;alist">hashtable-&gt;alist</span>
-  </a> <span class="args">hashtable</span></div>
-<div class="desc">Converts to <var>hashtable</var> to an alist.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="alist-&gt;hashtable1640">
-    <span class="name" name="alist-&gt;hashtable">alist-&gt;hashtable</span>
+<p /><div class="define"><span class="define-category">Macro</span><a name="with-args1677">
+    <span class="name" name="with-args">with-args</span>
   </a>
- <span class="args">alist :key (compare eq?) (hasher symbol-hash)</span></div>
-<div class="desc">Converts <var>alist</var> to hashtable.
-<p />The keyword arguments specify how to create the returning hashtable. By
-default, it will use <code>make-eq-hashtable</code>. If it's specified then it
-will use <code>make-hashtable</code> to create a hashtable.
-</div>
+ <span class="args">args (bind-spec ... [. rest]) body ...</span></div>
+<div class="desc">This macro wraps <code>args-fold</code> provided by SRFI-37. It takes a list
+of arguments, <var>args</var>, and scans it to find Unix-style command-line
+options and binds their values to local variables according to <var>bind-spec</var>,
+then executes <var>body</var>.
+<p />Following is the example how to use;
+<p /><pre class="codeblock">(define (usage args) ...)
+<p />(define (main args)
+  (with-args args
+     ((verbose (#\v "verbose") #f #f)
+      (file    (#\f "file") #t (usage args))
+      (debug-level   (#\d "debug-level") #t "0")
+      . rest)
+    ...))
+</pre>
+<p />The <var>bind-spec</var> must be one of the following forms;
+<p /><ul class="itemlist">
+    <li class="itemlist-item">
+      <var>(var (short long) value-required? default)</var>
+    </li>
+    <li class="itemlist-item">
+      <var>(var (short long) <code>*</code> default)</var>
+    </li>
+  </ul>
+<p /><var>var</var> is variable name. <var>short</var> must be a character represents the
+short argument name. <var>long</var> must be a string represents the long argument
+name. <var>value-required?</var> specifies whether or not the optional argument
+has the value. <var>default</var> is the default form of the variable so it will
+be evaluated when the input <var>args</var> didn't have the specified option.
+<p />If the second form is used, the <code>*</code> is syntactic keyword and the
+passed value will be packed to list. Thus the script can take more than one
+the same options.
+<p />If <var>rest</var> is not presented and <var>args</var> contains non listed argument,
+then it raises an <code>&amp;assertion</code>. If it is, then it will pack the rest of
+non listed argument as a list.
+<p /></div>
 
 </section>
   <div class="prev-next">
-    <a class="prev" href="section712.html">(getopt) - Parsing command-line options</a>
+    <a class="prev" href="section712.html">(util file) - File operation utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section714.html">(util heap) - Heap</a>
+    <a class="next" href="section714.html">(util hashtables) - Hashtable utilities</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-03-13T20:04:48+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-04-17T17:08:59+0100</i></div>
   </div>
 </html>
