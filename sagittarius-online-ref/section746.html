@@ -8,41 +8,201 @@
   <div class="prev-next">
     <a class="prev" href="section745.html">(text sxml html-parser) - Flxible HTML parser</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section747.html">(util timer) - Timer</a>
+    <a class="next" href="section747.html">(text tree) - Lightweight text generation</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.tree"><span class="section-number">7.46</span>(text tree) - Lightweight text generation</a>
+    <a class="section.anchor" name="text.markdown"><span class="section-number">7.46</span>(text markdown) -- Markdown parser</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text tree)2227">
-      <span class="name" name="(text tree)">(text tree)</span>
+    <a name="(text markdown)2227">
+      <span class="name" name="(text markdown)">(text markdown)</span>
     </a>
   </div>
-<div class="desc">Defines simple but commonly used functions for a text construction.
-<p />This library is ported from Gauche.
+<div class="desc">This library provides markdown parser.
+<p />The library consists 3 parts, first one is the parser, second one is the
+converter which converts markdown sexp to SHTML. And the last one is the
+user APIs.
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="write-tree2228">
-    <span class="name" name="write-tree">write-tree</span>
-  </a> <span class="args">tree :optional out</span></div>
-<div class="desc">Write out an <var>tree</var> as a tree of text, to the output port <var>out</var>.
-If the <var>out</var> is omitted, then current output port is used.
+<p />
+<section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2228"><span class="section-number">7.46.1</span>High level APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="markdown-read2229">
+    <span class="name" name="markdown-read">markdown-read</span>
+  </a>
+ <span class="args">in :key (as 'sxml) :allow-other-keys opt</span></div>
+<div class="desc">Reads markdown from given input port <var>in</var>.
+<p />The keyword argument <var>as</var> specifies the return value. Following 3 are
+supported:
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>sxml</code>
+      </dt>
+      <dd class="dl-item-desc">Returns SHTML. The procedure uses
+   <code>markdown-sexp-&gt;sxml</code> to convert raw markdown S-expression.</dd>
+      <dt class="dl-item-title">
+        <code>html</code>
+      </dt>
+      <dd class="dl-item-desc">Returns HTML string.  The procedure uses
+   <code>markdown-sexp-&gt;string</code> to convert raw markdown S-expression.</dd>
+      <dt class="dl-item-title">
+        <code>sexp</code>
+      </dt>
+      <dd class="dl-item-desc">Returns S-expression representation of markdown.</dd>
+    </dl>
+  </div>
+<p />Parsing markdown is done by <code>parse-markdown</code>. The rest argument <var>opt</var>
+is passed to both <code>parse-markdown</code> and underlying convertion procedure.
+So if you want to read a markdown document as an HTML string without
+indentation, then the procedure should be called like the following:
+<p /><pre class="codeblock">(markdown-read in :as 'html :no-indent #t)
+</pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="tree-&gt;string2229">
-    <span class="name" name="tree-&gt;string">tree-&gt;string</span>
-  </a> <span class="args">tree</span></div>
-<div class="desc">Just calls the <code>write-tree</code> method for <var>tree] using an output
-string port, and returns the result string.
-</var></div>
-</section>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;markdown2230">
+    <span class="name" name="string-&gt;markdown">string-&gt;markdown</span>
+  </a> <span class="args">string :rest opt</span></div>
+<div class="desc">Reads markdown from given <var>string</var>.
+<p />This procedure is thin wrapper of <code>markdown-read</code>. It opens string
+input port of <var>string</var> and call the <code>markdown-read</code>.
+<p />The rest argument <var>opt</var> is passed to <code>markdown-read</code>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2231"><span class="section-number">7.46.2</span>Supporting syntaxes</a>
+  </h4>
+<p />This section describes which syntax is supported on this library. Markdown
+has variety of dialect and it is rather impossible to provide all of them.
+So this library only provides most common features.
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">Atx heading</dt>
+      <dd class="dl-item-desc">Starting <code>#</code> up to 6 of them is supported.
+<p /><pre class="codeblock"># header\n<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&lt;h1&gt;header&lt;/h1&gt;</span></pre>
+<p />The line can contain inline syntaxes and must end with line break. If it
+doesn't have line break, then the line is considered plain text.
+</dd>
+      <dt class="dl-item-title">Setext heading</dt>
+      <dd class="dl-item-desc">A line which have <code>=</code> or <code>-</code> in its
+next line is supported. The <code>=</code> or <code>-</code> can be more than one.
+<p /><pre class="codeblock">header
+======
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&lt;h1&gt;header&lt;/h1&gt;</span></pre>
+<p />The fist line can contain inline syntaxes. The second line must end with
+line break.
+</dd>
+      <dt class="dl-item-title">Blockquote</dt>
+      <dd class="dl-item-desc">A section which starts with <code>&gt;</code> is supported.
+<p /><pre class="codeblock">&gt; sentence1
+&gt; sentence2
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&lt;blockquote&gt;sentence1\nsentence2&lt;/blockquote&gt;</span></pre>
+<p />Nested blockquote is not supported.
+</dd>
+      <dt class="dl-item-title">Verbatim</dt>
+      <dd class="dl-item-desc">A section which starts with <code>"    "</code> 
+(4 spaces or one tab) is supported.
+<p /><pre class="codeblock">    this
+      is
+        the sentence
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&lt;pre&gt;thie\n  is\n    the sentence&lt;/pre&gt;</span></pre>
+<p /></dd>
+      <dt class="dl-item-title">Code block</dt>
+      <dd class="dl-item-desc">A section which starts with <code>"```\n"</code> and end with
+<code>"```\n"</code> is supported.
+<p /><pre class="codeblock">```
+(define (print . args)
+  (for-each display args) (newline))
+```
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&lt;pre&gt;(define (print . args)\n  (for-each display args) (newline))&lt;/pre&gt;</span></pre>
+<p /></dd>
+      <dt class="dl-item-title">Note</dt>
+      <dd class="dl-item-desc">A line which start with <code>"[^<var>$name</var>]: "</code> is 
+supported. To refer this note, use <code>"[^<var>$name</var>]"</code>. <var>$name</var>
+can be alphanumeric.
+<p /><pre class="codeblock">[^1]: note1
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&lt;div id="notes"&gt;&lt;ol&gt;&lt;li&gt;note1&lt;/li&gt;&lt;/div&gt;</span></pre>
+<p />To refer:
+<p /><pre class="codeblock">Note to refer [^1].
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&lt;p&gt;Note to refer &lt;sup&gt;&lt;a href="#id"&gt;1&lt;/a&gt;&lt;/sup&gt;.</span></pre>
+<p />The generated HTML also contains <code>title</code> attribute with the value of
+note.
+</dd>
+      <dt class="dl-item-title">Reference</dt>
+      <dd class="dl-item-desc">A line which start with <code>"[<var>$name</var>]: "</code> is 
+supported. To refer this note, use <code>"[^<var>$name</var>]"</code>. <var>$name</var>
+can be alphanumeric. To refer the reference, use <code>"[label][ref]"</code>.
+<p /><pre class="codeblock">[Ref]: http://foo (title)
+<p />or
+<p />[Ref]: http://foo 'title'
+<p />or
+<p />[Ref]: http://foo "title"
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&lt;div id="references"&gt;&lt;div&gt;[Ref]: http://foo 'title'&lt;/div&gt;&lt;/div&gt;</span></pre>
+<p />To refer:
+<p /><pre class="codeblock">[label][Ref]
+<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&lt;a href="http://foo"&gt;label&lt;/a&gt;</span></pre>
+<p /></dd>
+    </dl>
+  </div>
+<p />
+</section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2232"><span class="section-number">7.46.3</span>Conversion APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="markdown-sexp-&gt;sxml2233">
+    <span class="name" name="markdown-sexp-&gt;sxml">markdown-sexp-&gt;sxml</span>
+  </a>
+ <span class="args">sexp :key (no-reference #t) (no-notes #f) :allow-other-keys</span></div>
+<div class="desc">Converts given markdown S-expression <var>sexp</var> to SXML.
+<p />The keyword arguments <var>no-reference</var> and <var>no-notes</var> control the
+result SXML to have reference section and note section. If the values are
+true values, then returning SXML doesn't have reference or note section.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="markdown-sexp-&gt;string2234">
+    <span class="name" name="markdown-sexp-&gt;string">markdown-sexp-&gt;string</span>
+  </a>
+ <span class="args">sexp :key (no-indent #f) :allow-other-keys opts</span></div>
+<div class="desc">Converts given markdown S-expression <var>sexp</var> to HTML string.
+<p />The procedure first calls <code>markdown-sexp-&gt;sxml</code> passing <var>sexp</var> and
+<var>opts</var> then converts the returned value to HTML string.
+<p />The keyword argument <var>no-indent</var> controls if the returning string
+has indentation or not. If the value is true value, then returning string
+doesn't have indentation.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2235"><span class="section-number">7.46.4</span>Parser APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="markdown-parser-error?2236">
+    <span class="name" name="markdown-parser-error?">markdown-parser-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given object is a markdown parser error condition,
+otherwise #f.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="markdown-parser-position2237">
+    <span class="name" name="markdown-parser-position">markdown-parser-position</span>
+  </a> <span class="args">condition</span></div>
+<div class="define"><span class="define-category">Function</span><a name="markdown-parser-expected2238">
+    <span class="name" name="markdown-parser-expected">markdown-parser-expected</span>
+  </a> <span class="args">condition</span></div>
+<div class="desc">Returns <code>position</code> and <code>expexted</code> slot of the given
+markdown parser error condition, respectively.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-markdown2239">
+    <span class="name" name="parse-markdown">parse-markdown</span>
+  </a> <span class="args">in :allow-other-keys</span></div>
+<div class="desc">Parses given input port <var>in</var> and returns markdown S-expression.
+<p />The returning value is S-expression represented AST of markdown. The
+structure is <strong>not</strong> specified in this document yet, thus it might be
+changed in future.
+</div>
+
+</section></section>
   <div class="prev-next">
     <a class="prev" href="section745.html">(text sxml html-parser) - Flxible HTML parser</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section747.html">(util timer) - Timer</a>
+    <a class="next" href="section747.html">(text tree) - Lightweight text generation</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-04-17T17:08:59+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-05-15T10:11:33+0100</i></div>
   </div>
 </html>
