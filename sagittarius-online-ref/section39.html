@@ -55,8 +55,8 @@ it is possible to refer to the bindings (except for that of the record type
 itself) recursively.
 <p />The <var>name-spec</var> specifies the names of the record type, constructor, and
 predicate. It must take one of the following forms:
-<p /><pre class="snipet"><span class="snipet-code">(<var>record-name</var> <var>constructor-name</var> <var>predicate-name</var>)</span></pre>
-<pre class="snipet"><span class="snipet-code"><var>record-name</var></span></pre>
+<p /><pre class="snipet">(<var>record-name</var> <var>constructor-name</var> <var>predicate-name</var>)</pre>
+<pre class="snipet"><var>record-name</var></pre>
 <p /><var>Record-name</var>, <var>constructor-name</var>, and <var>predicate-name</var> must all be
 identifiers.
 <var>Record-name</var>, taken as a symbol, becomes the name of the record type.
@@ -82,13 +82,13 @@ name is <code>frob?</code>
 Each <var>record-clause</var> must take one of the auxiliary syntax forms; it is a
 syntax violation if multiple <var>record-clauses</var> of the same kind appear in a
 <code>define-record-type</code> form.
-<p /><pre class="snipet"><span class="snipet-code">(fields <var>field-spec</var>*)</span></pre>
+<p /><pre class="snipet">(fields <var>field-spec</var>*)</pre>
 <p />Each <var>field-spec</var> has one of the following forms
-<p /><pre class="snipet"><span class="snipet-code">(immutable <var>field-name</var> <var>accessor-name</var>)</span></pre>
-<pre class="snipet"><span class="snipet-code">(mutable <var>field-name</var> <var>accessor-name</var> <var>mutator-name</var>)</span></pre>
-<pre class="snipet"><span class="snipet-code">(immutable <var>field-name</var>)</span></pre>
-<pre class="snipet"><span class="snipet-code">(mutable <var>field-name</var>)</span></pre>
-<pre class="snipet"><span class="snipet-code"><var>field-name</var></span></pre>
+<p /><pre class="snipet">(immutable <var>field-name</var> <var>accessor-name</var>)</pre>
+<pre class="snipet">(mutable <var>field-name</var> <var>accessor-name</var> <var>mutator-name</var>)</pre>
+<pre class="snipet">(immutable <var>field-name</var>)</pre>
+<pre class="snipet">(mutable <var>field-name</var>)</pre>
+<pre class="snipet"><var>field-name</var></pre>
 <p /><var>Field-name</var>, <var>accessor-name</var>, and <var>mutator-name</var> must all be identifiers.
 The first form declares an immutable field called field-name&gt;, with the corresponding
 accessor named <var>accessor-name</var>. The second form declares a mutable field called
@@ -106,29 +106,29 @@ is <code>widget</code>, the accessor name is <code>frob-widget</code> and the mu
 <code>record-type</code> descriptor being created, in the same order.
 <p />The <code>fields</code> clause may be absent; this is equivalent to an empty <code>fields</code>
 clause.
-<p /><pre class="snipet"><span class="snipet-code">(parent <var>parent-name</var>)</span></pre>
+<p /><pre class="snipet">(parent <var>parent-name</var>)</pre>
 <p />Specifies that the record type is to have parent type <var>parent-name</var>, where
 <var>parent-name</var> is the <var>record-name</var> of a record type previously defined
 using <code>define-record-type</code>. The record-type definition associated with
 <var>parent-name</var> must not be sealed. If no parent clause and no <code>parent-rtd</code>
 (see below) clause is present, the record type is a base type.
-<p /><pre class="snipet"><span class="snipet-code">(protocol <var>expression</var>)</span></pre>
+<p /><pre class="snipet">(protocol <var>expression</var>)</pre>
 <p /><var>Expression</var> is evaluated in the same environment as the <code>define-record-type</code>
 form, and must evaluate to a protocol appropriate for the record type being defined.
 <p />The protocol is used to create a record-constructor descriptor as described below.
 If no <code>protocol</code> clause is specified, a constructor descriptor is still created
 using a default protocol. The clause can be absent only if the record type being
 defined has no parent type, or if the parent definition does not specify a protocol.
-<p /><pre class="snipet"><span class="snipet-code">(sealed <var>boolean</var>)</span></pre>
+<p /><pre class="snipet">(sealed <var>boolean</var>)</pre>
 <p />If this option is specified with operand #t, the defined record type is sealed,
 i.e., no extensions of the record type can be created. If this option is specified
 with operand #f, or is absent, the defined record type is not sealed.
-<p /><pre class="snipet"><span class="snipet-code">(opaque <var>boolean</var>)</span></pre>
+<p /><pre class="snipet">(opaque <var>boolean</var>)</pre>
 <p />If this option is specified with operand #t, or if an opaque parent record type is
 specified, the defined record type is opaque. Otherwise, the defined record type is
 not opaque. See the specification of record-rtd below for details.
-<p /><pre class="snipet"><span class="snipet-code">(nongenerative <var>uid</var>)</span></pre>
-<pre class="snipet"><span class="snipet-code">(nongenerative)</span></pre>
+<p /><pre class="snipet">(nongenerative <var>uid</var>)</pre>
+<pre class="snipet">(nongenerative)</pre>
 <p />This specifies that the record type is nongenerative with uid <var>uid</var>, which must
 be an identifier. If <var>uid</var> is absent, a unique uid is generated at macro-expansion
 time. If two record-type definitions specify the same uid, then the record-type
@@ -140,12 +140,16 @@ is raised. If the condition is met, a single record type is generated for both
 definitions.
 <p />In the absence of a <code>nongenerative</code> clause, a new record type is generated
 every time a <code>define-record-type</code> form is evaluated:
-<p /><pre class="codeblock">(let ((f (lambda (x)
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(let ((f (lambda (x)
            (define-record-type r ...)
            (if x r? (make-r ...)))))
   ((f #t) (f #f)))
-<span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">#f</span></pre>
-<p /><pre class="snipet"><span class="snipet-code">(parent-rtd <var>parent-rtd</var> <var>parent-cd</var>)</span></pre>
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">#f</span>
+  </div>
+<p /><pre class="snipet">(parent-rtd <var>parent-rtd</var> <var>parent-cd</var>)</pre>
 <p />Specifies that the record type is to have its parent type specified by
 <var>parent-rtd</var>, which should be an expression evaluating to a record-type
 descriptor, and <var>parent-cd</var>, which should be an expression evaluating to a
@@ -243,7 +247,7 @@ definition:
       (lambda (n) (p (make-widget n))))))
 </pre>
 <p />Also, the implicit-naming record definition:
-<p /><pre class="snipet"><span class="snipet-code">(define-record-type point (fields x y))</span></pre>
+<p /><pre class="snipet">(define-record-type point (fields x y))</pre>
 <p />is equivalent to the following explicit-naming record definition:
 <p /><pre class="codeblock">(define-record-type (point make-point point?)
   (fields 
@@ -287,38 +291,106 @@ the widget field.
                    ((n x y) (color-&gt;rgb c)))))
   (fields (mutable rgb cpoint-rgb cpoint-rgb-set!)))
 </pre>
-<pre class="snipet"><span class="snipet-code">(define (color-&gt;rgb c) (cons 'rgb c))</span></pre>
-<pre class="snipet"><span class="snipet-code">(define p1 (make-point 1 2))</span></pre>
-<pre class="snipet"><span class="snipet-code">(define p2 (make-cpoint 3 4 'red))</span></pre>
-<p /><pre class="snipet"><span class="snipet-code">(point? p1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
-<pre class="snipet"><span class="snipet-code">(point? p2)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
-<pre class="snipet"><span class="snipet-code">(point? (vector))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(point? (cons 'a 'b))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(cpoint? p1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(cpoint? p2)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
-<pre class="snipet"><span class="snipet-code">(point-x p1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">1</span></pre>
-<pre class="snipet"><span class="snipet-code">(point-y p1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">2</span></pre>
-<pre class="snipet"><span class="snipet-code">(point-x p2)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">3</span></pre>
-<pre class="snipet"><span class="snipet-code">(point-y p2)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">4</span></pre>
-<pre class="snipet"><span class="snipet-code">(cpoint-rgb p2)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(rgb . red)</span></pre>
-<p /><pre class="snipet"><span class="snipet-code">(set-point-y! p1 17)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">unspecified</span></pre>
-<pre class="snipet"><span class="snipet-code">(point-y p1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">17</span></pre>
-<p /><pre class="snipet"><span class="snipet-code">(record-rtd p1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(record-type-descriptor point)</span></pre>
+<pre class="snipet">(define (color-&gt;rgb c) (cons 'rgb c))</pre>
+<pre class="snipet">(define p1 (make-point 1 2))</pre>
+<pre class="snipet">(define p2 (make-cpoint 3 4 'red))</pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(point? p1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(point? p2)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(point? (vector))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(point? (cons 'a 'b))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(cpoint? p1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(cpoint? p2)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(point-x p1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">1</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(point-y p1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">2</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(point-x p2)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">3</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(point-y p2)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">4</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(cpoint-rgb p2)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(rgb . red)</span>
+  </div>
+<p /><div class="snipet-box">
+    <pre class="snipet">(set-point-y! p1 17)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">unspecified</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(point-y p1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">17</span>
+  </div>
+<p /><div class="snipet-box">
+    <pre class="snipet">(record-rtd p1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(record-type-descriptor point)</span>
+  </div>
 <p /><pre class="codeblock">(define-record-type (ex1 make-ex1 ex1?)
   (protocol (lambda (p) (lambda a (p a))))
   (fields (immutable f ex1-f)))
 </pre>
-<p /><pre class="snipet"><span class="snipet-code">(define ex1-i1 (make-ex1 1 2 3))</span></pre>
-<pre class="snipet"><span class="snipet-code">(ex1-f ex1-i1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(1 2 3)</span></pre>
+<p /><pre class="snipet">(define ex1-i1 (make-ex1 1 2 3))</pre>
+<div class="snipet-box">
+    <pre class="snipet">(ex1-f ex1-i1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(1 2 3)</span>
+  </div>
 <p /><pre class="codeblock">(define-record-type (ex2 make-ex2 ex2?)
   (protocol
     (lambda (p) (lambda (a . b) (p a b))))
   (fields (immutable a ex2-a)
            (immutable b ex2-b)))
 </pre>
-<p /><pre class="snipet"><span class="snipet-code">(define ex2-i1 (make-ex2 1 2 3))</span></pre>
-<pre class="snipet"><span class="snipet-code">(ex2-a ex2-i1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">1</span></pre>
-<pre class="snipet"><span class="snipet-code">(ex2-b ex2-i1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(2 3)</span></pre>
+<p /><pre class="snipet">(define ex2-i1 (make-ex2 1 2 3))</pre>
+<div class="snipet-box">
+    <pre class="snipet">(ex2-a ex2-i1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">1</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(ex2-b ex2-i1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(2 3)</span>
+  </div>
 <p /><pre class="codeblock">(define-record-type (unit-vector make-unit-vector unit-vector?)
   (protocol (lambda (p)
                  (lambda (x y z)
@@ -328,7 +400,7 @@ the widget field.
            (immutable y unit-vector-y)
            (immutable z unit-vector-z)))
 </pre>
-<p /><pre class="snipet"><span class="snipet-code">(define *ex3-instance* #f)</span></pre>
+<p /><pre class="snipet">(define *ex3-instance* #f)</pre>
 <p /><pre class="codeblock">(define-record-type ex3
   (parent cpoint)
   (protocol (lambda (n)
@@ -339,14 +411,42 @@ the widget field.
   (fields  (mutable thickness))
   (sealed #t) (opaque #t))
 </pre>
-<p /><pre class="snipet"><span class="snipet-code">(define ex3-i1 (make-ex3 1 2 17))</span></pre>
-<pre class="snipet"><span class="snipet-code">(ex3? ex3-i1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
-<pre class="snipet"><span class="snipet-code">(cpoint-rgb ex3-i1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(rgb . red)</span></pre>
-<pre class="snipet"><span class="snipet-code">(ex3-thickness ex3-i1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">17</span></pre>
-<pre class="snipet"><span class="snipet-code">(ex3-thickness-set! ex3-i1 18)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">unspecified</span></pre>
-<pre class="snipet"><span class="snipet-code">(ex3-thickness ex3-i1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">18</span></pre>
-<pre class="snipet"><span class="snipet-code">*ex3-instance*</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">ex3-i1</span></pre>
-<pre class="snipet"><span class="snipet-code">(record? ex3-i1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
+<p /><pre class="snipet">(define ex3-i1 (make-ex3 1 2 17))</pre>
+<div class="snipet-box">
+    <pre class="snipet">(ex3? ex3-i1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(cpoint-rgb ex3-i1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(rgb . red)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(ex3-thickness ex3-i1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">17</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(ex3-thickness-set! ex3-i1 18)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">unspecified</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(ex3-thickness ex3-i1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">18</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">*ex3-instance*</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">ex3-i1</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(record? ex3-i1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
 </div>
 
 </section>
@@ -358,6 +458,6 @@ the widget field.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-05-15T10:11:33+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-06-19T18:35:34+0100</i></div>
   </div>
 </html>

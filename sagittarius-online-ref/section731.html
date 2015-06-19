@@ -6,108 +6,288 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section730.html">(rfc http) - HTTP client</a>
+    <a class="prev" href="section730.html">(rfc hmac) - HMAC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section732.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="next" href="section732.html">(rfc pem) - PEM format  library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.pem"><span class="section-number">7.31</span>(rfc pem) - PEM format  library</a>
+    <a class="section.anchor" name="rfc.http"><span class="section-number">7.31</span>(rfc http) - HTTP client</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc pem)1974">
-      <span class="name" name="(rfc pem)">(rfc pem)</span>
+    <a name="(rfc http)2074">
+      <span class="name" name="(rfc http)">(rfc http)</span>
     </a>
   </div>
-<div class="desc">This library provides PEM format file parser.
-<p />Currently only supports RFC 1421 format.
+<div class="desc">This library provides simple HTTP client defined in 
+<a href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
+<p />The library only talks to HTTP 1.1 and provides part of the specified features.
+We may implement complete specification in future.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1975"><span class="section-number">7.31.1</span>Conditions</a>
-  </h4>
-<p />This library defines these conditions.
+<p />Following is the simple example to send GET method to a HTTP server.
+<pre class="codeblock">(import (rfc http))
+
+(define url "http://example.com/path")
+
+(let-values (((server path) (url-server&amp;path url)))
+  (http-get server path))
+;; -&gt; return 3 values
+;; status
+;; header
+;; body
+</pre>
 <p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;pem-error1976">
-      <span class="name" name="&amp;pem-error">&amp;pem-error</span>
+    <span class="define-category">Condition</span>
+    <a name="&amp;http-error2075">
+      <span class="name" name="&amp;http-error">&amp;http-error</span>
     </a>
   </div>
-<div class="desc">Super condition of all PEM file process related conditions.</div>
-<div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;invalid-pem-format1977">
-      <span class="name" name="&amp;invalid-pem-format">&amp;invalid-pem-format</span>
-    </a>
-  </div>
-<div class="desc">This condition indicates, given PEM file contains invalid format.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1978"><span class="section-number">7.31.2</span>Operations</a>
+<div class="desc">HTTP error condition. </div>
+<div class="define"><span class="define-category">Function</span><a name="http-error?2076">
+    <span class="name" name="http-error?">http-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Return #t if given <var>obj</var> is HTTP condition, otherwise #f.</div>
+<p />
+<section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2077"><span class="section-number">7.31.1</span>Request APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem1979">
-    <span class="name" name="parse-pem">parse-pem</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-get2078">
+    <span class="name" name="http-get">http-get</span>
+  </a> <span class="args">server path options ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="http-head2079">
+    <span class="name" name="http-head">http-head</span>
+  </a> <span class="args">server path options ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="http-post2080">
+    <span class="name" name="http-post">http-post</span>
+  </a> <span class="args">server path body options ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="http-put2081">
+    <span class="name" name="http-put">http-put</span>
+  </a> <span class="args">server path body options ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="http-delete2082">
+    <span class="name" name="http-delete">http-delete</span>
+  </a> <span class="args">server path options ...</span></div>
+<div class="desc">Sends HTTP request to given <var>path</var> on <var>server</var>. The using
+methods are <code>GET</code>, <code>HEAD</code>, <code>POST</code>, <code>PUT</code>, and
+<code>DELETE</code>, respectively.
+<p />The <var>body</var> argument of <code>http-post</code> and <code>http-put</code> can be
+UTF-8 string, bytevector or list of body parameters. The parameters are
+used for sending multipart form data. The detail parameter form is described
+in the <code>http-compose-form-data</code>.
+<p />The keyword <var>:value</var> and <var>file</var> should not be represented 
+simultaneously, if both keywords are found then <var>:file</var> is used.
+<p />Optional arguments <var>options</var> are passed to underling procedure
+<code>http-request</code>.
+</div>
+<p />
+<div class="define"><span class="define-category">Function</span><a name="http-request2083">
+    <span class="name" name="http-request">http-request</span>
   </a>
- <span class="args">in :key (multiple #f) (builder #f) (asn1 #f)</span></div>
-<div class="desc"><var>in</var> must be textual input port.
-<p />Parses given input port <var>in</var> and returns 2 values, parameter alist and
-decoded bytevector.
-<p />Keyword arguments
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>multiple</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure returns a list which
-    contains alist of parameter and content.
-<p />    This parameter is useful for the PEM files which contains multiple contents.
-  </dd>
-      <dt class="dl-item-title">
-        <code>builder</code>
-      </dt>
-      <dd class="dl-item-desc">    This keyword argument must take a procedure which accept one argument or
-    #f. If <var>builder</var> is specified then the given procedure will be called
-    to build then contents of the PEM.
-<p />    This argument is not correspond with <var>asn1</var> keyword argument and has
-    higher priority. So if both arguments are specified, then <var>builder</var>
-    will be used.
-  </dd>
-      <dt class="dl-item-title">
-        <code>asn1</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure converts BASE64
-    bytevector to ASN.1 object defined in <code>(asn.1)</code> library.
-  </dd>
-    </dl>
+ <span class="args">method server request-uri
+      :key (no-redirect #f)
+           (auth-handler #f)
+           (auth-user #f)
+	   (auth-password #f)
+	   (user-agent (*http-user-agent*))
+	   (secure #f)
+	   (receiver (http-string-receiver))
+	   (sender #f)
+      :allow-other-keys opts</span></div>
+<div class="desc">Sends HTTP request to <var>request-uri</var> on <var>server</var> with
+<var>method</var>.
+<p />The keyword argument <var>receiver</var> is used to receive the response data.
+The value must be a procedure which takes four arguments, status code,
+headers, size of content, and thunk to retrieve remote binary port and its 
+size.
+<p />The keyword argument <var>sender</var> is used for <code>POST</code> and <code>PUT</code>
+HTTP method to send data. If it's specified then it must be a procedure
+which takes three arguments, headers, encoding and header-sink.
+<p />NOTE: Users can define own receiver and sender however the API may change
+in the future. So if the predefined ones are sufficient, it is safe to use
+them.
+<p />The keyword arguments start with <var>auth-</var> handle authentication.
+If the server respond status code <code>401</code> then those values are
+used. <var>auth-handler</var> must be a procedure and takes five arguments
+alist of connection-info, <var>auth-user</var>, <var>auth-password</var>, response
+headers and response body. If the handler returns list of "authorization"
+value then <code>http-request</code> sends it as the authentication data. For
+example, if the server requires BASIC authentication then the procedure
+should return something like following value;
+<p /><pre class="snipet">(("authorization" "Basic dXNlcjpwYXNz"))</pre>
+<p />Following is the complete example of <var>auth-handler</var>;
+<p /><pre class="codeblock">(define (basic-auth-handler info user pass headers body)
+  (let ((m (format "~a:~a" user pass)))
+    `(("authorization" ,(format "Basic ~a" (base64-encode-string m))))))
+</pre>
+<p /><code>http-request</code> supports BASIC authentication and Digest authentication
+by default. If you know that the server requires one of each then specifying
+<var>auth-user</var> and <var>auth-password</var> is sufficient.
+<p />If keyword argument <var>secure</var> is true value then TLS socket is used for
+physical connection.
+<p />The rest arguments <var>opts</var> is converted to request header.
+</div>
+<p /><div class="define">
+    <span class="define-category">Parameter</span>
+    <a name="*http-user-agent*2084">
+      <span class="name" name="*http-user-agent*">*http-user-agent*</span>
+    </a>
   </div>
-<p />The procedure may raise following condition.
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>&amp;invalid-pem-format</code>
-      </dt>
-      <dd class="dl-item-desc">    When given <var>in</var> contains invalid PEM format.
-  </dd>
-    </dl>
+<div class="desc">This parameter value is used for <code>user-agent</code> header.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2085"><span class="section-number">7.31.2</span>Senders and receivers</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="http-null-sender2086">
+      <span class="name" name="http-null-sender">http-null-sender</span>
+    </a>
+  </div>
+<div class="desc">Creates a sender which sends nothing.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-string-sender2087">
+    <span class="name" name="http-string-sender">http-string-sender</span>
+  </a> <span class="args">str</span></div>
+<div class="desc">Creates a sender which content is <var>str</var>.
+<p />The string will be converted to bytevector according to the
+<var>encoding</var> argument when the sender is called.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-blob-sender2088">
+    <span class="name" name="http-blob-sender">http-blob-sender</span>
+  </a> <span class="args">blob</span></div>
+<div class="desc"><var>blob</var> must be a string or bytevector.
+<p />Creates a sender which content is <var>blob</var>. If the <var>blob</var> is string,
+it will be converted to bytevector with <code>string-&gt;utf8</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-multipart-sender2089">
+    <span class="name" name="http-multipart-sender">http-multipart-sender</span>
+  </a> <span class="args">params</span></div>
+<div class="desc">Creates a sender which send <code>multipart/form-data</code> with
+content of <var>param</var>.
+<p />The content will be created by <code>http-compose-form-data</code> procedure
+passing <var>param</var>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="http-string-receiver2090">
+      <span class="name" name="http-string-receiver">http-string-receiver</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Function</span>
+    <a name="http-binary-receiver2091">
+      <span class="name" name="http-binary-receiver">http-binary-receiver</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Function</span>
+    <a name="http-null-receiver2092">
+      <span class="name" name="http-null-receiver">http-null-receiver</span>
+    </a>
+  </div>
+<div class="desc">Creates a receiver which returning content is string, bytevecotor and
+unspecified value, respectively.
+<p />
+<div class="codeblock-box">
+    <pre class="codeblock">(http-get "google.com" "/" :receiver (http-string-receiver))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">status headers and string representation of received content</span>
+  </div>
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(http-get "google.com" "/" :receiver (http-binary-receiver))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">status headers and bytevector representation of received content</span>
+  </div>
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(http-get "google.com" "/" :receiver (http-null-receiver))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">status headers and unspecified value</span>
   </div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem-file1980">
-    <span class="name" name="parse-pem-file">parse-pem-file</span>
-  </a> <span class="args">file :rest options</span></div>
-<div class="define"><span class="define-category">Function</span><a name="parse-pem-string1981">
-    <span class="name" name="parse-pem-string">parse-pem-string</span>
-  </a> <span class="args">pem-string :rest options</span></div>
-<div class="desc">Convenient procedures.
-<p />Parse given file and PEM string, respectively.
-<p /><var>option</var> will be passed to the <code>parse-pem</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="http-oport-receiver2093">
+    <span class="name" name="http-oport-receiver">http-oport-receiver</span>
+  </a> <span class="args">sink flusher</span></div>
+<div class="desc">The <var>sink</var> must be a binary output port, <var>flusher</var> must be
+a procedure takes two arguments, <var>sink</var> and headers.
+<p />Creates a receiver which stores the content of response to <var>sink</var> and
+returns the result of <var>flusher</var>.
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(http-get "google.com" "/"
+          :receiver (let-values (((port extract) 
+                                  (open-bytevector-output-port)))
+                      (http-oport-receiver port 
+                                           (lambda (port size) (extract)))))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">status headers and bytevector representation of received content</span>
+  </div>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-file-receiver2094">
+    <span class="name" name="http-file-receiver">http-file-receiver</span>
+  </a>
+ <span class="args">filename :key (temporary? #f)</span></div>
+<div class="desc"><var>filename</var> must be a string.
+<p />Creates a receiver which stores the content to a file. The receiver
+returns the file name.
+<p />If keyword arguments <var>temporary?</var> specified with true value, then
+the returning file name is temporary file.
+<p />If there is no response or <code>content-length</code> header contains non
+number value, then the file will be cleaned.
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(http-get "google.com" "/" :receiver (http-file-receiver "google.html"))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">status headers and "google.html"</span>
+  </div>
+<p /></div>
+<p />
+</section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2095"><span class="section-number">7.31.3</span>Utilities</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-compose-query2096">
+    <span class="name" name="http-compose-query">http-compose-query</span>
+  </a>
+ <span class="args">path params :optional (encoding 'utf-8)</span></div>
+<div class="desc">Composes query string.
+<p />If given <var>path</var> is #f then only composed query string is returned,
+otherwise this returns <code><var>path</var>?<var>composed query</var></code> form.
+<p /><var>params</var> must be a list of name &amp; value list or null list.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-compose-form-data2097">
+    <span class="name" name="http-compose-form-data">http-compose-form-data</span>
+  </a>
+ <span class="args">params port :optional (encoding 'utf-8)</span></div>
+<div class="desc">Composes  multipart form data.
+<p />If <var>port</var> is #f then it returns composed string. if it's a port then
+the result is stored in the given <var>port</var>.
+<p />The <var>params</var> must be following form;
+<p /><pre class="codeblock"> &lt;params&gt; : (&lt;params&gt; ...)
+ &lt;param&gt;  : (&lt;name&gt; &lt;value&gt;)
+          | (&lt;name&gt; &lt;key&gt; &lt;value&gt; &lt;key2&gt; &lt;value2&gt; ...)
+ &lt;key&gt;    : :value | :file | :content-type | :content-transfer-encoding
+          | other keyword (used as a header name)
+</pre>
+<p /><var>&lt;value&gt;</var> is the content of <var>&lt;name&gt;</var> parameter. It can be any of
+Scheme object however it is converted to string representation except
+ bytevector.
+<p />If <var>:file</var> keyword is used then it read the content of <var>&lt;value&gt;</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="url-server&amp;path2098">
+    <span class="name" name="url-server&amp;path">url-server&amp;path</span>
+  </a> <span class="args">url</span></div>
+<div class="desc">Decompose the given <var>url</var> and returns auth part of URL and
+path + query + fragment.
 </div>
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section730.html">(rfc http) - HTTP client</a>
+    <a class="prev" href="section730.html">(rfc hmac) - HMAC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section732.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="next" href="section732.html">(rfc pem) - PEM format  library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-05-15T10:11:33+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-06-19T18:35:34+0100</i></div>
   </div>
 </html>

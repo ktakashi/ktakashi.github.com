@@ -15,7 +15,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(binary pack)1371">
+    <a name="(binary pack)1417">
       <span class="name" name="(binary pack)">(binary pack)</span>
     </a>
   </div>
@@ -24,14 +24,14 @@ and reading) binary data with template. The functionality is inspired by
 <a href="https://weinholt.se/industria/">Industria</a>'s
 <code>(weinholt struct pack)</code> library.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="pack1372">
+<p /><div class="define"><span class="define-category">Macro</span><a name="pack1418">
     <span class="name" name="pack">pack</span>
   </a> <span class="args">template args ...</span></div>
 <div class="desc"><var>template</var> must be a string.
 <p />Construct a bytevector with given <var>args</var> according to the given
 <var>template</var>. Template characters are described below.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="pack!1373">
+<p /><div class="define"><span class="define-category">Macro</span><a name="pack!1419">
     <span class="name" name="pack!">pack!</span>
   </a> <span class="args">template bv offset args ...</span></div>
 <div class="desc"><var>template</var> must be a string. 
@@ -45,60 +45,128 @@ predefined characters.
 f: ieee-single; d: ieee-double; ! or &gt;: big-endian; &lt;: little-endian;
 =: native-endian; u: disable natural alignment; a: enable natural alignment.
 Whitespace is ignored.
-<p /><pre class="snipet"><span class="snipet-code">(pack "!c" 128)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(128)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "s" 100)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(100 0)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!s" 100)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 100)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!d" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(64 9 30 184 81 235 133 31)</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(pack "!c" 128)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#vu8(128)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(pack "s" 100)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#vu8(100 0)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(pack "!s" 100)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#vu8(0 100)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(pack "!d" 3.14)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#vu8(64 9 30 184 81 235 133 31)</span>
+  </div>
 <p />Fields are by default aligned to their natural alignment and NUL bytes are
 inserted as necessary to have a field's index to be aligned to its size.
-<p /><pre class="snipet"><span class="snipet-code">(pack "!xd" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 0 0 0 0 0 0 0 64 9 30 184 81 235 133 31)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "!uxd" 3.14)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(0 64 9 30 184 81 235 133 31)</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(pack "!xd" 3.14)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#vu8(0 0 0 0 0 0 0 0 64 9 30 184 81 235 133 31)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(pack "!uxd" 3.14)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#vu8(0 64 9 30 184 81 235 133 31)</span>
+  </div>
 <p />Digits in front of the syntax characters means repetition. And <code>#\*</code> means
 indefinite length repetition.
-<p /><pre class="snipet"><span class="snipet-code">(pack "3c" 1 2 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3)</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack "*c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#vu8(1 2 3 4)</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(pack "3c" 1 2 3)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#vu8(1 2 3)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(pack "*c" 1 2 3 4)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#vu8(1 2 3 4)</span>
+  </div>
 <p />When the macro detects the given template is string, then it tries to expand
 as much as possible. So it might raises the different condition even if the
 template strings are the same.
-<p /><pre class="snipet"><span class="snipet-code">(pack "3c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&amp;syntax</span></pre>
-<pre class="snipet"><span class="snipet-code">(pack (car '("3c")) 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&amp;error</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(pack "3c" 1 2 3 4)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&amp;syntax</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(pack (car '("3c")) 1 2 3 4)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&amp;error</span>
+  </div>
 <p /></div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="unpack1374">
+<p /><div class="define"><span class="define-category">Macro</span><a name="unpack1420">
     <span class="name" name="unpack">unpack</span>
   </a> <span class="args">template bv</span></div>
-<div class="define"><span class="define-category">Macro</span><a name="unpack1375">
+<div class="define"><span class="define-category">Macro</span><a name="unpack1421">
     <span class="name" name="unpack">unpack</span>
   </a> <span class="args">template bv offset</span></div>
 <div class="desc"><var>template</var> must be a string.
 <p />Unpack the given bytevector according to the given <var>template</var> and returns
 the values. The template syntax are the same as <code>pack!</code>.
 <p />If the second form is used, then unpacking is done from the given <var>offset</var>.
-<p /><pre class="snipet"><span class="snipet-code">(unpack "!SS" #vu8(0 1 0 2))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">1 2</span></pre>
-<pre class="snipet"><span class="snipet-code">(unpack "!SS" #vu8(0 1 0 2 0 3) 1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">2 3</span></pre>
-<pre class="snipet"><span class="snipet-code">(unpack "!uSS" #vu8(0 1 0 2 0 3) 1)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">256 512</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(unpack "!SS" #vu8(0 1 0 2))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">1 2</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(unpack "!SS" #vu8(0 1 0 2 0 3) 1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">2 3</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(unpack "!uSS" #vu8(0 1 0 2 0 3) 1)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">256 512</span>
+  </div>
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="get-unpack1376">
+<p /><div class="define"><span class="define-category">Macro</span><a name="get-unpack1422">
     <span class="name" name="get-unpack">get-unpack</span>
   </a> <span class="args">port template</span></div>
 <div class="desc"><var>template</var> must be a string.
 <p />Utility unpacking macro for binary port.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="format-size1377">
+<p /><div class="define"><span class="define-category">Macro</span><a name="format-size1423">
     <span class="name" name="format-size">format-size</span>
   </a> <span class="args">template</span></div>
-<div class="define"><span class="define-category">Macro</span><a name="format-size1378">
+<div class="define"><span class="define-category">Macro</span><a name="format-size1424">
     <span class="name" name="format-size">format-size</span>
   </a> <span class="args">template args ...</span></div>
 <div class="desc"><var>template</var> must be a string.
 <p />Calculate the size of the result bytevector. If the second form is used, then
 macro can calculate even if the template contains indefinite length syntax
 <code>#\*</code>, otherwise #f is returned.
-<p /><pre class="snipet"><span class="snipet-code">(format-size "!xd")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">16</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "!uxd")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">9</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "*c")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(format-size "*c" 1 2 3 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">4</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(format-size "!xd")</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">16</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(format-size "!uxd")</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">9</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(format-size "*c")</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(format-size "*c" 1 2 3 4)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">4</span>
+  </div>
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="define-**-packer1379">
+<p /><div class="define"><span class="define-category">Macro</span><a name="define-**-packer1425">
     <span class="name" name="define-**-packer">define-<var>**</var>-packer</span>
   </a>
  <span class="args">(char arg) (<code>pack</code> expr1 ...) (<code>unpack</code> expr2 ...)</span></div>
@@ -126,6 +194,6 @@ the predefined characters. <var>**</var> can be followings;
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-05-15T10:11:33+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-06-19T18:35:34+0100</i></div>
   </div>
 </html>

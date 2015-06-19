@@ -6,294 +6,74 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section732.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="prev" href="section732.html">(rfc pem) - PEM format  library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section734.html">(rfc tls) - TLS protocol library</a>
+    <a class="next" href="section734.html">(rfc sftp) - SFTP library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.sftp"><span class="section-number">7.33</span>(rfc sftp) - SFTP library</a>
+    <a class="section.anchor" name="rfc.quoted-printable"><span class="section-number">7.33</span>(rfc quoted-printable) - Base 64 encode and decode library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="rfc sftp1989">
-      <span class="name" name="rfc sftp">rfc sftp</span>
+    <a name="(rfc quoted-printable)2107">
+      <span class="name" name="(rfc quoted-printable)">(rfc quoted-printable)</span>
     </a>
   </div>
-<div class="desc">This library provides SFTP programmatic operations.</div>
-<p />Following example code describes how to use in high level.
-<pre class="codeblock">(import (rfc sftp) (pp) (srfi :26))
-<p />(call-with-sftp-connection 
-  "localhost"    ;; hostname
-  "23"           ;; port number
-  (lambda (conn)
-    ;; read directory
-    (pp (sftp-readdir conn "."))
-    ;; only short names
-    (pp (sftp-readdir-as-filenames conn "."))
-    ;; only long names (usually POSIX 'ls -l' format)
-    (pp (sftp-readdir-as-longnames conn "."))
-<p />    ;; retrieve a file as a bytevector
-    (print (utf8-&gt;string (sftp-read! conn "reading/file" 
-                                    (sftp-binary-receiver))))
-    ;; store a file to local file directly
-    (sftp-read conn "/a/file/path"
-	(sftp-file-receiver "where/to/store" :options (file-options no-fail)))
-<p />    ;; upload a file
-    (let ((handle (sftp-open conn "boo" 
-                    (bitwise-ior +ssh-fxf-creat+ +ssh-fxf-write+))))
-     (call-with-input-file "a/local/file" (cut sftp-write! conn handle &lt;&gt;)))
-<p />    ;; rename a file
-    (sftp-rename! conn "boo" "foo")
-    ;; remove a file
-    (sftp-remove! conn "foo")
-    ;; create a directory
-    (sftp-mkdir! conn "boo")
-    ;; remove a directory
-    (sftp-rmdir! conn "boo")
-<p />    ;; create a symbolic link
-    (pp (sftp-symlink! conn "/tmp" "tmp"))
-    ;; get a actual path of symbolic link
-    (pp (sftp-readlink conn "tmp"))
-    ;; get a real path. (usually an absolute path)
-    (pp (sftp-realpath conn "../")))
-  :username "username" :password "password")
-</pre>
+<div class="desc">This library provides quoted printable encoding and decoding procedures.</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1990"><span class="section-number">7.33.1</span>High level APIs</a>
+    <a class="section.anchor" name="G2108"><span class="section-number">7.33.1</span>Encoding procedures</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="call-with-sftp-connection1991">
-    <span class="name" name="call-with-sftp-connection">call-with-sftp-connection</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-encode2109">
+    <span class="name" name="quoted-printable-encode">quoted-printable-encode</span>
   </a>
- <span class="args">server port proc . opts</span></div>
-<div class="desc"><var>server</var> and <var>port</var> must be string, indicating hostname,
-port number/service name respectively.
-<var>proc</var> must accept one argument.
-<p />Creates a SFTP connection, executes given <var>proc</var> with the connection
-and closes it after the execution.
-<p />The <var>opts</var> will be passed to <code>make-client-sftp-connection</code>.
+ <span class="args">bv :key (line-width 76) (binary? #f)</span></div>
+<div class="desc"><var>bv</var> must be a bytevector.
+<p />Encodes given bytevector to quoted printable encoded bytevector.
+<p />The keyword argument <var>line-width</var> specifies where the encode procedure
+should put linefeed. If this is less than 1 or #f, encoder does not put
+linefeed.
+<p />If the keyword argument <var>binary?</var> is not #f, then the procedure encodes
+#x0a and #x0b to <code>=0A</code> and <code>=0D</code> respectively.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-open1992">
-    <span class="name" name="sftp-open">sftp-open</span>
-  </a> <span class="args">conn filename pflags</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection. 
-<var>filename</var> must be a string.
-<var>pflags</var> must be an exact integer which value must be the result of
-inclusive or of following values;
-<p /><div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-read+1993">
-      <span class="name" name="+ssh-fxf-read+">+ssh-fxf-read+</span>
-    </a>
-  </div>
-<div class="desc">Open the given <var>filename</var> read mode.</div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-write+1994">
-      <span class="name" name="+ssh-fxf-write+">+ssh-fxf-write+</span>
-    </a>
-  </div>
-<div class="desc">Open the given <var>filename</var> write mode.</div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-append+1995">
-      <span class="name" name="+ssh-fxf-append+">+ssh-fxf-append+</span>
-    </a>
-  </div>
-<div class="desc">Open the given <var>filename</var> append mode.</div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-creat+1996">
-      <span class="name" name="+ssh-fxf-creat+">+ssh-fxf-creat+</span>
-    </a>
-  </div>
-<div class="desc">Creates the given <var>filename</var> if it doesn't exist.</div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-trunc+1997">
-      <span class="name" name="+ssh-fxf-trunc+">+ssh-fxf-trunc+</span>
-    </a>
-  </div>
-<div class="desc">Truncate the given <var>filename</var> if it exists. <code>+ssh-fxf-creat+</code> 
-      must be specified as well.</div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="+ssh-fxf-excl+1998">
-      <span class="name" name="+ssh-fxf-excl+">+ssh-fxf-excl+</span>
-    </a>
-  </div>
-<div class="desc">Raises and error <var>filename</var> if it exists. <code>+ssh-fxf-creat+</code> 
-      must be specified as well.</div>
-<p />If <var>filename</var> opened successfully, the procedure will return a handle.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-close1999">
-    <span class="name" name="sftp-close">sftp-close</span>
-  </a> <span class="args">conn handle</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection. 
-<p />Closes given <var>handle</var> created by <code>sftp-open</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-read2000">
-    <span class="name" name="sftp-read">sftp-read</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-encode-string string2110">
+    <span class="name" name="quoted-printable-encode-string string">quoted-printable-encode-string string</span>
   </a>
- <span class="args">conn handle/filename receiver :key (offset 0) buffer-size</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>handle/filename</var> must be either a handle or string.
-<var>receiver</var> must be a procedure accepts 2 arguments, <var>offset</var> which
-is an integer and <var>data</var> which is a binary input port, respectively.
-<p />Reads the given <var>handle/filename</var> content from the server and
-call <var>receiver</var> with the returned value. When it reaches the end of file,
-then it will pass -1 as offset and eof value as data.
-<p />The keyword argument <var>offset</var> specifies starting where to read. It
-is useful to read only diff.
-<p />The keyword argument <var>buffer-size</var> specifies how many bytes it tries to
-read in one read call. The default value is 1048576 (1MB). This value is only
-an indication so that server can decide actual data length to send.
-<p />The return value of this procedure is the result value of <var>receiver</var>.
-<p />Receiver must return 2 values, one if processed octet count and the other
-one is result value. Following is the <var>sftp-binary-receiver</var> definition;
-<pre class="codeblock">(define (sftp-binary-receiver)
-  (let-values (((out extract) (open-bytevector-output-port)))
-    (lambda (offset data)
-      (if (&lt; offset 0)
-          (values -1 (extract))
-          (values (copy-binary-port out data) #f)))))
-</pre>
+ <span class="args">:key (line-width 76) transcoder (binary? #f)</span></div>
+<div class="desc">Convenient procedure for string.
+<p />Encodes given <var>string</var> to quoted printable encoded string.
+<p />The keyword argument <var>transcoder</var> is used to convert given string to
+bytevector. The converted bytevector will be passed to the
+<code>quoted-printable-encode</code> procedure. The default is utf-8 codec with
+NONE eol style.
 </div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="sftp-binary-receiver2001">
-      <span class="name" name="sftp-binary-receiver">sftp-binary-receiver</span>
-    </a>
-  </div>
-<div class="desc">Creates a in memory receiver for <code>sftp-read</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-file-receiver2002">
-    <span class="name" name="sftp-file-receiver">sftp-file-receiver</span>
-  </a> <span class="args">filename :key options</span></div>
-<div class="desc">Creates a file receiver for <code>sftp-read</code>.
-<p />The keyword argument <var>option</var> must be created by <code>file-options</code>.
-By default no option.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-oport-receiver2003">
-    <span class="name" name="sftp-oport-receiver">sftp-oport-receiver</span>
-  </a> <span class="args">output-port</span></div>
-<div class="desc"><var>output-port</var> must be a binary output port.
-<p />Creates a output port receiver for <code>sftp-read</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-write!2004">
-    <span class="name" name="sftp-write!">sftp-write!</span>
-  </a> 
- <span class="args">conn handle input-port :key (offset 0) buffer-size</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>handle</var> must be a handle.
-<var>input-port</var> must be a binary input port.
-<p />Reads the content from given <var>input-port</var> and writes it to given
-<var>handle</var>.
-<p />The keyword argument <var>offset</var> specifies where to write. This is useful
-to write a file separately or simply append.
-<p />The keyword argument <var>buffer-size</var> specifies how many bytes of data
-the procedure sends in one packet. The default value is 131072 (128KB).
-The RFC defines the minimum value 32768 (3KB) so it is safe to use the
-value. However too small buffer size makes writing extremely slow so
-we use a bit larger value to make performance better. If you meet a
-problem with writing a file, consider to change this size.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-exists?2005">
-    <span class="name" name="sftp-exists?">sftp-exists?</span>
-  </a> <span class="args">conn filename</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>filename</var> must be a string indicating existing filename.
-<p />Checks if the given <var>filename</var> exists.
-</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="sftp-remove!2006">
-    <span class="name" name="sftp-remove!">sftp-remove!</span>
-  </a> <span class="args">conn filename</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>filename</var> must be a string indicating existing filename.
-<p />Removes the given <var>filename</var>. It is an error if the file doesn't exist
-or user doesn't have proper permission to remove.
-<p />The result value is raw SFTP status object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-rename!2007">
-    <span class="name" name="sftp-rename!">sftp-rename!</span>
-  </a> <span class="args">conn oldpath newpath</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>oldpath</var> and <var>newpath</var>  must be strings indicating existing path.
-<p />Renames the given <var>oldpath</var> to <var>newpath</var>. It is an error if the 
-file doesn't exist or user doesn't have proper permission to rename.
-<p />The result value is raw SFTP status object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-mkdir!2008">
-    <span class="name" name="sftp-mkdir!">sftp-mkdir!</span>
-  </a> <span class="args">conn path</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>path</var> must be a string.
-<p />Creates the given <var>path</var> directory. It is an error if the 
-directory exists or user doesn't have proper permission to create.
-<p />The result value is raw SFTP status object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-rmdir!2009">
-    <span class="name" name="sftp-rmdir!">sftp-rmdir!</span>
-  </a> <span class="args">conn path</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>path</var> must be a string.
-<p />Removes the given <var>path</var> directory. It is an error if the 
-directory doesn't exists, user doesn't have proper permission to create or
-the directory isn't empty.
-<p />The result value is raw SFTP status object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-opendir2010">
-    <span class="name" name="sftp-opendir">sftp-opendir</span>
-  </a> <span class="args">conn path</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>path</var> must be a string indicating existing path.
-<p />Opens the given <var>path</var> directory and returns its handle.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-readdir2011">
-    <span class="name" name="sftp-readdir">sftp-readdir</span>
-  </a> <span class="args">conn handle/path</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>handle/path</var> must be either a handle opened by <code>sftp-opendir</code> or
-a string indicating existing path.
-<p />Reads the given <var>handle/path</var> and returns the list of contents. The content
-is an object of <code>&lt;sftp-name&gt;</code> which has <code>filename</code>, <code>longname</code>
-and <code>attribute</code> slots.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-readdir-as-filenames2012">
-    <span class="name" name="sftp-readdir-as-filenames">sftp-readdir-as-filenames</span>
-  </a> <span class="args">conn handle/path</span></div>
-<div class="define"><span class="define-category">Function</span><a name="sftp-readdir-as-longnames2013">
-    <span class="name" name="sftp-readdir-as-longnames">sftp-readdir-as-longnames</span>
-  </a> <span class="args">conn handle/path</span></div>
-<div class="desc"><var>conn</var> must be a SFTP connection.
-<var>handle/path</var> must be either a handle opened by <code>sftp-opendir</code> or
-a string indicating existing path.
-<p />Calls <code>sftp-readdir</code> and strips out the result object to string by
-calling <code>(slot-ref <var>c</var> 'filename)</code> or 
-<code>(slot-ref <var>c</var> 'longname)</code> respectively.
-</div>
-<p />
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2014"><span class="section-number">7.33.2</span>Mid level APIs</a>
+    <a class="section.anchor" name="G2111"><span class="section-number">7.33.2</span>Decoding procedures</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-client-sftp-connection2015">
-    <span class="name" name="make-client-sftp-connection">make-client-sftp-connection</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-decode2112">
+    <span class="name" name="quoted-printable-decode">quoted-printable-decode</span>
+  </a> <span class="args">bv</span></div>
+<div class="desc"><var>bv</var> must be a bytevector.
+<p />Decode quoted printable encoded bytevector to original bytevector.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-decode-string2113">
+    <span class="name" name="quoted-printable-decode-string">quoted-printable-decode-string</span>
   </a>
- <span class="args">server port :key (username #f) (password #f)</span></div>
-<div class="desc">Creates a SFTP connection object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sftp-close-connection2016">
-    <span class="name" name="sftp-close-connection">sftp-close-connection</span>
-  </a> <span class="args">connection</span></div>
-<div class="desc">Closes the given SFTP connection object.</div>
-
+ <span class="args">string :key (transcoder (native-transcoder))</span></div>
+<div class="desc">Convenient procedure.
+<p />Decode quoted printable encoded string to original string. The procedure is
+using <code>quoted-printable-decode</code>.
+<p />The keyword argument specifies how to convert the decoded bytevector to string.
+If this is #f, the procedure returns raw bytevector.
+</div>
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section732.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="prev" href="section732.html">(rfc pem) - PEM format  library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section734.html">(rfc tls) - TLS protocol library</a>
+    <a class="next" href="section734.html">(rfc sftp) - SFTP library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-05-15T10:11:33+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-06-19T18:35:34+0100</i></div>
   </div>
 </html>

@@ -6,217 +6,233 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section720.html">(net oauth) - OAuth library</a>
+    <a class="prev" href="section720.html">(net mq mqtt) - MQTT library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section722.html">(odbc) - ODBC binding</a>
+    <a class="next" href="section722.html">(net server) - Simple server framework</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="net.server"><span class="section-number">7.21</span>(net server) - Simple server framework</a>
+    <a class="section.anchor" name="net.oauth"><span class="section-number">7.21</span>(net oauth) - OAuth library</a>
   </h3>
+<p />This section describes the APIs for OAuth. OAuth is new secure authentication
+method for web service. For more detail, see 
+<a href="http://oauth.net/">OAuth Community Site</a>.
+<p />The following example shows how to obtain an access token from Twitter.
+<p /><pre class="codeblock">(import (rnrs) (net oauth) (sagittarius control) (srfi :13 strings))
+;; obtain a request token.
+;; type consumer key and secret you have got issued by Twitter
+(define token (obtain-request-token
+	       "http://api.twitter.com/oauth/request_token"
+	       (make-consumer-token
+		:key "consumer key"
+		:secret "consumer secret")))
+
+(define (get-pin url)
+  (print "Open the following url and type in the shown PIN.")
+  (print url)
+  (let loop ()
+    (display "Input PIN: ") (flush-output-port (current-output-port))
+    (let1 pin (get-line (current-input-port))
+      (cond ((eof-object? pin) #f)
+            ((string-null? pin) (loop))
+            (else pin)))))
+
+(define (report token)
+  (print "(begin")
+  (print " (define consumer-key \"" (token-key (token-consumer token)) "\")")
+  (print " (define consumer-secret \""
+	 (token-secret (token-consumer token))"\")")
+  (print " (define access-token \""(token-key token)"\")")
+  (print " (define access-token-secret \""(token-secret token)"\")")
+  (print ")"))
+
+(define (main args)
+  (let1 pin (get-pin (make-authorization-uri
+		      "http://api.twitter.com/oauth/authorize"
+		      token))
+    ;; authorize the request token manually.
+    (authorize-request-token token pin)
+    ;; obtain the access token
+    (let1 access-token (obtain-access-token 
+			"http://api.twitter.com/oauth/access_token"
+			token)
+      (report access-token))))
+</pre>
+<p />Now you get the access token to tweet, let's tweet something on Sagittarius:
+<pre class="codeblock">(import (rnrs) (srfi :26 cut) (text sxml ssax) (net oauth) (sagittarius io))
+(define consumer-key "your consumer key")
+(define consumer-secret "your consumer secret")
+(define access-token "your access token")
+(define access-token-secret "your access token secret")
+
+;; creates an access token to tweet.
+(define access-token
+  (make-access-token :key access-token
+		     :secret access-token-secret
+		     :consumer
+		     (make-consumer-token
+		      :key consumer-key
+		      :secret consumer-secret)))
+
+(define (call/twitter-api-&gt;sxml token method path params . opts)
+  (define (call)
+    (access-protected-resource 
+     (string-append "http://api.twitter.com" path)
+     token
+     :request-method method
+     :user-parameters params))
+  (define (retrieve body status hint advice)
+    (if hint (print hint))
+    (if advice (print advice))
+    (call-with-input-string body (cut ssax:xml-&gt;sxml &lt;&gt; '())))
+  (call-with-values call retrieve))
+
+(define (twitter-update/sxml token message . opts)
+  (call/twitter-api-&gt;sxml 
+   token 'POST "/1/statuses/update.xml" 
+   `(("status" ,message))))
+
+;; if you want to use this from command line.
+(import (getopt))
+
+(define (main args)
+  (with-args args
+      ((message (#\m "message") #t (usage)))
+    (print (twitter-update/sxml access-token message))))
+</pre>
+<p />The examples explain basic flows. To obtain an access token, and access to
+protected resource with it.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(net server)1820">
-      <span class="name" name="(net server)">(net server)</span>
+    <a name="(net oauth)1934">
+      <span class="name" name="(net oauth)">(net oauth)</span>
     </a>
   </div>
-<div class="desc">This library provides simple server framework.</div>
-<p />Following example describes how to write a simple echo server with the APIs
-this library provides.
-<pre class="codeblock">(import (net server) (sagittarius socket))
-<p />(define (handler server socket)
-  ;; echo message is limited to 255 bytes in this example
-  (let ((r (socket-recv socket 255)))
-    (socket-send socket r)))
-<p />(define server (make-simple-server handler))
-<p />(server-start! server)
-</pre>
-<p />Above example creates only one thread and if there are more than one
-connection, then the latter one needs to wait until first one is done.
-The library also provides mult threading server. Following example describes
-how to make multi threading server.
-<pre class="codeblock">(import (net server) (sagittarius socket))
-<p />;; specifies maximum thread number
-(define server-config (make-server-config :max-thread 5))
-<p />(define (handler server socket)
-  (let ((r (socket-recv socket 255)))
-    (socket-send socket r)))
-<p />(define server (make-simple-server handler :config server-config))
-<p />(server-start! server)
-</pre>
-If the server gets more than 5 connection simultaneously, then it tries to
-wait until one of the connection's task finishes. If it doesn't finish in
-time, then connection will be refused.
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1821"><span class="section-number">7.21.1</span>Server</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<simple-server&gt;1822">
-      <span class="name" name="<simple-server&gt;">&lt;simple-server&gt;</span>
-    </a>
-  </div>
-<div class="desc">Simple server class.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="server?1823">
-    <span class="name" name="server?">server?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;simple-server&gt;</code>,
-otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-simple-server1824">
-    <span class="name" name="make-simple-server">make-simple-server</span>
+<div class="desc">This library provides OAuth 1.0 procedures. The API's names are compatible
+with cl-oauth.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="obtain-request-token1935">
+    <span class="name" name="obtain-request-token">obtain-request-token</span>
   </a>
- <span class="args">service handler :key server-class config :allow-other-keys</span></div>
-<div class="desc">Creates a server object.
-<p /><var>service</var> must be a string and indicates the service name or port number.
-<p /><var>handler</var> must be a procedure accepts 2 arguments, server object 
-<var>server</var> created with this procedure and socket object <var>socket</var>.
-<p />Keyword argument <var>server-class</var> is specified, it must be a class
-inherits <code>&lt;simple-server&gt;</code>, then the procedure uses the class to
-instantiate. And during instantiation, given other keys are passed.
-<p />Keyword argument <var>config</var> is specified, it must be an instance
-of <var>&lt;server-config&gt;</var> or subclass of it, then the server is created
-according to the configuration.
+ <span class="args">uri consumer-token :key (version :1.0) (user-parameters '())
+ (timestamp (time-second (current-time))) (auth-location :header)
+ (request-method 'POST) (callback-uri #f) (additional-headers '())
+ (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
+<div class="desc"><var>uri</var> must be string and URI format.
+<p /><var>consumer-token</var> must be a consumer token object.
+<p />Obtains request token from given uri with given consumer token.
+<p />if the keyword arguments are specified:
+<p /><var>version</var> specifies which version uses. We only support 1.0 so this must not
+be specified.
+<p /><var>user-parameters</var> is an alist of the extra parameters to be sent to the
+server. This parameters are in the body message if the <var>request-method</var> is
+<code>POST</code> or query string if the <var>request-method</var> is <code>GET</code>.
+<p /><var>timestamp</var> specifies timestamp to send to the server. 
+<p /><var>auth-location</var> specifies the place where the authentication information
+located. This can be either <code>:header</code> or <code>:parameters</code>.
+<p /><var>request-method</var> specifies which request method is used. This can be either
+<code>GET</code> or <code>POST</code>. <code>POST</code> is recommended.
+<p /><var>callback-uri</var> specifies call back uri described in OAuth specification. If
+users don't use specific location to be redirected, this must not be specified.
+<p /><var>additional-headers</var> is alist of additional header to be sent to the server.
+<p /><var>signature-method</var> specifies which hash method is used. For now we only
+support <code>:hmac-sha1</code>.
+<p /><var>error-translator</var> specifies how to treat the error message sent by the
+server when error occurred. This must be a procedure which accepts 3 arguments,
+http status, headers and body respectively.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="server-config1825">
-    <span class="name" name="server-config">server-config</span>
-  </a> <span class="args">server</span></div>
-<div class="desc">Returns configuration object used to create given server object
-<var>server</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="server-stopped?1826">
-    <span class="name" name="server-stopped?">server-stopped?</span>
-  </a> <span class="args">server</span></div>
-<div class="desc">Returns #t if given server is stopped.
-<p />NOTE: this also returns #t if the server is not started.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="server-start!1827">
-    <span class="name" name="server-start!">server-start!</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-authorization-uri1936">
+    <span class="name" name="make-authorization-uri">make-authorization-uri</span>
   </a>
- <span class="args">server :key background :allow-other-keys</span></div>
-<div class="desc">Starts the given <var>server</var>.
-<p />Keyword argument <var>background</var> is true value then the server is started
-background. By default it's #f.
-<p />The rest of keywords are passed to <code>on-server-start!</code>.
-<p />NOTE: Server object is not reusable thus once server is started, it is
-impossible to restart the server.
+ <span class="args">uri request-token :key (version :1.0) (callback-uri #f)
+ (user-parameters '())</span></div>
+<div class="desc"><var>uri</var> must be string and URI format.
+<p /><var>request-token</var> must be a request token retrieved by the procedure
+<code>obtain-request-token</code>.
+<p />Creates a authorization URI which user must agree.
+<p />The other keyword arguments are the same as <code>obtain-request-token</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="server-stop!1828">
-    <span class="name" name="server-stop!">server-stop!</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="authorize-request-token1937">
+    <span class="name" name="authorize-request-token">authorize-request-token</span>
   </a>
- <span class="args">server :allow-other-keys</span></div>
-<div class="desc">Stops the given <var>server</var>.
-<p />The rest of keywords are passed to <code>on-server-stop!</code>.
+ <span class="args">request-token verificateion-code</span></div>
+<div class="desc"><var>request-token</var> must be a request token which retrieved by the
+procedure <code>obtain-request-token</code>.
+<p /><var>verificateion-code</var> must be a string returned by the URI generated by the
+procedure <code>make-authorization-uri</code>
+<p />Sets the given <var>verificateion-code</var> to the request token and authorized flag
+#t, manually.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="wait-server-stop!1829">
-    <span class="name" name="wait-server-stop!">wait-server-stop!</span>
-  </a> <span class="args">server :optional timeout</span></div>
-<div class="desc">Waits until the <var>server</var> stops.
-<p />The <var>server</var> must be stopping by accessing shutdown port otherwise
-this procedure waits forever/for <var>timeout</var> period.
-<p />Optional argument <var>timeout</var> must be #f, time object or real number.
-If the value is #f then this procedure waits forever until the <var>server</var>
-stops. By default #f.
+<p /><div class="define"><span class="define-category">Function</span><a name="obtain-access-token1938">
+    <span class="name" name="obtain-access-token">obtain-access-token</span>
+  </a> 
+ <span class="args">uri token :key (consumer-token (token-consumer token))
+ (version :1.0) (user-parameters '())
+ (timestamp (time-second (current-time))) (auth-location :header)
+ (request-method 'POST) (callback-uri #f) (additional-headers '())
+ (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
+<div class="desc"><var>uri</var> must a string URI formatted.
+<p /><var>token</var> must be either request token or access token.
+<p />Obtains access token from the given URI.
+<p />The keyword arguments <var>consumer-token</var> specifies which consumer token is
+used. And must the same one as when you request the request token.
+<p />The rest keyword arguments are the same as <code>obtain-request-token</code>.
 </div>
-<p /><div class="define"><span class="define-category">Method</span><a name="on-server-start!1830">
-    <span class="name" name="on-server-start!">on-server-start!</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="access-protected-resource1939">
+    <span class="name" name="access-protected-resource">access-protected-resource</span>
   </a>
- <span class="args">(server &lt;simple-server&gt;) rest ...</span></div>
-<div class="define"><span class="define-category">Method</span><a name="on-server-stop!1831">
-    <span class="name" name="on-server-stop!">on-server-stop!</span>
-  </a>
- <span class="args">(server &lt;simple-server&gt;) rest ...</span></div>
-<div class="desc">Hook methods for subclasses.
-<p />The first method is called when server is starting.
-<p />The second method is called after server is stopped.
+ <span class="args">uri access-token :key (consumer-token (token-consumer access-token))
+ (on-refresh #f)
+ (version :1.0) (user-parameters '())
+ (timestamp (time-second (current-time))) (auth-location :header)
+ (request-method 'POST) (callback-uri #f) (additional-headers '())
+ (signature-method :hmac-sha1) (error-translator default-message-translator)</span></div>
+<div class="desc"><var>uri</var> must a string URI formatted.
+<p /><var>access-token</var> must be an access token which obtained by the procedure
+<code>obtain-access-token</code> or created by <code>make-access-token</code>.
+<p />Accesses to protected resource.
+<p />The keyword argument <var>on-refresh</var> is a hook for when token is expired and
+refreshed. It must accept be a procedure which accepts 1 argument that is a
+refreshed access token.
+<p />The rest keyword arguments are the same as the <code>obtain-request-token</code>.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1832"><span class="section-number">7.21.2</span>Configuration</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<server-config&gt;1833">
-      <span class="name" name="<server-config&gt;">&lt;server-config&gt;</span>
-    </a>
-  </div>
-<div class="desc">Server configuration class.</div>
-<div class="define"><span class="define-category">Function</span><a name="server-config?1834">
-    <span class="name" name="server-config?">server-config?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;server-config&gt;</code>,
-otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-server-config1835">
-    <span class="name" name="make-server-config">make-server-config</span>
-  </a>
- <span class="args">:key shutdown-port shutdown-handler exception-handler max-thread
-            max-retry use-ipv6? secure? certificates</span></div>
-<div class="desc">Creates a server config object.
-<p />Following is the description of keyword arguments.
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <var>shutdown-port</var>
-      </dt>
-      <dd class="dl-item-desc">    Specifying shutdown port. The value must be a string. If this is not
-    specified, then the server doesn't have shutdown port.
-  </dd>
-      <dt class="dl-item-title">
-        <var>shutdown-handler</var>
-      </dt>
-      <dd class="dl-item-desc">    This is only used then <var>shutdown-port</var> is specified. The value
-    must be a procedure takes 2 arguments, <var>server</var> and <var>socket</var>.
-    When the procedure returns true value then server will be stopped.
-    By default, it's a procedure always returns #t.
-  </dd>
-      <dt class="dl-item-title">
-        <var>exception-handler</var>
-      </dt>
-      <dd class="dl-item-desc">    Specifying exception handler. The value must be a procedure accepts
-    3 arguments, <var>server</var>, <var>socket</var> and <var>condition</var>. This
-    is called when the server <var>handler</var> raises an error. 
-<p />    NOTE: The passing <var>socket</var> is <b>not</b> closed so that the handler can
-    send messages to client socket.
-  </dd>
-      <dt class="dl-item-title">
-        <var>max-thread</var>
-      </dt>
-      <dd class="dl-item-desc">    Specifying max thread count. Default value is 1.
-  </dd>
-      <dt class="dl-item-title">
-        <var>max-retry</var>
-      </dt>
-      <dd class="dl-item-desc">    Specifying max retry count. When connection reached <var>max-thread</var>,
-    then the server waits if the one of the connections finishes. The
-    waiting period is half second (500 ms) and this value specifies
-    how many times server waits.
-<p />    Default value is 10.
-  </dd>
-      <dt class="dl-item-title">
-        <var>use-ipv6?</var>
-      </dt>
-      <dd class="dl-item-desc">    Specifying whether or not the server uses IPv6.
-<p />    Default value is #f. (only IPv4)
-  </dd>
-      <dt class="dl-item-title">
-        <var>secure?</var>
-      </dt>
-      <dt class="dl-item-title">
-        <var>certificates</var>
-      </dt>
-      <dd class="dl-item-desc">    If <var>secure?</var> is true value and <var>certificates</var> is a list of
-    X509 certificates, then the server uses TLS.
-  </dd>
-    </dl>
-  </div>
+<p /><div class="define"><span class="define-category">Function</span><a name="oauth-uri-encode1940">
+    <span class="name" name="oauth-uri-encode">oauth-uri-encode</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Encodes given URI and make it OAuth required form.
 </div>
-<p />
-</section></section>
+<div class="define"><span class="define-category">Function</span><a name="oauth-compose-query1941">
+    <span class="name" name="oauth-compose-query">oauth-compose-query</span>
+  </a> <span class="args">parameters</span></div>
+<div class="desc">Composes given alist to http query form and make it OAuth required form.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-consumer-token1942">
+    <span class="name" name="make-consumer-token">make-consumer-token</span>
+  </a>
+ <span class="args">:key (key (random-key)) (secret random-secret) (user-data #f)
+ (last-timestamp 0)</span></div>
+<div class="desc">Creates a consumer token.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-access-token1943">
+    <span class="name" name="make-access-token">make-access-token</span>
+  </a>
+ <span class="args">:key (key (random-key)) (secret random-secret) (user-data #f)
+ consumer (session-handle #f) (expires #f) (authorization-expires #f)
+ (origin-uri #f)</span></div>
+<div class="desc">Creates a access token.</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="token-consumer1944">
+    <span class="name" name="token-consumer">token-consumer</span>
+  </a> <span class="args">token</span></div>
+<div class="desc"><var>token</var> must be an access token or request token.
+<p />Retrieves consumer token from given <var>token</var>.
+</div>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section720.html">(net oauth) - OAuth library</a>
+    <a class="prev" href="section720.html">(net mq mqtt) - MQTT library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section722.html">(odbc) - ODBC binding</a>
+    <a class="next" href="section722.html">(net server) - Simple server framework</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-05-15T10:11:33+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-06-19T18:35:34+0100</i></div>
   </div>
 </html>

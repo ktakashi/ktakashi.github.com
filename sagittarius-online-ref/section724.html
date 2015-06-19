@@ -6,158 +6,188 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section723.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="prev" href="section723.html">(odbc) - ODBC binding</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section725.html">(util queue) - Queue</a>
+    <a class="next" href="section725.html">(rsa pkcs :12) - PKCS#12</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="pkcs.12"><span class="section-number">7.24</span>(rsa pkcs :12) - PKCS#12</a>
+    <a class="section.anchor" name="pkcs.5"><span class="section-number">7.24</span>(rsa pkcs :5) - Password Based Cryptography library</a>
   </h3>
-<p />This section describes the implementation of PKCS#12 specification library.
-However we do not describe PKCS#12 itself and I don't think it is necessary to
+<p />This section describes the implementation of PKCS#5 specification library.
+However we do not describe PKCS#5 itself and I don't think it is necessary to
 know it if you just want to use it.
+<p />This example is the simplest way to use.
+<p /><pre class="codeblock">(import (rnrs) (crypto) (rsa pkcs :5))
+(define salt (string-&gt;utf8 "salt"))
+(define iteration-count 1024)
+(define pbe-parameter (make-pbe-parameter salt iteration-count))
+(define pbe-key (generate-secret-key pbe-with-sha1-and-des "password"))
+(define pbe-cipher (cipher pbe-with-sha1-and-des pbe-key 
+                           :parameter pbe-parameter))
+(encrypt pbe-cipher (string-&gt;utf8 "This is an example."))
+;; -&gt; #vu8(254 229 155 168 167 192 249 43 33 192 161 215 28 117
+;;         169 129 147 60 16 52 235 79 90 23)
+(decrypt pbe-cipher 
+	 #vu8(254 229 155 168 167 192 249 43 33 192 161 215
+              28 117 169 129 147 60 16 52 235 79 90 23))
+;; -&gt; #vu8(84 104 105 115 32 105 115 32 97 110 32 101 120 97
+;;         109 112 108 101 46)
+</pre>
+<p />The library itself defines simply its cipher and key generate methods. Hence
+user can use it with (crypto) library (see 
+<a href="section79.html#crypto">(crypto) - Cryptographic library</a>)
+<p />NOTE: Currently the library only supports encryption and decryption, not MAC
+generation nor verification.
+<p />NOTE: When you create cipher object with PBE related algorithms, the you need 
+to pass <code>:parameter</code> keyword to <code>cipher</code> procedure, otherwise raises
+an error.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="rsa pkcs :121872">
-      <span class="name" name="rsa pkcs :12">rsa pkcs :12</span>
+    <a name="(rsa pkcs :5)1983">
+      <span class="name" name="(rsa pkcs :5)">(rsa pkcs :5)</span>
     </a>
   </div>
-<div class="desc">This library provides procedures for PKCS#12 operations.</div>
+<div class="desc">This library exports PKCS#5 related cryptographic procedures.</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1873"><span class="section-number">7.24.1</span>Keystore APIs</a>
+    <a class="section.anchor" name="G1984"><span class="section-number">7.24.1</span>User level APIs</a>
   </h4>
-<p />The example shows how to use keystore APIs:
-<p /><pre class="codeblock">(import (rnrs) (rsa pkcs :12))
-<p />(define keystore (load-pkcs12-keystore-file "keystore.p12" "pass"))
-<p />(pkcs12-keystore-get-key keystore "key-name" "key-pass")
-;; -&gt; &lt;private-key&gt;
-<p />(pkcs12-keystore-get-certificate keystore "cert-name")
-;; -&gt; &lt;x509-certificate&gt;
-<p />;; certs are list of X509 certificate associated with given private-key
-(pkcs12-keystore-set-key! keystore "key-name2" private-key "key-pass2" certs)
-<p />;; cert must be an X509 certificate
-(pkcs12-keystore-set-certificate! keystore "cert-name2" cert)
-<p />(store-pkcs12-keystore-to-file keystore "keystore2.p12" "pass2")
+<p /><div class="define">
+    <span class="define-category">Variable</span>
+    <a name="pbe-with-md5-and-des1985">
+      <span class="name" name="pbe-with-md5-and-des">pbe-with-md5-and-des</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="pbe-with-md5-and-rc21986">
+      <span class="name" name="pbe-with-md5-and-rc2">pbe-with-md5-and-rc2</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="pbe-with-sha1-and-des1987">
+      <span class="name" name="pbe-with-sha1-and-des">pbe-with-sha1-and-des</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="pbe-with-sha1-and-rc21988">
+      <span class="name" name="pbe-with-sha1-and-rc2">pbe-with-sha1-and-rc2</span>
+    </a>
+  </div>
+<div class="desc">The algorithms used in PBES1 encryption and decryption and key generation.
+<p />The names describe the using hash functions and cryptographic schemes. For
+example, <code>pbe-with-md5-and-des</code> uses MD5 hash and DES algorithm.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-pbe-parameter1989">
+    <span class="name" name="make-pbe-parameter">make-pbe-parameter</span>
+  </a> <span class="args">salt iteration-count</span></div>
+<div class="desc"><var>salt</var> must be a bytevector.
+<p /><var>iteration-count</var> must be a non negative exact integer.
+<p />Creates a parameter for PBE key generation. <var>salt</var> is salt and
+<var>iteration-count</var> is the iteration count  for key derivation.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="generate-secret-key1990">
+    <span class="name" name="generate-secret-key">generate-secret-key</span>
+  </a>
+ <span class="args">algorithm (password &lt;string&gt;)</span></div>
+<div class="desc"><var>algorithm</var> must be one of the algorithms describes above.
+<p />Creates PBE secret key based on given <var>password</var> and <var>algorithm</var>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1991"><span class="section-number">7.24.2</span>Low level APIs</a>
+  </h4>
+<p />These APIs are for users who want to create own PBE mechanism such as PKCS#12.
+<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-11992">
+    <span class="name" name="pbkdf-1">pbkdf-1</span>
+  </a>
+ <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)</span></div>
+<div class="desc">Implementation of PBKDF1 describes in PKCS#5 specification.
+<p />The arguments are plain text (bytevector), salt (bytevector), iteration count
+(non negative exact integer) and key length (non negative exact integer)
+respectively.
+<p />The keyword argument <var>hash</var> specifies which hash algorithm will be used. The
+default is SHA-1. 
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-21993">
+    <span class="name" name="pbkdf-2">pbkdf-2</span>
+  </a>
+ <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)
+ (prf (hash-algorithm HMAC :key P :hash hash))</span></div>
+<div class="desc">Implementation of PBKDF2 describes in PKCS#5 specification.
+<p />The arguments are plain text (bytevector), salt (bytevector), iteration count
+(non negative exact integer) and key length (non negative exact integer)
+respectively.
+<p />The keyword argument <var>hash</var> specifies which hash algorithm will be used in
+PRF function. The default is SHA-1 and if you don't have any reasonable reason,
+this must not be changed.
+<p />The keyword argument <var>prf</var> specifies underlying pseudo random function which
+must be hash object implemented with <code>&lt;user-hash-algorithm&gt;</code> describes in
+<a href="section718.html#custom.hash">Custom hash algorithm</a>. The default is HMAC and if you
+don't have any reasonable reason, this must not be changed.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="derive-key1994">
+    <span class="name" name="derive-key">derive-key</span>
+  </a>
+ <span class="args">P S c dk-len :key (kdf pbkdf-2) :allow-other-keys</span></div>
+<div class="desc">The implementation of key derive function. The required arguments are
+the same as above <code>pbkdf-1</code> and <code>pbkdf-2</code>.
+<p />This procedure just calls given <var>kdf</var> with given arguments and returns
+derived key bytevector.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="derive-key&amp;iv1995">
+    <span class="name" name="derive-key&amp;iv">derive-key&amp;iv</span>
+  </a>
+ <span class="args">marker (key &lt;pbe-secret-key&gt;) (parameter &lt;pbe-parameter&gt;)</span></div>
+<div class="desc"><var>marker</var> is user defined cipher type. <var>key</var> must be subclass of
+<code>&lt;pbe-secret-key&gt;</code>. <var>parameter</var> must be subclss of
+<code>&lt;pbe-parameter&gt;</code>.
+<p />This method is called in the <code>initialize</code> method of
+<code>&lt;pbe-cipher-spi&gt;</code> and must return 2 values; the first one is derived key
+as bytevector and second one is initial vector as bytevector.
+<p />The PKCS#5 encryption and decryption procedures require to derive both
+key and initial vector from given password and parameter (salt and iteration
+count). This method is used in PBE cipher to derive key and initial vector.
+<p />The purpose of this method is to re-use <code>&lt;pbe-cipher-spi&gt;</code>. For example,
+PKCS#12 can use this cipher, however it requires different key derivation
+mechanism.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1996"><span class="section-number">7.24.3</span>Supporting PBES2 functionality</a>
+  </h4>
+<p />Since I could not find any standard implementation, Sagittarius actually does
+not support PBES2 encryption and decryption. However supporting it is not so
+difficult. This is the sample code to support it.
+<p /><pre class="codeblock">(import (rnrs) (clos user) (rfc hmac) (math))
+(define-class &lt;pbkef2-with-hmac-sha1-des3&gt; () ())
+(define pbkdf2-with-hmac-sha1-des3 (make &lt;pbkef2-with-hmac-sha1-des3&gt;))
+(define-method generate-secret-key ((mark &lt;pbkef2-with-hmac-sha1-des3&gt;)
+				    (password &lt;string&gt;))
+  (make &lt;pbe-secret-key&gt; :password  password :hash (hash-algorithm HMAC)
+	:scheme DES3 :iv-size 8 :length 24
+	:type PKCS5-S2))
+(register-spi pbkdf2-with-hmac-sha1-des3 &lt;pbe-cipher-spi&gt;)
 </pre>
-<p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<pkcs12-keystore&gt;1874">
-      <span class="name" name="<pkcs12-keystore&gt;">&lt;pkcs12-keystore&gt;</span>
-    </a>
-  </div>
-<div class="desc">PKCS#12 keystore class.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore?1875">
-    <span class="name" name="pkcs12-keystore?">pkcs12-keystore?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is PKCS#12 keystore object, otherwise #f.</div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="make-pkcs12-keystore1876">
-      <span class="name" name="make-pkcs12-keystore">make-pkcs12-keystore</span>
-    </a>
-  </div>
-<div class="desc">Returns newly created PKCS#12 keystore object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="load-pkcs12-keystore1877">
-    <span class="name" name="load-pkcs12-keystore">load-pkcs12-keystore</span>
-  </a> <span class="args">input-port storepass</span></div>
-<div class="define"><span class="define-category">Function</span><a name="load-pkcs12-keystore-file1878">
-    <span class="name" name="load-pkcs12-keystore-file">load-pkcs12-keystore-file</span>
-  </a> <span class="args">file storepass</span></div>
-<div class="desc">Loads PKCS#12 keystore from given <var>input-port</var> or <var>file</var> and
-returns newly created keystore object.
-<p />The <code>load-pkcs12-keystore</code> loads from given binary input port.
-<p />The <code>load-pkcs12-keystore-file</code> loads from given file.
-<p /><var>storepass</var> must be a string and a password for given keystore.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-get-key1879">
-    <span class="name" name="pkcs12-keystore-get-key">pkcs12-keystore-get-key</span>
-  </a> 
- <span class="args">keystore alias keypass</span></div>
-<div class="desc">Retrives a private key associated with <var>alias</var> from <var>keystore</var>.
-If there is no key entry associated with <var>alias</var> then #f is returned.
-<p /><var>alias</var> must be a string.
-<p /><var>keypass</var> must be a string. It is used to decrypt the private key and
-it is <b>not</b> allowed to pass empty password.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-get-certificate1880">
-    <span class="name" name="pkcs12-keystore-get-certificate">pkcs12-keystore-get-certificate</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">Retrives a certificate associated with <var>alias</var> from <var>keystore</var>.
-If there is no certificate entry associated with <var>alias</var> then #f is 
-returned.
-<p /><var>alias</var> must be a string.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-get-certificate-chain1881">
-    <span class="name" name="pkcs12-keystore-get-certificate-chain">pkcs12-keystore-get-certificate-chain</span>
-  </a>
- <span class="args">keystore alias</span></div>
-<div class="desc">Retrives certificate chain associated with given key alias <var>alias</var>
-from <var>keystore</var>. If there is no certificate chain then <code>'()</code> is
-returned.
-<p /><var>alias</var> must be a string.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-contains-alias?1882">
-    <span class="name" name="pkcs12-keystore-contains-alias?">pkcs12-keystore-contains-alias?</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">Returns #t if <var>keystore</var> contains <var>alias</var>. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="store-pkcs12-keystore1883">
-    <span class="name" name="store-pkcs12-keystore">store-pkcs12-keystore</span>
-  </a>
- <span class="args">keystore output-port storepass</span></div>
-<div class="define"><span class="define-category">Function</span><a name="store-pkcs12-keystore-to-file1884">
-    <span class="name" name="store-pkcs12-keystore-to-file">store-pkcs12-keystore-to-file</span>
-  </a>
- <span class="args">keystore file storepass</span></div>
-<div class="desc">Writes given <var>keystore</var> to <var>output-port</var> or <var>file</var>.
-<p />The <code>store-pkcs12-keystore</code> writes to given binary output port
-<var>output-port</var>.
-<p />The <code>store-pkcs12-keystore-to-file</code> writes to given file <var>file</var>.
-<p /><var>storepass</var> must be a string and is used to encrypt whole contents.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-set-key!1885">
-    <span class="name" name="pkcs12-keystore-set-key!">pkcs12-keystore-set-key!</span>
-  </a>
- <span class="args">keystore alias private-key key-pass certs</span></div>
-<div class="desc"><var>alias</var> must be a string represents the name of <var>private-key</var> in
-the <var>keystore</var>.
-<p /><var>private-key</var> must be an RSA private key.
-<p /><var>key-pass</var> must be a string and is used to encrypt given <var>private-key</var>.
-<p /><var>certs</var> must be a list of X509 certificates which associated with
-<var>private-key</var>.
-<p />Stores given <var>private-key</var> to <var>keystore</var>.
-<p />The implementation allows users to set separate password from storepass.
-Be aware that current implementation of Bouncy Castle JCE uses the same
-password as storepass to encrypt a private key. Thus if you use different
-password, then it is not compatible with Bouncy Castle.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-set-certificate!1886">
-    <span class="name" name="pkcs12-keystore-set-certificate!">pkcs12-keystore-set-certificate!</span>
-  </a>
- <span class="args">keystore alias cert</span></div>
-<div class="desc"><var>alias</var> must be a string represents the name of <var>cert</var> in
-<var>keystore</var>.
-<p /><var>cert</var> must be an X509 certificate.
-<p />Stores given <var>cert</var> to <var>keystore</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-delete-entry!1887">
-    <span class="name" name="pkcs12-keystore-delete-entry!">pkcs12-keystore-delete-entry!</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc"><var>alias</var> must be a string.
-<p />Removes the entry associated with <var>alias</var> in <var>keystore</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-aliases1888">
-    <span class="name" name="pkcs12-keystore-aliases">pkcs12-keystore-aliases</span>
-  </a> <span class="args">keystore</span></div>
-<div class="desc">Returns all defined names in <var>keystore</var>.</div>
-<p />
+<p />And using this supported PBES2 cipher is like this;
+<p /><pre class="codeblock">(let* ((param (make-pbe-parameter (string-&gt;utf8 "saltsalt") 1024))
+       (key (generate-secret-key pbkdf2-with-hmac-sha1-des3 "password"))
+       (pbe-cipher (cipher pbkdf2-with-hmac-sha1-des3 key :parameter param))
+       (ciphertext (encrypt pbe-cipher (string-&gt;utf8 "This is an example."))))
+  (utf8-&gt;string (decrypt pbe-cipher ciphertext)))
+</pre>
+<p />I suppose this is correct, but I could not find any implementation which
+supports PBES2. I usually test with JCE, so if you have some recommendation,
+please let me know.
+
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section723.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="prev" href="section723.html">(odbc) - ODBC binding</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section725.html">(util queue) - Queue</a>
+    <a class="next" href="section725.html">(rsa pkcs :12) - PKCS#12</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-05-15T10:11:33+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-06-19T18:35:34+0100</i></div>
   </div>
 </html>

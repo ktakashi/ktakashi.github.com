@@ -40,21 +40,29 @@ that are traditionally associated with Scheme.</div>
 bindings and may appear anywhere other definitions may appear.
 <p />The first from of <code>define</code> binds <var>variable</var> to a new location before
 assigning the value of <var>expression</var> to it.
-<p /><pre class="snipet"><span class="snipet-code">(define add3 (lambda (x) (+ x 3)))</span></pre>
-<pre class="snipet"><span class="snipet-code">(add3 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">6</span></pre>
-<pre class="snipet"><span class="snipet-code">(define first car)</span></pre>
-<pre class="snipet"><span class="snipet-code">(first '(1 2))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">1</span></pre>
+<p /><pre class="snipet">(define add3 (lambda (x) (+ x 3)))</pre>
+<div class="snipet-box">
+    <pre class="snipet">(add3 3)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">6</span>
+  </div>
+<pre class="snipet">(define first car)</pre>
+<div class="snipet-box">
+    <pre class="snipet">(first '(1 2))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">1</span>
+  </div>
 <p />The second form of <code>define</code> is equivalent to
-<p /><pre class="snipet"><span class="snipet-code">(define <var>variable</var> <var>unspecified</var>)</span></pre>
+<p /><pre class="snipet">(define <var>variable</var> <var>unspecified</var>)</pre>
 <p />where <var>unspecified</var> is a side-effect-free expression returning an
 unspecified value.
 <p />In the third form of <code>define</code>, <var>formals</var> must be either a sequence of
 zero or more variables, or a sequence of one or more variables followed by a dot
 <code>.</code> and another variable. This form is equivalent to
-<p /><pre class="snipet"><span class="snipet-code">(define <var>variable</var> (lambda (<var>formals</var>) <var>body ...</var>))</span></pre>
+<p /><pre class="snipet">(define <var>variable</var> (lambda (<var>formals</var>) <var>body ...</var>))</pre>
 <p />In the fourth form of <code>define</code>, <var>formal</var> must be a single variable.
 This form is equivalent to
-<p /><pre class="snipet"><span class="snipet-code">(define <var>variable</var> (lambda <var>formal</var> <var>body ...</var>))</span></pre>
+<p /><pre class="snipet">(define <var>variable</var> (lambda <var>formal</var> <var>body ...</var>))</pre>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
     <a class="section.anchor" name="G34"><span class="section-number">3.3.2</span>Syntax definitions</a>
@@ -74,9 +82,21 @@ at macro-expansion time, to a transformer.
     <span class="name" name="quote">quote</span>
   </a> <span class="args">datum</span></div>
 <div class="desc">[R6RS] <code>quote</code> evaluates to the datum value represented by <var>datum</var>.
-<p /><pre class="snipet"><span class="snipet-code">(quote a)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">a</span></pre>
-<pre class="snipet"><span class="snipet-code">(quote #(a b c))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#(a b c)</span></pre>
-<pre class="snipet"><span class="snipet-code">(quote (+ 1 2))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(+ 1 2)</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(quote a)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">a</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(quote #(a b c))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#(a b c)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(quote (+ 1 2))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(+ 1 2)</span>
+  </div>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
     <a class="section.anchor" name="G38"><span class="section-number">3.3.4</span>Procedures</a>
@@ -93,15 +113,33 @@ resulting argument values are stored in those locations. Then, the expressions
 in the <var>body</var> of the <code>lambda</code> expression are evaluated sequentially in
 the extended environment. The results of the last expression in the body are
 returned as the results of the procedure call.
-<p /><pre class="snipet"><span class="snipet-code">(lambda (x) (+ x x))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">a procedure</span></pre>
-<pre class="snipet"><span class="snipet-code">((lambda (x) (+ x x)) 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">8</span></pre>
-<pre class="snipet"><span class="snipet-code"><pre class="codeblock">((lambda (x)
-   (define (p y) (+ y 1))
-   (+ (p x) x)) 5)</pre></span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">11</span></pre>
-<p /><pre class="snipet"><span class="snipet-code">(define reverse-subtract (lambda (x y) (- y x)))</span></pre>
-<pre class="snipet"><span class="snipet-code">(reverse-subtract 7 10)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">3</span></pre>
-<p /><pre class="snipet"><span class="snipet-code">(define add4 (let ((x 4)) (lambda (y) (+ x y))))</span></pre>
-<pre class="snipet"><span class="snipet-code">(add4 6)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">10</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(lambda (x) (+ x x))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">a procedure</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">((lambda (x) (+ x x)) 4)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">8</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet"><pre class="codeblock">((lambda (x)    (define (p y) (+ y 1))    (+ (p x) x)) 5)</pre></pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">11</span>
+  </div>
+<p /><pre class="snipet">(define reverse-subtract (lambda (x y) (- y x)))</pre>
+<div class="snipet-box">
+    <pre class="snipet">(reverse-subtract 7 10)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">3</span>
+  </div>
+<p /><pre class="snipet">(define add4 (let ((x 4)) (lambda (y) (+ x y))))</pre>
+<div class="snipet-box">
+    <pre class="snipet">(add4 6)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">10</span>
+  </div>
 <p /><var>Formals</var> must have one of the following forms:
 <ul class="itemlist">
     <li class="itemlist-item">(<var>&lt;variable1&gt;</var> ...)
@@ -119,8 +157,16 @@ returned as the results of the procedure call.
     the last variable is a newly allocated list of the arguments left over after
     all the other arguments have been matched up against the other
     parameters.
-<p />    <pre class="snipet"><span class="snipet-code">((lambda x x) 3 4 5 6)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(3 4 5 6)</span></pre>
-    <pre class="snipet"><span class="snipet-code">((lambda (x y . z) z)  3 4 5 6)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(5 6)</span></pre>
+<p />    <div class="snipet-box">
+      <pre class="snipet">((lambda x x) 3 4 5 6)</pre>
+      <span class="snipet-arrow">=&gt;</span>
+      <span class="snipet-result">(3 4 5 6)</span>
+    </div>
+    <div class="snipet-box">
+      <pre class="snipet">((lambda (x y . z) z)  3 4 5 6)</pre>
+      <span class="snipet-arrow">=&gt;</span>
+      <span class="snipet-result">(5 6)</span>
+    </div>
 <p />    Any <var>variable</var> must not appear more than once in <var>formals</var>.</p></li>
     <li class="itemlist-item">(<var>&lt;variable&gt; ... <var>&lt;extended-spec&gt;</var> ...</var>)
   
@@ -137,8 +183,8 @@ returned as the results of the procedure call.
         </dt>
         <dd class="dl-item-desc">      Specifies optional arguments. Each <var>optspec</var> can be either one of the
       following forms:
-<p />      <pre class="snipet"><span class="snipet-code"><var>variable</var></span></pre>
-      <pre class="snipet"><span class="snipet-code">(<var>variable</var> <var>init-expr</var>)</span></pre>
+<p />      <pre class="snipet"><var>variable</var></pre>
+      <pre class="snipet">(<var>variable</var> <var>init-expr</var>)</pre>
 <p />      The <var>variable</var> names the formal argument, which is bound to the value
       of the actual argument if given, or the value of the expression
       <var>init-expr</var> otherwise. If <var>optspec</var> is just a variable, and the
@@ -146,31 +192,49 @@ returned as the results of the procedure call.
 <p />      The expression <var>init-expr</var> is only evaluated if the actual argument is
       not given. The scope in which <var>init-expr</var> is evaluated includes the
       preceding formal arguments.
-<p />      <pre class="codeblock">((lambda (a b :optional (c (+ a b))) (list a b c)) 1 2)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 2 3)</span></pre>
-      <pre class="codeblock">((lambda (a b :optional (c (+ a b))) (list a b c)) 1 2 -1)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 2 -1)</span></pre>
-      <pre class="codeblock">((lambda (a b :optional c) (list a b c)) 1 2)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 2 #&lt;unspecified&gt;)</span></pre>
-      <pre class="codeblock">((lambda (:optional (a 0) (b (+ a 1))) (list a b)))
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 2)</span></pre>
+<p />      <div class="snipet-box">
+          <pre class="snipet">((lambda (a b :optional (c (+ a b))) (list a b c)) 1 2)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 2 3)</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">((lambda (a b :optional (c (+ a b))) (list a b c)) 1 2 -1)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 2 -1)</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">((lambda (a b :optional c) (list a b c)) 1 2)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 2 #&lt;unspecified&gt;)</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">((lambda (:optional (a 0) (b (+ a 1))) (list a b)))       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 2)</span>
+        </div>
 <p />      The procedure raises an <code>&amp;serious</code> if more actual arguments than the
       number of required and optional arguments are given, unless it also has
       <code>:key</code> or <code>:rest</code> arguments spec.
-<p />      <pre class="codeblock">((lambda (:optional a b) (list a b)) 1 2 3)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&amp;serious</span></pre>
-      <pre class="codeblock">((lambda (:optional a b :rest r) (list a b r)) 1 2 3)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 2 (3))</span></pre>
+<p />      <div class="snipet-box">
+          <pre class="snipet">((lambda (:optional a b) (list a b)) 1 2 3)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">&amp;serious</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">((lambda (:optional a b :rest r) (list a b r)) 1 2 3)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 2 (3))</span>
+        </div>
     </dd>
         <dt class="dl-item-title">
           <code>:key <var>keyspec</var> ... [:allow-other-keys [<var>variable</var>]]</code>
         </dt>
         <dd class="dl-item-desc">      Specifies keyword arguments. Each <var>keyspec</var> can be one of the
       following forms.
-<p />      <pre class="snipet"><span class="snipet-code"><var>variable</var></span></pre>
-      <pre class="snipet"><span class="snipet-code">(<var>variable</var> <var>init-expr</var>)</span></pre>
-      <pre class="snipet"><span class="snipet-code">((<var>keyword</var> <var>variable</var>) <var>init-expr</var>)</span></pre>
-      <pre class="snipet"><span class="snipet-code">(<var>variable</var> <var>keyword</var> <var>init-expr</var>)</span></pre>
+<p />      <pre class="snipet"><var>variable</var></pre>
+      <pre class="snipet">(<var>variable</var> <var>init-expr</var>)</pre>
+      <pre class="snipet">((<var>keyword</var> <var>variable</var>) <var>init-expr</var>)</pre>
+      <pre class="snipet">(<var>variable</var> <var>keyword</var> <var>init-expr</var>)</pre>
 <p />      The <var>variable</var> names the formal argument, which is bound to the actual
       argument given with the keyword of the same name as <var>variable</var>. When
       the actual is not given, <var>init-expr</var> is evaluated and the result is
@@ -179,31 +243,75 @@ returned as the results of the procedure call.
 <p />      <pre class="codeblock">(define f (lambda (a :key (b (+ a 1)) (c (+ b 1)))
             (list a b c)))
       </pre>
-      <pre class="snipet"><span class="snipet-code">(f 10)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(10 11 12)</span></pre>
-      <pre class="snipet"><span class="snipet-code">(f 10 :b 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(10 4 5)</span></pre>
-      <pre class="snipet"><span class="snipet-code">(f 10 :c 8)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(10 11 8)</span></pre>
-      <pre class="snipet"><span class="snipet-code">(f 10 :c 1 :b 3)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(10 3 1)</span></pre>
+      <div class="snipet-box">
+          <pre class="snipet">(f 10)</pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(10 11 12)</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">(f 10 :b 4)</pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(10 4 5)</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">(f 10 :c 8)</pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(10 11 8)</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">(f 10 :c 1 :b 3)</pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(10 3 1)</span>
+        </div>
 <p />      With the third and fourth form you can name the formal argument
       differently from the keyword to specify the argument.
-<p />      <pre class="snipet"><span class="snipet-code">((lambda (:key ((:aa a) -1)) a) ::aa 2)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">2</span></pre>
-      <pre class="snipet"><span class="snipet-code">((lambda (:key (a :aa -1)) a) ::aa 2)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">2</span></pre>
+<p />      <div class="snipet-box">
+          <pre class="snipet">((lambda (:key ((:aa a) -1)) a) ::aa 2)</pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">2</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">((lambda (:key (a :aa -1)) a) ::aa 2)</pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">2</span>
+        </div>
 <p />      By default, the procedure with keyword argument spec raises
       <code>&amp;serious</code> if a keyword argument with an unrecognized keyword is
       given. Giving <code>:allow-other-keys</code> in the formals suppresses this
       behaviour. If you give <var>variable</var> after <code>:allow-other-keys</code>, the
       list of unrecognized keywords and their arguments are bound to it.
-<p />      <pre class="snipet"><span class="snipet-code">((lambda (:key a) a) :a 1 :b 2)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&amp;serious</span></pre>
-      <pre class="snipet"><span class="snipet-code">((lambda (:key a :allow-other-keys) a) :a 1 :b 2)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">1</span></pre>
-      <pre class="codeblock">((lambda (:key a :allow-other-keys z) (list a z)) :a 1 :b 2)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 (b 2))</span></pre>
+<p />      <div class="snipet-box">
+          <pre class="snipet">((lambda (:key a) a) :a 1 :b 2)</pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">&amp;serious</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">((lambda (:key a :allow-other-keys) a) :a 1 :b 2)</pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">1</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">((lambda (:key a :allow-other-keys z) (list a z)) :a 1 :b 2)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 (b 2))</span>
+        </div>
 <p />      When used with <code>:optional</code> argument spec, the keyword arguments are
       searched after all the optional arguments are bound.
-<p />      <pre class="codeblock">((lambda (:optional a b :key c) (list a b c)) 1 2 :c 3)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 2 3)</span></pre>
-      <pre class="codeblock">((lambda (:optional a b :key c) (list a b c)) :c 3)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(c 3 #&lt;unspecified&gt;)</span></pre>
-      <pre class="codeblock">((lambda (:optional a b :key c) (list a b c)) 1 :c 3)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">&amp;serious</span></pre>
+<p />      <div class="snipet-box">
+          <pre class="snipet">((lambda (:optional a b :key c) (list a b c)) 1 2 :c 3)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 2 3)</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">((lambda (:optional a b :key c) (list a b c)) :c 3)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(c 3 #&lt;unspecified&gt;)</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">((lambda (:optional a b :key c) (list a b c)) 1 :c 3)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">&amp;serious</span>
+        </div>
     </dd>
         <dt class="dl-item-title">
           <code>:rest <var>variable</var></code>
@@ -214,17 +322,29 @@ returned as the results of the procedure call.
       argument spec, the actual arguments are first bound to required and all
       optional arguments, and the remaining arguments are bound to
       <var>variable</var>.
-<p />      <pre class="codeblock">((lambda (a b :rest z) (list a b z)) 1 2 3 4 5)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 2 (3 4 5))</span></pre>
-      <pre class="codeblock">((lambda (a b :optional c d :rest z) (list a b z)) 1 2 3 4 5)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 2 3 4 (5))</span></pre>
-      <pre class="codeblock">      ((lambda (a b :optional c d :rest z) (list a b z)) 1 2 3)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 2 3 #&lt;unspecified&gt; ())</span></pre>
+<p />      <div class="snipet-box">
+          <pre class="snipet">((lambda (a b :rest z) (list a b z)) 1 2 3 4 5)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 2 (3 4 5))</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">((lambda (a b :optional c d :rest z) (list a b z)) 1 2 3 4 5)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 2 3 4 (5))</span>
+        </div>
+      <div class="snipet-box">
+          <pre class="snipet">      ((lambda (a b :optional c d :rest z) (list a b z)) 1 2 3)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 2 3 #&lt;unspecified&gt; ())</span>
+        </div>
 <p />      When the rest argument spec is used with the keyword argument spec, both
       accesses the same list of actual argument -- the remaining arguments after
       required and optional arguments are taken
-<p />      <pre class="codeblock">((lambda (:optional a :rest r :key k) (list a r k)) 1 :k 3)
-      <span class="codeblock-arrow">=&gt;</span><span class="codeblock-result">(1 (k 3) 3)</span></pre>
+<p />      <div class="snipet-box">
+          <pre class="snipet">((lambda (:optional a :rest r :key k) (list a r k)) 1 :k 3)       </pre>
+          <span class="snipet-arrow">=&gt;</span>
+          <span class="snipet-result">(1 (k 3) 3)</span>
+        </div>
     </dd>
       </dl>
     </div>
@@ -266,9 +386,9 @@ binding. In Sagittarius, however, it won't throw any error.
     <span class="name" name="cond">cond</span>
   </a> <span class="args">clause ...</span></div>
 <div class="desc">[R6RS] Each <var>clause</var> must be the form
-<p /><pre class="snipet"><span class="snipet-code">(<var>test</var> <var>expression</var> ...)</span></pre>
-<pre class="snipet"><span class="snipet-code">(<var>test</var> =&gt; <var>expression</var>)</span></pre>
-<pre class="snipet"><span class="snipet-code">(else <var>expression</var> ...)</span></pre>
+<p /><pre class="snipet">(<var>test</var> <var>expression</var> ...)</pre>
+<pre class="snipet">(<var>test</var> =&gt; <var>expression</var>)</pre>
+<pre class="snipet">(else <var>expression</var> ...)</pre>
 <p />The last form can appear only in the last clause.
 <p />A <code>cond</code> expression is evaluated by evaluating the <var>test</var> expressions of
 successive <var>clauses</var> in order until one of them evaluates to a true value.
@@ -290,8 +410,8 @@ evaluated, and the values of the last one are returned.
   </a> <span class="args">clause ...</span></div>
 <div class="desc">[R6RS] <var>Key</var> must be an expression. Each <var>clause</var> must have one of
 the following forms:
-<p /><pre class="snipet"><span class="snipet-code">((<var>datum</var> ...) <var>expression</var> ...)</span></pre>
-<pre class="snipet"><span class="snipet-code">(else <var>expression</var> ...)</span></pre>
+<p /><pre class="snipet">((<var>datum</var> ...) <var>expression</var> ...)</pre>
+<pre class="snipet">(else <var>expression</var> ...)</pre>
 <p />The last form can appear only in the last clause.
 <p />A <code>case</code> expression is evaluated as follows. <var>Key</var> is evaluated and its
 result is compared using <code>eqv?</code> against the data represented by the <var>datums</var>
@@ -313,10 +433,26 @@ results of the last are the results of the <code>case</code> expression; otherwi
 returns #f or the last <var>test</var> is reached. In the former case, the and
 expression returns #f without evaluating the remaining expressions. In the
 latter case, the last expression is evaluated and its values are returned.
-<p /><pre class="snipet"><span class="snipet-code">(and (= 2 2) (&gt; 2 1))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
-<pre class="snipet"><span class="snipet-code">(and (= 2 2) (&lt; 2 1))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(and 1 2 'c '(f g))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(f g)</span></pre>
-<pre class="snipet"><span class="snipet-code">(and)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(and (= 2 2) (&gt; 2 1))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(and (= 2 2) (&lt; 2 1))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(and 1 2 'c '(f g))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(f g)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(and)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
 </div>
 <p /><div class="define"><span class="define-category">Syntax</span><a name="or49">
     <span class="name" name="or">or</span>
@@ -326,10 +462,26 @@ expressions are evaluated from left to right until a <var>test</var> returns a t
 value or the last <var>test</var> is reached. In the former case, the or expression
 returns val without evaluating the remaining expressions. In the latter case,
 the last expression is evaluated and its values are returned.
-<p /><pre class="snipet"><span class="snipet-code">(or (= 2 2) (&gt; 2 1))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
-<pre class="snipet"><span class="snipet-code">(or (= 2 2) (&lt; 2 1))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
-<pre class="snipet"><span class="snipet-code">(or #f #f #f)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(or '(b c) (/ 3 0))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(b c)</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(or (= 2 2) (&gt; 2 1))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(or (= 2 2) (&lt; 2 1))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(or #f #f #f)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(or '(b c) (/ 3 0))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(b c)</span>
+  </div>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
     <a class="section.anchor" name="G50"><span class="section-number">3.3.8</span>Binding constructs</a>
@@ -338,7 +490,7 @@ the last expression is evaluated and its values are returned.
     <span class="name" name="let">let</span>
   </a> <span class="args">bindings body ...</span></div>
 <div class="desc">[R6RS] <var>Bindings</var> must have the form
-<p /><pre class="snipet"><span class="snipet-code">((<var>variable1</var> <var>init1</var>) ...)</span></pre>
+<p /><pre class="snipet">((<var>variable1</var> <var>init1</var>) ...)</pre>
 <p />where each <var>init</var> is an expression. Any variable must not appear more than
 once in the <var>variables</var>.
 <p />The <var>inits</var> are evaluated in the current environment, the variables are bound
@@ -350,7 +502,7 @@ returned. Each binding of a <var>variable</var> has <var>body</var> as its regio
     <span class="name" name="let*">let*</span>
   </a> <span class="args">bindings body ...</span></div>
 <div class="desc">[R6RS] <var>Bindings</var> must have the form
-<p /><pre class="snipet"><span class="snipet-code">((<var>variable1</var> <var>init1</var>) ...)</span></pre>
+<p /><pre class="snipet">((<var>variable1</var> <var>init1</var>) ...)</pre>
 <p />The <code>let*</code> form is similar to <code>let</code>, but the <var>inits</var> are evaluated
 and bindings created sequentially from left to right, with the region of each
 binding including the bindings to its right as well as <var>body</var>. Thus the second
@@ -361,7 +513,7 @@ and initialized, and so on.
     <span class="name" name="letrec">letrec</span>
   </a> <span class="args">bindings body ...</span></div>
 <div class="desc">[R6RS] <var>Bindings</var> must have the form
-<p /><pre class="snipet"><span class="snipet-code">((<var>variable1</var> <var>init1</var>) ...)</span></pre>
+<p /><pre class="snipet">((<var>variable1</var> <var>init1</var>) ...)</pre>
 <p />where each <var>init</var> is an expression. Any variable must not appear more than
 once in the <var>variables</var>.
 <p />The <var>variables</var> are bound to fresh locations, the <var>inits</var> are evaluated
@@ -377,7 +529,7 @@ expressions and the restriction is satisfied automatically.
     <span class="name" name="letrec*">letrec*</span>
   </a> <span class="args">bindings body ...</span></div>
 <div class="desc">[R6RS] <var>Bindings</var> must have the form
-<p /><pre class="snipet"><span class="snipet-code">((<var>variable1</var> <var>init1</var>) ...)</span></pre>
+<p /><pre class="snipet">((<var>variable1</var> <var>init1</var>) ...)</pre>
 <p />where each <var>init</var> is an expression. Any variable must not appear more than
 once in the <var>variables</var>.
 <p />The <var>variables</var> are bound to fresh locations, each <var>variable</var> is assigned
@@ -391,7 +543,7 @@ expression as its region, making it possible to define mutually recursive proced
     <span class="name" name="let-values">let-values</span>
   </a> <span class="args">mv-bindings body ...</span></div>
 <div class="desc">[R6RS] <var>Mv-bindings</var> must have the form
-<p /><pre class="snipet"><span class="snipet-code">((<var>formals</var> <var>init1</var>) ...)</span></pre>
+<p /><pre class="snipet">((<var>formals</var> <var>init1</var>) ...)</pre>
 <p />where each <var>init</var> is an expression. Any variable must not appear more than
 once in the set of <var>formals</var>.
 <p />The <var>inits</var> are evaluated in the current environment, and the variables
@@ -408,7 +560,7 @@ is raised.
     <span class="name" name="let*-values">let*-values</span>
   </a> <span class="args">mv-bindings body ...</span></div>
 <div class="desc">[R6RS] <var>Mv-bindings</var> must have the form
-<p /><pre class="snipet"><span class="snipet-code">((<var>formals</var> <var>init1</var>) ...)</span></pre>
+<p /><pre class="snipet">((<var>formals</var> <var>init1</var>) ...)</pre>
 <p />where each <var>init</var> is an expression. In each <var>formals</var>, any variable must
 not appear more than once.
 <p />The <code>let*-values</code> form is similar to <code>let-values</code>, but the <var>inits</var>
@@ -467,14 +619,46 @@ literal string, boolean, fixnum, and '() are used as the same objects. If these
 objects indicates the same value then <code>eq?</code> returns #t.
 <p />The following examples are not specified R6RS. But it is always good to know how
 it works.
-<p /><pre class="snipet"><span class="snipet-code">(let ((p (lambda (x) x))) (eqv? p p))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
-<pre class="snipet"><span class="snipet-code">(eqv? "" "")</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
-<pre class="snipet"><span class="snipet-code">(eqv? "abc" "abc") ;; literal string are the same object</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#t</span></pre>
-<pre class="snipet"><span class="snipet-code">(eqv? "abc" (list-&gt;string '(#\a #\b #\c)))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(eqv? '#() '#())</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(eqv? (lambda (x) x) (lambda (x) x))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(eqv? (lambda (x) x) (lambda (y) y))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
-<pre class="snipet"><span class="snipet-code">(eqv? +nan.0 +nan.0)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#f</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(let ((p (lambda (x) x))) (eqv? p p))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(eqv? "" "")</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(eqv? "abc" "abc") ;; literal string are the same object</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#t</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(eqv? "abc" (list-&gt;string '(#\a #\b #\c)))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(eqv? '#() '#())</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(eqv? (lambda (x) x) (lambda (x) x))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(eqv? (lambda (x) x) (lambda (y) y))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(eqv? +nan.0 +nan.0)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#f</span>
+  </div>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
     <a class="section.anchor" name="G64"><span class="section-number">3.3.11</span>Procedure predicate</a>
@@ -901,9 +1085,9 @@ elements and its length is zero.
 <p />A chain of pairs not ending in the empty list is called an <var>improper list</var>.
 Note that an improper list is not a list. The list and dotted notations can be
 combined to represent improper lists:
-<p /><pre class="snipet"><span class="snipet-code">(a b c . d)</span></pre>
+<p /><pre class="snipet">(a b c . d)</pre>
 <p />is equivalent to
-<p /><pre class="snipet"><span class="snipet-code">(a . (b . (c . d)))</span></pre>
+<p /><pre class="snipet">(a . (b . (c . d)))</pre>
 <p />Whether a given pair is a list depends upon what is stored in the cdr field.
 <p /><div class="define"><span class="define-category">Function</span><a name="pair?144">
     <span class="name" name="pair?">pair?</span>
@@ -938,7 +1122,7 @@ cdr is <var>obj2</var>. The pair is guaranteed to be different (in the sense of
   </a> <span class="args">pair</span></div>
 <div class="desc">[R6RS] These procedures are compositions of <code>car</code> and <code>cdr</code>,
 where for example <code>caddr</code> could be defined by
-<p /><pre class="snipet"><span class="snipet-code">(define caddr (lambda (x) (car (cdr (cdr x)))))</span></pre>.
+<p /><pre class="snipet">(define caddr (lambda (x) (car (cdr (cdr x)))))</pre>.
 <p />Arbitrary compositions, up to four deep, are provided. There are twenty-eight
 of these procedures in all.
 </div>
@@ -1087,7 +1271,11 @@ string has index 0, the second has index 1, and so on.
 is given, then all elements of the string are initialized to <var>char</var>, otherwise
 the contents of the string are <code>#\space</code>.
 <p />These are equivalence:
-<pre class="snipet"><span class="snipet-code">(make-string 10)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(code (make-string 10 #\space))</span></pre>
+<div class="snipet-box">
+    <pre class="snipet">(make-string 10)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(code (make-string 10 #\space))</span>
+  </div>
 </div>
 <p /><div class="define"><span class="define-category">Function</span><a name="string179">
     <span class="name" name="string">string</span>
@@ -1244,10 +1432,26 @@ of the objects contained in the elements of <var>vector</var>. The <code>list-&g
 procedure returns a newly created vector initialized to the elements of the list
 <var>list</var>. The optional <var>start</var> and <var>end</var> arguments limit the range of
 the source.
-<p /><pre class="snipet"><span class="snipet-code">(vector-&gt;list '#(1 2 3 4 5))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(1 2 3 4 5)</span></pre>
-<pre class="snipet"><span class="snipet-code">(list-&gt;vector '(1 2 3 4 5))</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#(1 2 3 4 5)</span></pre>
-<pre class="snipet"><span class="snipet-code">(vector-&gt;list '#(1 2 3 4 5) 2 4)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(3 4)</span></pre>
-<pre class="snipet"><span class="snipet-code">(list-&gt;vector (circular-list 'a 'b 'c) 1 6)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">#(b c a b c)</span></pre>
+<p /><div class="snipet-box">
+    <pre class="snipet">(vector-&gt;list '#(1 2 3 4 5))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(1 2 3 4 5)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(list-&gt;vector '(1 2 3 4 5))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#(1 2 3 4 5)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(vector-&gt;list '#(1 2 3 4 5) 2 4)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(3 4)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(list-&gt;vector (circular-list 'a 'b 'c) 1 6)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#(b c a b c)</span>
+  </div>
 </div>
 <p /><div class="define"><span class="define-category">Function</span><a name="vector-fill!202">
     <span class="name" name="vector-fill!">vector-fill!</span>
@@ -1416,7 +1620,7 @@ case the forms within their bodies must be expressions.
     <span class="name" name="let-syntax">let-syntax</span>
   </a> <span class="args">bindings form ...</span></div>
 <div class="desc">[R6RS] <var>Bindings</var> must have the form
-<p /><pre class="snipet"><span class="snipet-code">((<var>keyword</var> <var>expression</var>) ...)</span></pre>
+<p /><pre class="snipet">((<var>keyword</var> <var>expression</var>) ...)</pre>
 <p />Each <var>keyword</var> is an identifier, and each <var>expression</var> is an expression
 that evaluates, at macro-expansion time, to a transformer. Transformers may be
 created by <code>syntax-rules</code> or <code>identifier-syntax</code> or by one of the other
@@ -1432,7 +1636,7 @@ are the <var>keywords</var>, bound to the specified transformers. Each binding o
     <span class="name" name="letrec-syntax">letrec-syntax</span>
   </a> <span class="args">bindings form ...</span></div>
 <div class="desc">[R6RS] <var>Bindings</var> must have the form
-<p /><pre class="snipet"><span class="snipet-code">((<var>keyword</var> <var>expression</var>) ...)</span></pre>
+<p /><pre class="snipet">((<var>keyword</var> <var>expression</var>) ...)</pre>
 <p />Each <var>keyword</var> is an identifier, and each <var>expression</var> is an expression
 that evaluates, at macro-expansion time, to a transformer. Transformers may be
 created by <code>syntax-rules</code> or <code>identifier-syntax</code> or by one of the other
@@ -1461,7 +1665,7 @@ syntax are not be renamed or prefixed. This behaivour may be fixed in future.
   </a> <span class="args">(literal ...) rule ...</span></div>
 <div class="desc">[R6RS] Each <var>literal</var> must be an identifier. Each <var>rule</var> must have
 the following form:
-<p /><pre class="snipet"><span class="snipet-code">(srpattern template)</span></pre>
+<p /><pre class="snipet">(srpattern template)</pre>
 <p />An <var>srpattern</var> is a restricted form of <var>pattern</var>, namely, a nonempty
 <var>pattern</var> in one of four parenthesized forms below whose first subform is
 an identifier or an underscore <code>_</code>. A <var>pattern</var> is an identifier,
@@ -1501,23 +1705,39 @@ for <code>syntax-rules</code>.
 <p />When a keyword is bound to a transformer produced by the first form of 
 <code>identifier-syntax</code>, references to the keyword within the scope of the
 binding are replaced by <var>template</var>.
-<p /><pre class="snipet"><span class="snipet-code">(define p (cons 4 5))</span></pre>
-<pre class="snipet"><span class="snipet-code">(define-syntax p.car (identifier-syntax (car p)))</span></pre>
-<pre class="snipet"><span class="snipet-code">p.car</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">4</span></pre>
-<pre class="snipet"><span class="snipet-code">(set! p.car 15)</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">&amp;syntax exception</span></pre>
+<p /><pre class="snipet">(define p (cons 4 5))</pre>
+<pre class="snipet">(define-syntax p.car (identifier-syntax (car p)))</pre>
+<div class="snipet-box">
+    <pre class="snipet">p.car</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">4</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(set! p.car 15)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&amp;syntax exception</span>
+  </div>
 <p />The second, more general, form of <code>identifier-syntax</code> permits the transformer
 to determine what happens when <code>set!</code> is used. In this case, uses of the
 identifier by itself are replaced by <var>template1</var>, and uses of <code>set!</code> with
 the identifier are replaced by <var>template2</var>
-<p /><pre class="snipet"><span class="snipet-code">(define p (cons 4 5))</span></pre>
+<p /><pre class="snipet">(define p (cons 4 5))</pre>
 <pre class="codeblock">(define-syntax p.car
   (identifier-syntax
     (_ (car p))
     ((set! _ e) (set-car! p e))))
 </pre>
-<pre class="snipet"><span class="snipet-code">(set! p.car 15)</span></pre>
-<pre class="snipet"><span class="snipet-code">p.car</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">15</span></pre>
-<pre class="snipet"><span class="snipet-code">p</span><span class="snipet-arrow">=&gt;</span><span class="snipet-result">(15 5)</span></pre>
+<pre class="snipet">(set! p.car 15)</pre>
+<div class="snipet-box">
+    <pre class="snipet">p.car</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">15</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">p</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(15 5)</span>
+  </div>
 </div>
 
 </section></section>
@@ -1529,6 +1749,6 @@ the identifier are replaced by <var>template2</var>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-05-15T10:11:33+0100</i></div>
+    <div id="footer-date">Generated date: <i>2015-06-19T18:35:34+0100</i></div>
   </div>
 </html>
