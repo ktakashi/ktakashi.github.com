@@ -15,7 +15,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc :5322)2068">
+    <a name="(rfc :5322)2093">
       <span class="name" name="(rfc :5322)">(rfc :5322)</span>
     </a>
   </div>
@@ -23,9 +23,9 @@
 in RFC5322(<a href="http://tools.ietf.org/html/rfc5322">RFC 5322</a>).
 </div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2069"><span class="section-number">7.27.1</span>Parsing message headers</a>
+    <a class="section.anchor" name="G2094"><span class="section-number">7.27.1</span>Parsing message headers</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-read-headers2070">
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-read-headers2095">
     <span class="name" name="rfc5322-read-headers">rfc5322-read-headers</span>
   </a>
  <span class="args">input-port :key (strict? #f) reader</span></div>
@@ -43,13 +43,13 @@ composed list. And if it's #t, it raises <code>&amp;rfc5322-parse-error</code>.
 is <code>rfc5322-line-reader</code> and it treats both LF and CRLF eof style. If you
 want to read from binary port, you need to pass own reader.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-line-reader2071">
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-line-reader2096">
     <span class="name" name="rfc5322-line-reader">rfc5322-line-reader</span>
   </a> <span class="args">input-port</span></div>
 <div class="desc"><var>input-port</var> must be textual input port.
 <p />Reads a line from given port. If the last character is CR chop it off.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-header-ref2072">
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-header-ref2097">
     <span class="name" name="rfc5322-header-ref">rfc5322-header-ref</span>
   </a>
  <span class="args">header-list field-name . maybe-default</span></div>
@@ -59,9 +59,9 @@ given name is in <var>header-list</var>, the procedure returns its value in a st
 Otherwise, if default is given, it is returned, and if not, #f is returned. 
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2073"><span class="section-number">7.27.2</span>Basic field parsers</a>
+    <a class="section.anchor" name="G2098"><span class="section-number">7.27.2</span>Basic field parsers</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-next-token2074">
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-next-token2099">
     <span class="name" name="rfc5322-next-token">rfc5322-next-token</span>
   </a>
  <span class="args">input-port :optional tokenizer-spec</span></div>
@@ -83,7 +83,7 @@ token.
  	
 <pre class="snipet">(list (cons (string-&gt;char-set ":") rfc5322-quoted-string)       (cons *rfc5322-atext-chars* rfc5322-dot-atom)) </pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-field-&gt;tokens2075">
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-field-&gt;tokens2100">
     <span class="name" name="rfc5322-field-&gt;tokens">rfc5322-field-&gt;tokens</span>
   </a>
  <span class="args">field :optional tokenizer-spec</span></div>
@@ -91,7 +91,7 @@ token.
 <var>field</var> and calls <code>rfc5322-next-token</code> repeatedly on it until it
 consumes all input, and returns a list of tokens.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-skip-cfws2076">
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-skip-cfws2101">
     <span class="name" name="rfc5322-skip-cfws">rfc5322-skip-cfws</span>
   </a> <span class="args">input-port</span></div>
 <div class="desc">Consumes whitespace characters and/or any comments from <var>input-port</var>
@@ -100,29 +100,29 @@ remains in <var>input-port</var>.
 </div>
 <p /><div class="define">
     <span class="define-category">Variable</span>
-    <a name="*rfc5322-atext-chars*2077">
+    <a name="*rfc5322-atext-chars*2102">
       <span class="name" name="*rfc5322-atext-chars*">*rfc5322-atext-chars*</span>
     </a>
   </div>
 <div class="desc">A character set which is defined RFC 5322 section 3.2.3 Atom.</div>
 <p /><div class="define">
     <span class="define-category">Variable</span>
-    <a name="*rfc5322-standard-tokenizers*2078">
+    <a name="*rfc5322-standard-tokenizers*2103">
       <span class="name" name="*rfc5322-standard-tokenizers*">*rfc5322-standard-tokenizers*</span>
     </a>
   </div>
 <div class="desc">Default tokenizer.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-dot-atom2079">
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-dot-atom2104">
     <span class="name" name="rfc5322-dot-atom">rfc5322-dot-atom</span>
   </a> <span class="args">input-port</span></div>
-<div class="define"><span class="define-category">Function</span><a name="rfc5322-quoted-string2080">
+<div class="define"><span class="define-category">Function</span><a name="rfc5322-quoted-string2105">
     <span class="name" name="rfc5322-quoted-string">rfc5322-quoted-string</span>
   </a> <span class="args">input-port</span></div>
 <div class="desc">Tokenizers for <code>dot-atom</code> and <code>quoted-string</code> respectively.</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2081"><span class="section-number">7.27.3</span>Specific field parsers</a>
+    <a class="section.anchor" name="G2106"><span class="section-number">7.27.3</span>Specific field parsers</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-parse-date2082">
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-parse-date2107">
     <span class="name" name="rfc5322-parse-date">rfc5322-parse-date</span>
   </a> <span class="args">string</span></div>
 <div class="desc">Takes RFC-5322 type date string and returns eight values:
@@ -134,16 +134,16 @@ the elements are #f.
 </div>
 <p />
 </section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2083"><span class="section-number">7.27.4</span>Message constructors</a>
+    <a class="section.anchor" name="G2108"><span class="section-number">7.27.4</span>Message constructors</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-write-headers2084">
+<p /><div class="define"><span class="define-category">Function</span><a name="rfc5322-write-headers2109">
     <span class="name" name="rfc5322-write-headers">rfc5322-write-headers</span>
   </a>
  <span class="args">headers :key (output (current-output-port))
  (check :error) (continue #f)</span></div>
 <div class="desc">Writes the given <var>header</var> to the port <var>output</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="date-&gt;rfc5322-date2085">
+<p /><div class="define"><span class="define-category">Function</span><a name="date-&gt;rfc5322-date2110">
     <span class="name" name="date-&gt;rfc5322-date">date-&gt;rfc5322-date</span>
   </a> <span class="args">date</span></div>
 <div class="desc"><var>date</var> must be SRFI-19 date.
@@ -159,6 +159,6 @@ the elements are #f.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-07-17T19:27:30+0200</i></div>
+    <div id="footer-date">Generated date: <i>2015-08-21T18:58:44+0200</i></div>
   </div>
 </html>
