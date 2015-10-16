@@ -24,7 +24,7 @@ Just the functionalities which I usually use are tested. If you find a bug or
 wrong documentation, pleas report it.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(crypto)1645">
+    <a name="(crypto)1665">
       <span class="name" name="(crypto)">(crypto)</span>
     </a>
   </div>
@@ -33,162 +33,165 @@ procedures. Users must import only this and not to use the others.
 <p /><code>(crypto)</code> library supports both symmetric cryptography and public/private
 key mechanism. For public/private key, it only supports RSA for now.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="crypto-object?1646">
+<p /><div class="define"><span class="define-category">Function</span><a name="crypto-object?1666">
     <span class="name" name="crypto-object?">crypto-object?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if <var>obj</var> is <code>crypto-object</code>.
 <p /><code>crypto-object</code> can be either <code>cipher</code> or <code>key</code>.
 </div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1647"><span class="section-number">7.9.1</span>Cipher operations</a>
+    <a class="section.anchor" name="G1667"><span class="section-number">7.9.1</span>Cipher operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="cipher1648">
-    <span class="name" name="cipher">cipher</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-cipher1668">
+    <span class="name" name="make-cipher">make-cipher</span>
   </a>
- <span class="args">type key
- :key (mode MODE_ECB) (iv #f) (padder pkcs5-padder)
-      (rounds 0) (ctr-mode CTR_COUNTER_BIG_ENDIAN)
- :rest options</span></div>
+ <span class="args">type key mode :key (mode-parameter #f) :allow-other-keys :rest options</span></div>
 <div class="desc">Creates a cipher object.
 <p /><var>type</var> must be known cryptographic algorithm. Currently, <code>(crypto)</code>
 library exports the algorithm below.
 <p />The symmetric key algorithms.
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="Blowfish1649">
+    <a name="Blowfish1669">
       <span class="name" name="Blowfish">Blowfish</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="X-Tea1650">
+    <a name="X-Tea1670">
       <span class="name" name="X-Tea">X-Tea</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="RC21651">
+    <a name="RC21671">
       <span class="name" name="RC2">RC2</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="RC5-32/12/b1652">
+    <a name="RC5-32/12/b1672">
       <span class="name" name="RC5-32/12/b">RC5-32/12/b</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="RC6-32/20/b1653">
+    <a name="RC6-32/20/b1673">
       <span class="name" name="RC6-32/20/b">RC6-32/20/b</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="SAFER+1654">
+    <a name="SAFER+1674">
       <span class="name" name="SAFER+">SAFER+</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="SAFER-K641655">
+    <a name="SAFER-K641675">
       <span class="name" name="SAFER-K64">SAFER-K64</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="SAFER-SK641656">
+    <a name="SAFER-SK641676">
       <span class="name" name="SAFER-SK64">SAFER-SK64</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="SAFER-K1281657">
+    <a name="SAFER-K1281677">
       <span class="name" name="SAFER-K128">SAFER-K128</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="SAFER-SK1281658">
+    <a name="SAFER-SK1281678">
       <span class="name" name="SAFER-SK128">SAFER-SK128</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="AES1659">
+    <a name="AES1679">
       <span class="name" name="AES">AES</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="Twofish1660">
+    <a name="Twofish1680">
       <span class="name" name="Twofish">Twofish</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="DES1661">
+    <a name="DES1681">
       <span class="name" name="DES">DES</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="DES31662">
+    <a name="DES31682">
       <span class="name" name="DES3">DES3</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="DESede1663">
+    <a name="DESede1683">
       <span class="name" name="DESede">DESede</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="CAST51664">
+    <a name="CAST51684">
       <span class="name" name="CAST5">CAST5</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="CAST-1281665">
+    <a name="CAST-1281685">
       <span class="name" name="CAST-128">CAST-128</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="Noekeon1666">
+    <a name="Noekeon1686">
       <span class="name" name="Noekeon">Noekeon</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="Skipjack1667">
+    <a name="Skipjack1687">
       <span class="name" name="Skipjack">Skipjack</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="Khazad1668">
+    <a name="Khazad1688">
       <span class="name" name="Khazad">Khazad</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="SEED1669">
+    <a name="SEED1689">
       <span class="name" name="SEED">SEED</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="KASUMI1670">
+    <a name="KASUMI1690">
       <span class="name" name="KASUMI">KASUMI</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="Camellia1691">
+      <span class="name" name="Camellia">Camellia</span>
     </a>
   </div>
 <p />The public key algorithm
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="RSA1671">
+    <a name="RSA1692">
       <span class="name" name="RSA">RSA</span>
     </a>
   </div>
@@ -199,58 +202,44 @@ mode. If the cipher type is public key cipher, it will be ignored. Some modes
 require initial vector <var>iv</var>. The possible mods are below.
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="MODE_ECB1672">
+    <a name="MODE_ECB1693">
       <span class="name" name="MODE_ECB">MODE_ECB</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="MODE_CBC1673">
+    <a name="MODE_CBC1694">
       <span class="name" name="MODE_CBC">MODE_CBC</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="MODE_CFB1674">
+    <a name="MODE_CFB1695">
       <span class="name" name="MODE_CFB">MODE_CFB</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="MODE_OFB1675">
+    <a name="MODE_OFB1696">
       <span class="name" name="MODE_OFB">MODE_OFB</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="MODE_CTR1676">
+    <a name="MODE_CTR1697">
       <span class="name" name="MODE_CTR">MODE_CTR</span>
     </a>
   </div>
-<p /><var>iv</var> must be a bytevector or #f. This is an initial vector which some modes
-require. cf) <code>MODE_CBC</code>.
-<p /><var>rounds</var> specify how many times the cipher rounds the key.
-<p /><var>ctr-mode</var> specifies counter mode. The possible mode is blow.
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="CTR_COUNTER_LITTLE_ENDIAN1677">
-      <span class="name" name="CTR_COUNTER_LITTLE_ENDIAN">CTR_COUNTER_LITTLE_ENDIAN</span>
+    <a name="MODE_GCM1698">
+      <span class="name" name="MODE_GCM">MODE_GCM</span>
     </a>
   </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="CTR_COUNTER_BIG_ENDIAN1678">
-      <span class="name" name="CTR_COUNTER_BIG_ENDIAN">CTR_COUNTER_BIG_ENDIAN</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="LTC_CTR_RFC36861679">
-      <span class="name" name="LTC_CTR_RFC3686">LTC_CTR_RFC3686</span>
-    </a>
-  </div>
+<p />The keyword argument <var>mode-parameter</var> is specified, it must be a mode
+parameter object, then the object will be parsed properly by the cipher.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="cipher-keysize1680">
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-keysize1699">
     <span class="name" name="cipher-keysize">cipher-keysize</span>
   </a> <span class="args">cipher test</span></div>
 <div class="desc">Returns given cipher type's recommended keysize.
@@ -260,29 +249,89 @@ require. cf) <code>MODE_CBC</code>.
 <p />Note: this procedure is for helper. It is designed to use check keysize you want
 to use.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="cipher?1681">
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher?1700">
     <span class="name" name="cipher?">cipher?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if the <var>obj</var> is cipher object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="encrypt1682">
-    <span class="name" name="encrypt">encrypt</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-encrypt1701">
+    <span class="name" name="cipher-encrypt">cipher-encrypt</span>
   </a> <span class="args">cipher pt</span></div>
 <div class="desc"><var>cipher</var> must be a cipher object.
 <p /><var>pt</var> must be a bytevector.
 <p /><code>encrypt</code> encrypts given plain text <var>pt</var> according to the given
 <var>cipher</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="decrypt1683">
-    <span class="name" name="decrypt">decrypt</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-encrypt/tag1702">
+    <span class="name" name="cipher-encrypt/tag">cipher-encrypt/tag</span>
+  </a> <span class="args">cipher pt :key tag-size</span></div>
+<div class="desc">Similar with <code>cipher-encrypt</code>. The difference is that this
+procedure returns 2 values, encrypted <var>pt</var> and calculated tag if the
+given <var>cipher</var> supports authentication.
+<p />If the keyword argument <var>tag-size</var> is specified and must be an integer,
+then the returning tag has the specified size. If the <var>cipher</var> supports
+less size than the specified size, then the remaining tag contains unspecified
+value. To retrieve the maximum length of tag, use <code>cipher-max-tag-size</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-decrypt1703">
+    <span class="name" name="cipher-decrypt">cipher-decrypt</span>
   </a> <span class="args">cipher ct</span></div>
 <div class="desc"><var>cipher</var> must be a cipher object.
 <p /><var>ct</var> must be a bytevector.
 <p /><code>decrypt</code> decrypts given encrypted text <var>ct</var> according to the given
 <var>cipher</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sign1684">
-    <span class="name" name="sign">sign</span>
-  </a> <span class="args">public-cipher data :optional opt</span></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-decrypt/tag1704">
+    <span class="name" name="cipher-decrypt/tag">cipher-decrypt/tag</span>
+  </a> <span class="args">cipher ct :key tag-size</span></div>
+<div class="desc">Similar with <code>cipher-decrypt</code>. The difference is that this
+procedure returns 2 values, decrypted <var>ct</var> and calculated tag if the
+given <var>cipher</var> supports authentication.
+<p />If the keyword argument <var>tag-size</var> is specified and must be an integer,
+then the returning tag has the specified size. If the <var>cipher</var> supports
+less size than the specified size, then the remaining tag contains unspecified
+value. To retrieve the maximum length of tag, use <code>cipher-max-tag-size</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-decrypt/verify1705">
+    <span class="name" name="cipher-decrypt/verify">cipher-decrypt/verify</span>
+  </a> <span class="args">cipher ct tag</span></div>
+<div class="desc">Similar with <code>cipher-decrypt</code>. The difference is that this
+procedure validates the calculated tag. If the given <var>tag</var> and
+calculated tag are not the same, then <code>&amp;decrypt</code> is raised. 
+<p />NOTE: if the tag is *not* calculated by the cipher, then this procedure
+always raises an error.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-max-tag-size1706">
+    <span class="name" name="cipher-max-tag-size">cipher-max-tag-size</span>
+  </a> <span class="args">cipher</span></div>
+<div class="desc">Returns the maximum length of tag size.
+<p />If the given <var>cipher</var> does not support authentication tag, then
+returning value is <code>0</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-update-aad!1707">
+    <span class="name" name="cipher-update-aad!">cipher-update-aad!</span>
+  </a> <span class="args">cipher aad</span></div>
+<div class="desc">Updates the additional authentication data.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-tag!1708">
+    <span class="name" name="cipher-tag!">cipher-tag!</span>
+  </a> <span class="args">cipher dst</span></div>
+<div class="desc"><var>dst</var> must be a bytevector.
+<p />Retrieves the authentication tag from given <var>cipher</var>.
+<p />NOTE: this procedure must be called after either <code>cipher-encrypt</code> or
+<code>cipher-decrypt</code>. Otherwise the filled value is unspecified.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-tag1709">
+    <span class="name" name="cipher-tag">cipher-tag</span>
+  </a> <span class="args">cipher :key size</span></div>
+<div class="desc">Retrieves the authentication tag from given <var>cipher</var>.
+<p />If the keyword argument <var>size</var> is specified, then the returning
+bytevector has the <var>size</var> length, otherwise maximum tag length.
+<p />NOTE: this procedure must be called after either <code>cipher-encrypt</code> or
+<code>cipher-decrypt</code>. Otherwise the filled value is unspecified.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-signature1710">
+    <span class="name" name="cipher-signature">cipher-signature</span>
+  </a>
+ <span class="args">public-cipher data :optional opt</span></div>
 <div class="desc"><var>public-cipher</var> must be a cipher object created with public/private
 key algorithm.
 <p /><var>data</var> must be a bytevector.
@@ -294,8 +343,8 @@ accept keyword argument <var>encode</var>.
 <code>pkcs1-emsa-pss-encode</code>. And the rest keyword arguments will be passed to
 encoder. Supported encoders are described below.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="verify1685">
-    <span class="name" name="verify">verify</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-verify1711">
+    <span class="name" name="cipher-verify">cipher-verify</span>
   </a> <span class="args">public-cipher M S :optional opt</span></div>
 <div class="desc"><var>public-cipher</var> must be a cipher object created with public/private
 key algorithm.
@@ -310,10 +359,99 @@ accept keyword argument <var>verify</var>.
 verifier. Supported verifiers are described below.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1686"><span class="section-number">7.9.2</span>Key operations</a>
+    <a class="section.anchor" name="G1712"><span class="section-number">7.9.2</span>Mode parameters</a>
+  </h4>
+<p />Mode parameters are pareters which can be used by specified mode. For example,
+<code>iv-parameter</code> is a parameter contains an IV.
+<p /><div class="define"><span class="define-category">Function</span><a name="mode-parameter?1713">
+    <span class="name" name="mode-parameter?">mode-parameter?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given <var>obj</var> is a mode parameter, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-composite-parameter1714">
+    <span class="name" name="make-composite-parameter">make-composite-parameter</span>
+  </a> <span class="args">parameters ...</span></div>
+<div class="desc">Creates a composite mode parameter.
+<p />A composite parameter can hold multiple parameters.
+</div>
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="<iv-paramater&gt;1715">
+      <span class="name" name="<iv-paramater&gt;">&lt;iv-paramater&gt;</span>
+    </a>
+  </div>
+<div class="desc">Record type for initial vector (IV) parameter.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-iv-paramater1716">
+    <span class="name" name="make-iv-paramater">make-iv-paramater</span>
+  </a> <span class="args">iv</span></div>
+<div class="desc"><var>iv</var> must be a bytevector or #f. 
+<p />Creates an IV mode parameter.
+<p />IV is required by some modes. e.g. <code>MODE_CBC</code>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="<ctr-paramater&gt;1717">
+      <span class="name" name="<ctr-paramater&gt;">&lt;ctr-paramater&gt;</span>
+    </a>
+  </div>
+<div class="desc">Record type for counter mode parameter.
+<p />This parameter is a subclass of <code>&lt;iv-parameter&gt;</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-ctr-paramater1718">
+    <span class="name" name="make-ctr-paramater">make-ctr-paramater</span>
+  </a>
+ <span class="args">iv :key (rounds 0) (mode CTR_COUNTER_BIG_ENDIAN)</span>
+<div class="desc">Creates a counter mode parameter. This is used by <code>MODE_CTR</code>.
+<p /><var>iv</var> is passed to parent constructor.
+<p />The followings are description of keyword parameters.
+<p /><var>rounds</var> specify how many times the cipher rounds the key.
+<p /><var>ctr-mode</var> specifies counter mode. The possible mode is blow.
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="CTR_COUNTER_LITTLE_ENDIAN1719">
+      <span class="name" name="CTR_COUNTER_LITTLE_ENDIAN">CTR_COUNTER_LITTLE_ENDIAN</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="CTR_COUNTER_BIG_ENDIAN1720">
+      <span class="name" name="CTR_COUNTER_BIG_ENDIAN">CTR_COUNTER_BIG_ENDIAN</span>
+    </a>
+  </div>
+</div>
+<p />
+<div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="<rfc3686-paramater&gt;1721">
+      <span class="name" name="<rfc3686-paramater&gt;">&lt;rfc3686-paramater&gt;</span>
+    </a>
+  </div>
+<div class="desc">Record type for AES-CTR mode parameter defined in RFC 3686.
+<p />This parameter is a subclass of <code>&lt;ctr-parameter&gt;</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-rfc3686-paramater1722">
+    <span class="name" name="make-rfc3686-paramater">make-rfc3686-paramater</span>
+  </a>
+ <span class="args">iv nonce :key (rounds 0) (mode CTR_COUNTER_BIG_ENDIAN)</span>
+<div class="desc">Creates RFC3686 mode parameter.</div>
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="<padding-paramater&gt;1723">
+      <span class="name" name="<padding-paramater&gt;">&lt;padding-paramater&gt;</span>
+    </a>
+  </div>
+<div class="desc">Record type for padding parameter.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-padding-paramater1724">
+    <span class="name" name="make-padding-paramater">make-padding-paramater</span>
+  </a> <span class="args">padder</span></div>
+<div class="desc">Creates a padding mode parameter.
+<p /><var>padder</var> must be an procedure such as <code>pkcs5-padder</code>.
+</div>
+<p />
+<h4 class="subsubsection">
+    <a class="section.anchor" name="G1725"><span class="section-number">7.9.3</span>Key operations</a>
   </h4>
 <p />
-<div class="define"><span class="define-category">Generic</span><a name="generate-secret-key1687">
+<div class="define"><span class="define-category">Generic</span><a name="generate-secret-key1726">
     <span class="name" name="generate-secret-key">generate-secret-key</span>
   </a>
  <span class="args">(type &lt;string&gt;) (key &lt;bytevector&gt;)</span></div>
@@ -322,7 +460,7 @@ verifier. Supported verifiers are described below.
 the given algorithm requires.
 <p />Returns a sercret key object.
 </div>
-<div class="define"><span class="define-category">Generic</span><a name="generate-key-pair1688">
+<div class="define"><span class="define-category">Generic</span><a name="generate-key-pair1727">
     <span class="name" name="generate-key-pair">generate-key-pair</span>
   </a>
  <span class="args">(type &lt;top&gt;) . options</span></div>
@@ -338,7 +476,7 @@ value is <code>(secure-random RC4)</code>.
 <p /><var>e</var> keyword argument is an exponent. Usually it does not have to be
 specified with other number. Default value is 65537.
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="generate-private-key1689">
+<p /><div class="define"><span class="define-category">Generic</span><a name="generate-private-key1728">
     <span class="name" name="generate-private-key">generate-private-key</span>
   </a>
  <span class="args">type . options</span></div>
@@ -361,7 +499,7 @@ specified with other number. Default value is 65537.
     </dl>
   </div>
 <p /></div>
-<div class="define"><span class="define-category">Function</span><a name="generate-public-key1690">
+<div class="define"><span class="define-category">Function</span><a name="generate-public-key1729">
     <span class="name" name="generate-public-key">generate-public-key</span>
   </a> <span class="args">type :optional opt</span></div>
 <div class="desc"><var>type</var> is for despatch. For default implementation, it must be
@@ -377,45 +515,45 @@ specified with other number. Default value is 65537.
     </dl>
   </div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="keypair?1691">
+<p /><div class="define"><span class="define-category">Function</span><a name="keypair?1730">
     <span class="name" name="keypair?">keypair?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is keypair object, otherwise #f</div>
-<div class="define"><span class="define-category">Function</span><a name="keypair-private1692">
+<div class="define"><span class="define-category">Function</span><a name="keypair-private1731">
     <span class="name" name="keypair-private">keypair-private</span>
   </a> <span class="args">keypair</span></div>
 <div class="desc">Returns private key from <var>keypair</var></div>
-<div class="define"><span class="define-category">Function</span><a name="keypair-public1693">
+<div class="define"><span class="define-category">Function</span><a name="keypair-public1732">
     <span class="name" name="keypair-public">keypair-public</span>
   </a> <span class="args">keypair</span></div>
 <div class="desc">Returns public key from <var>keypair</var></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="key?1694">
+<p /><div class="define"><span class="define-category">Function</span><a name="key?1733">
     <span class="name" name="key?">key?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is key object, otherwise #f</div>
 <div class="define">
     <span class="define-category">Class</span>
-    <a name="<private-key&gt;1695">
+    <a name="<private-key&gt;1734">
       <span class="name" name="<private-key&gt;">&lt;private-key&gt;</span>
     </a>
   </div>
 <div class="desc">CLOS class of private key object.</div>
 <div class="define">
     <span class="define-category">Class</span>
-    <a name="<public-key&gt;1696">
+    <a name="<public-key&gt;1735">
       <span class="name" name="<public-key&gt;">&lt;public-key&gt;</span>
     </a>
   </div>
 <div class="desc">CLOS class of public key object.</div>
-<div class="define"><span class="define-category">Function</span><a name="private-key?1697">
+<div class="define"><span class="define-category">Function</span><a name="private-key?1736">
     <span class="name" name="private-key?">private-key?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is private key object, otherwise #f</div>
-<div class="define"><span class="define-category">Function</span><a name="public-key?1698">
+<div class="define"><span class="define-category">Function</span><a name="public-key?1737">
     <span class="name" name="public-key?">public-key?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is public key object, otherwise #f</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="split-key1699">
+<p /><div class="define"><span class="define-category">Function</span><a name="split-key1738">
     <span class="name" name="split-key">split-key</span>
   </a>
  <span class="args">key :optional (count 3) (prng (secure-random RC4))</span></div>
@@ -424,11 +562,11 @@ specified with other number. Default value is 65537.
 values as key components.
 <p />The return values might be different each time.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="combine-key-components1700">
+<p /><div class="define"><span class="define-category">Function</span><a name="combine-key-components1739">
     <span class="name" name="combine-key-components">combine-key-components</span>
   </a>
  <span class="args">component1 components ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="combine-key-components!1701">
+<div class="define"><span class="define-category">Function</span><a name="combine-key-components!1740">
     <span class="name" name="combine-key-components!">combine-key-components!</span>
   </a>
  <span class="args">result component1 components ...</span></div>
@@ -436,13 +574,13 @@ values as key components.
 respectively.
 <p />For more detail, see <a href="section77.html#util.bytevector">(util bytevector)</a>.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1702"><span class="section-number">7.9.3</span>PKCS operations</a>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G1741"><span class="section-number">7.9.4</span>PKCS operations</a>
   </h4>
 <p />The procedures described in this section is implemented according to PKCS#1. I
 don't have any intend to describe functionality. If you need to know what
 exactly these procedures do, please see the PKCS#1 document.
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs5-padder1703">
+<p /><div class="define"><span class="define-category">Function</span><a name="pkcs5-padder1742">
     <span class="name" name="pkcs5-padder">pkcs5-padder</span>
   </a> <span class="args">bv block-size padding?</span></div>
 <div class="desc"><var>bv</var> must be a bytevector.
@@ -451,7 +589,7 @@ exactly these procedures do, please see the PKCS#1 document.
 <p />Pads or Unpads paddings from <var>bv</var> according to PKCS#5.
 <p />If <var>padding?</var> is #t, the procedure will pad. otherwise it will unpad.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs-v1.5-padding1704">
+<p /><div class="define"><span class="define-category">Function</span><a name="pkcs-v1.5-padding1743">
     <span class="name" name="pkcs-v1.5-padding">pkcs-v1.5-padding</span>
   </a> <span class="args">prng key block-type</span></div>
 <div class="desc"><var>prng</var> must be prng object. See <a href="#math.random">(math random)</a>.
@@ -459,20 +597,20 @@ exactly these procedures do, please see the PKCS#1 document.
 <p /><var>block-type</var> must be one of these.
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="PKCS-1-EME1705">
+    <a name="PKCS-1-EME1744">
       <span class="name" name="PKCS-1-EME">PKCS-1-EME</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="PKCS-1-EMSA1706">
+    <a name="PKCS-1-EMSA1745">
       <span class="name" name="PKCS-1-EMSA">PKCS-1-EMSA</span>
     </a>
   </div>
 <p />Returns a padding procedure. The procedure signature is the same as
 <var>pkcs5-padder</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-pss-encode1707">
+<p /><div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-pss-encode1746">
     <span class="name" name="pkcs1-emsa-pss-encode">pkcs1-emsa-pss-encode</span>
   </a>
  <span class="args">m em-bits
@@ -489,7 +627,7 @@ exactly these procedures do, please see the PKCS#1 document.
 <p /><var>salt-length</var> specifies salt's length. If it's #f encoder does not use salt.
 <p /><var>prng</var> is a pseudo random see <a href="#math.random">(math random)</a>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-pss-verify1708">
+<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-pss-verify1747">
     <span class="name" name="pkcs1-emsa-pss-verify">pkcs1-emsa-pss-verify</span>
   </a>
  <span class="args">m em-bits
@@ -500,7 +638,7 @@ exactly these procedures do, please see the PKCS#1 document.
 <p />Verify given message <var>m</var> according to the PKCS#1 section 9.1.1.
 <p />Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="mgf-11709">
+<div class="define"><span class="define-category">Function</span><a name="mgf-11748">
     <span class="name" name="mgf-1">mgf-1</span>
   </a> <span class="args">mgf-seed mask-length hasher</span></div>
 <div class="desc"><var>mgf-seed</var> must be a bytevector.
@@ -509,7 +647,7 @@ exactly these procedures do, please see the PKCS#1 document.
 <a href="#math.random">(math random)</a>.
 <p />Creates a mask bytevector, according to PKCS#1 MGF-1.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-v1.5-encode1710">
+<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-v1.5-encode1749">
     <span class="name" name="pkcs1-emsa-v1.5-encode">pkcs1-emsa-v1.5-encode</span>
   </a>
  <span class="args">m em-bits :key (hash <code>(hash-algorithm SHA-1)</code>)</span></div>
@@ -518,7 +656,7 @@ exactly these procedures do, please see the PKCS#1 document.
 <p />Encodes given message <var>m</var> according to the PKCS#1 section 9.2.
 <p />Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-v1.5-verify1711">
+<div class="define"><span class="define-category">Function</span><a name="pkcs1-emsa-v1.5-verify1750">
     <span class="name" name="pkcs1-emsa-v1.5-verify">pkcs1-emsa-v1.5-verify</span>
   </a>
  <span class="args">m em-bits :key (hash <code>(hash-algorithm SHA-1)</code>)</span></div>
@@ -527,67 +665,67 @@ exactly these procedures do, please see the PKCS#1 document.
 <p />Verify given message <var>m</var> according to the PKCS#1 section 9.2.
 Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1712"><span class="section-number">7.9.4</span>Cryptographic conditions</a>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G1751"><span class="section-number">7.9.5</span>Cryptographic conditions</a>
   </h4>
 <div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;crypto-error1713">
+    <a name="&amp;crypto-error1752">
       <span class="name" name="&amp;crypto-error">&amp;crypto-error</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="crypto-error?1714">
+<div class="define"><span class="define-category">Function</span><a name="crypto-error?1753">
     <span class="name" name="crypto-error?">crypto-error?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Subcondition of <code>&amp;error</code>.
 <p />Base condition type of all cryptographic conditions.</div>
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;encrypt-error1715">
+    <a name="&amp;encrypt-error1754">
       <span class="name" name="&amp;encrypt-error">&amp;encrypt-error</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="encrypt-error?1716">
+<div class="define"><span class="define-category">Function</span><a name="encrypt-error?1755">
     <span class="name" name="encrypt-error?">encrypt-error?</span>
   </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-encrypt-mechanism1717">
+<div class="define"><span class="define-category">Function</span><a name="condition-encrypt-mechanism1756">
     <span class="name" name="condition-encrypt-mechanism">condition-encrypt-mechanism</span>
   </a> <span class="args">encrypt-error</span></div>
 <div class="desc">This condition will be raised when encrypt operation is failed.</div>
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;decrypt-error1718">
+    <a name="&amp;decrypt-error1757">
       <span class="name" name="&amp;decrypt-error">&amp;decrypt-error</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="decrypt-error?1719">
+<div class="define"><span class="define-category">Function</span><a name="decrypt-error?1758">
     <span class="name" name="decrypt-error?">decrypt-error?</span>
   </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-decrypt-mechanism1720">
+<div class="define"><span class="define-category">Function</span><a name="condition-decrypt-mechanism1759">
     <span class="name" name="condition-decrypt-mechanism">condition-decrypt-mechanism</span>
   </a> <span class="args">decrypt-error</span></div>
 <div class="desc">This condition will be raised when decrypt operation is failed.</div>
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;encode-error1721">
+    <a name="&amp;encode-error1760">
       <span class="name" name="&amp;encode-error">&amp;encode-error</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="encode-error?1722">
+<div class="define"><span class="define-category">Function</span><a name="encode-error?1761">
     <span class="name" name="encode-error?">encode-error?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">This condition will be raised when encoding operation is failed.</div>
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;decode-error1723">
+    <a name="&amp;decode-error1762">
       <span class="name" name="&amp;decode-error">&amp;decode-error</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="decode-error?1724">
+<div class="define"><span class="define-category">Function</span><a name="decode-error?1763">
     <span class="name" name="decode-error?">decode-error?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">This condition will be raised when decoding operation is failed.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="raise-encrypt-error1725">
+<p /><div class="define"><span class="define-category">Function</span><a name="raise-encrypt-error1764">
     <span class="name" name="raise-encrypt-error">raise-encrypt-error</span>
   </a>
  <span class="args">who message mechanism :optional irritants</span></div>
@@ -596,7 +734,7 @@ Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 <p /><var>mechanism</var> should be a name of cryptographic algorithm.
 <p />Raises <code>&amp;encrypt-error</code>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="raise-decrypt-error1726">
+<div class="define"><span class="define-category">Function</span><a name="raise-decrypt-error1765">
     <span class="name" name="raise-decrypt-error">raise-decrypt-error</span>
   </a>
  <span class="args">who message mechanism :optional irritants</span></div>
@@ -605,7 +743,7 @@ Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 <p /><var>mechanism</var> should be a name of cryptographic algorithm.
 <p />Raises <code>&amp;decrypt-error</code>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="raise-encode-error1727">
+<div class="define"><span class="define-category">Function</span><a name="raise-encode-error1766">
     <span class="name" name="raise-encode-error">raise-encode-error</span>
   </a>
  <span class="args">who message :optional irritants</span></div>
@@ -613,7 +751,7 @@ Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 <code>assertion-violation</code>.
 <p />Raises <code>&amp;encode-error</code>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="raise-decode-error1728">
+<div class="define"><span class="define-category">Function</span><a name="raise-decode-error1767">
     <span class="name" name="raise-decode-error">raise-decode-error</span>
   </a>
  <span class="args">who message :optional irritants</span></div>
@@ -621,8 +759,8 @@ Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 <code>assertion-violation</code>.
 <p />Raises <code>&amp;decode-error</code>.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="custom.cipher"><span class="section-number">7.9.5</span>Creating own cipher</a>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="custom.cipher"><span class="section-number">7.9.6</span>Creating own cipher</a>
   </h4>
 <p />If Sagittarius does not support sufficient cipher algorithm for you, then you
 can write own cipher such as DSA. For this purpose, you might need to know how
@@ -659,7 +797,7 @@ want to create a new cipher, you just need to follow the example.
 of <code>&lt;cipher-spi&gt;</code> and register it. 
 <p /><div class="define">
     <span class="define-category">Class</span>
-    <a name="<cipher-spi&gt;1729">
+    <a name="<cipher-spi&gt;1768">
       <span class="name" name="<cipher-spi&gt;">&lt;cipher-spi&gt;</span>
     </a>
   </div>
@@ -671,10 +809,6 @@ of <code>&lt;cipher-spi&gt;</code> and register it.
       <dd class="dl-item-desc">The value must be a procedure which takes 2 arguments.</dd>
       <dt class="dl-item-title">decrypt</dt>
       <dd class="dl-item-desc">The value must be a procedure which takes 2 arguments.</dd>
-      <dt class="dl-item-title">padder</dt>
-      <dd class="dl-item-desc">The value must be #f or a procedure which takes 2
-    arguments.
-  </dd>
     </dl>
   </div>
 <p />NOTE: Default symmetric key ciphers use <code>pkcs5-padder</code> which takes 3
@@ -701,12 +835,35 @@ block size.
       <dd class="dl-item-desc">A procedure to get recommended keysize of this cipher. The
     given procedure must accept 1 argument.
   </dd>
+      <dt class="dl-item-title">padder</dt>
+      <dd class="dl-item-desc">The value must be #f or a procedure which takes 2
+    arguments.
+  </dd>
+      <dt class="dl-item-title">update-aad</dt>
+      <dd class="dl-item-desc">The value must be #f or a procedure which takes 1
+    arguments. This is called when <code>cipher-update-aad!</code> is called.
+  </dd>
+      <dt class="dl-item-title">tag</dt>
+      <dd class="dl-item-desc">The value must be #f or a procedure which takes 1
+    arguments. This is called when <code>cipher-tag!</code> is called.
+  </dd>
+      <dt class="dl-item-title">tagsize</dt>
+      <dd class="dl-item-desc">The value must be an integer. This represents the
+    maximum length of authentication tag.</dd>
     </dl>
   </div>
 <p />NOTE: Even required slots, Sagittarius does not check if it's set or not.
+<p />During its initialisation, the <var>initargs</var> (the second argument of
+the <code>initialize</code> method) takes at least 3 arguments, <var>key</var>, 
+<code>:mode-parameter</code> keyword and <var>parameter</var> passed to
+<code>make-cipher</code>. The rest of other arguments are also passed if exist.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="register-spi1730">
-    <span class="name" name="register-spi">register-spi</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-spi?1769">
+    <span class="name" name="cipher-spi?">cipher-spi?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Returns #t if the given object <var>o</var> is a cipher SPI. Otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="register-cipher-spi1770">
+    <span class="name" name="register-cipher-spi">register-cipher-spi</span>
   </a> <span class="args">mark spi</span></div>
 <div class="desc">Register custom cipher SPI.
 <p /><var>mark</var> can be any thing which returns #t then compared by <code>equal?</code>
@@ -740,7 +897,18 @@ implementation supply default parameter then users even can use it by default.
 </pre>
 <p />The <code>&lt;cipher&gt;</code> and <code>builtin-</code> prefixed classes can not have any
 subclass.
-
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G1771"><span class="section-number">7.9.7</span>Backward compatibility</a>
+  </h4>
+<p />The following procedures are kept for backward compatibility.
+<p /><ul class="itemlist"> <li class="itemlist-item"><code>cipher</code> - Use <code>make-cipher</code> instead.</li>
+ <li class="itemlist-item"><code>encrypt</code> - Use <code>cipher-encrypt</code> instead.</li>
+ <li class="itemlist-item"><code>decrypt</code> - Use <code>cipher-decrypt</code> instead.</li>
+ <li class="itemlist-item"><code>sign</code>  - Use <code>cipher-signature</code> instead.</li>
+ <li class="itemlist-item"><code>verity</code> - Use <code>cipher-verify</code> instead.</li>
+ <li class="itemlist-item"><code>register-spi</code> - Use <code>register-cipher-spi</code> instead.</li>
+</ul>
+</div></div>
 </section></section>
   <div class="prev-next">
     <a class="prev" href="section78.html">(util concurrent) - Concurrency utilities</a>
@@ -750,6 +918,6 @@ subclass.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-09-18T18:48:04+0200</i></div>
+    <div id="footer-date">Generated date: <i>2015-10-16T18:34:49+0200</i></div>
   </div>
 </html>

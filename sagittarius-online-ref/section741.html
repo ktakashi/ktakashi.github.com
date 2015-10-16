@@ -6,161 +6,106 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section740.html">RPC support framework</a>
+    <a class="prev" href="section740.html">(rfc zlib) - zlib compression library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section742.html">(security keystore) - Generic Keystore Access</a>
+    <a class="next" href="section742.html">(rpc json) - JSON RPC library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="lib.rpc.json"><span class="section-number">7.41</span>(rpc json) - JSON RPC library</a>
+    <a class="section.anchor" name="utils.rpc"><span class="section-number">7.41</span>RPC support framework</a>
   </h3>
+<p />RPC is basically separated in 2 parts. One is message marshalling and other 
+one is transporting. Following sections and libraries provide some framework
+for generic use.
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2387"><span class="section-number">7.41.1</span>Message framework</a>
+  </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rpc json)2317">
-      <span class="name" name="(rpc json)">(rpc json)</span>
+    <a name="(rpc message)2388">
+      <span class="name" name="(rpc message)">(rpc message)</span>
     </a>
   </div>
-<div class="desc">This library provides procedures handling 
-<a href="http://www.jsonrpc.org/specification">JSON RPC 2.0</a>.
-<p />This library doesn't provide transport layer. To send request and receive
-response, use <a href="section740.html#utils.rpc.transport.http">Http transport</a>.
-<p />This library uses <a href="section86.html#ported.json">JSON parser library</a> and its
-JSON representation.
-</div>
-<p />Following piece of code describes how to use;
-<pre class="codeblock">(import (rnrs) (rpc json) (rpc transport http))
-
-(define (json-rpc-send&amp;request url method param)
-  (let ((request (make-json-request method :param param)))
-    (let-values (((status header response) (rpc-http-request url request)))
-      ;; rpc-http-request unmarshalls only when HTTP status starts with "2"
-      ;; for this example we don't check it.
-      (json-response-result response))))
-
-(json-rpc-send&amp;request "http://localhost/json-rpc" "sample" "parameter")
-;; -&gt; result of method execution
-</pre>
+<div class="desc">This library provides generic functions for marshalling message.</div>
 <p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<json-request&gt;2318">
-      <span class="name" name="<json-request&gt;">&lt;json-request&gt;</span>
+    <span class="define-category">Generic</span>
+    <a name="rpc-marshall-message2389">
+      <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
     </a>
   </div>
 <div class="define">
-    <span class="define-category">Class</span>
-    <a name="<json-response&gt;2319">
-      <span class="name" name="<json-response&gt;">&lt;json-response&gt;</span>
+    <span class="define-category">Generic</span>
+    <a name="rpc-unmarshall-message2390">
+      <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
     </a>
   </div>
-<div class="desc">These classes represents JSON RPC request and response respectively.
-<p />The class instance should be created by <code>make-json-request</code>,
-<code>json-string-&gt;json-request</code> or <code>json-string-&gt;json-response</code>. Users
-should not create an instance directly using <code>make</code>.
-</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2320"><span class="section-number">7.41.1</span>Predicates</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request?2321">
-    <span class="name" name="json-request?">json-request?</span>
-  </a> <span class="args">object</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response?2322">
-    <span class="name" name="json-response?">json-response?</span>
-  </a> <span class="args">object</span></div>
-<div class="desc">Returns #t if the given <var>object</var> is an instance of 
-<code>&lt;json-request&gt;</code> and <code>&lt;json-response&gt;</code> respectively.
-</div>
+<div class="desc">These generic function will be used transport layer to marshall or
+unmarshall messages.</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2323"><span class="section-number">7.41.2</span>Constructors</a>
+    <a class="section.anchor" name="utils.rpc.transport.http"><span class="section-number">7.41.2</span>Http transport</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-json-request2324">
-    <span class="name" name="make-json-request">make-json-request</span>
-  </a> <span class="args">method :key (params '()) id</span></div>
-<div class="desc">Creates a JSON RPC request.
-<p /><var>method</var> must be a symbol or string represents method name to be invoked.
-<p />The keyword argument <var>params</var> is the <code>params</code> field of the JSON
-RPC protocol.
-<p />The keyword argument <var>id</var> is the <code>id</code> field of the JSON RPC protocol.
-If this is not specified then a value generated by UUID v4 will be used.
+<p />Currently there is no generic transport framework and support HTTP transport.
+<p />For future, we may provide more generic way to send/receive request 
+and response.
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rpc transport http)2391">
+      <span class="name" name="(rpc transport http)">(rpc transport http)</span>
+    </a>
+  </div>
+<div class="desc">This library provides procedures and generic function of 
+HTTP transport for RCP</div>.
+<p /><div class="define"><span class="define-category">Function</span><a name="rpc-http-request2392">
+    <span class="name" name="rpc-http-request">rpc-http-request</span>
+  </a>
+ <span class="args">url message :key (unmarshall? #t) :allow-other-keys options</span></div>
+<div class="desc">Send given <var>message</var> to <var>url</var> and returns 3 values,
+http status, header and response.
+<p />If the keyword argument <var>unmarshall?</var> is #f then the returning response
+value will not be unmarshalled.
+<p /><var>options</var> will be passed to <code>http-request</code> procedure.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-string-&gt;json-request2325">
-    <span class="name" name="json-string-&gt;json-request">json-string-&gt;json-request</span>
-  </a> <span class="args">json</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-string-&gt;json-response2326">
-    <span class="name" name="json-string-&gt;json-response">json-string-&gt;json-response</span>
-  </a> <span class="args">json</span></div>
-<div class="desc">Creates JSON RPC request and response from given JSON string <var>json</var>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2327"><span class="section-number">7.41.3</span>Accessors</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request-method2328">
-    <span class="name" name="json-request-method">json-request-method</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-request-params2329">
-    <span class="name" name="json-request-params">json-request-params</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-request-id2330">
-    <span class="name" name="json-request-id">json-request-id</span>
-  </a> <span class="args">json-request</span></div>
-<div class="desc">Retrieves JSON RPC request's method, params and id respectively from given
-json request object <var>json-request</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-response-result2331">
-    <span class="name" name="json-response-result">json-response-result</span>
-  </a> <span class="args">json-response</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response-id2332">
-    <span class="name" name="json-response-id">json-response-id</span>
-  </a> <span class="args">json-response</span></div>
-<div class="desc">Retrieves JSON RPC response's result and id respectively from given
-json response object <var>json-response</var>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2333"><span class="section-number">7.41.4</span>Converters</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-request-&gt;json-string2334">
-    <span class="name" name="json-request-&gt;json-string">json-request-&gt;json-string</span>
-  </a> <span class="args">json-request</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-response-&gt;json-string2335">
-    <span class="name" name="json-response-&gt;json-string">json-response-&gt;json-string</span>
-  </a> <span class="args">json-response</span></div>
-<div class="desc">Converts given <var>json-request</var> and <var>json-response</var> to JSON string.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2336"><span class="section-number">7.41.5</span>Implemented methods</a>
-  </h4>
-<p />Following methods are currently used only in <code>(rpc http transport)</code>.
-When we support other transport, this implementation may change.
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2337"><span class="section-number">7.41.5.1</span>Message methods</a>
+    <a class="section.anchor" name="G2393"><span class="section-number">7.41.2.1</span>Http transport hook</a>
   </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-marshall-message2338">
-    <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Converts to given JSON RPC request object to UTF8 bytes.</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-unmarshall-message2339">
-    <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
-  </a> <span class="args">(type (eql 'json)) body</span></div>
-<div class="desc">Converts to given UTF8 bytes to JSON RPC response object.</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2340"><span class="section-number">7.41.5.2</span>Transport methods</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type2341">
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-method2394">
+    <span class="name" name="rpc-http-method">rpc-http-method</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http method. Default implementation returns <code>POST</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type2395">
     <span class="name" name="rpc-http-content-type">rpc-http-content-type</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Returns <code>application/json</code> content type header value</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type2342">
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns content type. Default implementation returns 
+<code>application/octet-stream</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-sender2396">
+    <span class="name" name="rpc-http-sender">rpc-http-sender</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http sender. Default implementation returns
+<code>http-blob-sender</code> with marshalled request</div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-receiver2397">
+    <span class="name" name="rpc-http-receiver">rpc-http-receiver</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http receiver. Default implementation returns
+<code>http-binary-receiver</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type2398">
     <span class="name" name="rpc-http-response-type">rpc-http-response-type</span>
-  </a> <span class="args">(message &lt;json-request&gt;)</span></div>
-<div class="desc">Returns <code>json</code> symbol.</div>
-<p />
-</section></section></section>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns a marker type to be used <code>rpc-http-unmarshall-message</code>.
+Default implementation returns given <var>request</var> itself</div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-unmarshall-message2399">
+    <span class="name" name="rpc-http-unmarshall-message">rpc-http-unmarshall-message</span>
+  </a> <span class="args">type header body</span></div>
+<div class="desc">Unmarshall the given <var>body</var> according to the given <var>type</var>.
+Default implementation ignores <var>header</var> and passes <var>type</var> and
+<var>body</var> to <code>rpc-unmarshall-message</code>.</div>
+<p /></section></section></section>
   <div class="prev-next">
-    <a class="prev" href="section740.html">RPC support framework</a>
+    <a class="prev" href="section740.html">(rfc zlib) - zlib compression library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section742.html">(security keystore) - Generic Keystore Access</a>
+    <a class="next" href="section742.html">(rpc json) - JSON RPC library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2015-09-18T18:48:04+0200</i></div>
+    <div id="footer-date">Generated date: <i>2015-10-16T18:34:49+0200</i></div>
   </div>
 </html>
