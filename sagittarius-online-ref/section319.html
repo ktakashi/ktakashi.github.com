@@ -13,19 +13,19 @@
   <section class="subsection"><h3 class="subsection">
     <a class="section.anchor" name="rnrs.hashtables.6"><span class="section-number">3.19</span>Hashtables</a>
   </h3>
-<p />The <code>(rnrs hashtables (6))</code>library provides a set of operations on hashtables.
-A <var>hashtable</var> is a data structure that associates keys with values. Any object
-can be used as a key, provided a <var>hash function</var> and a suitable
-<var>equivalence function</var> is available. A hash function is a procedure that maps
-keys to exact integer objects. It is the programmer's responsibility to ensure 
-that the hash function is compatible with the equivalence function, which is a
-procedure that accepts two keys and returns true if they are equivalent and #f
-otherwise. Standard hashtables for arbitrary objects based on the <code>eq?</code> and
-<code>eqv?</code> predicates are provided. Also, hash functions for arbitrary objects,
-strings, and symbols are provided.
+<p />The <code>(rnrs hashtables (6))</code>library provides a set of operations on
+hashtables. A <var>hashtable</var> is a data structure that associates keys with
+values. Any object can be used as a key, provided a <var>hash function</var> and a
+suitable <var>equivalence function</var> is available. A hash function is a
+procedure that maps keys to exact integer objects. It is the programmer's
+responsibility to ensure that the hash function is compatible with the
+equivalence function, which is a procedure that accepts two keys and returns
+true if they are equivalent and #f otherwise. Standard hashtables for arbitrary
+objects based on the <code>eq?</code> and <code>eqv?</code> predicates are provided. Also,
+hash functions for arbitrary objects, strings, and symbols are provided.
 <p />This section uses the <var>hashtable</var> parameter name for arguments that must be
-hashtables, and the <var>key</var> parameter name for arguments that must be hashtable
-keys.
+hashtables, and the <var>key</var> parameter name for arguments that must be
+hashtable keys.
 <p /><div class="define">
     <span class="define-category">Library</span>
     <a name="(rnrs hashtable (6))725">
@@ -38,27 +38,38 @@ keys.
   </h4>
 <p /><div class="define"><span class="define-category">Function</span><a name="make-eq-hashtable727">
     <span class="name" name="make-eq-hashtable">make-eq-hashtable</span>
-  </a> <span class="args">:optional k</span></div>
+  </a> <span class="args">:optional k weakness</span></div>
 <div class="define"><span class="define-category">Function</span><a name="make-eqv-hashtable728">
     <span class="name" name="make-eqv-hashtable">make-eqv-hashtable</span>
-  </a> <span class="args">:optional k</span></div>
-<div class="desc">[R6RS] Returns a newly allocated mutable hashtable that accepts arbitrary
-objects as keys, and compares those keys with <code>eq?</code> (<code>make-eq-hashtable</code>)
-or <code>eqv?</code> (<code>make-eqv-hashtable</code>). If an argument is given, the initial
-capacity of the hashtable is set to approximately <var>k</var> elements.
-</div>
+  </a> <span class="args">:optional k weakness</span></div>
+<div class="desc">[R6RS+] Returns a newly allocated mutable hashtable that accepts arbitrary
+objects as keys, and compares those keys with <code>eq?</code>
+(<code>make-eq-hashtable</code>) or <code>eqv?</code> (<code>make-eqv-hashtable</code>).
+<p />If optional argument <var>k</var> is given, it must be exact non-negative integer or
+<code>#f</code>. If it's <code>#f</code>, then the procedure picks up default initial
+capacity, otherwise the initial capacity of the hashtable is set to
+approximately <var>k</var> elements.
+<p />If optional argument <var>weakness</var> is given, then it must be one of the
+symbols <code>key</code>, <code>value</code> or <code>both</code>, or <code>#f</code>. If the value is
+one of the symbols, then the procedure creates weak hashtable of given symbol's
+weakness. If the symbol is <code>key</code>, then entries whose keys are refered only
+from this hashtable might be removed when garbage collection is
+occurred. <code>value</code> is for entry values. <code>both</code> is for both.
+<p /></div>
 <p /><div class="define"><span class="define-category">Function</span><a name="make-hashtable729">
     <span class="name" name="make-hashtable">make-hashtable</span>
-  </a> <span class="args">hash-function equiv :optional k</span></div>
+  </a>
+ <span class="args">hash-function equiv :optional k weakness</span></div>
 <div class="desc">[R6RS] <var>Hash-function</var> and <var>equiv</var> must be procedures. 
-<p />var{Hash-function} should accept a key as an argument and should return a
-non-negative exact integer object. <var>Equiv</var> should accept two keys as arguments
-and return a single value.
+<p /><var>Hash-function</var> should accept a key as an argument and should return a
+non-negative exact integer object. <var>Equiv</var> should accept two keys as
+arguments and return a single value.
 <p />The <code>make-hashtable</code> procedure returns a newly allocated mutable hashtable
-using <var>hash-function</var> as the hash function and <var>equiv</var> as the equivalence
-function used to compare keys. If a third argument is given, the initial capacity
-of the hashtable is set to approximately <var>k</var> elements.
-</div>
+using <var>hash-function</var> as the hash function and <var>equiv</var> as the
+equivalence function used to compare keys. 
+<p />If optional argument <var>k</var> and <var>weakness</var> are the same as
+<code>make-eq-hashtable</code> and <code>make-eqv-hashtable</code>.
+<p /></div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
     <a class="section.anchor" name="G730"><span class="section-number">3.19.2</span>Procedures</a>
   </h4>
@@ -97,34 +108,36 @@ returns unspecified values.
 <p /><div class="define"><span class="define-category">Function</span><a name="hashtable-contains?736">
     <span class="name" name="hashtable-contains?">hashtable-contains?</span>
   </a> <span class="args">hashtable key</span></div>
-<div class="desc">[R6RS] Returns #t if <var>hashtable</var> contains an association for <var>key</var>,
-#f otherwise.
-<p />Note: On Sagittarius, <code>hashtable-ref</code> and <code>hashtable-contains?</code> do not
-make any difference fot the performance.
-</div>
+<div class="desc">[R6RS] Returns #t if <var>hashtable</var> contains an association for <var>key</var>, #f
+otherwise.
+<p />Note: On Sagittarius, <code>hashtable-ref</code> and <code>hashtable-contains?</code> do
+not make any difference fot the performance.
+<p /></div>
 <p /><div class="define"><span class="define-category">Function</span><a name="hashtable-update!737">
     <span class="name" name="hashtable-update!">hashtable-update!</span>
   </a> <span class="args">hashtable key proc default</span></div>
-<div class="desc">[R6RS] <var>Proc</var> should accept one argument, should return a single value.
+desc{[R6RS] <var>Proc</var> should accept one argument, should return a single
+value.
 <p />The <code>hashtable-update!</code> procedure applies <var>proc</var> to the value in
-<var>hashtable</var> associated with <var>key</var>, or to <var>default</var> if <var>hashtable</var>
-does not contain an association for <var>key</var>. The <var>hashtable</var> is then changed
-to associate <var>key</var> with the value returned by <var>proc</var>.
-</div>
+<var>hashtable</var> associated with <var>key</var>, or to <var>default</var> if
+<var>hashtable</var> does not contain an association for <var>key</var>. The
+<var>hashtable</var> is then changed to associate <var>key</var> with the value returned
+by <var>proc</var>.
+}
 <p /><div class="define"><span class="define-category">Function</span><a name="hashtable-copy738">
     <span class="name" name="hashtable-copy">hashtable-copy</span>
   </a> <span class="args">hashtable :optional mutable</span></div>
-<div class="desc">[R6RS] Returns a copy of <var>hashtable</var>. If the <var>mutable</var> argument is
-provided and is true, the returned hashtable is mutable; otherwise it is immutable.
+<div class="desc">[R6RS] Returns a copy of <var>hashtable</var>. If the <var>mutable</var> argument
+is provided and is true, the returned hashtable is mutable; otherwise it is
+immutable.
 </div>
 <p /><div class="define"><span class="define-category">Function</span><a name="hashtable-clear739">
     <span class="name" name="hashtable-clear">hashtable-clear</span>
   </a> <span class="args">hashtable :optional k</span></div>
-<div class="desc">[R6RS] Removes all associations from <var>hashtable</var> and returns unspecified
-values.
-<p />If a second argument is given, the current capacity of the hashtable is reset to
-approximately <var>k</var> elements.
-</div>
+<div class="desc">[R6RS] Removes all associations from <var>hashtable</var> and returns
+unspecified values.
+<p />If a second argument is given, the current capacity of the hashtable is reset
+to approximately <var>k</var> elements.  </div>
 <p /><div class="define"><span class="define-category">Function</span><a name="hashtable-keys740">
     <span class="name" name="hashtable-keys">hashtable-keys</span>
   </a> <span class="args">hashtable</span></div>
@@ -184,6 +197,6 @@ function will also use the given value.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-01-22T19:15:23+0100</i></div>
+    <div id="footer-date">Generated date: <i>2016-02-19T20:26:33+0100</i></div>
   </div>
 </html>

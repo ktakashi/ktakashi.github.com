@@ -15,7 +15,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util concurrent)1627">
+    <a name="(util concurrent)1628">
       <span class="name" name="(util concurrent)">(util concurrent)</span>
     </a>
   </div>
@@ -24,11 +24,11 @@
 code. This library provides frameworks of common use cases. This library is
 built on top of SRFI-18.
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1628"><span class="section-number">7.8.1</span>Future</a>
+    <a class="section.anchor" name="G1629"><span class="section-number">7.8.1</span>Future</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util concurrent future)1629">
+    <a name="(util concurrent future)1630">
       <span class="name" name="(util concurrent future)">(util concurrent future)</span>
     </a>
   </div>
@@ -54,19 +54,19 @@ of threads, then using this is sufficient.
   </div>
 <p /><div class="define">
     <span class="define-category">Record</span>
-    <a name="<future&gt;1630">
+    <a name="<future&gt;1631">
       <span class="name" name="<future&gt;">&lt;future&gt;</span>
     </a>
   </div>
 <div class="desc">The interface of all futures.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="future?1631">
+<p /><div class="define"><span class="define-category">Function</span><a name="future?1632">
     <span class="name" name="future?">future?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is a future object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="future1632">
+<p /><div class="define"><span class="define-category">Macro</span><a name="future1633">
     <span class="name" name="future">future</span>
   </a> <span class="args">expr ...</span></div>
-<div class="define"><span class="define-category">Macro</span><a name="future1633">
+<div class="define"><span class="define-category">Macro</span><a name="future1634">
     <span class="name" name="future">future</span>
   </a> <span class="args">(class record)expr ...</span></div>
 <div class="desc">Creates a future which executes <var>expr</var>. The type of the
@@ -74,13 +74,13 @@ returning future is <var>record</var>.
 <p />The first form is equivalent with the following:
 <code>(future (class &lt;simple-future&gt;) <var>expr ...</var>)</code>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="future-get1634">
+<p /><div class="define"><span class="define-category">Function</span><a name="future-get1635">
     <span class="name" name="future-get">future-get</span>
   </a> <span class="args">future</span></div>
 <div class="desc">Retrieves the result of the given <var>future</var>.
 <p />This procedure waits if the execution of the <var>future</var> isn't finished yet.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="future-cancel1635">
+<p /><div class="define"><span class="define-category">Function</span><a name="future-cancel1636">
     <span class="name" name="future-cancel">future-cancel</span>
   </a> <span class="args">future</span></div>
 <div class="desc">Cancels the execution of <var>future</var>.
@@ -102,16 +102,16 @@ with <var>future</var> raises a <code>&amp;future-terminated</code>.
   </div>
 <p />The above example may or may not print <code>"cancelled"</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="future-done?1636">
+<p /><div class="define"><span class="define-category">Function</span><a name="future-done?1637">
     <span class="name" name="future-done?">future-done?</span>
   </a> <span class="args">future</span></div>
 <div class="desc">Returns #t if given execution of <var>future</var> is finished, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="future-cancelled?1637">
+<p /><div class="define"><span class="define-category">Function</span><a name="future-cancelled?1638">
     <span class="name" name="future-cancelled?">future-cancelled?</span>
   </a> <span class="args">future</span></div>
 <div class="desc">Returns #t if given execution of <var>future</var> is terminated by
 <code>future-cancel</code>, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="future-state1638">
+<p /><div class="define"><span class="define-category">Function</span><a name="future-state1639">
     <span class="name" name="future-state">future-state</span>
   </a> <span class="args">future</span></div>
 <div class="desc">Returns current state of the given <var>future</var>.
@@ -122,50 +122,50 @@ Only 2 states are defined in this library, <code>done</code> and <code>terminate
 </div>
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;future-terminated1639">
+    <a name="&amp;future-terminated1640">
       <span class="name" name="&amp;future-terminated">&amp;future-terminated</span>
     </a>
   </div>
 <div class="desc">This type describes when a future is terminated but users try to
 retrieve its result.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="future-terminated?1640">
+<p /><div class="define"><span class="define-category">Function</span><a name="future-terminated?1641">
     <span class="name" name="future-terminated?">future-terminated?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is object of <code>&amp;future-terminated</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="terminated-future1641">
+<p /><div class="define"><span class="define-category">Function</span><a name="terminated-future1642">
     <span class="name" name="terminated-future">terminated-future</span>
   </a> <span class="args">condition</span></div>
 <div class="desc"><var>condition</var> must be a <code>&amp;future-terminated</code> condition.
 <p />Retrieve terminated future from <var>condition</var>.
 </div>
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1642"><span class="section-number">7.8.1.1</span>Simple future</a>
+    <a class="section.anchor" name="G1643"><span class="section-number">7.8.1.1</span>Simple future</a>
   </h5>
 <p />Simple future is a future implementation which executes the task
 on a thread immediately.
 <p /><div class="define">
     <span class="define-category">Record</span>
-    <a name="<simple-future&gt;1643">
+    <a name="<simple-future&gt;1644">
       <span class="name" name="<simple-future&gt;">&lt;simple-future&gt;</span>
     </a>
   </div>
 <div class="desc">Default <code>&lt;future&gt;</code> implementation of this library.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="simple-future?1644">
+<p /><div class="define"><span class="define-category">Function</span><a name="simple-future?1645">
     <span class="name" name="simple-future?">simple-future?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is a simple future, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-simple-future1645">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-simple-future1646">
     <span class="name" name="make-simple-future">make-simple-future</span>
   </a> <span class="args">thunk</span></div>
 <div class="desc">Creates a simple future which executes <var>thunk</var>.</div>
 <p />
 </section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1646"><span class="section-number">7.8.2</span>Executor</a>
+    <a class="section.anchor" name="G1647"><span class="section-number">7.8.2</span>Executor</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util concurrent executor)1647">
+    <a name="(util concurrent executor)1648">
       <span class="name" name="(util concurrent executor)">(util concurrent executor)</span>
     </a>
   </div>
@@ -203,45 +203,45 @@ the executors:
 <p />The thread pool executor with <code>push-future-handler</code> waits until the
 previous taskes are finished. 
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1648"><span class="section-number">7.8.2.1</span>Generic Executor APIs</a>
+    <a class="section.anchor" name="G1649"><span class="section-number">7.8.2.1</span>Generic Executor APIs</a>
   </h5>
 <p />Executor provided by this library is an extensible. So the most commonly
 used procedures are generic.
 <p /><div class="define">
     <span class="define-category">Record</span>
-    <a name="<executor&gt;1649">
+    <a name="<executor&gt;1650">
       <span class="name" name="<executor&gt;">&lt;executor&gt;</span>
     </a>
   </div>
 <div class="desc">The interface of executor.
 <p />This record only has one field, <code>state</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="executor?1650">
+<p /><div class="define"><span class="define-category">Function</span><a name="executor?1651">
     <span class="name" name="executor?">executor?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is an executor, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="executor-state1651">
+<p /><div class="define"><span class="define-category">Function</span><a name="executor-state1652">
     <span class="name" name="executor-state">executor-state</span>
   </a> <span class="args">executor</span></div>
 <div class="desc">Returns <code>state</code> field of the <var>executor</var>.</div>
 <p />
 The behaviour of the folowing procedures depend on its implementation.
-<p /><div class="define"><span class="define-category">Function</span><a name="executor-available?1652">
+<p /><div class="define"><span class="define-category">Function</span><a name="executor-available?1653">
     <span class="name" name="executor-available?">executor-available?</span>
   </a> <span class="args">executor</span></div>
 <div class="desc">Returns #t if the given <var>executor</var> is available, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="execute-future!1653">
+<p /><div class="define"><span class="define-category">Function</span><a name="execute-future!1654">
     <span class="name" name="execute-future!">execute-future!</span>
   </a> <span class="args">executor future</span></div>
 <div class="desc">Executes given <var>future</var> on <var>executor</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shutdown-executor!1654">
+<p /><div class="define"><span class="define-category">Function</span><a name="shutdown-executor!1655">
     <span class="name" name="shutdown-executor!">shutdown-executor!</span>
   </a> <span class="args">executor</span></div>
 <div class="desc">Shutdowns the given <var>executor</var>. 
 <p />This procedure may or may not affect the managed futures on the <var>executor</var>.
 </div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1655"><span class="section-number">7.8.2.2</span>Thread pool executor</a>
+    <a class="section.anchor" name="G1656"><span class="section-number">7.8.2.2</span>Thread pool executor</a>
   </h5>
 <p />Thread pool executor uses <code>(util concurrent thread-pool)</code> as its
 underlying thread managing. So once the threads are created then the
@@ -271,17 +271,17 @@ created per future, then the parameter <code>*one*</code> is initialised with
 the initial value <code>1</code> during thread creation.
 <p /><div class="define">
     <span class="define-category">Record</span>
-    <a name="<thread-pool-executor&gt;1656">
+    <a name="<thread-pool-executor&gt;1657">
       <span class="name" name="<thread-pool-executor&gt;">&lt;thread-pool-executor&gt;</span>
     </a>
   </div>
 <div class="desc">Record type of thread pool executor. This record type inherits
 <code>&lt;executor&gt;</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor?1657">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor?1658">
     <span class="name" name="thread-pool-executor?">thread-pool-executor?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is a thread pool executor, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-thread-pool-executor1658">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-thread-pool-executor1659">
     <span class="name" name="make-thread-pool-executor">make-thread-pool-executor</span>
   </a>
  <span class="args">max-thread :optional reject-handler</span></div>
@@ -289,7 +289,7 @@ the initial value <code>1</code> during thread creation.
 <p />If optional argument <var>reject-handler</var> is specified, then the specified
 handler is used. Otherwise, <code>abort-rejected-handler</code> is used.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor-pool-size1659">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor-pool-size1660">
     <span class="name" name="thread-pool-executor-pool-size">thread-pool-executor-pool-size</span>
   </a>
  <span class="args">thread-pool-executor</span></div>
@@ -298,13 +298,13 @@ executor.
 <p />This number would be greater than the thread count if <code>push-future-handler</code>
 is specified during the executor creation.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor-max-pool-size1660">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor-max-pool-size1661">
     <span class="name" name="thread-pool-executor-max-pool-size">thread-pool-executor-max-pool-size</span>
   </a>
  <span class="args">thread-pool-executor</span></div>
 <div class="desc">Returns number of thread count of the given thread pool executor.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor-available?1661">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor-available?1662">
     <span class="name" name="thread-pool-executor-available?">thread-pool-executor-available?</span>
   </a>
  <span class="args">thread-pool-executor</span></div>
@@ -313,12 +313,12 @@ thread count.
 <p />NOTE: this procedure may return #f even tasks can be pushed to the executor
 if <code>push-future-handler</code> is specified.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor-execute-future!1662">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor-execute-future!1663">
     <span class="name" name="thread-pool-executor-execute-future!">thread-pool-executor-execute-future!</span>
   </a>
  <span class="args">thread-pool-executor future</span></div>
 <div class="desc">Executes the given <var>future</var> on <var>thread-pool-executor</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor-shutdown!1663">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-executor-shutdown!1664">
     <span class="name" name="thread-pool-executor-shutdown!">thread-pool-executor-shutdown!</span>
   </a>
  <span class="args">thread-pool-executor</span></div>
@@ -328,7 +328,7 @@ if <code>push-future-handler</code> is specified.
 available to decide how the executor should treat the given future.
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="abort-rejected-handler1664">
+    <a name="abort-rejected-handler1665">
       <span class="name" name="abort-rejected-handler">abort-rejected-handler</span>
     </a>
   </div>
@@ -337,7 +337,7 @@ available to decide how the executor should treat the given future.
 </div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="terminate-oldest-handler1665">
+    <a name="terminate-oldest-handler1666">
       <span class="name" name="terminate-oldest-handler">terminate-oldest-handler</span>
     </a>
   </div>
@@ -345,7 +345,7 @@ available to decide how the executor should treat the given future.
 <p />When this handler is called, the thread which target future is running is
 also terminated. Thus the dynamic environment is also reset.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="wait-finishing-handler1666">
+<p /><div class="define"><span class="define-category">Function</span><a name="wait-finishing-handler1667">
     <span class="name" name="wait-finishing-handler">wait-finishing-handler</span>
   </a> <span class="args">wait-retry</span></div>
 <div class="desc">Creats a reject handler which waits until one of the thread
@@ -355,63 +355,63 @@ is finished by this counter, then <code>abort-rejected-handler</code> is called.
 </div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="push-future-handler1667">
+    <a name="push-future-handler1668">
       <span class="name" name="push-future-handler">push-future-handler</span>
     </a>
   </div>
 <div class="desc">Pushes the task to the least used thread.</div>
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;rejected-execution-error1668">
+    <a name="&amp;rejected-execution-error1669">
       <span class="name" name="&amp;rejected-execution-error">&amp;rejected-execution-error</span>
     </a>
   </div>
 <div class="desc">A condition describes when a future is rejected by an executor.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rejected-execution-error?1669">
+<p /><div class="define"><span class="define-category">Function</span><a name="rejected-execution-error?1670">
     <span class="name" name="rejected-execution-error?">rejected-execution-error?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is <code>&amp;rejected-execution-error</code> object.
 Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rejected-future1670">
+<p /><div class="define"><span class="define-category">Function</span><a name="rejected-future1671">
     <span class="name" name="rejected-future">rejected-future</span>
   </a> <span class="args">condition</span></div>
-<div class="define"><span class="define-category">Function</span><a name="rejected-executor1671">
+<div class="define"><span class="define-category">Function</span><a name="rejected-executor1672">
     <span class="name" name="rejected-executor">rejected-executor</span>
   </a> <span class="args">condition</span></div>
 <div class="desc"><var>condition</var> must be a <code>&amp;rejected-execution-error</code> object.
 <p />Retrieves the rejected future and executor, respectively.
 </div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1672"><span class="section-number">7.8.2.3</span>Fork join executor</a>
+    <a class="section.anchor" name="G1673"><span class="section-number">7.8.2.3</span>Fork join executor</a>
   </h5>
 <p />Fork join executor is an executor which simply creats a thread per future.
 It's almost the same as <code>&lt;simple-future&gt;</code>.
 <p />
 <div class="define">
     <span class="define-category">Record</span>
-    <a name="<fork-join-executor&gt;1673">
+    <a name="<fork-join-executor&gt;1674">
       <span class="name" name="<fork-join-executor&gt;">&lt;fork-join-executor&gt;</span>
     </a>
   </div>
 <div class="desc">Record type of fork join executor. This record type inherits
 <code>&lt;executor&gt;</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="fork-join-executor?1674">
+<p /><div class="define"><span class="define-category">Function</span><a name="fork-join-executor?1675">
     <span class="name" name="fork-join-executor?">fork-join-executor?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is a fork join executor, otherwise #f.</div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="make-fork-join-executor1675">
+    <a name="make-fork-join-executor1676">
       <span class="name" name="make-fork-join-executor">make-fork-join-executor</span>
     </a>
   </div>
 <div class="desc">Creates a fork join executor. </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="fork-join-executor-available?1676">
+<p /><div class="define"><span class="define-category">Function</span><a name="fork-join-executor-available?1677">
     <span class="name" name="fork-join-executor-available?">fork-join-executor-available?</span>
   </a>
  <span class="args">fork-join-executor</span></div>
 <div class="desc">Returns #t.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="fork-join-executor-execute-future!1677">
+<p /><div class="define"><span class="define-category">Function</span><a name="fork-join-executor-execute-future!1678">
     <span class="name" name="fork-join-executor-execute-future!">fork-join-executor-execute-future!</span>
   </a>
  <span class="args">fork-join-executor future</span></div>
@@ -419,39 +419,39 @@ It's almost the same as <code>&lt;simple-future&gt;</code>.
 <p />NOTE: the executor doesn't manage anything so the future is actually not
 related to the executor.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="fork-join-executor-shutdown!1678">
+<p /><div class="define"><span class="define-category">Function</span><a name="fork-join-executor-shutdown!1679">
     <span class="name" name="fork-join-executor-shutdown!">fork-join-executor-shutdown!</span>
   </a>
  <span class="args">fork-join-executor</span></div>
 <div class="desc">Sets executor's state <code>shutdown</code>.</div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1679"><span class="section-number">7.8.2.4</span>Executor future</a>
+    <a class="section.anchor" name="G1680"><span class="section-number">7.8.2.4</span>Executor future</a>
   </h5>
 <p />An executor future is an future object which can be used on executor.
 <p /><div class="define">
     <span class="define-category">Record</span>
-    <a name="<executor-future&gt;1680">
+    <a name="<executor-future&gt;1681">
       <span class="name" name="<executor-future&gt;">&lt;executor-future&gt;</span>
     </a>
   </div>
 <div class="desc">Record type of <code>&lt;executor-future&gt;</code>. This type inherits 
 <code>&lt;future&gt;</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="executor-future?1681">
+<p /><div class="define"><span class="define-category">Function</span><a name="executor-future?1682">
     <span class="name" name="executor-future?">executor-future?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if the given <var>obj</var> is an executor future, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-executor-future1682">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-executor-future1683">
     <span class="name" name="make-executor-future">make-executor-future</span>
   </a> <span class="args">thunk</span></div>
 <div class="desc">Creates an executor future object.</div>
 <p />
 </section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1683"><span class="section-number">7.8.3</span>Thread pool</a>
+    <a class="section.anchor" name="G1684"><span class="section-number">7.8.3</span>Thread pool</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util concurrent thread-pool)1684">
+    <a name="(util concurrent thread-pool)1685">
       <span class="name" name="(util concurrent thread-pool)">(util concurrent thread-pool)</span>
     </a>
   </div>
@@ -475,16 +475,16 @@ then this library can be used.
 </pre>
 <p /><div class="define">
     <span class="define-category">Record</span>
-    <a name="<thread-pool&gt;1685">
+    <a name="<thread-pool&gt;1686">
       <span class="name" name="<thread-pool&gt;">&lt;thread-pool&gt;</span>
     </a>
   </div>
 <div class="desc">Record type of thread pool.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool?1686">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool?1687">
     <span class="name" name="thread-pool?">thread-pool?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is a thread-pool, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-thread-pool1687">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-thread-pool1688">
     <span class="name" name="make-thread-pool">make-thread-pool</span>
   </a>
  <span class="args">thread-count :optional error-handler</span></div>
@@ -493,23 +493,23 @@ then this library can be used.
 procedure which accept one argument, then the procedure is called
 when the pushed task raised an error.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-size1688">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-size1689">
     <span class="name" name="thread-pool-size">thread-pool-size</span>
   </a> <span class="args">thread-pool</span></div>
 <div class="desc">Returns number of threads on the given <var>thread-pool</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-push-task!1689">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-push-task!1690">
     <span class="name" name="thread-pool-push-task!">thread-pool-push-task!</span>
   </a> <span class="args">thread-pool thunk</span></div>
 <div class="desc">Push the given <var>thunk</var> to least used <var>thread-pool</var>'s thread.
 And returns the id of the pushed thread. This id can be used to retrive
 the actual thread calling <code>thread-pool-thread</code> procedure.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-wait-all!1690">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-wait-all!1691">
     <span class="name" name="thread-pool-wait-all!">thread-pool-wait-all!</span>
   </a> <span class="args">thread-pool</span></div>
 <div class="desc">Waits all the tasks pushed into the given <var>thread-pool</var>.
 <p />The return value of the tasks are discarded.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-release!1691">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-release!1692">
     <span class="name" name="thread-pool-release!">thread-pool-release!</span>
   </a> <span class="args">thread-pool :optional how</span></div>
 <div class="desc">Joins all the thread on the given <var>thread-pool</var>.
@@ -517,37 +517,58 @@ the actual thread calling <code>thread-pool-thread</code> procedure.
 terminates the thread instead of joining.
 <p />NOTE: terminating a thread is very dangerous operation, so don't use casually.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-thread1692">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-thread1693">
     <span class="name" name="thread-pool-thread">thread-pool-thread</span>
   </a> <span class="args">thread-pool id</span></div>
 <div class="desc">Retrieves the pooled thread associated with given <var>id</var> from
 given <var>thread-pool</var>.
+<p />It signals an error if the given <var>id</var> is not a thread id.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-thread-terminate!1693">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-thread-id1694">
+    <span class="name" name="thread-pool-thread-id">thread-pool-thread-id</span>
+  </a> <span class="args">thread-pool thread</span></div>
+<div class="desc">Retrieves the pooled thread id associated with given <var>thread</var> from
+given <var>thread-pool</var>. The procedure takes O(n) where n is number of threads
+managed by the <var>thread-pool</var>. It might be better to use
+<code>(thread-pool-current-thread-id)</code> procedure to retrieve thread id from
+managed threads.
+<p />It signals an error if the given <var>thread</var> is not a managed thread.
+<p />NOTE: if the thread is terminated, then the procedure also signals an error.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="(thread-pool-current-thread-id)1695">
+      <span class="name" name="(thread-pool-current-thread-id)">(thread-pool-current-thread-id)</span>
+    </a>
+  </div>
+<div class="desc">Retrieves thread id of current thread. If the current thread is not
+a managed thread, then #f is returned.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-thread-terminate!1696">
     <span class="name" name="thread-pool-thread-terminate!">thread-pool-thread-terminate!</span>
   </a> <span class="args">thread-pool id</span></div>
 <div class="desc">Terminates the pooled thread associated with given <var>id</var> and recreate
 a new thread into <var>thread-pool</var>.
 <p />NTOE: this is a dangerous operation. Don't use it casually.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-thread-task-running?1694">
+<p /><div class="define"><span class="define-category">Function</span><a name="thread-pool-thread-task-running?1697">
     <span class="name" name="thread-pool-thread-task-running?">thread-pool-thread-task-running?</span>
   </a> <span class="args">thread-pool id</span></div>
 <div class="desc">Returns #t if the given <var>id</var> of thread in the <var>thread-pool</var> is 
 running. Otherwise #f.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1695"><span class="section-number">7.8.4</span>Shared queues</a>
+    <a class="section.anchor" name="G1698"><span class="section-number">7.8.4</span>Shared queues</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util concurrent shared-queue)1696">
+    <a name="(util concurrent shared-queue)1699">
       <span class="name" name="(util concurrent shared-queue)">(util concurrent shared-queue)</span>
     </a>
   </div>
 <div class="desc">A sub library of <code>(util concurrent)</code>. This library provides
 shared queue APIs.</div>
-<p />A shared queue is a queue which operations are done atomically.
+<p />A shared queue is a queue whose operations are done atomically.
 <p /><div class="codeblock-box">
     <pre class="codeblock">(import (rnrs) (util concurrent) (srfi :18))
 
@@ -570,16 +591,16 @@ shared queue APIs.</div>
   </div>
 <p /><div class="define">
     <span class="define-category">Record</span>
-    <a name="<shared-queue&gt;1697">
+    <a name="<shared-queue&gt;1700">
       <span class="name" name="<shared-queue&gt;">&lt;shared-queue&gt;</span>
     </a>
   </div>
 <div class="desc">Record type of shared queue.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue?1698">
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue?1701">
     <span class="name" name="shared-queue?">shared-queue?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is shared queue, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-shared-queue1699">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-shared-queue1702">
     <span class="name" name="make-shared-queue">make-shared-queue</span>
   </a> <span class="args">:optional (max-length -1)</span></div>
 <div class="desc">Creates a shared queue.
@@ -588,25 +609,25 @@ synchronised queue. If the value is positive number, then the queue can
 only have specified number of elements. If it overflows, then it waits 
 until the number of elements is less than <var>max-length</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-empty?1700">
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-empty?1703">
     <span class="name" name="shared-queue-empty?">shared-queue-empty?</span>
   </a> <span class="args">shared-queue</span></div>
 <div class="desc">Returns #t if the number of elements inside of <var>shared-queue</var> is 0.
 Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-size1701">
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-size1704">
     <span class="name" name="shared-queue-size">shared-queue-size</span>
   </a> <span class="args">shared-queue</span></div>
 <div class="desc">Returns the number of elements inside of <var>shared-queue</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-max-length1702">
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-max-length1705">
     <span class="name" name="shared-queue-max-length">shared-queue-max-length</span>
   </a> <span class="args">shared-queue</span></div>
 <div class="desc">Returns max length of <var>shared-queue</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-overflows?1703">
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-overflows?1706">
     <span class="name" name="shared-queue-overflows?">shared-queue-overflows?</span>
   </a> <span class="args">shared-queue count</span></div>
 <div class="desc">Returns #t if putting <var>count</var> of element into <var>shared-queue</var>
 overflows. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-get!1704">
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-get!1707">
     <span class="name" name="shared-queue-get!">shared-queue-get!</span>
   </a>
  <span class="args">shared-queue :optional (timeout #f) (timeout-val #f)</span></div>
@@ -618,7 +639,7 @@ only waits specified amount of time. <var>timeout</var> can be either integer
 or time object defined in SRFI-19. If the queue didn't get any object within
 the <var>timeout</var>, then <var>timeout-val</var> is returned.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-put!1705">
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-put!1708">
     <span class="name" name="shared-queue-put!">shared-queue-put!</span>
   </a>
  <span class="args">shared-queue obj :optional (timeout #f) (timeout-val #f)</span></div>
@@ -630,11 +651,26 @@ only waits specified amount of time. <var>timeout</var> can be either integer
 or time object defined in SRFI-19. If the queue didn't get any object within
 the <var>timeout</var>, then <var>timeout-val</var> is returned.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-clear!1706">
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-clear!1709">
     <span class="name" name="shared-queue-clear!">shared-queue-clear!</span>
   </a> <span class="args">shared-queue</span></div>
 <div class="desc">Clears all element inside of <var>shared-queue</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-find1710">
+    <span class="name" name="shared-queue-find">shared-queue-find</span>
+  </a> <span class="args">shared-queue pred</span></div>
+<div class="desc">Finds an elements which satisfies <var>pred</var>. This operations locks the
+given <var>shared-queue</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-queue-locked?1711">
+    <span class="name" name="shared-queue-locked?">shared-queue-locked?</span>
+  </a>
+ <span class="args">shared-queue :optional (wait? #f)</span></div>
+<div class="desc">Returns #t if the given <var>shared-queue</var> is locked by other thread,
+otherwise #f.
+<p />If the optional argument <var>wait?</var> is given, then the procedure waits
+until the queue is available and returns #f.
+</div>
 <p />
+
 </section></section>
   <div class="prev-next">
     <a class="prev" href="section77.html">(util bytevector) - Bytevector utility library</a>
@@ -644,6 +680,6 @@ the <var>timeout</var>, then <var>timeout-val</var> is returned.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-01-22T19:15:23+0100</i></div>
+    <div id="footer-date">Generated date: <i>2016-02-19T20:26:33+0100</i></div>
   </div>
 </html>
