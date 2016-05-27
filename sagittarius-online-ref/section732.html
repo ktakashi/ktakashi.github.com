@@ -15,7 +15,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc pem)2249">
+    <a name="(rfc pem)2266">
       <span class="name" name="(rfc pem)">(rfc pem)</span>
     </a>
   </div>
@@ -23,30 +23,49 @@
 <p />Currently only supports RFC 1421 format.
 </div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2250"><span class="section-number">7.32.1</span>Conditions</a>
+    <a class="section.anchor" name="G2267"><span class="section-number">7.32.1</span>Conditions</a>
   </h4>
 <p />This library defines these conditions.
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;pem-error2251">
+    <a name="&amp;pem-error2268">
       <span class="name" name="&amp;pem-error">&amp;pem-error</span>
     </a>
   </div>
 <div class="desc">Super condition of all PEM file process related conditions.</div>
-<div class="define">
+<p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;invalid-pem-format2252">
+    <a name="&amp;invalid-pem-format2269">
       <span class="name" name="&amp;invalid-pem-format">&amp;invalid-pem-format</span>
     </a>
   </div>
 <div class="desc">This condition indicates, given PEM file contains invalid format.</div>
+<div class="define"><span class="define-category">Function</span><a name="invalid-pem-format?2270">
+    <span class="name" name="invalid-pem-format?">invalid-pem-format?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t, if the given <var>obj</var> is <code>&amp;invalid-pem-format</code>,
+otherwise #f.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;pre-eb-as-boundary2271">
+      <span class="name" name="&amp;pre-eb-as-boundary">&amp;pre-eb-as-boundary</span>
+    </a>
+  </div>
+<div class="desc">This condition indicates, given PEM file contains Pre-Encapsulation 
+Boundary as the end of Encapsulated Message without specifying 
+<code>:multiple</code>.</div>
+<div class="define"><span class="define-category">Function</span><a name="pre-eb-as-boundary?2272">
+    <span class="name" name="pre-eb-as-boundary?">pre-eb-as-boundary?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t, if the given <var>obj</var> is <code>&amp;pre-eb-as-boundary</code>,
+otherwise #f.</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2253"><span class="section-number">7.32.2</span>Operations</a>
+    <a class="section.anchor" name="G2273"><span class="section-number">7.32.2</span>Operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem2254">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem2274">
     <span class="name" name="parse-pem">parse-pem</span>
   </a>
- <span class="args">in :key (multiple #f) (builder #f) (asn1 #f)</span></div>
+ <span class="args">in :key (multiple #f) (builder #f) (asn1 #f) decoder</span></div>
 <div class="desc"><var>in</var> must be textual input port.
 <p />Parses given input port <var>in</var> and returns 2 values, parameter alist and
 decoded bytevector.
@@ -76,9 +95,17 @@ decoded bytevector.
       <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure converts BASE64
     bytevector to ASN.1 object defined in <code>(asn.1)</code> library.
   </dd>
+      <dt class="dl-item-title">
+        <code>decorder</code>
+      </dt>
+      <dd class="dl-item-desc">    When this keyword argument is specified, it must be a procedure which
+    accepts one argument, then the <code>parse-pem</code> uses the specified
+    procedure to convert body of the PEM content.
+<p />    If it's not specified, the procedure uses BASE64 decoding.
+  </dd>
     </dl>
   </div>
-<p />The procedure may raise following condition.
+<p />The procedure may raise following conditions:
 <div class="dl-list-wrapper">
     <dl class="dl-list">
       <dt class="dl-item-title">
@@ -86,13 +113,28 @@ decoded bytevector.
       </dt>
       <dd class="dl-item-desc">    When given <var>in</var> contains invalid PEM format.
   </dd>
+      <dt class="dl-item-title">
+        <code>&amp;pre-eb-as-boundary</code>
+      </dt>
+      <dd class="dl-item-desc">    When given <var>in</var> contains Pre-Encapsulation Boundary as the end of
+    Encapsulated Message and <code>:multiple</code> is #f.
+<p />    For example:
+    <pre class="codeblock">-----BEGIN FOO-----
+... foo value ...
+-----BEGIN BAR-----
+... bar value...
+-----END BAR-----
+    </pre>
+    parsing PEM like above must specify <code>:multiple</code> with true value.
+    Otherwise, <code>&amp;pre-eb-as-boundary</code> is signaled.
+  </dd>
     </dl>
   </div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem-file2255">
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem-file2275">
     <span class="name" name="parse-pem-file">parse-pem-file</span>
   </a> <span class="args">file :rest options</span></div>
-<div class="define"><span class="define-category">Function</span><a name="parse-pem-string2256">
+<div class="define"><span class="define-category">Function</span><a name="parse-pem-string2276">
     <span class="name" name="parse-pem-string">parse-pem-string</span>
   </a> <span class="args">pem-string :rest options</span></div>
 <div class="desc">Convenient procedures.
@@ -108,6 +150,6 @@ decoded bytevector.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-03-18T20:12:22+0100</i></div>
+    <div id="footer-date">Generated date: <i>2016-05-27T22:18:07+0200</i></div>
   </div>
 </html>

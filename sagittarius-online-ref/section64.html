@@ -8,224 +8,222 @@
   <div class="prev-next">
     <a class="prev" href="section63.html">(sagittarius ffi) - Foreign Function Interface</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section65.html">Sagittarius MOP</a>
+    <a class="next" href="section65.html">(sagittarius io) - Extra IO library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="sagittarius.io"><span class="section-number">6.4</span>(sagittarius io) - Extra IO library</a>
+    <a class="section.anchor" name="lib.sagittarius.filewatch"><span class="section-number">6.4</span>(sagittarius filewatch) - Monitoring filesystem</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(sagittarius io)1140">
-      <span class="name" name="(sagittarius io)">(sagittarius io)</span>
+    <a name="(sagittarius filewatch)1144">
+      <span class="name" name="(sagittarius filewatch)">(sagittarius filewatch)</span>
     </a>
-  </div>
-<div class="desc">This library provided extra IO related procedures.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="with-input-from-port1141">
-    <span class="name" name="with-input-from-port">with-input-from-port</span>
-  </a> <span class="args">port thunk</span></div>
-<div class="define"><span class="define-category">Function</span><a name="with-output-to-port1142">
-    <span class="name" name="with-output-to-port">with-output-to-port</span>
-  </a> <span class="args">port thunk</span></div>
-<div class="define"><span class="define-category">Function</span><a name="with-error-to-port1143">
-    <span class="name" name="with-error-to-port">with-error-to-port</span>
-  </a> <span class="args">port thunk</span></div>
-<div class="desc">Calls <var>thunk</var>. During evaluation of <var>thunk</var>, the current input
-port, current output port, current error port are set to <var>port</var>,
-respectively.
+  </div> 
+<div class="desc">Monitoring filesystem cannot be done efficiently without support of
+underlying operating system. This library provides unified interface of the
+mechanism.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="call-with-input-string1144">
-    <span class="name" name="call-with-input-string">call-with-input-string</span>
-  </a> <span class="args">str proc</span></div>
-<div class="define"><span class="define-category">Function</span><a name="call-with-output-string1145">
-    <span class="name" name="call-with-output-string">call-with-output-string</span>
-  </a> <span class="args">proc</span></div>
-<div class="define"><span class="define-category">Function</span><a name="with-input-from-string1146">
-    <span class="name" name="with-input-from-string">with-input-from-string</span>
-  </a> <span class="args">str thunk</span></div>
-<div class="define"><span class="define-category">Function</span><a name="with-output-to-string1147">
-    <span class="name" name="with-output-to-string">with-output-to-string</span>
-  </a> <span class="args">thunk</span></div>
-<div class="desc">These utility functions are trivially defined as follows;
-<p /><pre class="codeblock">(define (call-with-input-string str proc)
-  (proc (open-input-string str)))
+<p />The following simple <code>tail (1)</code> like script shows how it works:
+<pre class="codeblock">(import (rnrs) (getopt) (sagittarius filewatch) (prefix (binary io) binary:))
 
-(define (call-with-output-string proc)
-  (let ((port (open-output-string)))
-    (proc port)
-    (get-output-string port)))
+(define (tail file offset)
+  (define watcher (make-filesystem-watcher))
+  (define in (open-file-input-port file))
+  ;; dump contents to stdout
+  (define (dump)
+    (let loop ()
+      (let ((line (binary:get-line in)))
+        (unless (eof-object? line) 
+          (put-bytevector (standard-output-port) line)
+          (put-bytevector (standard-output-port) #vu8(10))
+          (loop)))))
+  (define size (file-size-in-bytes file))
+  ;; move port position if the size if more than offset
+  (when (&gt; size offset) (set-port-position! in (- size offset)))
+  ;; dump first
+  (dump)
+  ;; add path to file watcher
+  (filesystem-watcher-add-path! watcher file '(modify) 
+                                (lambda (path event) (dump)))
+  ;; monitor on foreground.
+  (filesystem-watcher-start-monitoring! watcher :background #f))
 
-(define (with-input-from-string str thunk)
-  (with-input-from-port (open-input-string str) thunk))
-
-(define (with-output-to-string thunk)
-  (let ((port (open-output-string)))
-    (with-output-to-port port thunk)
-    (get-output-string port)))
+;; this tail is not line oriented
+;; it shows tail of the file from the given offset.
+(define (main args)
+  (with-args (cdr args)
+      ((offset (#\o "offset") #t "1024")
+       . rest)
+    (tail (car rest) (string-&gt;number offset))))
 </pre>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-filesystem-watcher1145">
+    <span class="name" name="make-filesystem-watcher">make-filesystem-watcher</span>
+  </a> <span class="args">:key error-handler</span></div>
+<div class="desc">Creates and returns filesystem watcher object.
+<p />The keyword argument <var>error-handler</var> is specified, which must be a
+procedure accepts one argument, then it is called with a condition 
+when monitoring handler raised an error.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="release-filesystem-watcher!1146">
+    <span class="name" name="release-filesystem-watcher!">release-filesystem-watcher!</span>
+  </a> <span class="args">watcher</span></div>
+<div class="desc">Releasing the <var>watcher</var>.
+<p />Released filesystem watcher can not be reused.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="buffered-port1148">
-    <span class="name" name="buffered-port">buffered-port</span>
-  </a> <span class="args">port buffer-mode :key buffer</span></div>
-<div class="define"><span class="define-category">Function</span><a name="transcoded-port1149">
-    <span class="name" name="transcoded-port">transcoded-port</span>
-  </a> <span class="args">port transcoder</span></div>
-<div class="desc">Re-export of <code>buffered-port</code> and <code>transcoded-port</code>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher?1147">
+    <span class="name" name="filesystem-watcher?">filesystem-watcher?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Returns #t if the given <var>o</var> is a filesystem watcher object, otherwise
+#f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-add-path!1148">
+    <span class="name" name="filesystem-watcher-add-path!">filesystem-watcher-add-path!</span>
+  </a>
+ <span class="args">watcher path flags monitoring-handler</span></div>
+<div class="desc">Adds monitoring targets to the <var>watcher</var>.
+<p />The <var>path</var> must be a string and indicating existing path.
+<p />The <var>flags</var> must be one of the following symbols or list of the symbols:
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>access</code>
+      </dt>
+      <dd class="dl-item-desc">Checks if the <var>path</var> is accessed.</dd>
+      <dt class="dl-item-title">
+        <code>modify</code>
+      </dt>
+      <dd class="dl-item-desc">Checks if the <var>path</var> is modified.</dd>
+      <dt class="dl-item-title">
+        <code>delete</code>
+      </dt>
+      <dd class="dl-item-desc">Checks if the <var>path</var> is deleted.</dd>
+      <dt class="dl-item-title">
+        <code>move</code>
+      </dt>
+      <dd class="dl-item-desc">Checks if the <var>path</var> is moved.</dd>
+      <dt class="dl-item-title">
+        <code>attribute</code>
+      </dt>
+      <dd class="dl-item-desc">Checks if the <var>path</var>'s attribute is changed.</dd>
+    </dl>
+  </div>
+NOTE: The flags might not be supported depending on the platform. See 
+<a href="section64.html#filewatch.limit">implementation limitation</a> section for more details.
+<p />The <var>monitoring-handler</var> must be a procedure accepts 2 arguments. The
+procedure is called if the <var>path</var> gets an event specified <var>flags</var>.
+When the <var>monitoring-handler</var> is invoked, then the path and a symbol 
+of the invoking event are passed respectively. The possible event symbols 
+are the followings:
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>accessed</code>
+      </dt>
+      <dd class="dl-item-desc">Checks if the <var>path</var> is accessed.</dd>
+      <dt class="dl-item-title">
+        <code>modified</code>
+      </dt>
+      <dd class="dl-item-desc">Checks if the <var>path</var> is modified.</dd>
+      <dt class="dl-item-title">
+        <code>deleted</code>
+      </dt>
+      <dd class="dl-item-desc">Checks if the <var>path</var> is deleted.</dd>
+      <dt class="dl-item-title">
+        <code>moved</code>
+      </dt>
+      <dd class="dl-item-desc">Checks if the <var>path</var> is moved.</dd>
+      <dt class="dl-item-title">
+        <code>attribute</code>
+      </dt>
+      <dd class="dl-item-desc">Checks if the <var>path</var>'s attribute is changed.</dd>
+    </dl>
+  </div>
+<p />The procedure <var>filesystem-watcher-add-path!</var> returns the <var>watcher</var>.
+<p />If the <var>watcher</var> started monitoring, then the procedure raises
+<code>&amp;assertion</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-remove-path!1149">
+    <span class="name" name="filesystem-watcher-remove-path!">filesystem-watcher-remove-path!</span>
+  </a>
+ <span class="args">watcher path</span></div>
+<div class="desc">Removes given <var>path</var> from the <var>watcher</var>. And returns 
+<var>watcher</var>,
+<p />If the <var>watcher</var> started monitoring, then the procedure raises
+<code>&amp;assertion</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-start-monitoring!1150">
+    <span class="name" name="filesystem-watcher-start-monitoring!">filesystem-watcher-start-monitoring!</span>
+  </a>
+ <span class="args">watcher :key (background #t)</span></div>
+<div class="desc">Starts monitoring filesystem on given <var>watcher</var>.
+<p />If the keyword argument <var>background</var> is true value, then the procedure
+creates a thread and let the thread monitor the filesystem. (So the procedure
+returns after the thread invocation.) Otherwise, the procedure blocks and
+wait until other thread calls <code>filesystem-watcher-stop-monitoring!</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-stop-monitoring!1151">
+    <span class="name" name="filesystem-watcher-stop-monitoring!">filesystem-watcher-stop-monitoring!</span>
+  </a> <span class="args">watcher</span></div>
+<div class="desc">Stops monitoring of given <var>watcher</var>.
+<p />If the <var>watcher</var> is started on background, then the monitoring thread
+may not stop immediately.
+</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1150"><span class="section-number">6.4.1</span>Custom ports</a>
+    <a class="section.anchor" name="filewatch.limit"><span class="section-number">6.4.1</span>Implementation limitation</a>
   </h4>
-<p />Sagittarius provides means to create user defined ports. One of the ways
-is using R6RS custom port procedures. The other one is extending custom
-port class. The followings show how to extend it.
-<p /><code>;; example for input port
-(import (rnrs) (sagittarius io) (clos user))
-<p />;; make a custom binary input port with 'read slot
-(get-u8 (make &lt;custom-binary-input-port&gt;
-          :read (lambda (bv start count)
-                  (bytevector-u8-set! bv start 1)
-                1)))
-</code>
-<p /><code>;; example for output port
-(import (rnrs) (sagittarius io) (clos user))
-<p />;; user defined custom binary output port
-(define-class &lt;my-port&gt; (&lt;custom-binary-output-port&gt;) 
-  ;; this port has own buffer 
-  ((buffer :init-form (make-bytevector 5 0))))
-<p />;; create the port
-(let ((out (make &lt;my-port&gt;)))
-  ;; set 'write slot
-  (slot-set! out 'write
-    (lambda (bv start count)
-       ;; just get the first element of given bytevector
-       ;; and set it to own buffer
-       (bytevector-copy! bv start (slot-ref out 'buffer) 0 count)
-       count))
-  ;; 
-  (put-bytevector out #vu8(1 2 3 4 5))
-  (slot-ref out 'buffer))
-;; -&gt; #vu8(1 0 0 0 0)
-</code>
+<p />Even the library provides unified APIs however users still should know the
+limitations per operating system to avoid unexpected behaviours. The following
+sections describes the known limitations.
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1152"><span class="section-number">6.4.1.1</span>Linux</a>
+  </h5>
+<p />On Linux, the library is constructed on top of <code>inotify (7)</code> and
+<code>poll (2)</code>. If users add too many paths, then it may reach the
+maximum number of watch descriptor.
+<p />The <code>IN_MOVED_FROM</code> and <code>IN_MOVED_TO</code> flags are passed as
+<code>moved</code>. So it is users responsibility to detect which file is
+<var>moved from</var> and which file is <var>moved to</var>.
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="bsd.limitation"><span class="section-number">6.4.1.2</span>BSD Unix</a>
+  </h5>
+<p />On BSD Unix, the library is constructed on top of <code>kqueue (2)</code>. This
+implementation contains 3 major issues. Possibility of number of file
+descriptor explosion, not <code>access</code> flag support, and no support of
+directory monitoring.
+<p />The <code>kqueue</code> requires file descriptor per monitoring path. Thus if
+the number of paths is large, then it reaches the maxinum number of file
+descriptors. (NB: <code>kern.maxfiles</code> on FreeBSD).
+<p /><code>kqueue</code> doesn't support path access monitoring (e.g. <code>IN_ACCESS</code> 
+on <code>inotify</code>). So it is impossible to monitor file access.
+<p />Current implementation of <code>(sagittarius filewatch)</code> using <code>kqueue</code>
+doesn't allow users to monitor directory. This is because by default,
+<code>kqueue</code> doesn't provide facility to detect which file is added.
+To do it, we need manual management. To keep our code as simple as possible,
+we decided not to do it for now. This decision may be changed if there's
+enough demands.
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1153"><span class="section-number">6.4.1.3</span>OS X</a>
+  </h5>
+<p />On OS X, the library is constructed on top of <code>kqueue</code>, thus the
+same limitation as <a href="section64.html#bsd.limitation">BSD Unix</a> is applied.
 <p />
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<custom-binary-input-port&gt;1151">
-      <span class="name" name="<custom-binary-input-port&gt;">&lt;custom-binary-input-port&gt;</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<custom-binary-output-port&gt;1152">
-      <span class="name" name="<custom-binary-output-port&gt;">&lt;custom-binary-output-port&gt;</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<custom-binary-input/output-port&gt;1153">
-      <span class="name" name="<custom-binary-input/output-port&gt;">&lt;custom-binary-input/output-port&gt;</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<custom-textual-input-port&gt;1154">
-      <span class="name" name="<custom-textual-input-port&gt;">&lt;custom-textual-input-port&gt;</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<custom-textual-output-port&gt;1155">
-      <span class="name" name="<custom-textual-output-port&gt;">&lt;custom-textual-output-port&gt;</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Class</span>
-    <a name="<custom-textual-input/output-port&gt;1156">
-      <span class="name" name="<custom-textual-input/output-port&gt;">&lt;custom-textual-input/output-port&gt;</span>
-    </a>
-  </div>
-<div class="desc">Custom port classes. All of these classes have the following slots:
-<p /><div class="define">
-    <span class="define-category">Slot</span>
-    <a name="id1157">
-      <span class="name" name="id">id</span>
-    </a>
-  </div>
-<div class="desc">Identifier of the port. Must be string is specified.</div>
-<div class="define">
-    <span class="define-category">Slot</span>
-    <a name="position1158">
-      <span class="name" name="position">position</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Slot</span>
-    <a name="set-position1159">
-      <span class="name" name="set-position">set-position</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Slot</span>
-    <a name="read1160">
-      <span class="name" name="read">read</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Slot</span>
-    <a name="write1161">
-      <span class="name" name="write">write</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Slot</span>
-    <a name="flush1162">
-      <span class="name" name="flush">flush</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Slot</span>
-    <a name="close1163">
-      <span class="name" name="close">close</span>
-    </a>
-  </div>
-<div class="desc">All of them must be either procedure or #f.
-<p /><code>position</code> procedure must accept 0 argument. The procedure should
-return the position of the port.
-<p /><code>set-position</code> procedure must accept 2 argument, <var>position</var>
-and<var>whence</var>. <var>Whence</var> shall be a symbol of <code>begin</code>, 
-<code>current</code> or <code>end</code>. The procedure should set the position
-of the port according to the given <var>whence</var> and <var>position</var>.
-<p /><code>read</code> procedure must accept 3 argument. <var>bv</var> or <var>string</var>,
-<var>start</var> and <var>count</var>. The first argument is decided by the port
-type. If the port is binary port, then bytevector <var>bv</var> is passed.
-If the port is textual port, then string <var>string</var> is passed.
-The procedure should fill given <var>bv</var> or <var>string</var> in <var>count</var>
-data elements starting <var>start</var>. And return number of data filled.
-<p /><code>write</code> procedure must accept 3 argument. <var>bv</var> or <var>string</var>,
-<var>start</var> and <var>count</var>. The first argument is decided by the port
-type. If the port is binary port, then bytevector <var>bv</var> is passed.
-If the port is textual port, then string <var>string</var> is passed.
-The procedure should retrieve data from  given <var>bv</var> or <var>string</var>
-upto <var>count</var> data elements starting <var>start</var>. And return number
-of data read.
-<p /><code>ready</code> procedure must accept 0 argument. The procedure should
-return true value if the port is ready to read. Otherwise #f.
-<p /><code>flush</code> procedure must accept 0 argument. The procedure should
-flush the port.
-<p /><code>close</code> procedure must accept 0 argument. The procedure should
-close the port.
-<p />If the creating port is input port, then <code>read</code> must be set before
-any port operation. If the creating port is output port, then <code>write</code>
-must be set before any port operation. Other slots are optional.
-</div>
-</div>
-</section></section>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1154"><span class="section-number">6.4.1.4</span>Windows</a>
+  </h5>
+<p />Staring Windows Vista, Microsoft decided not to change timestamp just accessing
+the file or directory by default. So <code>access</code> flag may or may not work on
+Windows depending on the configuration of the platform.
+<p />Due to the lack of deletion detect, <code>delete</code> and <code>move</code> work the
+same. Thus the monitoring handler may get both <code>deleted</code> and <code>moved</code>
+even though it's only specified <code>delete</code> or <code>move</code>.
+
+</section></section></section>
   <div class="prev-next">
     <a class="prev" href="section63.html">(sagittarius ffi) - Foreign Function Interface</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section65.html">Sagittarius MOP</a>
+    <a class="next" href="section65.html">(sagittarius io) - Extra IO library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-03-18T20:12:22+0100</i></div>
+    <div id="footer-date">Generated date: <i>2016-05-27T22:18:07+0200</i></div>
   </div>
 </html>

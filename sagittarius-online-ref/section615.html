@@ -6,381 +6,70 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section614.html">(sagittarius debug) - Debugging support</a>
+    <a class="prev" href="section614.html">(sagittarius timezone) - Timezone</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section7.html">Utility libraries</a>
+    <a class="next" href="section616.html">(sagittarius generators) - Generators</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="lib.sagittarius.generators"><span class="section-number">6.15</span>(sagittarius generators) - Generators</a>
+    <a class="section.anchor" name="lib.sagittarius.debug"><span class="section-number">6.15</span>(sagittarius debug) - Debugging support</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(sagittarius generators)1362">
-      <span class="name" name="(sagittarius generators)">(sagittarius generators)</span>
+    <a name="(sagittarius debug)1372">
+      <span class="name" name="(sagittarius debug)">(sagittarius debug)</span>
     </a>
   </div>
-<div class="desc">This library provides procedures for generator.
-<p />A generator is simply a procedure with no arguments that works as a source
-of a series of values. Every time it is called, it yields a value. Generators
-may be finite or infinite; a finite generator returns an EOF object to 
-indicate that it is exhausted. For example, read-char is a generator that
-generates characters from the current input port. Generators provide 
-lightweight laziness. 
-</div>
-<p />
-<section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1363"><span class="section-number">6.15.1</span>Generator constructors</a>
-  </h4>
-<p />The following procedures creates a generator. Except <code>null-generator</code>,
-all procedures have prefix <code>'g'</code>. Arguments named <var>generator</var>
-indicates a generator.
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="null-generator1364">
-      <span class="name" name="null-generator">null-generator</span>
-    </a>
-  </div>
-<div class="desc">Returns a generator which always returns EOF object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="giota1365">
-    <span class="name" name="giota">giota</span>
-  </a>
- <span class="args">:optional (count +inf.0) (start 0) (step 1)</span></div>
-<div class="desc">Returns a generator which returns <var>count</var> number of numbers.
-The returning numbers start with <var>start</var> and increased by <var>step</var>.
-<p /><div class="snipet-box">
-    <pre class="snipet">(generator-&gt;list (giota 5))</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">(0 1 2 3 4)</span>
-  </div>
-<div class="snipet-box">
-    <pre class="snipet">(generator-&gt;list (giota 5 10))</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">(10 11 12 13 14)</span>
-  </div>
-<div class="snipet-box">
-    <pre class="snipet">(generator-&gt;list (giota 5 10 2))</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">(10 12 14 16 18)</span>
-  </div>
-<p />If <var>count</var> is not given, then the generator is inifinte.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="grange1366">
-    <span class="name" name="grange">grange</span>
-  </a>
- <span class="args">:optional (start 0) (end +inf.0) (step 1)</span></div>
-<div class="desc">Returns a generator which returns numbers in range of <var>start</var> and
-<var>end</var>. The returning numbers are increased by <var>step</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gunfold1367">
-    <span class="name" name="gunfold">gunfold</span>
-  </a>
- <span class="args">stop? mapper successor seed :optional (tail-gen #f)</span></div>
-<div class="desc">A generator constructor similar to <code>unfold</code>.
-<p />
-<div class="codeblock-box">
-    <pre class="codeblock">(generator-&gt;list (gunfold
-                      (lambda (s) (&gt; s 5))
-                      (lambda (s) (* s 2))
-                      (lambda (s) (+ s 1))
-                      0))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">(0 2 4 6 8 10)</span>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="list-&gt;generator1368">
-    <span class="name" name="list-&gt;generator">list-&gt;generator</span>
-  </a> <span class="args">list</span></div>
-<div class="define"><span class="define-category">Function</span><a name="vector-&gt;generator1369">
-    <span class="name" name="vector-&gt;generator">vector-&gt;generator</span>
-  </a> <span class="args">vector</span></div>
-<div class="define"><span class="define-category">Function</span><a name="reverse-vector-&gt;generator1370">
-    <span class="name" name="reverse-vector-&gt;generator">reverse-vector-&gt;generator</span>
-  </a> <span class="args">vector</span></div>
-<div class="define"><span class="define-category">Function</span><a name="string-&gt;generator1371">
-    <span class="name" name="string-&gt;generator">string-&gt;generator</span>
-  </a> <span class="args">string</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;generator1372">
-    <span class="name" name="bytevector-&gt;generator">bytevector-&gt;generator</span>
-  </a> <span class="args">bytevector</span></div>
-<div class="desc">Generator constructors. The returning generator returns the items
-taken from given argument from the beginning of the given sequence to
-the end. Except <code>reverse-vector-&gt;generator</code> which return end to beginning.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="port-&gt;char-generator1373">
-    <span class="name" name="port-&gt;char-generator">port-&gt;char-generator</span>
-  </a> <span class="args">port</span></div>
-<div class="define"><span class="define-category">Function</span><a name="port-&gt;byte-generator1374">
-    <span class="name" name="port-&gt;byte-generator">port-&gt;byte-generator</span>
-  </a> <span class="args">port</span></div>
-<div class="desc">Generator constructors. The returning generator returns the items read
-from the given <var>port</var>. The <code>port-&gt;char-generator</code> uses <code>get-char</code>
-to read the port. The <code>port-&gt;byte-generator</code> uses <code>get-u8</code>.
-</div>
-<p /><div class="define">
-    <span class="define-category">Generic</span>
-    <a name="-&gt;generator1375">
-      <span class="name" name="-&gt;generator">-&gt;generator</span>
-    </a>
-  </div>
-<div class="desc">Generic constructor of generators. By default, the following methods are
-defined and dispatched above generator constrocturs.
-<p /><code>&lt;list&gt;</code>, <code>&lt;vector&gt;</code>, <code>&lt;string&gt;</code>, <code>&lt;bytevector&gt;</code> and
-<code>&lt;port&gt;</code>.
-<p />If the given argument is type of  <code>&lt;vector&gt;</code>, then <code>vector-&gt;generator</code>
-is used. If the given argument is type of <code>&lt;port&gt;</code>, then it checks if
-it's binary or textual and dispatches apropriate procedure.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1376"><span class="section-number">6.15.2</span>Generator operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="gcons*1377">
-    <span class="name" name="gcons*">gcons*</span>
-  </a> <span class="args">object ... generator</span></div>
-<div class="desc">Returns a generator which adds <var>object</var>s in front of <var>generator</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gappend1378">
-    <span class="name" name="gappend">gappend</span>
-  </a> <span class="args">generator ...</span></div>
-<div class="desc">Returns a generator which yields values from the first <var>generator</var>
-and when it's exhausted continues to next.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gcombine1379">
-    <span class="name" name="gcombine">gcombine</span>
-  </a> <span class="args">proc seed generator generators ...</span></div>
-<div class="desc">Returns a generator for mapping with state. It yields a sequence of 
-sub-folds over <var>proc</var>. 
-<p />The <var>proc</var> argument is a procedure which takes as many arguments as 
-the input generators plus one. It is called as 
-<code>(<var>proc</var> <var>v1</var> <var>v2</var> ... <var>seed</var>)</code>, where 
-<var>v1</var>, <var>v2</var>,<code>...</code> are the values yielded from the input 
-generators, and <var>seed</var> is the current seed value. It must return two
-values, the yielding value and the next seed. 
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gfilter1380">
-    <span class="name" name="gfilter">gfilter</span>
-  </a> <span class="args">pred generator</span></div>
-<div class="define"><span class="define-category">Function</span><a name="gremove1381">
-    <span class="name" name="gremove">gremove</span>
-  </a> <span class="args">pred generator</span></div>
-<div class="desc">Return generators which yield the items from the source generator, 
-except those on which <var>pred</var> returns false or true respectively. 
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gtake1382">
-    <span class="name" name="gtake">gtake</span>
-  </a> <span class="args">generator k :optional padding</span></div>
-<div class="define"><span class="define-category">Function</span><a name="gdrop1383">
-    <span class="name" name="gdrop">gdrop</span>
-  </a> <span class="args">generator k</span></div>
-<div class="desc">Return generators which take or drop <var>k</var> items from <var>generator</var>,
-respectively. Returning generators won't raise errors when it's exhausted
-before reaching <var>k</var>.
-<p />Optional argument <var>padding</var> for <code>gtake</code> is passed, then the value
-is filled until the procedure reaches <var>k</var>.
-<p />These procedures are analogues of SRFI-1 <code>take</code> and <code>drop</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gtake-while1384">
-    <span class="name" name="gtake-while">gtake-while</span>
-  </a> <span class="args">generator pred</span></div>
-<div class="define"><span class="define-category">Function</span><a name="gdrop-while1385">
-    <span class="name" name="gdrop-while">gdrop-while</span>
-  </a> <span class="args">generator pred</span></div>
-<div class="desc">Return generators which take or drop until procedure <var>pred</var> returns
-false value respectively.
-<p />These procedures are analogues of SRFI-1 <code>take-while</code> 
-and <code>drop-while</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gdelete1386">
-    <span class="name" name="gdelete">gdelete</span>
-  </a> <span class="args">item generator :optional (= equal?)</span></div>
-<div class="desc">Returns a generator which returns items <var>generator</var> returns, except
-items which are the same as <var>item</var> in sense of <var>=</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gdelete-neighbor-dups1387">
-    <span class="name" name="gdelete-neighbor-dups">gdelete-neighbor-dups</span>
-  </a>
- <span class="args">generator :optional (= equal?)</span></div>
-<div class="desc">Returns a generator which returns items <var>generator</var> returns, except
-items which are the same as the proceeding item in sense of <var>=</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gselect1388">
-    <span class="name" name="gselect">gselect</span>
-  </a> <span class="args">value-generator index-generator</span></div>
-<div class="desc">Returns a generator which returns the items generated by
-<var>value-generator</var> of specified by the indice generated by 
-<var>index-generator</var>. The indice must be non negative integer and
-increased strictly. Otherwise an error is raised.
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(generator-&gt;list (gindex (list-&gt;generator '(a b c d e f))
-                 (list-&gt;generator '(0 2 4))))</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">(a c e)</span>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gselect1389">
-    <span class="name" name="gselect">gselect</span>
-  </a> <span class="args">value-generator truth-generator</span></div>
-<div class="desc">Returns a generator which returns the items generated by
-<var>value-generator</var> that correspond to the items generated by 
-<var>truth-generator</var>. If <var>truth-generator</var> returns true value,
-then the current value of <var>value-generator</var> is returned. Otherwise not.
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(generator-&gt;list (gselect (list-&gt;generator '(a b c d e f))
-                          (list-&gt;generator '(#t #f #f #t #t #f))))</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">(a d e)</span>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gconcatenate1390">
-    <span class="name" name="gconcatenate">gconcatenate</span>
-  </a> <span class="args">generator</span></div>
-<div class="desc"><var>generator</var> must be an generator generates generators.
-<p />Returns a generator which returns the items generated by the generators
-generated by given <var>generator</var>. It is similar to the following:
-<pre class="codeblock">(apply gappend (generator-&gt;list generator))
-</pre>
-The difference is that this procedure can handle infinite generator.
-</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="gflatten1391">
-    <span class="name" name="gflatten">gflatten</span>
-  </a> <span class="args">generator</span></div>
-<div class="desc"><var>generator</var> must be a generator which returns lists as its items.
-<p />Returns a generator which flatten the items generated by given <var>generator</var>.
-<div class="codeblock-box">
-    <pre class="codeblock">(generator-&gt;list (gflatten (list-&gt;generator (list '(1 2 3 4)
-                                                  '(a b c d)
-                                                  '(A B C D)))))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">(1 2 3 4 a b c d A B C D)</span>
-  </div>
-<p />If the <var>generator</var> returns non list item, then it is ignored.
-<div class="codeblock-box">
-    <pre class="codeblock">(generator-&gt;list (gflatten (list-&gt;generator (list 'ignored
-                                                  '(a b c d)
-                                                  'ignored
-                                                  '(A B C D)))))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">(a b c d A B C D)</span>
-  </div>
-This behaviour is an error behaviour so it might be changed in future.
-So users should not depend on this.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gmerge1392">
-    <span class="name" name="gmerge">gmerge</span>
-  </a> <span class="args">compare generator1 generator2 ...</span></div>
-<div class="desc"><var>compare</var> must be a procedure which accepts 2 arguments and returns
-boolean value. The procedure should compare the given 2 arguments and return
-true value if the first argument is smaller than the second argument.
-<p />Returns a generator which returns the ordered items determined by <var>compare</var>
-procedure. If the <code>gmerge</code> procedure is called only one argument, then 
-it simply returns a generator (if <var>generator1</var> isn't a generator then
-it is coerced).
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(generator-&gt;list (gmerge &lt; (list-&gt;generator '(1 4 5)) (list-&gt;generator '(0 2 3))))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">(0 1 2 3 4 5)</span>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gmap1393">
-    <span class="name" name="gmap">gmap</span>
-  </a> <span class="args">proc generator1 generator2 ...</span></div>
-<div class="desc">Returns a generator which returns the items returned by <code>proc</code>.
-<p />The <code>proc</code> is called with the items returned by <var>generator1</var> and
-<var>generator2</var> if it's given.
-<p />The <var>gmap</var> procedure accepts uneven length of generators however one
-of the generator must be finite length, otherwise it won't be exhausted.
-<p />It is an analogy of <code>map</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gfilter-map1394">
-    <span class="name" name="gfilter-map">gfilter-map</span>
-  </a> <span class="args">proc generator1 generator2 ...</span></div>
-<div class="desc">Returns a generator which returns the items returnd by <code>proc</code>.
-<p />This procedure is similar with <code>gmap</code>. The difference is that the 
-returning item is filtered if the returning value of <var>proc</var> is #f.
-<p />It is an analogy of <code>filter-map</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="generate1395">
-    <span class="name" name="generate">generate</span>
-  </a> <span class="args">proc</span></div>
-<div class="desc">Returns a coroutine generator which return the item returned by 
-<var>proc</var>.
-<p />The given argument <var>proc</var> must accept one argument, <var>yield</var> which
-is a procedure accepts variable arguments. The <var>proc</var> procedure can return
-values via <var>yield</var> procedure.
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(define g
-  (make-coroutine-generator
-    (lambda (yield) 
-      (let loop ((i 0))
-        (when (&lt; i 3) 
-          (yield i) 
-          (loop (+ i 1)))))))
+<div class="desc">This library provides debugging support reader macro.</div>
+<p /><div class="define"><span class="define-category">Reader Macro</span><a name="#?=1373">
+    <span class="name" name="#?=">#?=</span>
+  </a> <span class="args">expr</span></div>
+<div class="desc">This reader macro reads the next expression as followings;
+<p /><pre class="snipet">(debug-print <var>expr</var>)</pre>
+<p /><code>debug-print</code> is an internal macro of this library which prints the
+read expression and its result.
+<p />Following example shows how to enable this;
+<p /><pre class="codeblock">#!read-macro=sagittarius/debug
+#!debug
+(let ((a (+ 1 2)))
+  #?=(expt a 2))
 
-(generator-&gt;list g)
+#|
+#?=(expt a 2)
+#?-    9
+|#
 </pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">(0 1 2)</span>
-  </div>
+<p /><code>#!debug</code> enables the debug print.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="glet*1396">
-    <span class="name" name="glet*">glet*</span>
-  </a> <span class="args">(bindings ...) body1 body2 ...</span></div>
-<div class="desc"><code>glet*</code> is a macro which is similar to <code>let*</code>. The difference
-is that <code>glet*</code> check if the bindings are EOF object or not and if it 
-detects EOF object, then it returns EOF object immediately.
-<p /><var>bindings</var> must be one of the following forms:
-<ul class="itemlist">  <li class="itemlist-item">
-    <code>(<var>var</var> <var>gen-expr</var>)</code>
-  </li>
-  <li class="itemlist-item">
-    <code>( <var>gen-expr</var> )</code>
-  </li>
-</ul>
-If the first form is used, then the <var>gen-expr</var> is bound to <var>var</var>. 
-Otherwise the <code>glet*</code> just check if the value is EOF or not.
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(define g (list-&gt;generator '(1 2 3)))
+<p /><div class="define"><span class="define-category">Function</span><a name="macroexpand1374">
+    <span class="name" name="macroexpand">macroexpand</span>
+  </a> <span class="args">expr</span></div>
+<div class="desc">Expands given <var>expr</var>. The returning value may or may not be used
+as proper Scheme expression.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="macroexpand-11375">
+    <span class="name" name="macroexpand-1">macroexpand-1</span>
+  </a> <span class="args">expr</span></div>
+<div class="define"><span class="define-category">Function</span><a name="macroexpand-n1376">
+    <span class="name" name="macroexpand-n">macroexpand-n</span>
+  </a> <span class="args">expr n</span></div>
+<div class="desc">Expands given <var>expr</var> <var>n</var> times. The first form's <var>n</var> is 1.
+<p />This procedure expands only globally defined macro and the result of expansion
+is other macro such as next rule of <code>syntax-rules</code>. It doesn't consider
+locally bound macros.
+<p />The returning value may or may not be used as proper Scheme expression.
+</div>
+<p />Above 2 procedures are no more than debug aid. Depending on the result of
+expansion is not guaranteed to work.
 
-(list 
-  (glet* ((a (g))) a)
-  (glet* ((a (g))) (define b 2) (+ a b))
-  (glet* ((a (g)) (b (g))) (+ a b)))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">(1 2 #&lt;eof&gt;)</span>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="glet11397">
-    <span class="name" name="glet1">glet1</span>
-  </a> <span class="args">var expr body1 body2 ...</span></div>
-<div class="desc">Convenient macro for only one binding of <code>glet*</code>. This is defined
-like the following:
-<pre class="codeblock">(define-syntax glet1
-  (syntax-rules ()
-    ((_ var expr body body1 ...)
-     (glet* ((var expr)) body body1 ...))))
-</pre>
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="do-generator1398">
-    <span class="name" name="do-generator">do-generator</span>
-  </a> <span class="args">(var gen-expr) body ...</span></div>
-<div class="desc">Iterates generator of then given <var>gen-expr</var>.
-</div>
-<p />
-
-</section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section614.html">(sagittarius debug) - Debugging support</a>
+    <a class="prev" href="section614.html">(sagittarius timezone) - Timezone</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section7.html">Utility libraries</a>
+    <a class="next" href="section616.html">(sagittarius generators) - Generators</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-03-18T20:12:22+0100</i></div>
+    <div id="footer-date">Generated date: <i>2016-05-27T22:18:07+0200</i></div>
   </div>
 </html>

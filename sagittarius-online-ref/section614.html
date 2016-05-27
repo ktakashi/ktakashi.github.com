@@ -6,70 +6,113 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section613.html">(sagittarius timezone) - Timezone</a>
+    <a class="prev" href="section613.html">(sagittarius threads) - Thread</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section615.html">(sagittarius generators) - Generators</a>
+    <a class="next" href="section615.html">(sagittarius debug) - Debugging support</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="lib.sagittarius.debug"><span class="section-number">6.14</span>(sagittarius debug) - Debugging support</a>
+    <a class="section.anchor" name="lib.sagittarius.timezone"><span class="section-number">6.14</span>(sagittarius timezone) - Timezone</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(sagittarius debug)1357">
-      <span class="name" name="(sagittarius debug)">(sagittarius debug)</span>
+    <a name="(sagittarius timezone)1363">
+      <span class="name" name="(sagittarius timezone)">(sagittarius timezone)</span>
     </a>
   </div>
-<div class="desc">This library provides debugging support reader macro.</div>
-<p /><div class="define"><span class="define-category">Reader Macro</span><a name="#?=1358">
-    <span class="name" name="#?=">#?=</span>
-  </a> <span class="args">expr</span></div>
-<div class="desc">This reader macro reads the next expression as followings;
-<p /><pre class="snipet">(debug-print <var>expr</var>)</pre>
-<p /><code>debug-print</code> is an internal macro of this library which prints the
-read expression and its result.
-<p />Following example shows how to enable this;
-<p /><pre class="codeblock">#!read-macro=sagittarius/debug
-#!debug
-(let ((a (+ 1 2)))
-  #?=(expt a 2))
+<div class="desc">This library provides timezone related procedures. The timezone database
+is from 
+<a href="https://www.iana.org/time-zones">IANA - Time Zone Database</a>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timezone?1364">
+    <span class="name" name="timezone?">timezone?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is a timezone object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timezone1365">
+    <span class="name" name="timezone">timezone</span>
+  </a> <span class="args">name</span></div>
+<div class="desc">Retrieves timezone object related to <var>name</var>. The <var>name</var>
+must be a string and proper name of TZID such as <code>Europe/Amsterdam</code>.
+If the given name is not found, then <code>GMT</code> is returned as the fallback.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timezone-offset1366">
+    <span class="name" name="timezone-offset">timezone-offset</span>
+  </a> <span class="args">tz :optional when</span></div>
+<div class="desc">Returns give offset of timezone <var>tz</var>.
+<p />If optional argument <var>when</var> is specified, it must be a time object,
+then the offset is calculated the specified time. Otherwise <code>current-time</code>,
+is used.
+<p />This procedure considers daylight saving time (DST). Means, if the timezone
+has DST, then the return value is depending on the <var>when</var>. For example, 
+<code>Europe/Amsterdam</code> has DST so if the <var>when</var> is in DST, then the
+returning offset is <code>7200</code>, otherwise <code>3600</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timezone-dst?1367">
+    <span class="name" name="timezone-dst?">timezone-dst?</span>
+  </a> 
+ <span class="args">tz :optional (when (current-time))</span></div>
+<div class="desc">Returns #t if <var>when</var> is in DST, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timezone-short-name1368">
+    <span class="name" name="timezone-short-name">timezone-short-name</span>
+  </a> 
+ <span class="args">tz :optional (when (current-time))</span></div>
+<div class="desc">Returns the short name of given timezone <var>tz</var>.
+<p />This procedure considers DST. Means if <var>when</var> is in DST, then short name
+is DST name, otherwise standard name. For example, timezone 
+<code>Europe/Amsterdam</code> has 2 names, <code>CET</code> and <code>CEST</code>. If the
+given <var>when</var> is in DST, then <code>CEST</code> is returned, otherwise <code>CET</code>
+is returned.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="timezone-raw-offset1369">
+    <span class="name" name="timezone-raw-offset">timezone-raw-offset</span>
+  </a> <span class="args">tz :optional when</span></div>
+<div class="desc">Returns GMT offset of given timezone <var>tz</var>. 
+<p />If optional argument <var>when</var> is given and must be a time object, then
+the returning offset is the historical offset. If it's not given, then
+the procedure reutnrs current timezone offset.
+</div>
+<p />Above procedures also considers when the timezone is started. Means, given
+timezone has histories, such as when the daylight saving time is starting
+or ending, when that timezone started, etc. It may return different value
+according to the <var>when</var>. Following is the example of timezone history:
+<pre class="codeblock">(let ((tz (timezone "Europe/Dublin"))
+      (now (date-&gt;time-utc (make-date 0 0 0 0 24 7 2015 0)))
+      ;; 1:00	-	IST	1971 Oct 31  2:00u
+      (no-rule-past (date-&gt;time-utc (make-date 0 0 0 0 24 7 1971 0)))
+      ;; 0:00	GB-Eire	GMT/IST	1968 Oct 27
+      (rule-past (date-&gt;time-utc (make-date 0 0 0 0 24 7 1968 0))))
+  (timezone-short-name tz now)          ;; =&gt; "GMT/IST"
+  (timezone-short-name tz no-rule-past) ;; =&gt; "IST
 
-#|
-#?=(expt a 2)
-#?-    9
-|#
+  ;; no DST
+  (timezone-offset tz no-rule-past)     ;; =&gt; 3600 
+
+  (timezone-raw-offset tz)              ;; =&gt; 0
+  (timezone-raw-offset tz no-rule-past) ;; =&gt; 3600
+  (timezone-raw-offset tz rule-past)    ;; =&gt; 0
+
+  (timezone-short-name tz rule-past)    ;; =&gt; "GMT/IST"
+  )
 </pre>
-<p /><code>#!debug</code> enables the debug print.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="macroexpand1359">
-    <span class="name" name="macroexpand">macroexpand</span>
-  </a> <span class="args">expr</span></div>
-<div class="desc">Expands given <var>expr</var>. The returning value may or may not be used
-as proper Scheme expression.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="macroexpand-11360">
-    <span class="name" name="macroexpand-1">macroexpand-1</span>
-  </a> <span class="args">expr</span></div>
-<div class="define"><span class="define-category">Function</span><a name="macroexpand-n1361">
-    <span class="name" name="macroexpand-n">macroexpand-n</span>
-  </a> <span class="args">expr n</span></div>
-<div class="desc">Expands given <var>expr</var> <var>n</var> times. The first form's <var>n</var> is 1.
-<p />This procedure expands only globally defined macro and the result of expansion
-is other macro such as next rule of <code>syntax-rules</code>. It doesn't consider
-locally bound macros.
-<p />The returning value may or may not be used as proper Scheme expression.
-</div>
-<p />Above 2 procedures are no more than debug aid. Depending on the result of
-expansion is not guaranteed to work.
+<p /><div class="define"><span class="define-category">Function</span><a name="timezone-name1370">
+    <span class="name" name="timezone-name">timezone-name</span>
+  </a> <span class="args">tz</span></div>
+<div class="desc">Returns TZID of given timezone <var>tz</var>.</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="timezone-name-list1371">
+      <span class="name" name="timezone-name-list">timezone-name-list</span>
+    </a>
+  </div>
+<div class="desc">Returns supported TZIDs.</div>
 
 </section>
   <div class="prev-next">
-    <a class="prev" href="section613.html">(sagittarius timezone) - Timezone</a>
+    <a class="prev" href="section613.html">(sagittarius threads) - Thread</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section615.html">(sagittarius generators) - Generators</a>
+    <a class="next" href="section615.html">(sagittarius debug) - Debugging support</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-03-18T20:12:22+0100</i></div>
+    <div id="footer-date">Generated date: <i>2016-05-27T22:18:07+0200</i></div>
   </div>
 </html>

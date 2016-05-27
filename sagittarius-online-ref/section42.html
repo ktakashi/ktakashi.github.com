@@ -43,7 +43,7 @@ procedures are explicitly said 'the same as R6RS'.
  
  define define-record-type define-syntax denominator do dynamic-wind
 
- else eof-object eof-object? eq? equal? eqv? error even?
+ else eof-object eof-object? eq? eqv? error even?
  exact exact-integer-sqrt exact? expt
 
  floor flush-output-port for-each
@@ -52,8 +52,8 @@ procedures are explicitly said 'the same as R6RS'.
 
  if inexact inexact? input-port? integer-&gt;char integer?
 
- lambda lcm length let let* let*-values let-syntax let-values
- letrec letrec* letrec-syntax list list-&gt;string list-&gt;vector
+ lambda lcm length let let* let*-values let-values
+ letrec letrec* list list-&gt;string list-&gt;vector
  list-ref list-tail list?
 
  make-bytevector make-string make-vector map max member memq memv min
@@ -524,12 +524,70 @@ respectively.
 <div class="desc">Returns a list of the feature identifiers which <code>cond-expand</code>
 treas as true.
 </div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G854"><span class="section-number">4.2.1.12</span>Differ from R6RS</a>
+  </h5>
+<p />The following procedures or macros are re-defined to strictly follow either
+R6RS or R7RS. It is users' responsibility to make sure proper ones are used
+in their script.
+<p /><div class="define"><span class="define-category">Function</span><a name="equal?855">
+    <span class="name" name="equal?">equal?</span>
+  </a> <span class="args">a b</span></div>
+<div class="desc">Returns #t if <var>a</var> and <var>b</var> are equivalent.
+<p />The difference between the one from <code>(rnrs base)</code> is that this procedure
+inspect record fields as well. For example:
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(import (rnrs))
+(define-record-type (&lt;pare&gt; kons pare?)
+  (fields (mutable a kar set-kar!)
+	  (mutable d kdr set-kdr!)))
+
+(let ((a (kons 'a 'b))
+      (b (kons 'a 'b)))
+  (equal? a b))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">#f</span>
+  </div>
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(import (scheme base))
+(define-record-type (&lt;pare&gt; kons pare?)
+  (fields (mutable a kar set-kar!)
+	  (mutable d kdr set-kdr!)))
+
+(let ((a (kons 'a 'b))
+      (b (kons 'a 'b)))
+  (equal? a b))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">#t</span>
+  </div>
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="let-syntax856">
+    <span class="name" name="let-syntax">let-syntax</span>
+  </a> <span class="args">((var trans) ...) expr ...</span></div>
+<div class="define"><span class="define-category">Macro</span><a name="letrec-syntax857">
+    <span class="name" name="letrec-syntax">letrec-syntax</span>
+  </a> <span class="args">((var trans) ...) expr ...</span></div>
+<div class="desc">Binds macro transformer <var>trans</var> to <var>var</var>.
+<p />The difference between the one from <code>(rnrs base)</code> and these macros is
+that these macro create scope. Thus the following is unbound variable error:
+<div class="codeblock-box">
+    <pre class="codeblock">(import (scheme base))
+(let-syntax ()
+  (define foo 'foo))
+foo
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">&amp;undefined</span>
+  </div>
+</div>
 <p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G854"><span class="section-number">4.2.2</span>Case-lambda library</a>
+    <a class="section.anchor" name="G858"><span class="section-number">4.2.2</span>Case-lambda library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme case-lambda)855">
+    <a name="(scheme case-lambda)859">
       <span class="name" name="(scheme case-lambda)">(scheme case-lambda)</span>
     </a>
   </div>
@@ -538,11 +596,11 @@ treas as true.
 <p /><code>case-lambda</code>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G856"><span class="section-number">4.2.3</span>Char library</a>
+    <a class="section.anchor" name="G860"><span class="section-number">4.2.3</span>Char library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme char)857">
+    <a name="(scheme char)861">
       <span class="name" name="(scheme char)">(scheme char)</span>
     </a>
   </div>
@@ -556,7 +614,7 @@ These procedures are the same as R6RS;
  string-ci=? string-ci&gt;=? string-ci&gt;? string-downcase string-foldcase
  string-upcase</pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="digit-value858">
+<p /><div class="define"><span class="define-category">Function</span><a name="digit-value862">
     <span class="name" name="digit-value">digit-value</span>
   </a> <span class="args">c</span></div>
 <div class="desc">[R7RS+] Converts given character to it's numeric value. If the given
@@ -589,11 +647,11 @@ character does not have numeric value, then it returns #f.
   </div>
 <p /></div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G859"><span class="section-number">4.2.4</span>Complex library</a>
+    <a class="section.anchor" name="G863"><span class="section-number">4.2.4</span>Complex library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme complex)860">
+    <a name="(scheme complex)864">
       <span class="name" name="(scheme complex)">(scheme complex)</span>
     </a>
   </div>
@@ -602,11 +660,11 @@ character does not have numeric value, then it returns #f.
 <p /><code>angle imag-part magnitude make-polar make-rectangular real-part</code>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G861"><span class="section-number">4.2.5</span>CxR library</a>
+    <a class="section.anchor" name="G865"><span class="section-number">4.2.5</span>CxR library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme cxr)862">
+    <a name="(scheme cxr)866">
       <span class="name" name="(scheme cxr)">(scheme cxr)</span>
     </a>
   </div>
@@ -628,11 +686,11 @@ cddar cdddar
 cddddr cdddr</pre>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G863"><span class="section-number">4.2.6</span>Eval library</a>
+    <a class="section.anchor" name="G867"><span class="section-number">4.2.6</span>Eval library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme eval)864">
+    <a name="(scheme eval)868">
       <span class="name" name="(scheme eval)">(scheme eval)</span>
     </a>
   </div>
@@ -642,11 +700,11 @@ Scheme data as programs.
 <p /><code>environment eval</code>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G865"><span class="section-number">4.2.7</span>File library</a>
+    <a class="section.anchor" name="G869"><span class="section-number">4.2.7</span>File library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme file)866">
+    <a name="(scheme file)870">
       <span class="name" name="(scheme file)">(scheme file)</span>
     </a>
   </div>
@@ -657,21 +715,21 @@ Scheme data as programs.
  open-input-file open-output-file
  with-input-from-file with-output-to-file</pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-binary-input-file867">
+<p /><div class="define"><span class="define-category">Function</span><a name="open-binary-input-file871">
     <span class="name" name="open-binary-input-file">open-binary-input-file</span>
   </a> <span class="args">file</span></div>
-<div class="define"><span class="define-category">Function</span><a name="open-binary-output-file868">
+<div class="define"><span class="define-category">Function</span><a name="open-binary-output-file872">
     <span class="name" name="open-binary-output-file">open-binary-output-file</span>
   </a> <span class="args">file</span></div>
 <div class="desc">Returns file binary input or output port associated with given
 <var>file</var>, respectively.
 </div>
 </section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G869"><span class="section-number">4.2.8</span>Inexact library</a>
+    <a class="section.anchor" name="G873"><span class="section-number">4.2.8</span>Inexact library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme inexact)870">
+    <a name="(scheme inexact)874">
       <span class="name" name="(scheme inexact)">(scheme inexact)</span>
     </a>
   </div>
@@ -680,11 +738,11 @@ Scheme data as programs.
 <p /><code>acos asin atan cos exp finite? infinite? log nan? sin sqrt tan</code>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G871"><span class="section-number">4.2.9</span>Lazy library</a>
+    <a class="section.anchor" name="G875"><span class="section-number">4.2.9</span>Lazy library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme lazy)872">
+    <a name="(scheme lazy)876">
       <span class="name" name="(scheme lazy)">(scheme lazy)</span>
     </a>
   </div>
@@ -693,7 +751,7 @@ keywords for lazy evaluation.
 <p />These procedures/macros are the same as R6RS;
 <p /><code>delay force make-promise promise?</code>
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="delay-force873">
+<p /><div class="define"><span class="define-category">Macro</span><a name="delay-force877">
     <span class="name" name="delay-force">delay-force</span>
   </a> <span class="args">expression</span></div>
 <div class="desc">The expression <code>(delay-force <var>expression</var>)</code> is conceptually
@@ -703,18 +761,18 @@ to <code>(force <var>expression</var>)</code>, while forcing the result of
 <code>(delay (force <var>expression</var>))</code> might not.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G874"><span class="section-number">4.2.10</span>Load library</a>
+    <a class="section.anchor" name="G878"><span class="section-number">4.2.10</span>Load library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme load)875">
+    <a name="(scheme load)879">
       <span class="name" name="(scheme load)">(scheme load)</span>
     </a>
   </div>
 <div class="desc">[R7RS]This library exports procedures for loading Scheme expressions
 from files.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="load876">
+<p /><div class="define"><span class="define-category">Function</span><a name="load880">
     <span class="name" name="load">load</span>
   </a> <span class="args">file :optional environment</span></div>
 <div class="desc">Reads expression in <var>file</var> and evaluates it until it gets to
@@ -722,11 +780,11 @@ end of file. If <var>environment</var> is passed, then the evaluation is done
 in that environment. Otherwise it is done in current environment.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G877"><span class="section-number">4.2.11</span>Process-Context library</a>
+    <a class="section.anchor" name="G881"><span class="section-number">4.2.11</span>Process-Context library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme process-context)878">
+    <a name="(scheme process-context)882">
       <span class="name" name="(scheme process-context)">(scheme process-context)</span>
     </a>
   </div>
@@ -735,13 +793,13 @@ calling context.
 <p />These procedures are the same as R6RS;
 <code>command-line exit</code>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="emergency-exit879">
+<p /><div class="define"><span class="define-category">Function</span><a name="emergency-exit883">
     <span class="name" name="emergency-exit">emergency-exit</span>
   </a> <span class="args">:optional obj</span></div>
 <div class="desc">Exist process without any cleanup. The optional argument <var>obj</var>
 is given then it's translated to proper return value of the process.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="get-enviromnent-variable880">
+<p /><div class="define"><span class="define-category">Function</span><a name="get-enviromnent-variable884">
     <span class="name" name="get-enviromnent-variable">get-enviromnent-variable</span>
   </a> <span class="args">name</span></div>
 <div class="desc"><var>name</var> must be a string.
@@ -749,32 +807,32 @@ is given then it's translated to proper return value of the process.
 </div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="get-enviromnent-variables881">
+    <a name="get-enviromnent-variables885">
       <span class="name" name="get-enviromnent-variables">get-enviromnent-variables</span>
     </a>
   </div>
 <div class="desc">Returns alist of environment variables.</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G882"><span class="section-number">4.2.12</span>Read library</a>
+    <a class="section.anchor" name="G886"><span class="section-number">4.2.12</span>Read library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme read)883">
+    <a name="(scheme read)887">
       <span class="name" name="(scheme read)">(scheme read)</span>
     </a>
   </div>
 <div class="desc">[R7RS]This library exports procedures for reading Scheme objects.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="read884">
+<p /><div class="define"><span class="define-category">Function</span><a name="read888">
     <span class="name" name="read">read</span>
   </a> <span class="args">:optional port</span></div>
 <div class="desc">Renaming export of <code>read/ss</code>.</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G885"><span class="section-number">4.2.13</span>Repl library</a>
+    <a class="section.anchor" name="G889"><span class="section-number">4.2.13</span>Repl library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme repl)886">
+    <a name="(scheme repl)890">
       <span class="name" name="(scheme repl)">(scheme repl)</span>
     </a>
   </div>
@@ -782,17 +840,17 @@ is given then it's translated to proper return value of the process.
 <code>interaction-environment</code> procedure.</div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="interaction-environment887">
+    <a name="interaction-environment891">
       <span class="name" name="interaction-environment">interaction-environment</span>
     </a>
   </div>
 <div class="desc">Returns interaction environment.</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G888"><span class="section-number">4.2.14</span>Time library</a>
+    <a class="section.anchor" name="G892"><span class="section-number">4.2.14</span>Time library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme time)889">
+    <a name="(scheme time)893">
       <span class="name" name="(scheme time)">(scheme time)</span>
     </a>
   </div>
@@ -800,14 +858,14 @@ is given then it's translated to proper return value of the process.
 </div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="current-jiffy890">
+    <a name="current-jiffy894">
       <span class="name" name="current-jiffy">current-jiffy</span>
     </a>
   </div>
 <div class="desc">Returns the number of jiffies as an exact integer.</div>
 <div class="define">
     <span class="define-category">Function</span>
-    <a name="jiffies-per-second891">
+    <a name="jiffies-per-second895">
       <span class="name" name="jiffies-per-second">jiffies-per-second</span>
     </a>
   </div>
@@ -815,7 +873,7 @@ is given then it's translated to proper return value of the process.
 second.</div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="current-second892">
+    <a name="current-second896">
       <span class="name" name="current-second">current-second</span>
     </a>
   </div>
@@ -823,11 +881,11 @@ second.</div>
 International Atomic Time (TAI) scale.</div>
 <p />
 </section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G893"><span class="section-number">4.2.15</span>Write library</a>
+    <a class="section.anchor" name="G897"><span class="section-number">4.2.15</span>Write library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme write)894">
+    <a name="(scheme write)898">
       <span class="name" name="(scheme write)">(scheme write)</span>
     </a>
   </div>
@@ -835,29 +893,29 @@ International Atomic Time (TAI) scale.</div>
 <p />This procedures is the same as R6RS
 <code>display</code>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="write895">
+<p /><div class="define"><span class="define-category">Function</span><a name="write899">
     <span class="name" name="write">write</span>
   </a>
  <span class="args">obj :optional (output-port (current-output-port))</span></div>
 <div class="desc">Writes a representation of <var>obj</var> to <var>output-port</var>.
 <p />If the <var>obj</var> contains cyclic, the procedure writes with datum label.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="write-shared896">
+<p /><div class="define"><span class="define-category">Function</span><a name="write-shared900">
     <span class="name" name="write-shared">write-shared</span>
   </a>
  <span class="args">obj :optional (output-port (current-output-port))</span></div>
-<div class="define"><span class="define-category">Function</span><a name="write-simple897">
+<div class="define"><span class="define-category">Function</span><a name="write-simple901">
     <span class="name" name="write-simple">write-simple</span>
   </a>
  <span class="args">obj :optional (output-port (current-output-port))</span></div>
 <div class="desc">Renaming export of <code>write/ss</code> and <code>write</code>, respectively.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G898"><span class="section-number">4.2.16</span>R5RS library</a>
+    <a class="section.anchor" name="G902"><span class="section-number">4.2.16</span>R5RS library</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(scheme r5rs)899">
+    <a name="(scheme r5rs)903">
       <span class="name" name="(scheme r5rs)">(scheme r5rs)</span>
     </a>
   </div>
@@ -880,6 +938,6 @@ library exports procedures for writing Scheme objects.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-03-18T20:12:22+0100</i></div>
+    <div id="footer-date">Generated date: <i>2016-05-27T22:18:07+0200</i></div>
   </div>
 </html>
