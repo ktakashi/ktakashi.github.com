@@ -69,57 +69,49 @@ port.
 <p /><var>stderr</var> keyword argument indicates the port where to redirect the standard
 error of the process. This can be either binary output port or textual output
 port. If this argument is #f, then <var>stdout</var> will be used.
-<p /><var>call?</var> keyword argument decides the behaviour. If this is #t, then the
-process will be waited until its end. Otherwise just invokes it and returns
-process object.
+<p /><var>call?</var> keyword argument decides the default behaviour. If this is #t and
+<var>reader</var> is not a procedure, then the <code>create-process</code> uses
+<code>async-process-read</code>. If this is #f and <var>reader</var> is not a procedure,
+then it uses <code>sync-process-read</code>. If <var>reader</var> is provided, then it
+uses given <var>reader</var>.
 <p /><var>reader</var> keyword argument must be procedure which takes 4 arguments,
 process object, redirection of standard output and error, and transcoder
-respectively. This procedure decides how to handle the output. the default
-implementation is like this:
-<pre class="codeblock">(define (async-process-read process stdout stderr transcoder)
-  (define (pipe-read in out reader converter)
-    (let loop ((r (reader in)))
-      (unless (eof-object? r)
-	(display (converter r) out)
-	(loop (reader in)))))
-  (let ((out-thread (make-thread
-		     (lambda ()
-		       (let ((in (process-output-port process)))
-			 (if transcoder
-			     (pipe-read (transcoded-port in transcoder)
-					stdout
-					get-char
-					(lambda (x) x))
-			     (pipe-read in stdout get-u8 integer-&gt;char))))))
-	(err-thread (make-thread
-		     (lambda ()
-		       (let ((in (process-error-port process)))
-			 (if transcoder
-			     (pipe-read (transcoded-port in transcoder)
-					stderr
-					get-char
-					(lambda (x) x))
-			     (pipe-read in stderr get-u8 integer-&gt;char)))))))
-    (thread-start! out-thread)
-    (thread-start! err-thread)))
-</pre>
-This might not be efficient, so user can specify how to behave.
+respectively. This procedure decides how to handle the output. 
 <p />Note: on Windows, both standard output end error has limitation. So if you
 replace the default behaviour, make sure you must read the output from the
 process, otherwise it can cause deat lock.
 <p /><var>transcoder</var> keyword argument must be transcoder or #f. This can be used in
 the procedure which specified <var>reader</var> keyword argument.
+<p />The procedure <code>create-process</code> creates a process and call it. The
+returning value is depending on the above keyword parameters. If <var>reader</var>
+and <var>stdout</var> is provided, then the result value is the value returned from
+<var>reader</var> procedure. Otherwise the created process object.
 </div>
+<p /><div class="define"><span class="define-category">Function</span><a name="async-process-read1201">
+    <span class="name" name="async-process-read">async-process-read</span>
+  </a>
+ <span class="args">process stdout stderr transcoder</span></div>
+<div class="desc">Process output reader. This reader creates 2 threads to read standard
+ouput and standard error. The reader returns immediately after the threads are
+executed.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sync-process-read1202">
+    <span class="name" name="sync-process-read">sync-process-read</span>
+  </a>
+ <span class="args">process stdout stderr transcoder</span></div>
+<div class="desc">Process output reader. This reader creates 2 threads to read standard
+ouput and standard error. The reader waits until the given process is
+finished.</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1201"><span class="section-number">6.8.3</span>Low level APIs</a>
+    <a class="section.anchor" name="G1203"><span class="section-number">6.8.3</span>Low level APIs</a>
   </h4>
 <p />This section describe low level APIs however some of these might be used even
 if you use <code>call</code> described above.
-<p /><div class="define"><span class="define-category">Function</span><a name="process?1202">
+<p /><div class="define"><span class="define-category">Function</span><a name="process?1204">
     <span class="name" name="process?">process?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #f if <var>obj</var> is process object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-process1203">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-process1205">
     <span class="name" name="make-process">make-process</span>
   </a> <span class="args">name args</span></div>
 <div class="desc"><var>name</var> must be string and indicates the process name which will be
@@ -128,41 +120,41 @@ invoked.
 process.
 <p />Creates a process object.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-input-port1204">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-input-port1206">
     <span class="name" name="process-input-port">process-input-port</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
 <p />Returns the binary output port which is redirected to the process'
 standard input.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-output-port1205">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-output-port1207">
     <span class="name" name="process-output-port">process-output-port</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
 <p />Returns the binary input port which is redirected to the process'
 standard output.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-error-port1206">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-error-port1208">
     <span class="name" name="process-error-port">process-error-port</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
 <p />Returns the binary input port which is redirected to the process'
 standard error.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-run1207">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-run1209">
     <span class="name" name="process-run">process-run</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
 <p />Invokes the <var>process</var> and wait until it ends.
 <p />On POSIX envionment this procesure returns the result status of the process.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-call1208">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-call1210">
     <span class="name" name="process-call">process-call</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
 <p />Invokes the <var>process</var> and continue the Scheme program.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-wait1209">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-wait1211">
     <span class="name" name="process-wait">process-wait</span>
   </a> <span class="args">process :key timeout</span></div>
 <div class="desc"><var>process</var> must be a process object.
@@ -181,7 +173,7 @@ has passed and yet the process is not finished, then the procedure returns
 process is created by <code>pid-&gt;process</code>, then it raises an error with
 <code>ECHILD</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-kill1210">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-kill1212">
     <span class="name" name="process-kill">process-kill</span>
   </a> <span class="args">process :key children?</span></div>
 <div class="desc"><var>process</var> must be a process object.
@@ -193,7 +185,7 @@ the procedure kills the child processes. The process of killing child processes
 is not the same between Windows and POSIX. On Windows, the process seeks all
 possible child processes. On POSIX, it simply calls <code>killpg (2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="process-active?1211">
+<p /><div class="define"><span class="define-category">Function</span><a name="process-active?1213">
     <span class="name" name="process-active?">process-active?</span>
   </a> <span class="args">process</span></div>
 <div class="desc"><var>process</var> must be a process object.
@@ -205,13 +197,13 @@ return #t even if the process itself is already terminated.
 existance of the process.
 </div>
 <p />
-<div class="define"><span class="define-category">Function</span><a name="getpid1212">
+<div class="define"><span class="define-category">Function</span><a name="getpid1214">
     <span class="name" name="getpid">getpid</span>
   </a> <span class="args" /></div>
 <div class="desc">Returns pid of current Sagittarius process. The returning value
 is an integer.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pid-&gt;process1213">
+<p /><div class="define"><span class="define-category">Function</span><a name="pid-&gt;process1215">
     <span class="name" name="pid-&gt;process">pid-&gt;process</span>
   </a> <span class="args">pid</span></div>
 <div class="desc"><var>pid</var> must be an integer represents process id.
@@ -219,16 +211,16 @@ is an integer.
 <p />NOTE: the created process doesn't have any ports. Those values are set to #f.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1214"><span class="section-number">6.8.4</span>Inter-process communication (IPC)</a>
+    <a class="section.anchor" name="G1216"><span class="section-number">6.8.4</span>Inter-process communication (IPC)</a>
   </h4>
 <p />Users can choose how to communicate processes. One of the typical ways is
 using socket. <code>(sagittarius process)</code> provides shared memory for
 simple IPC.
-<p /><div class="define"><span class="define-category">Function</span><a name="shared-memory?1215">
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-memory?1217">
     <span class="name" name="shared-memory?">shared-memory?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is a shared memory object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-shared-memory1216">
+<p /><div class="define"><span class="define-category">Function</span><a name="open-shared-memory1218">
     <span class="name" name="open-shared-memory">open-shared-memory</span>
   </a> <span class="args">name size :optional option</span></div>
 <div class="desc">Creates or opens shared memory named <var>name</var>. 
@@ -243,7 +235,7 @@ no shared memory with given <var>name</var>, then <code>&amp;i/o-file-does-not-e
 is raised. If <code>no-truncate</code> is specified, then the created shared
 memory is intact, otherwise it is truncted.
 <p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="close-shared-memory1217">
+<p /><div class="define"><span class="define-category">Function</span><a name="close-shared-memory1219">
     <span class="name" name="close-shared-memory">close-shared-memory</span>
   </a> <span class="args">shared-memory</span></div>
 <div class="desc">Closes given <var>shared-memory</var> and invalidate the allocated
@@ -254,7 +246,7 @@ until the OS is restarted. To avoid it, users need to call this procedure.
 <p />NOTE: invalidation means that the bytevector returned by 
 <code>shared-memory-&gt;bytevector</code> will be 0 length bytevector.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shared-memory-&gt;bytevector1218">
+<p /><div class="define"><span class="define-category">Function</span><a name="shared-memory-&gt;bytevector1220">
     <span class="name" name="shared-memory-&gt;bytevector">shared-memory-&gt;bytevector</span>
   </a> <span class="args">shared-memory</span></div>
 <div class="desc">Returns actual instance of shared memory as a bytevector.
@@ -271,6 +263,6 @@ until the OS is restarted. To avoid it, users need to call this procedure.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-05-27T22:18:07+0200</i></div>
+    <div id="footer-date">Generated date: <i>2016-06-24T19:18:46+0200</i></div>
   </div>
 </html>
