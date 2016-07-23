@@ -1007,17 +1007,35 @@ if it's given. And it restricts the range of the target elements.
 equivalent to:
 <p /><pre class="snipet">(apply string-append <var>list-of-strings</var>)</pre>
 </div>
+<p /><div class="define"><span class="define-category">Function</span><a name="istring?1048">
+    <span class="name" name="istring?">istring?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given <var>obj</var> is an immutable string, otherwise #f.
+<p />Immutable strings are one of the followings:
+<ul class="itemlist"><li class="itemlist-item">String literals. (c.f. <code>"abc"</code>)</li>
+<li class="itemlist-item">Strings converted to immutable string by <code>string-&gt;istring</code></li>
+</ul>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;istring1049">
+    <span class="name" name="string-&gt;istring">string-&gt;istring</span>
+  </a> 
+ <span class="args">string :optional start end</span></div>
+<div class="desc">Returns copy of the given <var>string</var>. The returning string is
+converted to immutable string.
+<p />The optional argument <var>start</var> and <var>end</var> are given, then the
+returing string is contains only the range of given <var>string</var>.
+</div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1048"><span class="section-number">6.1.16</span>Load path</a>
+    <a class="section.anchor" name="G1050"><span class="section-number">6.1.16</span>Load path</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="add-load-path1049">
+<p /><div class="define"><span class="define-category">Function</span><a name="add-load-path1051">
     <span class="name" name="add-load-path">add-load-path</span>
   </a> <span class="args">path :key (append #f)</span></div>
 <div class="desc">Add given <var>path</var> to current loading path list.
 <p />If keyword argument <var>append</var> is <code>#t</code>, then given <var>path</var> is
 appended to the current loading path list, otherwise prepend to the list.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="add-load-suffix1050">
+<p /><div class="define"><span class="define-category">Function</span><a name="add-load-suffix1052">
     <span class="name" name="add-load-suffix">add-load-suffix</span>
   </a> <span class="args">suffix :key (append #f)</span></div>
 <div class="desc">Add given <var>suffix</var> to current suffix list.
@@ -1025,10 +1043,10 @@ appended to the current loading path list, otherwise prepend to the list.
 appended to the current suffix list, otherwise prepend to the list.
 <p />The <var>suffix</var> should contain <code>.</code> as well.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="load-path1051">
+<p /><div class="define"><span class="define-category">Function</span><a name="load-path1053">
     <span class="name" name="load-path">load-path</span>
   </a> <span class="args" /></div>
-<div class="define"><span class="define-category">Function</span><a name="load-path1052">
+<div class="define"><span class="define-category">Function</span><a name="load-path1054">
     <span class="name" name="load-path">load-path</span>
   </a> <span class="args">paths</span></div>
 <div class="desc">Retrives/sets current loading path.
@@ -1038,9 +1056,9 @@ to current loading path list. Otherwise retrieves the list.
 unexpected results.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1053"><span class="section-number">6.1.17</span>System and platform</a>
+    <a class="section.anchor" name="G1055"><span class="section-number">6.1.17</span>System and platform</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="uname1054">
+<p /><div class="define"><span class="define-category">Function</span><a name="uname1056">
     <span class="name" name="uname">uname</span>
   </a> <span class="args" /></div>
 <div class="desc">Return a vector which contains the following information.
@@ -1062,18 +1080,18 @@ unexpected results.
 <p />On Windows environment, this is the result of couple of Win32 API calls
 and formatted to look like the result of <code>uname(2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="get-mac-address1055">
+<p /><div class="define"><span class="define-category">Function</span><a name="get-mac-address1057">
     <span class="name" name="get-mac-address">get-mac-address</span>
   </a> <span class="args">:optional (position 0)</span></div>
 <div class="desc">Retrieves MAC address. The returning value is a bytevector which
 contains 6 elements.
 <p />If optional argument specifies which NIC's MAC address should be returned.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gc1056">
+<p /><div class="define"><span class="define-category">Function</span><a name="gc1058">
     <span class="name" name="gc">gc</span>
   </a> <span class="args" /></div>
 <div class="desc">Invokes garbage collection manually.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="cpu-count1057">
+<p /><div class="define"><span class="define-category">Function</span><a name="cpu-count1059">
     <span class="name" name="cpu-count">cpu-count</span>
   </a> <span class="args" /></div>
 <div class="desc">Returns number of CPUs. The result contains hyperthreading, for example,
@@ -1086,14 +1104,14 @@ initialisation by <code>taskset(1)</code>, for example the environment has 4 CPU
 but restricted to 1, then this process, however, returns 4.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1058"><span class="section-number">6.1.18</span>Debugging aid</a>
+    <a class="section.anchor" name="G1060"><span class="section-number">6.1.18</span>Debugging aid</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="disasm1059">
+<p /><div class="define"><span class="define-category">Function</span><a name="disasm1061">
     <span class="name" name="disasm">disasm</span>
   </a> <span class="args">closure</span></div>
 <div class="desc">Disassembles the compiled body of <var>closure</var> and print it.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="arity1060">
+<p /><div class="define"><span class="define-category">Function</span><a name="arity1062">
     <span class="name" name="arity">arity</span>
   </a> <span class="args">procedure</span></div>
 <div class="desc">Returns arity of given <var>procedure</var>.
@@ -1103,12 +1121,12 @@ not.
 </div>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(time)1061">
+    <a name="(time)1063">
       <span class="name" name="(time)">(time)</span>
     </a>
   </div>
 <div class="desc">Exports <code>time</code> macro</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="time1062">
+<p /><div class="define"><span class="define-category">Macro</span><a name="time1064">
     <span class="name" name="time">time</span>
   </a> <span class="args">expr</span></div>
 <div class="desc">Evaluate <var>expr</var> and shows time usage.
@@ -1123,6 +1141,6 @@ not.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-06-24T19:18:46+0200</i></div>
+    <div id="footer-date">Generated date: <i>2016-07-22T22:04:50+0200</i></div>
   </div>
 </html>
