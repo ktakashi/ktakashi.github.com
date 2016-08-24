@@ -52,12 +52,12 @@ server, it receives input from a client and just returns it to the client.
 </pre>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(sagittarius socket)1266">
+    <a name="(sagittarius socket)1267">
       <span class="name" name="(sagittarius socket)">(sagittarius socket)</span>
     </a>
   </div>
 <div class="desc">This library provides procedures for socket programming.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-client-socket1267">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-client-socket1268">
     <span class="name" name="make-client-socket">make-client-socket</span>
   </a>
  <span class="args">node srvice :opational (ai_family <code>AF_INET</code>)
@@ -105,7 +105,7 @@ below.
     <li class="itemlist-item">IPPROTO_RAW</li>
   </ul>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-server-socket1268">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-server-socket1269">
     <span class="name" name="make-server-socket">make-server-socket</span>
   </a>
  <span class="args">service :optional (ai_family <code>AF_INET</code>)
@@ -115,11 +115,11 @@ below.
 integer. Returns a server socket waiting for connections. The argument details
 are the same as the <code>make-client-socket</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket?1269">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket?1270">
     <span class="name" name="socket?">socket?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if <var>obj</var> is socket object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-port1270">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-port1271">
     <span class="name" name="socket-port">socket-port</span>
   </a> <span class="args">socket :optional (close? #t)</span></div>
 <div class="desc"><var>Socket</var> must be a socket object. Returns a binary input/output port
@@ -127,47 +127,50 @@ associated with <var>socket</var>.
 <p />If optional argument <var>close?</var> is #f then the port won't close socket
 when port is closing or being GCed.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-input-port1271">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-input-port1272">
     <span class="name" name="socket-input-port">socket-input-port</span>
   </a> <span class="args">socket</span></div>
-<div class="define"><span class="define-category">Function</span><a name="socket-output-port1272">
+<div class="define"><span class="define-category">Function</span><a name="socket-output-port1273">
     <span class="name" name="socket-output-port">socket-output-port</span>
   </a> <span class="args">socket</span></div>
 <div class="desc">[SRFI-106] <var>Socket</var> must be a socket object. Returns a binary input
 and output port associated with <var>socket</var>, respectively.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="call-with-socket1273">
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-socket1274">
     <span class="name" name="call-with-socket">call-with-socket</span>
   </a> <span class="args">socket proc</span></div>
 <div class="desc"><var>Socket</var> must be a socket object. <var>Proc</var> must accept one argument.
 <p />The <code>call-with-socket</code> calls a procedure with socket as an argument.
 <p />This procedure is analogy with <code>call-with-port</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shutdown-port1274">
+<p /><div class="define"><span class="define-category">Function</span><a name="shutdown-port1275">
     <span class="name" name="shutdown-port">shutdown-port</span>
   </a> <span class="args">port how</span></div>
 <div class="desc"><var>Port</var> must be associated with a socket.
 <p />Shutdowns associated port according to <var>how</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shutdown-input-port1275">
+<p /><div class="define"><span class="define-category">Function</span><a name="shutdown-input-port1276">
     <span class="name" name="shutdown-input-port">shutdown-input-port</span>
   </a> <span class="args">port</span></div>
-<div class="define"><span class="define-category">Function</span><a name="shutdown-output-port1276">
+<div class="define"><span class="define-category">Function</span><a name="shutdown-output-port1277">
     <span class="name" name="shutdown-output-port">shutdown-output-port</span>
   </a> <span class="args">port</span></div>
 <div class="desc"><var>Port</var> must be associated with a socket.
 <p />The <code>shutdown-output-port</code> and <code>shutdown-input-port</code> shutdown
 output or input connection of a socket associated with <var>port</var> respectively.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-accept1277">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-accept1278">
     <span class="name" name="socket-accept">socket-accept</span>
   </a> <span class="args">socket</span></div>
-<div class="desc"><var>Socket</var> must be a socket object created by <code>make-server-socket</code>.
+<div class="desc"><var>Socket</var> must be a socket object created by
+<code>make-server-socket</code>.
 <p />Wait for an incoming connection request and returns a fresh connected client
 socket.
 <p />This procedures is a thin wrapper of POSIX's <code>accept(2)</code>.
+<p />If the calling thread is interrupted by <code>thread-interrupt!</code>, then
+the procedure returns #f.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="socket-recv1278">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-recv1279">
     <span class="name" name="socket-recv">socket-recv</span>
   </a> <span class="args">socket size :optional (flags 0)</span></div>
 <div class="desc"><var>Socket</var> must be a socket object.
@@ -175,7 +178,7 @@ socket.
 returned, it means the peer connection is closed.
 <p />This procedures is a thin wrapper of POSIX's <code>recv(2)</code>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="socket-send1279">
+<div class="define"><span class="define-category">Function</span><a name="socket-send1280">
     <span class="name" name="socket-send">socket-send</span>
   </a>
  <span class="args">socket bytevector :optional (flags 0)</span></div>
@@ -183,7 +186,7 @@ returned, it means the peer connection is closed.
 <p />Sends a binary data block to given socket and returns the sent data size.
 <p />This procedures is a thin wrapper of POSIX's <code>send(2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-shutdown1280">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-shutdown1281">
     <span class="name" name="socket-shutdown">socket-shutdown</span>
   </a> <span class="args">socket how</span></div>
 <div class="desc"><var>Socket</var> must be a socket object. <var>How</var> must be one of the
@@ -200,63 +203,63 @@ returned, it means the peer connection is closed.
     </dl>
   </div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-close1281">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-close1282">
     <span class="name" name="socket-close">socket-close</span>
   </a> <span class="args">socket</span></div>
 <div class="desc"><var>Socket</var> must be a socket object. Closes <var>socket</var>.</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1282"><span class="section-number">6.12.1</span>Socket information</a>
+    <a class="section.anchor" name="G1283"><span class="section-number">6.12.1</span>Socket information</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Class</span>
-    <a name="<socket-info&gt;1283">
+    <a name="<socket-info&gt;1284">
       <span class="name" name="<socket-info&gt;">&lt;socket-info&gt;</span>
     </a>
   </div>
 <div class="desc">The socket information immutable class. This class has 3 slots
 <p /><div class="define">
     <span class="define-category">Slot</span>
-    <a name="hostname1284">
+    <a name="hostname1285">
       <span class="name" name="hostname">hostname</span>
     </a>
   </div>
 <div class="desc">This slot has string value represents own or peer socket host.</div>
 <div class="define">
     <span class="define-category">Slot</span>
-    <a name="ip-address1285">
+    <a name="ip-address1286">
       <span class="name" name="ip-address">ip-address</span>
     </a>
   </div>
 <div class="desc">This slot has ip-address object of own or peer socket.</div>
 <div class="define">
     <span class="define-category">Slot</span>
-    <a name="port1286">
+    <a name="port1287">
       <span class="name" name="port">port</span>
     </a>
   </div>
 <div class="desc">This slot has integer value of own or peer socket port number.</div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-peer1287">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-peer1288">
     <span class="name" name="socket-peer">socket-peer</span>
   </a> <span class="args">socket</span></div>
 <div class="desc"><var>Socket</var> must be a socket object.
 <p />Returns socket info object or #f. The socket info object contains hostname,
 IP address and port number. These information is retrieved from getpeername(2).
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-name1288">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-name1289">
     <span class="name" name="socket-name">socket-name</span>
   </a> <span class="args">socket</span></div>
 <div class="desc"><var>Socket</var> must be a socket object.
 <p />Returns the name string of socket or #f if the socket doesn't have name.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-info1289">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-info1290">
     <span class="name" name="socket-info">socket-info</span>
   </a> <span class="args">socket</span></div>
 <div class="desc"><var>Socket</var> must be a socket object.
 <p />Returns socket info object or #f. The socket info object contains hostname,
 IP address and port number. These information is retrieved from getsockname(2).
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-info-values1290">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-info-values1291">
     <span class="name" name="socket-info-values">socket-info-values</span>
   </a> <span class="args">socket :key (type 'peer)</span></div>
 <div class="desc"><var>Socket</var> must be a socket object.
@@ -267,16 +270,16 @@ type is <code>peer</code> then it uses <code>socket-peer</code>. If it is <code>
 then it uses <code>socket-info</code>
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1291"><span class="section-number">6.12.2</span>IP address operations</a>
+    <a class="section.anchor" name="G1292"><span class="section-number">6.12.2</span>IP address operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="ip-address-&gt;string1292">
+<p /><div class="define"><span class="define-category">Function</span><a name="ip-address-&gt;string1293">
     <span class="name" name="ip-address-&gt;string">ip-address-&gt;string</span>
   </a> <span class="args">ip</span></div>
 <div class="desc"><var>ip</var> must be an IP address object returned from the second value 
 of <code>socket-info-values</code>.
 <p />Converts given IP address object to human readable string.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="ip-address-&gt;bytevector1293">
+<p /><div class="define"><span class="define-category">Function</span><a name="ip-address-&gt;bytevector1294">
     <span class="name" name="ip-address-&gt;bytevector">ip-address-&gt;bytevector</span>
   </a> <span class="args">ip</span></div>
 <div class="desc"><var>ip</var> must be an IP address object returned from the second value 
@@ -288,9 +291,9 @@ of <code>socket-info-values</code>.
   </h4>
 <p />The low level socket APIs are almost compatible with BSD socket.
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1294"><span class="section-number">6.12.3.1</span>Socket</a>
+    <a class="section.anchor" name="G1295"><span class="section-number">6.12.3.1</span>Socket</a>
   </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-sendto1295">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-sendto1296">
     <span class="name" name="socket-sendto">socket-sendto</span>
   </a>
  <span class="args">socket bvtevector sockaddr :optional (flags 0)</span></div>
@@ -298,7 +301,7 @@ of <code>socket-info-values</code>.
 sent data size.
 <p />This procedures is a thin wrapper of POSIX's <code>sendto (2)</code>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="socket-recvfrom1296">
+<div class="define"><span class="define-category">Function</span><a name="socket-recvfrom1297">
     <span class="name" name="socket-recvfrom">socket-recvfrom</span>
   </a>
  <span class="args">socket sockaddr :optional (flags 0)</span></div>
@@ -306,34 +309,34 @@ sent data size.
 bytevector is returned, it means the peer connection is closed.
 <p />This procedures is a thin wrapper of POSIX's <code>recvfrom (2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-socket1297">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-socket1298">
     <span class="name" name="make-socket">make-socket</span>
   </a>  <span class="args">ai-family ai-socktype ai-protocol</span></div>
 <div class="desc">Creates socket object. The procedure returns #f if it couldn't create
 a socket. <code>SO_NOSIGPIPE</code> socket option is set to the created socket.
 <p />This procedure is a thin wrapper of <code>socket (2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-connect!1298">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-connect!1299">
     <span class="name" name="socket-connect!">socket-connect!</span>
   </a> <span class="args">socket addrinfo</span></div>
 <div class="desc">Initiate connection on the given <var>socket</var> with given
 addrinfo <var>addrinfo</var>.
 <p />This procedure is a thin wrapper of <code>connect (2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-bind!1299">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-bind!1300">
     <span class="name" name="socket-bind!">socket-bind!</span>
   </a> <span class="args">socket addrinfo</span></div>
 <div class="desc">Binds a name to the given socket <var>socket</var> with given addrinfo
 <var>addrinfo</var>.
 <p />This procedure is a thin wrapper of <code>bind (2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-listen!1300">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-listen!1301">
     <span class="name" name="socket-listen!">socket-listen!</span>
   </a> <span class="args">socket backlog</span></div>
 <div class="desc">Listen for connections on the given socket <var>socket</var>.
 <p />This procedure is a thin wrapper of <code>listen (2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-setsockopt!1301">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-setsockopt!1302">
     <span class="name" name="socket-setsockopt!">socket-setsockopt!</span>
   </a>
  <span class="args">socket level name value</span></div>
@@ -390,7 +393,7 @@ addrinfo <var>addrinfo</var>.
 <p />The <var>value</var> must be either bytevector or integer.
 <p />This procedure is a thin wrapper of <code>setsockopt (2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-getsockopt1302">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-getsockopt1303">
     <span class="name" name="socket-getsockopt">socket-getsockopt</span>
   </a>
  <span class="args">socket level name size</span></div>
@@ -401,19 +404,19 @@ returning value is a bytevector whose element count is <var>size</var> and
 contains the socket option converted to byte array. Otherwise it returns
 an integer value.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-nonblocking!1303">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-nonblocking!1304">
     <span class="name" name="socket-nonblocking!">socket-nonblocking!</span>
   </a> <span class="args">socket</span></div>
-<div class="define"><span class="define-category">Function</span><a name="socket-blocking!1304">
+<div class="define"><span class="define-category">Function</span><a name="socket-blocking!1305">
     <span class="name" name="socket-blocking!">socket-blocking!</span>
   </a> <span class="args">socket</span></div>
 <div class="desc">Converts given socket to nonblocking socket and blocking socket,
 respectively.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-select1305">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-select1306">
     <span class="name" name="socket-select">socket-select</span>
   </a> <span class="args">rfds wfds efds timeout</span></div>
-<div class="define"><span class="define-category">Function</span><a name="socket-select!1306">
+<div class="define"><span class="define-category">Function</span><a name="socket-select!1307">
     <span class="name" name="socket-select!">socket-select!</span>
   </a> <span class="args">rfds wfds efds timeout</span></div>
 <div class="desc">Monitor given fdset.
@@ -422,17 +425,17 @@ respectively.
 value is not #f, then the procedure waits only specified amount of time or
 something interesting happens. Otherwise infinite time or something
 interesting happens.
-<p />This procedure blocks the thread and can be interrupted by
+<p />This procedure blocks the calling thread, and it can be interrupted by
 <code>thread-interrupt!</code>.
 <p />This procedure is a thin wrapper of <code>select (2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="socket-read-select1307">
+<p /><div class="define"><span class="define-category">Function</span><a name="socket-read-select1308">
     <span class="name" name="socket-read-select">socket-read-select</span>
   </a> <span class="args">timeout sockets ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="socket-write-select1308">
+<div class="define"><span class="define-category">Function</span><a name="socket-write-select1309">
     <span class="name" name="socket-write-select">socket-write-select</span>
   </a> <span class="args">timeout sockets ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="socket-error-select1309">
+<div class="define"><span class="define-category">Function</span><a name="socket-error-select1310">
     <span class="name" name="socket-error-select">socket-error-select</span>
   </a> <span class="args">timeout sockets ...</span></div>
 <div class="desc">Waits until the given sockets <var>sockets</var> have something interesting.
@@ -447,15 +450,15 @@ readable data. This procedure might not be so interesting since it can be
 done by <code>socket-read-select</code>.
 </div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1310"><span class="section-number">6.12.3.2</span>Addrinfo</a>
+    <a class="section.anchor" name="G1311"><span class="section-number">6.12.3.2</span>Addrinfo</a>
   </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="addrinfo?1311">
+<p /><div class="define"><span class="define-category">Function</span><a name="addrinfo?1312">
     <span class="name" name="addrinfo?">addrinfo?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is an addrinfo, otherwise #f.</div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="make-addrinfo1312">
+    <a name="make-addrinfo1313">
       <span class="name" name="make-addrinfo">make-addrinfo</span>
     </a>
   </div>
@@ -481,67 +484,173 @@ done by <code>socket-read-select</code>.
   </li>
 </ul>
 <p /></div>
-<div class="define"><span class="define-category">Function</span><a name="make-hint-addrinfo1313">
+<div class="define"><span class="define-category">Function</span><a name="make-hint-addrinfo1314">
     <span class="name" name="make-hint-addrinfo">make-hint-addrinfo</span>
   </a>
  <span class="args">family socktype flags protocol</span></div>
 <div class="desc">Creates an addrinfo with given flags. This can be used as hint for
 <code>get-addrinfo</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="get-addrinfo1314">
+<p /><div class="define"><span class="define-category">Function</span><a name="get-addrinfo1315">
     <span class="name" name="get-addrinfo">get-addrinfo</span>
   </a> <span class="args">addrinfo</span></div>
 <div class="desc">Gets addrinfo of given hint addrinfo.
 <p />When the procedure fails, then <code>&amp;i/o</code> is raised.
 <p />This procedure is a thin wrapper of <code>getaddrinfo (3)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="next-addrinfo1315">
+<p /><div class="define"><span class="define-category">Function</span><a name="next-addrinfo1316">
     <span class="name" name="next-addrinfo">next-addrinfo</span>
   </a> <span class="args">addrinfo</span></div>
 <div class="desc">Retrieves next addrinfo of given <var>addrinfo</var> if availalbe, otherwise
 returns #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="addrinfo-sockaddr1316">
+<p /><div class="define"><span class="define-category">Function</span><a name="addrinfo-sockaddr1317">
     <span class="name" name="addrinfo-sockaddr">addrinfo-sockaddr</span>
   </a> <span class="args">addrinfo</span></div>
 <div class="desc">Retrieves <code>sockaddr</code> slot of given <var>addrinfo</var>.
 <p />The returning value can be used <code>socket-recvfrom</code> and <code>socket-sendto</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sockaddr?1317">
+<p /><div class="define"><span class="define-category">Function</span><a name="sockaddr?1318">
     <span class="name" name="sockaddr?">sockaddr?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is an sockaddr object, otherwise #f.</div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1318"><span class="section-number">6.12.3.3</span>FD sets</a>
+    <a class="section.anchor" name="G1319"><span class="section-number">6.12.3.3</span>FD sets</a>
   </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="fdset?1319">
+<p /><div class="define"><span class="define-category">Function</span><a name="fdset?1320">
     <span class="name" name="fdset?">fdset?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is a fdset object, otherwise #f.</div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="make-fdset1320">
+    <a name="make-fdset1321">
       <span class="name" name="make-fdset">make-fdset</span>
     </a>
   </div>
 <div class="desc">Creates a empty fdset object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sockets-&gt;fdset1321">
+<p /><div class="define"><span class="define-category">Function</span><a name="sockets-&gt;fdset1322">
     <span class="name" name="sockets-&gt;fdset">sockets-&gt;fdset</span>
   </a> <span class="args">sockets</span></div>
 <div class="desc">Creates a fdset from given socket list <var>sockets</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="fdset-ref1322">
+<p /><div class="define"><span class="define-category">Function</span><a name="fdset-ref1323">
     <span class="name" name="fdset-ref">fdset-ref</span>
   </a> <span class="args">fdset socket</span></div>
 <div class="desc">Returns #t if the given <var>socket</var> is set to <var>fdset</var>, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="fdset-set!1323">
+<p /><div class="define"><span class="define-category">Function</span><a name="fdset-set!1324">
     <span class="name" name="fdset-set!">fdset-set!</span>
   </a> <span class="args">fdset socket flag</span></div>
 <div class="desc">Sets/unsets the given socket <var>socket</var> on <var>fdset</var>.
 <p />If the <var>flags</var> is #f, then the procedure unsets the <var>socket</var>.
 <p />If the <var>flags</var> is #t, then the procedure sets the <var>socket</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="collect-sockets1324">
+<p /><div class="define"><span class="define-category">Function</span><a name="collect-sockets1325">
     <span class="name" name="collect-sockets">collect-sockets</span>
   </a> <span class="args">fdset</span></div>
 <div class="desc">Returns a list of socket which are set on <var>fdset</var>.</div>
+<p />
+</section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G1326"><span class="section-number">6.12.3.4</span>Socket conditions</a>
+  </h5>
+<p />Above APIs may raise either <code>&amp;socket</code> or <code>&amp;host-not-found</code>. The first
+condition is raised when socket related operation failed, for example
+<code>socket-send</code>. The latter condition is raised when <code>get-addrinfo</code> is
+failed.
+<p />NOTE: <code>make-client-socket</code> and <code>make-server-socket</code> may raise
+<code>&amp;host-not-found</code> when the given <var>node</var> or <var>service</var> is not a
+valid value.
+<p />The condition hierarchy is the following:
+<p /><pre class="codeblock">&amp;i/o
+ + &amp;host-not-found (node service)
+ + &amp;socket (socket)
+    + &amp;socket-connection
+    + &amp;socket-closed
+    + &amp;socket-port (port)
+</pre>
+<p />
+<div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;host-not-found1327">
+      <span class="name" name="&amp;host-not-found">&amp;host-not-found</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="host-not-found-error?1328">
+    <span class="name" name="host-not-found-error?">host-not-found-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-host-not-found-error1329">
+    <span class="name" name="make-host-not-found-error">make-host-not-found-error</span>
+  </a> <span class="args">node service</span></div>
+<div class="define"><span class="define-category">Function</span><a name="host-not-found-error-node1330">
+    <span class="name" name="host-not-found-error-node">host-not-found-error-node</span>
+  </a> <span class="args">host-not-found</span></div>
+<div class="define"><span class="define-category">Function</span><a name="host-not-found-error-service1331">
+    <span class="name" name="host-not-found-error-service">host-not-found-error-service</span>
+  </a> <span class="args">host-not-found</span></div>
+<div class="desc">This condition describes the combination of <var>node</var> and <var>service</var>
+does not exist.
+</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;socket1332">
+      <span class="name" name="&amp;socket">&amp;socket</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="socket-error? obj1333">
+    <span class="name" name="socket-error? obj">socket-error? <span class="args">obj</span></span>
+  </a>
+<div class="define"><span class="define-category">Function</span><a name="make-socket-error1334">
+    <span class="name" name="make-socket-error">make-socket-error</span>
+  </a> <span class="args">socket</span></div>
+<div class="define"><span class="define-category">Function</span><a name="socket-error-socket1335">
+    <span class="name" name="socket-error-socket">socket-error-socket</span>
+  </a> <span class="args">socket-error</span></div>
+<div class="desc">This condition describes general socket operation error.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;socket-connection1336">
+      <span class="name" name="&amp;socket-connection">&amp;socket-connection</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="socket-connection-error?1337">
+    <span class="name" name="socket-connection-error?">socket-connection-error?</span>
+  </a>  <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-socket-connection-error1338">
+    <span class="name" name="make-socket-connection-error">make-socket-connection-error</span>
+  </a> <span class="args">socket</span></div>
+<div class="desc">This condition describes socket connection error.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;socket-closed1339">
+      <span class="name" name="&amp;socket-closed">&amp;socket-closed</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="socket-closed-error?1340">
+    <span class="name" name="socket-closed-error?">socket-closed-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-socket-closed-error1341">
+    <span class="name" name="make-socket-closed-error">make-socket-closed-error</span>
+  </a> <span class="args">socket</span></div>
+<div class="desc">This condition describes socket closed error.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;socket-port1342">
+      <span class="name" name="&amp;socket-port">&amp;socket-port</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="socket-port-error?1343">
+    <span class="name" name="socket-port-error?">socket-port-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-socket-port-error1344">
+    <span class="name" name="make-socket-port-error">make-socket-port-error</span>
+  </a> <span class="args">socket port</span></div>
+<div class="define"><span class="define-category">Function</span><a name="socket-error-port1345">
+    <span class="name" name="socket-error-port">socket-error-port</span>
+  </a> <span class="args">socket-port-error</span></div>
+<div class="desc">This condition describes error of socket port operation. Particularly,
+when <code>port-ready</code> procedure is called on socket port and
+<code>select (2)</code> failed.
+<p />NOTE: Read or write failure of socket port raises <code>&amp;i/o-read</code> or
+<code>&amp;i/o-write</code> the same as other ports for compatibility.
+<p />NOTE2: This condition may be signalled when <code>get-bytevector-all</code> is
+called on socket port since it checks whether or not the given port is ready. 
+</div></div>
 </section></section></section>
   <div class="prev-next">
     <a class="prev" href="section611.html">(sagittarius regex) - regular expression library</a>
@@ -551,6 +660,6 @@ returns #f.</div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-07-22T22:04:50+0200</i></div>
+    <div id="footer-date">Generated date: <i>2016-08-19T18:54:03+0200</i></div>
   </div>
 </html>
