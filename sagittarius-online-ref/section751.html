@@ -6,128 +6,43 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section750.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section750.html">(text markdown) -- Markdown parser</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section752.html">(tlv) - TLV library</a>
+    <a class="next" href="section752.html">(util timer) - Timer</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.timer"><span class="section-number">7.51</span>(util timer) - Timer</a>
+    <a class="section.anchor" name="text.tree"><span class="section-number">7.51</span>(text tree) - Lightweight text generation</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util timer)2646">
-      <span class="name" name="(util timer)">(util timer)</span>
+    <a name="(text tree)2701">
+      <span class="name" name="(text tree)">(text tree)</span>
     </a>
   </div>
-<div class="desc">This library provides timer functionality.
-<p />Timer is the mechanism to trigger an event on specified time.
+<div class="desc">Defines simple but commonly used functions for a text construction.
+<p />This library is ported from Gauche.
 </div>
-<p />The following describes how to use;
-<pre class="codeblock">(import (util timer))
-
-(let ((timer (make-timer)))
-  (timer-start! timer) ;; start timer
-  ;; execute given thunk starting after 1000ms and each 1000ms
-  (timer-schedule! timer (lambda () (display "timer!") (newline)) 1000 1000)
-  ;; do something
-  (timer-cancel! timer))
-</pre>
-<p />A timer is kind of task queue running on a timer thread. Once it's started,
-then it waits until its queue is not empty or the first task reaches the
-configured time. The tasks are executed sequentially however its order is
-not reliable if there are multiple tasks queued on the same time.
-<p /><div class="define"><span class="define-category">Function</span><a name="timer?2647">
-    <span class="name" name="timer?">timer?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is a timer object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-timer2648">
-    <span class="name" name="make-timer">make-timer</span>
-  </a> <span class="args">:key error-handler</span></div>
-<div class="desc">Creates a timer object.
-<p />If keyword argument <var>error-handler</var> is specified, then it must be
-a procedure accepts one argument. The <var>error-handler</var> is called
-when timer procedure raises an error. If this is not specified, then
-timer stops when one of the tasks raised an error.
+<p /><div class="define"><span class="define-category">Generic</span><a name="write-tree2702">
+    <span class="name" name="write-tree">write-tree</span>
+  </a> <span class="args">tree :optional out</span></div>
+<div class="desc">Write out an <var>tree</var> as a tree of text, to the output port <var>out</var>.
+If the <var>out</var> is omitted, then current output port is used.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-state2649">
-    <span class="name" name="timer-state">timer-state</span>
-  </a> <span class="args">timer</span></div>
-<div class="desc">Returns the state of given timer. The possible states are the followings:
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">created</dt>
-      <dd class="dl-item-desc">The timer is created and not executed yet.</dd>
-      <dt class="dl-item-title">running</dt>
-      <dd class="dl-item-desc">The timer is running.</dd>
-      <dt class="dl-item-title">stopped</dt>
-      <dd class="dl-item-desc">The timer is stopped (can be resumed).</dd>
-      <dt class="dl-item-title">cancelled</dt>
-      <dd class="dl-item-desc">The timer is cancelled (cannot be resumed).</dd>
-    </dl>
-  </div>
-</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="timer-start!2650">
-    <span class="name" name="timer-start!">timer-start!</span>
-  </a> <span class="args">timer</span></div>
-<div class="desc">Starts the given <code>created</code> state <var>timer</var>.
-<p />If the given timer's state is <code>stopped</code>, then this procedure resumes
-the given timer.
-<p />If the timer state is not <code>created</code> or <code>stopped</code>, then
-<code>&amp;assertion</code> is raised.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-stop!2651">
-    <span class="name" name="timer-stop!">timer-stop!</span>
-  </a> <span class="args">timer</span></div>
-<div class="desc">Stops the given <var>time</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-cancel!2652">
-    <span class="name" name="timer-cancel!">timer-cancel!</span>
-  </a> <span class="args">timer</span></div>
-<div class="desc">Cancel the given <var>time</var>. If one of the tasks raised an error and
-no error handler is specified, then this procedure will re-raise the error.
-<p />Once the timer is cancelled, then this timer is completely destroyed.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="timer-schedule!2653">
-    <span class="name" name="timer-schedule!">timer-schedule!</span>
-  </a>
- <span class="args">timer thunk first :optional (period 0)</span></div>
-<div class="desc">Schedules a timer task.
-<p /><var>first</var> can be time object or exact integer. If this is time object,
-then the timer executes the <var>thunk</var> with given time (absolute time).
-If this is an exact integer, then the timer executes the <var>thunk</var> after
-the given number milliseconds from current time.
-<p />Optional argument <var>period</var> specifies if the <var>thunk</var> is periodically 
-executed or not. 0 is not periodical task.
-<p />The returning value is an ID of scheduled task. This is needed for
-<code>timer-remove!</code> and <code>timer-exists?</code> procedures.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-reschedule!2654">
-    <span class="name" name="timer-reschedule!">timer-reschedule!</span>
-  </a>
- <span class="args">timer timer-id first :optional (period 0)</span></div>
-<div class="desc">Reschedules the timer task associated with <var>timer-id</var> and 
-returns <var>timer-id</var>
-<p />The <var>first</var> and <var>period</var> are the same as <code>timer-schedule!</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-remove!2655">
-    <span class="name" name="timer-remove!">timer-remove!</span>
-  </a> <span class="args">timer id</span></div>
-<div class="desc">Removes given <var>id</var> task from the <var>timer</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-exists?2656">
-    <span class="name" name="timer-exists?">timer-exists?</span>
-  </a> <span class="args">timer id</span></div>
-<div class="desc">Returns #t if given <var>id</var> task exists in the <var>timer</var>, 
-otherwise #f.</div>
-
+<p /><div class="define"><span class="define-category">Function</span><a name="tree-&gt;string2703">
+    <span class="name" name="tree-&gt;string">tree-&gt;string</span>
+  </a> <span class="args">tree</span></div>
+<div class="desc">Just calls the <code>write-tree</code> method for <var>tree] using an output
+string port, and returns the result string.
+</var></div>
 </section>
   <div class="prev-next">
-    <a class="prev" href="section750.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section750.html">(text markdown) -- Markdown parser</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section752.html">(tlv) - TLV library</a>
+    <a class="next" href="section752.html">(util timer) - Timer</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-08-19T18:54:03+0200</i></div>
+    <div id="footer-date">Generated date: <i>2016-09-23T18:27:52+0900</i></div>
   </div>
 </html>

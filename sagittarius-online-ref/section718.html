@@ -8,482 +8,477 @@
   <div class="prev-next">
     <a class="prev" href="section717.html">(util list) - Extra list utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section719.html">(net mq amqp) - AMQP library</a>
+    <a class="next" href="section719.html">(math) - Mathematics library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="math"><span class="section-number">7.18</span>(math) - Mathematics library</a>
+    <a class="section.anchor" name="util.logging"><span class="section-number">7.18</span>(util logging) - Logging utilities</a>
   </h3>
-<p />This section describes matheatics operations which are used by <code>(crypto)</code>
-library.
-<p />This library also uses <code>libtomcrypt</code> as its implemention except prime
-number operations.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(math)2026">
-      <span class="name" name="(math)">(math)</span>
+    <a name="(util logging)2026">
+      <span class="name" name="(util logging)">(util logging)</span>
     </a>
   </div>
-<div class="desc">The top most level library of mathematics. It exports all of procedures
-from <code>(math random)</code>, <code>(math hash)</code>, <code>(math prime)</code> and
-<code>(math helper)</code>
+<div class="desc">This library provides logging utilities.
+<p /><code>(util logger)</code> provides logger and appender style logging utilility.
+Loggers determine loging level and appenders determin how to write logs.
+This example shows the concept.
+<pre class="codeblock">(import (rnrs) (util logging))
+
+;; Appenders
+(define console-appender (make-appender "[~w5] ~l ~m"))
+(define file-appender
+  (make-file-appender "[~w5] ~l ~m" "useful.log"))
+
+;; Logger
+(define logger (make-logger +debug-level+ console-appender file-appender))
+
+;; This won't be logged since the logger level is debug.
+(trace-log logger "trace log message")
+(debug-log logger "debug log message")
+
+;; If the logging requires heavy process, then it's better to
+;; check the level
+(when (logger-info? logger)
+  (let ((message (construct-message)))
+    (info-log logger message)))
+
+;; stop logging
+(terminate-logger! logger)
+</pre>
 </div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2027"><span class="section-number">7.18.1</span>Random number operations</a>
+    <a class="section.anchor" name="G2027"><span class="section-number">7.18.1</span>Loggers</a>
   </h4>
+<p />Loggers contains collection of appenders and level of logging. Once a logger
+is created, appenders and threshold can't be modified.
 <p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(math random)2028">
-      <span class="name" name="(math random)">(math random)</span>
+    <span class="define-category">Record Type</span>
+    <a name="<logger&gt;2028">
+      <span class="name" name="<logger&gt;">&lt;logger&gt;</span>
     </a>
   </div>
-<div class="desc">This library exports procedures for random numbers.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pseudo-random2029">
-    <span class="name" name="pseudo-random">pseudo-random</span>
-  </a> <span class="args">type :key (seed #f) (reader #f)</span></div>
-<div class="desc"><var>type</var> must be a string.
-<p />Creates a pseudo random object (prng). If keyword argument <var>reader</var> is given
-it creates a custom prng. The <var>reader</var> must be a procedure which accepts two
-argument, a bytevector and integer. It must fill the given bytevector with
-random numbers.
-<p /><var>type</var> is used to specify the builtin pseudo random algorithm. The possible
-algorithms are below:
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Yarrow2030">
-      <span class="name" name="Yarrow">Yarrow</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Fortuna2031">
-      <span class="name" name="Fortuna">Fortuna</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RC42032">
-      <span class="name" name="RC4">RC4</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SOBER-1282033">
-      <span class="name" name="SOBER-128">SOBER-128</span>
-    </a>
-  </div>
-<p />The following is also a psuedo random but this may or may not be cryptographic
-random generator. 
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="System2034">
-      <span class="name" name="System">System</span>
-    </a>
-  </div>
-<div class="desc"><code>System</code> prng uses platform random generator. For example, on 
-Unix like environment, this uses <code>/dev/urandom</code> or <code>/dev/random</code> if
-the first option is not available.
-</div>
-<p /><var>seed</var> is entropy of the pseudo random.
-<p />Note: each time if you create pseudo random, it returns exactly the same value.
-For example:
-<div class="codeblock-box">
-    <pre class="codeblock">(do ((i 0 (+ i 1)) (r '() (cons (random (pseudo-random RC4) 10) r)))
-    ((= i 10) r))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">'(0 0 0 0 0 0 0 0 0 0)</span>
-  </div>
-So if you need different number as I believe, you need to reuse the prng object
-like this
-<div class="codeblock-box">
-    <pre class="codeblock">(let ((rc (pseudo-random RC4)))
-  (do ((i 0 (+ i 1)) (r '() (cons (random rc 10) r)))
-      ((= i 10) r)))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">'(3 4 0 6 7 4 3 4 2 0)</span>
-  </div>
-If you don't want to care this behaviour, use <code>secure-random</code> below.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="secure-random2035">
-    <span class="name" name="secure-random">secure-random</span>
-  </a> <span class="args">type :key (bits 128)</span></div>
-<div class="desc"><var>type</var> must be one of the pseudo random algorithms.
-<p />Creates secure random object. 
-<p /><var>bit</var> is initial entropy of the pseudo random. It must be in between 64 to
-1028.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="prng?2036">
-    <span class="name" name="prng?">prng?</span>
+<div class="define"><span class="define-category">Function</span><a name="logger?2029">
+    <span class="name" name="logger?">logger?</span>
   </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="pseudo-random?2037">
-    <span class="name" name="pseudo-random?">pseudo-random?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="secure-random?2038">
-    <span class="name" name="secure-random?">secure-random?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is prng object, builtin pseudo random objcet,
-custom random object or secure random object respectively.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="random-seed-set!2039">
-    <span class="name" name="random-seed-set!">random-seed-set!</span>
-  </a> <span class="args">prng seed</span></div>
-<div class="desc"><var>seed</var> must be a bytevector or integer.
-<p />Add entropy to given <var>prng</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="random2040">
-    <span class="name" name="random">random</span>
-  </a> <span class="args">prng size :key (read-size 100)</span></div>
-<div class="desc">Returns random number according to given <var>prng</var> algorithm. The result
-number will be less than <var>size</var>.
-<p />Keyword argument <var>read-size</var> will be passed to <code>read-random-bytes</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="random2041">
-    <span class="name" name="random">random</span>
-  </a> <span class="args">prng size</span></div>
-<div class="desc"><var>size</var> must a positive fixnum.
-<p />Reads <var>size</var> bytes of random byte from <var>prng</var>.
-</div>
-<p /><div class="define"><span class="define-category">Method</span><a name="prng-state2042">
-    <span class="name" name="prng-state">prng-state</span>
-  </a> <span class="args">(prng &lt;prng&gt;)</span></div>
-<div class="desc">Returns given <var>prng</var>'s state if the pseudo random implementation
-allows.
-<p />For default built in pseudo randoms return #f.
-<p />NOTE: if &lt;secure-random&gt; is implemented, then the pseudo random implementation
-should not return the state.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="read-random-bytes2043">
-    <span class="name" name="read-random-bytes">read-random-bytes</span>
-  </a> <span class="args">prng size</span></div>
-<div class="define"><span class="define-category">Function</span><a name="read-random-bytes!2044">
-    <span class="name" name="read-random-bytes!">read-random-bytes!</span>
-  </a> <span class="args">prng bv size</span></div>
-<div class="desc">Reads random bytes from given <var>prng</var>.
-<p />The first form creates fresh bytevector with size <var>size</var>.
-<p />The second form reads random bytes from <var>prng</var> and sets the result into the
-given <var>bv</var> destructively.
-<p />If the second form is used, <var>bv</var> must have the length at least <var>size</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="read-sys-random2045">
-    <span class="name" name="read-sys-random">read-sys-random</span>
-  </a> <span class="args">bis</span></div>
-<div class="desc">Returns given <var>bits</var> bits of random bytevector.</div>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2046"><span class="section-number">7.18.1.1</span>Custom pseudo random operations</a>
-  </h5>
-<p />Since version 0.3.2, pseudo random also has custom operations. Similar with
-cipher spi or hash algorithm.
-<p />The following example describes how to make it.
-<p /><pre class="codeblock">;; the code snipet is from math/mt-random
-(define-class &lt;mersenne-twister&gt; (&lt;user-prng&gt;)
-  (;; The array for the state vector
-   ;; using bytevector, it needs to be 64 bit aligned.
-   (state :init-keyword :state :init-form (make-bytevector (* NN 8)))
-   ;; mti==NN+1 means MT[NN] is not initialized
-   (mti   :init-keyword :mti   :init-form (+ NN 1))))
-(define-method initialize ((o &lt;mersenne-twister&gt;) initargs)
-  (call-next-method)
-  (let ((seed (get-keyword :seed initargs #f)))
-    (slot-set! o 'set-seed! mt-set-seed)
-    (slot-set! o 'read-random! mt-read-random!)
-    (when seed
-      (mt-set-seed o seed))))
-</pre>
-<p />User just need to set the slots <code>set-seed!</code> and <code>read-random!</code>. Then
-other process is done by lower layer.
-<p />Following describes the meaning of these slots.
-<p />The slot <code>set-seed!</code> requires a procedure which accepts 2 arguments,
-target pseudo random and <var>seed</var>. <var>seed</var> must be bytevector.
-<p />The slot <code>read-random!</code> requires a pseudo which accepts 3 arguments,
-target pseudo random <var>buffer</var> and <var>bytes</var>. <var>buffer</var> must be a
-bytevector and have bigger size than given <var>bytes</var>. <var>bytes</var> must be
-a non negative fixnum.
-<p />NOTE: The custom pseudo random interface has been changed since version 0.3.6.
-Make sure which version of Sagittarius your application using.
-<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="math.hash"><span class="section-number">7.18.2</span>Hash operations</a>
-  </h4>
+<div class="define"><span class="define-category">Function</span><a name="make-logger2030">
+    <span class="name" name="make-logger">make-logger</span>
+  </a> <span class="args">threshold appenders ...</span></div>
+<div class="desc">Basic logger.
+<p />Record type <code>&lt;logger&gt;</code> is a base type of loggers.
+<p /><code>logger?</code> returns #t if <var>obj</var> is a logger otherwise #f.
+<p /><code>make-logger</code> creates a logger whose threshold is <var>threshold</var> and
+appenders are <var>appenders</var>. The <var>threshold</var> must be one of the
+followings:
 <p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(math hash)2047">
-      <span class="name" name="(math hash)">(math hash)</span>
-    </a>
-  </div>
-<div class="desc">This library exports procedures for hash (digest) operations.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-algorithm2048">
-    <span class="name" name="hash-algorithm">hash-algorithm</span>
-  </a> <span class="args">name . options</span></div>
-<div class="desc"><var>name</var> must be a string.
-<p />Creates a hash-algorithm object. <var>name</var> specifies its algorithm. The
-predefined algorithms are blow:
-<div class="define">
     <span class="define-category">Constant</span>
-    <a name="WHIRLPOOL2049">
-      <span class="name" name="WHIRLPOOL">WHIRLPOOL</span>
+    <a name="+trace-level+2031">
+      <span class="name" name="+trace-level+">+trace-level+</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="SHA-5122050">
-      <span class="name" name="SHA-512">SHA-512</span>
+    <a name="+debug-level+2032">
+      <span class="name" name="+debug-level+">+debug-level+</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="SHA-3842051">
-      <span class="name" name="SHA-384">SHA-384</span>
+    <a name="+info-level+2033">
+      <span class="name" name="+info-level+">+info-level+</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="RIPEMD-3202052">
-      <span class="name" name="RIPEMD-320">RIPEMD-320</span>
+    <a name="+warn-level+2034">
+      <span class="name" name="+warn-level+">+warn-level+</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="SHA-2562053">
-      <span class="name" name="SHA-256">SHA-256</span>
+    <a name="+error-level+2035">
+      <span class="name" name="+error-level+">+error-level+</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constant</span>
-    <a name="RIPEMD-2562054">
-      <span class="name" name="RIPEMD-256">RIPEMD-256</span>
+    <a name="+fatal-level+2036">
+      <span class="name" name="+fatal-level+">+fatal-level+</span>
     </a>
   </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SHA-2242055">
-      <span class="name" name="SHA-224">SHA-224</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SHA-2242056">
-      <span class="name" name="SHA-224">SHA-224</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="Tiger-1922057">
-      <span class="name" name="Tiger-192">Tiger-192</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="SHA-12058">
-      <span class="name" name="SHA-1">SHA-1</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RIPEMD-1602059">
-      <span class="name" name="RIPEMD-160">RIPEMD-160</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="RIPEMD-1282060">
-      <span class="name" name="RIPEMD-128">RIPEMD-128</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MD52061">
-      <span class="name" name="MD5">MD5</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MD42062">
-      <span class="name" name="MD4">MD4</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constant</span>
-    <a name="MD22063">
-      <span class="name" name="MD2">MD2</span>
-    </a>
-  </div>
-<p />If you want to use other hash algorithm, you can also create a new hash
-algorithm. It is described the section
-<a href="section718.html#custom.hash">Custom hash algorithm</a>.
+<div class="desc">Logging level constants.
+<p />The <code>+trace-level+</code> is the lowest level (<code>0</code>) and
+<code>+fatal-level+</code> is the highest level (<code>5</code>). The values are integers
+so users can extend the level for both side.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-algorithm?2064">
-    <span class="name" name="hash-algorithm?">hash-algorithm?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Return #t if <var>obj</var> is hash-algorithm object otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-oid2065">
-    <span class="name" name="hash-oid">hash-oid</span>
-  </a> <span class="args">hash-algorithm</span></div>
-<div class="desc">Return OID of given <var>hash-algorithm</var> if it has otherwise #f.</div>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2066"><span class="section-number">7.18.2.1</span>User level APIs of hash operations</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash2067">
-    <span class="name" name="hash">hash</span>
-  </a> <span class="args">type bv . options</span></div>
-<div class="desc"><var>type</var> must be a string which specifies hash algorithms or
-hash-algorithm object.
-<p />The <code>hash</code> procedure generates digest from given bytevector <var>bv</var>
-according to the given algorithm. The result digest will be a bytevector.
-<p />If <var>type</var> is not a hash algorithm object nor predefined hash algorithm,
-then <var>options</var> will be passed to the custom hash algorithm creation.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-size2068">
-    <span class="name" name="hash-size">hash-size</span>
-  </a> <span class="args">hash-algorithm</span></div>
-<div class="desc">Returns hash size of given <var>hash-algorithm</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-block-size2069">
-    <span class="name" name="hash-block-size">hash-block-size</span>
-  </a> <span class="args">hash-algorithm</span></div>
-<div class="desc">Returns hash block size of given <var>hash-algorithm</var>.</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2070"><span class="section-number">7.18.2.2</span>Low level APIs of hash operations</a>
-  </h5>
-<p />Most of the time User level APIs are sufficient enough, however for some cases,
-for example multiple input datas, you might need to use these low leve APIs.
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-init!2071">
-    <span class="name" name="hash-init!">hash-init!</span>
-  </a> <span class="args">hash-algorithm</span></div>
-<div class="desc">Initialise given <var>hash-algorithm</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-process!2072">
-    <span class="name" name="hash-process!">hash-process!</span>
-  </a>
- <span class="args">hash-algorithm bv :optional (start 0) (end (bytevector-length bv))</span></div>
-<div class="desc"><var>bv</var> must be a bytevector.
-<p />Process hash process with input data <var>bv</var>. The result will be stored in the
-<var>hash-algorithm</var>.
-<p />Optional arguments <var>start</var> and <var>end</var> limits the input <var>bv</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hash-done!2073">
-    <span class="name" name="hash-done!">hash-done!</span>
-  </a>
- <span class="args">hash-algorithm out :optional (start 0) (end (bytevector-length bv))</span></div>
-<div class="desc"><var>out</var> must be a bytevector and must have hash size which the
-<code>hash-size</code> procedure returns.
-<p />Flushes stored hash result in <var>hash-algorithm</var> into <var>out</var>.
-<p />Once this procedure is called <var>hash-algorithm</var>'s state will be changed. If
-you want to reuse it, you need to call <code>hash-init!</code>.
-<p />Optional arguments <var>start</var> and <var>end</var> specifies the offset of
-output bytevector.
-</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="custom.hash"><span class="section-number">7.18.2.3</span>Custom hash algorithm</a>
-  </h5>
-<p />Since version 0.3.1, user can create a custom hash algorithm. Similar with
-cipher spi described section <a href="section79.html#custom.cipher">Creating own cipher</a>.
-<p />The following example describes how to make it.
-<p /><pre class="codeblock">(import (rnrs) (sagittarius) (math) (clos user))
-;; hash operations
-(define (foo-init hash) #t)
-(define (foo-process hash bv)
-  (let ((len (bytevector-length bv)))
-    (bytevector-copy! bv 0 (slot-ref hash 'buffer) 0 (min len 16))))
-(define (foo-done hash out)
-  (let ((v (integer-&gt;bytevector (equal-hash (slot-ref hash 'buffer)))))
-    (bytevector-copy! v 0 out 0 (min 8 (bytevector-length v)))))
-
-(define-class &lt;foo-hash&gt; (&lt;user-hash-algorithm&gt;)
-  ((buffer :init-form (make-bytevector 16))))
-(define-method initialize ((o &lt;foo-hash&gt;) initargs)
-  (call-next-method)
-  (slot-set! o 'init foo-init)
-  (slot-set! o 'process foo-process)
-  (slot-set! o 'done foo-done)
-  (slot-set! o 'block-size 16)
-  (slot-set! o 'hash-size 8)
-  (slot-set! o 'oid #f)
-  (slot-set! o 'state #f))
-;; marker
-(define-class &lt;foo-marker&gt; () ())
-(define FOO (make &lt;foo-marker&gt;))
-(register-hash FOO &lt;foo-hash&gt;)
-
-;; use with APIs
-(hash FOO (string-&gt;utf8 "hash")) ;; -&gt; #vu8(245 221 54 232 0 0 0 0)
-</pre>
-<p />The slots <code>init</code>, <code>process</code> and <code>done</code> must be set with a
-procedure which will be called by <code>hash-init!</code>, <code>hash-process!</code> and
-<code>hash-done!</code> respectively. 
-<p />The procedure set to <code>process</code> and <code>done</code>  must accept 2 or 4
-arguments. If it can accept 4 arguments, then optional argumens <var>start</var>
-and <var>end</var> are passed. Implementation can use these information to 
-ptimise memory allocation. If it can accept 2 argumens, then framework 
-handles the range. In this case, uneccesarry allocation may happen.
-<p />The slots <code>block-size</code> and <code>hash-size</code> must be non negative exact
-integer and will be returned by <code>hash-block-size</code> and <code>hash-size</code>
-procedures respectively.
-<p />The slot <code>oid</code> must be set #f or string which represent OID of the custom
-hash algorithm. If you don't have it, it's better to set #f.
-<p />The slot <code>state</code> can be anything, this slot is for storing the hash state
-if you need.
-<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2074"><span class="section-number">7.18.3</span>Prime number operations</a>
-  </h4>
+<p /></div>
 <p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(math prime)2075">
-      <span class="name" name="(math prime)">(math prime)</span>
+    <span class="define-category">Record Type</span>
+    <a name="<async-logger&gt;2037">
+      <span class="name" name="<async-logger&gt;">&lt;async-logger&gt;</span>
     </a>
   </div>
-<div class="desc">This library exports procedures for prime number operations.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="prime?2076">
-    <span class="name" name="prime?">prime?</span>
-  </a>
- <span class="args">q :optional (k 50) (rand (secure-random RC4))</span></div>
-<div class="define"><span class="define-category">Function</span><a name="is-prime?2077">
-    <span class="name" name="is-prime?">is-prime?</span>
-  </a>
- <span class="args">q :optional (k 50) (rand (secure-random RC4))</span></div>
-<div class="desc">Tests if given <var>q</var> is a prime number or not.
-<p />This procedure uses Miller Rabin primality test. So there is slight possibility
-to pass non prim number.
-<p />The optional argument <var>k</var> is the test times. The default 50 makes failure
-ratio very low. And <var>rand</var> specifies whith pseudo random algorithm uses in
-the test.
-<p />The latter form is for backward compatibility.
+<div class="define"><span class="define-category">Function</span><a name="async-logger?2038">
+    <span class="name" name="async-logger?">async-logger?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-async-logger2039">
+    <span class="name" name="make-async-logger">make-async-logger</span>
+  </a> <span class="args">threshold appenders ...</span></div>
+<div class="desc">Asynchronous logger.
+<p />Record type <code>&lt;async-logger&gt;</code> is a type of asynchronous loggers. It inherits
+the <code>&lt;logger&gt;</code>.
+<p /><code>async-logger?</code> returns #t if <var>obj</var> is an asynchronous logger
+otherwise #f.
+<p /><code>make-async-logger</code> creates an asynchronous logger. The arguments are
+passed to parent protocol.
+<p />Asynchronous logger logs message asynchronously. Means it creates a background
+thread and lets it log. It is useful if a logger has a lot of appenders and
+logging process may take a lot of time.
+<p />To stop background thread, <code>terminate-logger!</code> needs to be called. It
+is users responsibility to do it.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="random-prime2078">
-    <span class="name" name="random-prime">random-prime</span>
-  </a>
- <span class="args">size :key (prng (secure-random RC4))</span></div>
-<div class="desc">Find a prime number from <var>size</var> bytes. So the minimum range will be
-<code>1 &lt;= p &lt;= 251</code>.
-<p />Keyword argument <var>prng</var> specifies which pseudo random uses to find a prime
-number.
+<p /><div class="define"><span class="define-category">Function</span><a name="trace-log2040">
+    <span class="name" name="trace-log">trace-log</span>
+  </a> <span class="args">logger message</span></div>
+<div class="define"><span class="define-category">Function</span><a name="logger-trace?2041">
+    <span class="name" name="logger-trace?">logger-trace?</span>
+  </a> <span class="args">logger</span></div>
+<div class="define"><span class="define-category">Function</span><a name="debug-log2042">
+    <span class="name" name="debug-log">debug-log</span>
+  </a> <span class="args">logger message</span></div>
+<div class="define"><span class="define-category">Function</span><a name="logger-debug?2043">
+    <span class="name" name="logger-debug?">logger-debug?</span>
+  </a> <span class="args">logger</span></div>
+<div class="define"><span class="define-category">Function</span><a name="info-log2044">
+    <span class="name" name="info-log">info-log</span>
+  </a> <span class="args">logger message</span></div>
+<div class="define"><span class="define-category">Function</span><a name="logger-info?2045">
+    <span class="name" name="logger-info?">logger-info?</span>
+  </a> <span class="args">logger</span></div>
+<div class="define"><span class="define-category">Function</span><a name="warn-log2046">
+    <span class="name" name="warn-log">warn-log</span>
+  </a> <span class="args">logger message</span></div>
+<div class="define"><span class="define-category">Function</span><a name="logger-warn?2047">
+    <span class="name" name="logger-warn?">logger-warn?</span>
+  </a> <span class="args">logger</span></div>
+<div class="define"><span class="define-category">Function</span><a name="error-log2048">
+    <span class="name" name="error-log">error-log</span>
+  </a> <span class="args">logger message</span></div>
+<div class="define"><span class="define-category">Function</span><a name="logger-error?2049">
+    <span class="name" name="logger-error?">logger-error?</span>
+  </a> <span class="args">logger</span></div>
+<div class="define"><span class="define-category">Function</span><a name="fatal-log2050">
+    <span class="name" name="fatal-log">fatal-log</span>
+  </a> <span class="args">logger message</span></div>
+<div class="define"><span class="define-category">Function</span><a name="logger-fatal?2051">
+    <span class="name" name="logger-fatal?">logger-fatal?</span>
+  </a> <span class="args">logger</span></div>
+<div class="desc">Logging APIs.
+<p /><code><var>level</var>-log</code> procedures log <var>message</var> on <var>logger</var> if
+<var>logger</var> has its threshold lower than the <var>level</var>.
+<p /><code>logger-<var>level</var>?</code> procedures check if the <var>logger</var> has
+threshold lower than <var>level</var>.
+</div>
+<p /><div class="define">
+    <span class="define-category">Generic Function</span>
+    <a name="terminate-logger!2052">
+      <span class="name" name="terminate-logger!">terminate-logger!</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Method</span><a name="terminate-logger2053">
+    <span class="name" name="terminate-logger">terminate-logger</span>
+  </a> <span class="args">(logger &lt;logger&gt;)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="terminate-logger2054">
+    <span class="name" name="terminate-logger">terminate-logger</span>
+  </a> <span class="args">(logger &lt;async-logger&gt;)</span></div>
+<div class="desc">Terminates logging of the given <var>logger</var>.
+<p />The method calls <code>appender-finish</code> for all appenders of give <var>logger</var>.
+<p />If the <var>logger</var> is an asynchronous logger, then it also stops background
+thread.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2079"><span class="section-number">7.18.4</span>Misc arithmetic operations</a>
+    <a class="section.anchor" name="G2055"><span class="section-number">7.18.2</span>Appenders</a>
   </h4>
+<p />Appenders are actual logging mechanisms. Each appender must be responsible
+how to write a log message and resource management such as log file.
 <p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(math helper)2080">
-      <span class="name" name="(math helper)">(math helper)</span>
+    <span class="define-category">Record Type</span>
+    <a name="<appender&gt;2056">
+      <span class="name" name="<appender&gt;">&lt;appender&gt;</span>
     </a>
   </div>
-<div class="desc">This library exports procedures for misc arithmetic operations.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mod-inverse2081">
-    <span class="name" name="mod-inverse">mod-inverse</span>
-  </a> <span class="args">x m</span></div>
-<div class="desc">Re exporting <code>mod-inverse</code> defined in <code>(sagittarius)</code> library.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mod-expt2082">
-    <span class="name" name="mod-expt">mod-expt</span>
-  </a> <span class="args">x e m</span></div>
-<div class="desc">Re exporting <code>mod-expt</code> defined in <code>(sagittarius)</code> library.</div>
+<div class="define"><span class="define-category">Function</span><a name="appender?2057">
+    <span class="name" name="appender?">appender?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-appender2058">
+    <span class="name" name="make-appender">make-appender</span>
+  </a> <span class="args">log-format</span></div>
+<div class="desc">Base appender. This appender emits log messages into
+<code>current-output-port</code>.
+<p /><code>appender?</code> returns #f if <var>obj</var> is an appender otherwise #f.
+<p /><code>make-appender</code> creates an appender. The <var>log-format</var> argument
+must be a string and specifying the format of the log line.
+<p />The <var>log-format</var> can contains place holders stating with the character
+<code>#\~</code>. The followings are the defined place holders:
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>#\w<var>date-format</var></code>
+      </dt>
+      <dd class="dl-item-desc">    Puts logging date on this location. The <var>date-format</var> specifies
+    format of the log. It must be a character or string which is surrounded
+    by <code>#\{ #\}</code>. The format is passed to the <code>date-&gt;string</code>
+    procedure defined in SRFI-19.
+  </dd>
+      <dt class="dl-item-title">
+        <code>#\l</code>
+      </dt>
+      <dd class="dl-item-desc">    Puts logging level on this location.
+  </dd>
+      <dt class="dl-item-title">
+        <code>#\m</code>
+      </dt>
+      <dd class="dl-item-desc">    Puts log message on this location.
+  </dd>
+    </dl>
+  </div>
+<p />The following example shows when <var>log-format</var> is <code>"[~w5] ~l ~m"</code>
+and logging with info level.
+<pre class="codeblock">(define logger (make-logger +info-level+ (make-appender "[~w5] ~l ~m")))
+(info-log logger "message of the log")
+;; [2016-09-06T12:32:06] info message of the log
+</pre>
+<p /></div>
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="<file-appender&gt;2059">
+      <span class="name" name="<file-appender&gt;">&lt;file-appender&gt;</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="file-appender?2060">
+    <span class="name" name="file-appender?">file-appender?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-file-appender2061">
+    <span class="name" name="make-file-appender">make-file-appender</span>
+  </a> <span class="args">log-format filename</span></div>
+<div class="desc">File appender. This is a subtype of <code>&lt;appender&gt;</code>. This appender
+emits log messages to the file named <var>filename</var>.
+<p /><code>file-appender?</code> returns #f if <var>obj</var> is a file appender otherwise #f.
+<p /><code>make-file-appender</code> creates a file appender. The <var>log-format</var> is
+passed to parent protocol. The file creation is done with file options of
+<code>no-fail</code>, <code>no-truncate</code> and <code>append</code>. Thus if the file exists
+then it would append the log line.
+<p />The given <var>filename</var> will be converted to absolute path so changing
+directory will not affect the log file location.
+</div>
+<p /><div class="define">
+    <span class="define-category">Generic Function</span>
+    <a name="file-appender-filename2062">
+      <span class="name" name="file-appender-filename">file-appender-filename</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Method</span><a name="file-appender-filename2063">
+    <span class="name" name="file-appender-filename">file-appender-filename</span>
+  </a>
+ <span class="args">(file-appender &lt;file-appender&gt;)</span></div>
+<div class="desc">Returns log file name.</div>
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="<rolling-file-appender&gt;2064">
+      <span class="name" name="<rolling-file-appender&gt;">&lt;rolling-file-appender&gt;</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="make-rolling-file-appender2065">
+    <span class="name" name="make-rolling-file-appender">make-rolling-file-appender</span>
+  </a>
+ <span class="args">log-format filename :optional (rolling-size 10485760)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="rolling-file-appender?2066">
+    <span class="name" name="rolling-file-appender?">rolling-file-appender?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Rolling file appender. This is a subtype of <code>&lt;file-appender&gt;</code>.
+This appender emits log message to the file named <var>filename</var> and if
+the file size is more than <var>rolling-size</var>, then it renames the old file
+to indexed file and new log file named <var>filename</var> is created.
+<p /><code>rolling-file-appender?</code> returns #f if <var>obj</var> is a rolling file
+appender otherwise #f.
+</div>
+<p /><div class="define"><span class="define-category">Record Type</span>&lt;daily-rolling-file-appender&gt;</div>
+<div class="define"><span class="define-category">Function</span><a name="make-daily-rolling-file-appender2067">
+    <span class="name" name="make-daily-rolling-file-appender">make-daily-rolling-file-appender</span>
+  </a>
+ <span class="args">log-format filename :optional (date-pattern "~Y-~m-~d")</span></div>
+<div class="define"><span class="define-category">Function</span><a name="daily-rolling-file-appender?2068">
+    <span class="name" name="daily-rolling-file-appender?">daily-rolling-file-appender?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Daily rolling file appender. This is a subtype of <code>&lt;file-appender&gt;</code>.
+This appender emits log message to the file named <var>filename</var> and if
+the date string of last file modified time formatted to <var>date-pattern</var>
+is differ from log time, then the appender rolls the old log file to
+a backup file. The backup file is concatenation of <var>filename</var> and
+last modified date.
+<p /><code>daily-rolling-file-appender?</code> returns #f if <var>obj</var> is a daily rolling
+file appender otherwise #f.
+</div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2069"><span class="section-number">7.18.2.1</span>Creating appenders</a>
+  </h5>
+<p />Users would soon face that predefined appenders are not enough or don't satisfy
+the requirement. For that case, appenders can easily be created.
+<p />The following example shows how to create an Email appender.
+<pre class="codeblock">(import (rnrs)
+        (rfc smtp)
+        (rfc smtp authentications)
+        (util logging)
+        (clos user))
+
+(define-record-type (&lt;smtp-appender&gt; make-smtp-appender smtp-appender?)
+  (parent &lt;appender&gt;)
+  (fields (immutable connection smtp-appender-connection)
+          (immutable username smtp-appender-username)
+          (immutable password smtp-appender-password))
+  (protocol (lambda (p)
+              (lambda (format host port username password)
+                ((p format)
+                 (make-smtp-connection host port) username password)))))
+
+(define-method append-log ((appender &lt;smtp-appender&gt;) log)
+  (let ((message (format-log appender log))
+        (conn (smtp-appender-connection appender)))
+    (guard (e (else (report-error e)))
+      (smtp-connect! conn)
+      (when (smtp-authentication-required? conn)
+        (let* ((methods (smtp-connection-authentication-methods conn))
+               (username (smtp-appender-username appender))
+               (password (smtp-appender-password appender))
+               (method (cond ((memq 'PLAIN methods)
+                              (list (smtp-plain-authentication username password)))
+                             ((memq 'PASSWORD methods)
+                              (let-values ((init&amp;next (smtp-login-authentication username password)))
+                                init&amp;next))
+                             (else #f))))
+          (if methods
+              (apply smtp-authenticate! conn method)
+              (begin
+                (smtp-disconnect! conn)
+                (error 'append-log "not supported")))))
+      (smtp-send! conn (smtp:mail
+                        (smtp:from "Takashi Kato" "ktakashi@ymail.com")
+                        (smtp:to "Takashi Kato" "ktakashi@ymail.com")
+                        (smtp:subject "Logging with email")
+                        message))
+      (smtp-disconnect! conn))))
+</pre>
+The example is not really useful since it sends only the fixed recipient with
+fixed format. If you need to use it, you need to modify.
+<p />Only what users need to do to create an appender is the followings:
+<ul class="itemlist">  <li class="itemlist-item">Creates a record type inherits <code>&lt;appender&gt;</code>.</li>
+  <li class="itemlist-item">Specialising <code>append-log</code> method with the above record.</li>
+</ul>
+<p /><div class="define"><span class="define-category">Generic Function</span><a name="append-log2070">
+    <span class="name" name="append-log">append-log</span>
+  </a> <span class="args">appender log</span></div>
+<div class="desc">Core process of appending logs.
+<p /><var>log</var> is an object of <code>&lt;log&gt;</code> or its subtype. This method should
+emit logs.
+</div>
+<p /><div class="define"><span class="define-category">Generic Function</span><a name="appender-finish2071">
+    <span class="name" name="appender-finish">appender-finish</span>
+  </a> <span class="args">appender</span></div>
+<div class="desc">Finishing appender if necessary. This method is called when
+<code>terminate-logger</code> is called.
+<p />Implementation should release resource of the <var>appender</var>.
+</div>
+<p /><div class="define"><span class="define-category">Generic Function</span><a name="format-log2072">
+    <span class="name" name="format-log">format-log</span>
+  </a> <span class="args">appender log</span></div>
+<div class="desc">Formats log object. <var>log</var> is an object of <code>&lt;log&gt;</code> or its subtype.
+<p />The method must return a string representation of given <var>log</var>.
+<p />The default implementation handles the log format described in the
+<code>make-logger</code> description.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="appender-log-format2073">
+    <span class="name" name="appender-log-format">appender-log-format</span>
+  </a> <span class="args">appender</span></div>
+<div class="desc">Returns log format of the given <var>appender</var>. </div>
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="<log&gt;2074">
+      <span class="name" name="<log&gt;">&lt;log&gt;</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="log?2075">
+    <span class="name" name="log?">log?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-log2076">
+    <span class="name" name="make-log">make-log</span>
+  </a> <span class="args">when level message</span></div>
+<div class="define"><span class="define-category">Function</span><a name="log-when2077">
+    <span class="name" name="log-when">log-when</span>
+  </a> <span class="args">log</span></div>
+<div class="define"><span class="define-category">Function</span><a name="log-level2078">
+    <span class="name" name="log-level">log-level</span>
+  </a> <span class="args">log</span></div>
+<div class="define"><span class="define-category">Function</span><a name="log-message2079">
+    <span class="name" name="log-message">log-message</span>
+  </a> <span class="args">log</span></div>
+<div class="desc">Default log object.
+<p /><code>&lt;log&gt;</code> has 3 fields <code>when</code>, <code>level</code> and <code>message</code>.
+By default creation, they are UTC time object, symbol of log level and
+log message, respectively.
+</div>
+<p />If you want to create own logger which handles log object differently,
+then you need to specialise the following generic function with the
+logger.
+<p /><div class="define"><span class="define-category">Generic Function</span><a name="push-log2080">
+    <span class="name" name="push-log">push-log</span>
+  </a> <span class="args">logger log</span></div>
+<div class="desc">Pushes <var>log</var> to appenders of the <var>logger</var>.</div>
+<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2081"><span class="section-number">7.18.3</span>Singleton logger</a>
+  </h4>
+<p />Asynchronous logger or other loggers should sometimes be singleton. This type
+of thing might need to be done in users responsibility however I think it's
+common idiom. So the very simple one is added to the library.
+<p /><div class="define"><span class="define-category">Macro</span><a name="define-logger-storage2082">
+    <span class="name" name="define-logger-storage">define-logger-storage</span>
+  </a> <span class="args">lookup clause* ...</span></div>
+<div class="define"><span class="define-category">Macro</span><a name="define-logger-storage2083">
+    <span class="name" name="define-logger-storage">define-logger-storage</span>
+  </a>
+ <span class="args">(lookup register) clause* ...</span></div>
+<p /><div class="desc">This macro defines a logger lookup procedure. If the second form is used
+then, a registration procedure.
+<p />The generated procedures have the following signatures
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">(@var{lookup} @var{name})</dt>
+      <dd class="dl-item-desc">Looks up the logger named <var>name</var></dd>
+      <dt class="dl-item-title">(@var{register} @var{name} @var{logger})</dt>
+      <dd class="dl-item-desc">   Registers the given logger with name, <var>name</var></dd>
+    </dl>
+  </div>
+<p />The registration procedure stores the given logger to hidden storage. If 
+the procedure called the same name argument twice, then the latter logger
+overwrites the previous one.
+<p /><code>clause*</code> must the following form:
+<ul class="itemlist">  <li class="itemlist-item">
+    <code>(loggers (<var>logger-name</var> <var>make-logger</var>) ...)</code>
+  </li>
+</ul>
+<code>loggers</code> is an auxiliary syntax. If the <code>loggers</code>
+clause is specified, then the macro stores the logger <var>logger-name</var> which
+is created by <var>make-logger</var> thunk as its predefined loggers.
+</div>
 
 </section></section>
   <div class="prev-next">
     <a class="prev" href="section717.html">(util list) - Extra list utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section719.html">(net mq amqp) - AMQP library</a>
+    <a class="next" href="section719.html">(math) - Mathematics library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-08-19T18:54:03+0200</i></div>
+    <div id="footer-date">Generated date: <i>2016-09-23T18:27:52+0900</i></div>
   </div>
 </html>

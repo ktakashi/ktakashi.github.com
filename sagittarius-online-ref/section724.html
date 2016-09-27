@@ -6,188 +6,151 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section723.html">(odbc) - ODBC binding</a>
+    <a class="prev" href="section723.html">(net server) - Simple server framework</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section725.html">(rsa pkcs :12) - PKCS#12</a>
+    <a class="next" href="section725.html">(rsa pkcs :5) - Password Based Cryptography library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="pkcs.5"><span class="section-number">7.24</span>(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="section.anchor" name="odbc"><span class="section-number">7.24</span>(odbc) - ODBC binding</a>
   </h3>
-<p />This section describes the implementation of PKCS#5 specification library.
-However we do not describe PKCS#5 itself and I don't think it is necessary to
-know it if you just want to use it.
-<p />This example is the simplest way to use.
-<p /><pre class="codeblock">(import (rnrs) (crypto) (rsa pkcs :5))
-(define salt (string-&gt;utf8 "salt"))
-(define iteration-count 1024)
-(define pbe-parameter (make-pbe-parameter salt iteration-count))
-(define pbe-key (generate-secret-key pbe-with-sha1-and-des "password"))
-(define pbe-cipher (cipher pbe-with-sha1-and-des pbe-key 
-                           :parameter pbe-parameter))
-(encrypt pbe-cipher (string-&gt;utf8 "This is an example."))
-;; -&gt; #vu8(254 229 155 168 167 192 249 43 33 192 161 215 28 117
-;;         169 129 147 60 16 52 235 79 90 23)
-(decrypt pbe-cipher 
-	 #vu8(254 229 155 168 167 192 249 43 33 192 161 215
-              28 117 169 129 147 60 16 52 235 79 90 23))
-;; -&gt; #vu8(84 104 105 115 32 105 115 32 97 110 32 101 120 97
-;;         109 112 108 101 46)
-</pre>
-<p />The library itself defines simply its cipher and key generate methods. Hence
-user can use it with (crypto) library (see 
-<a href="section79.html#crypto">(crypto) - Cryptographic library</a>)
-<p />NOTE: Currently the library only supports encryption and decryption, not MAC
-generation nor verification.
-<p />NOTE: When you create cipher object with PBE related algorithms, the you need 
-to pass <code>:parameter</code> keyword to <code>cipher</code> procedure, otherwise raises
-an error.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rsa pkcs :5)2171">
-      <span class="name" name="(rsa pkcs :5)">(rsa pkcs :5)</span>
+    <a name="(odbc)2207">
+      <span class="name" name="(odbc)">(odbc)</span>
     </a>
   </div>
-<div class="desc">This library exports PKCS#5 related cryptographic procedures.</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2172"><span class="section-number">7.24.1</span>User level APIs</a>
+<div class="desc">This library provides ODBC access procedures.
+<p />ODBC is a common database access interface so that it doesn't depend on specific
+APIs. This library is for implementing ODBC DBD for <a href="section710.html#dbi">DBI</a>, using
+this library directly is not recommended.
+<p />NOTE: the library is supported only your platform is supporting ODBC.
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="create-odbc-env2208">
+      <span class="name" name="create-odbc-env">create-odbc-env</span>
+    </a>
+  </div>
+<div class="desc">Creates and returns ODBC environment object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="odbc-env?2209">
+    <span class="name" name="odbc-env?">odbc-env?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given <var>obj</var> is ODBC environment object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="free-handle2210">
+    <span class="name" name="free-handle">free-handle</span>
+  </a> <span class="args">odbc-ctx</span></div>
+<div class="desc">Releases given ODBC resource.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="connect!2211">
+    <span class="name" name="connect!">connect!</span>
+  </a>
+ <span class="args">ocbc-env server username password :optional (auto-commit #t)</span></div>
+<div class="desc"><var>odbc-env</var> must be an ODBC environment object created by
+<code>create-odbc-env</code>.
+<p /><var>server</var> must be a string indicating ODBC database name.
+<p /><var>username</var> and <var>password</var> must be string.
+<p />Connects to <var>server</var> with authentication of <var>username</var> and
+<var>password</var> and returns ODBC database connection object. If optional
+argument <var>auto-commit</var> is #f then the connection won't commit transaction
+automatically.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="odbc-connection?2212">
+    <span class="name" name="odbc-connection?">odbc-connection?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given <var>obj</var> is ODBC connection object.</div>
+<p />
+<div class="define"><span class="define-category">Function</span><a name="disconnect!2213">
+    <span class="name" name="disconnect!">disconnect!</span>
+  </a> <span class="args">odbc-dbc</span></div>
+<div class="desc">Disconnect from the database.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="connection-open?2214">
+    <span class="name" name="connection-open?">connection-open?</span>
+  </a> <span class="args">odbc-dbc</span></div>
+<div class="desc">Returns #t if the given ODBC connection is available, otherwise #f.</div>
+<p />
+<div class="define"><span class="define-category">Function</span><a name="prepare2215">
+    <span class="name" name="prepare">prepare</span>
+  </a> <span class="args">odbc-dbc sql</span></div>
+<div class="desc">Creates and returns a ODBC statement object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="odbc-statement?2216">
+    <span class="name" name="odbc-statement?">odbc-statement?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given <var>obj</var> is ODBC statement object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="statement-open?2217">
+    <span class="name" name="statement-open?">statement-open?</span>
+  </a> <span class="args">odbc-stmt</span></div>
+<div class="desc">Returns #t if the given ODBC statement is available, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="num-prams2218">
+    <span class="name" name="num-prams">num-prams</span>
+  </a> <span class="args">odbc-stmt</span></div>
+<div class="desc">Returns number of parameters in an SQL statement.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="bind-parameter!2219">
+    <span class="name" name="bind-parameter!">bind-parameter!</span>
+  </a> <span class="args">odbc-stmt index value</span></div>
+<div class="desc">Binds the given <var>value</var> at position <var>index</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="execute!2220">
+    <span class="name" name="execute!">execute!</span>
+  </a> <span class="args">odbc-stmt</span></div>
+<div class="desc">Execute given ODBC statement.</div>
+<p />
+<div class="define"><span class="define-category">Function</span><a name="fetch!2221">
+    <span class="name" name="fetch!">fetch!</span>
+  </a> <span class="args">odbc-stmt</span></div>
+<div class="desc">Forwarding current cursor to next and returns #t if there is data
+otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="get-data!2222">
+    <span class="name" name="get-data!">get-data!</span>
+  </a> <span class="args">odbc-stmt index</span></div>
+<div class="desc">Retrieve data from statement at position <var>index</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="row-count2223">
+    <span class="name" name="row-count">row-count</span>
+  </a> <span class="args">odbc-stmt</span></div>
+<div class="desc">Returns the number of rows affected by UPDATE, INSERT or DELETE
+statement.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="column-count2224">
+    <span class="name" name="column-count">column-count</span>
+  </a> <span class="args">odbc-stmt</span></div>
+<div class="desc">Returns the number of columns in a result statement.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="result-columns2225">
+    <span class="name" name="result-columns">result-columns</span>
+  </a> <span class="args">odbc-stmt</span></div>
+<div class="desc">Returns the column names in a result statement.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="commit!2226">
+    <span class="name" name="commit!">commit!</span>
+  </a> <span class="args">odbc-ctx</span></div>
+<div class="define"><span class="define-category">Function</span><a name="rollback!2227">
+    <span class="name" name="rollback!">rollback!</span>
+  </a> <span class="args">odbc-ctx</span></div>
+<div class="desc">Commits/rollbacks given ODBC context.</div>
+<p />
+<section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="dbd.odbc"><span class="section-number">7.24.1</span>(dbd odbc) - DBD for ODBC</a>
   </h4>
 <p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-md5-and-des2173">
-      <span class="name" name="pbe-with-md5-and-des">pbe-with-md5-and-des</span>
+    <span class="define-category">Library</span>
+    <a name="(dbd odbc)2228">
+      <span class="name" name="(dbd odbc)">(dbd odbc)</span>
     </a>
   </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-md5-and-rc22174">
-      <span class="name" name="pbe-with-md5-and-rc2">pbe-with-md5-and-rc2</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-sha1-and-des2175">
-      <span class="name" name="pbe-with-sha1-and-des">pbe-with-sha1-and-des</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="pbe-with-sha1-and-rc22176">
-      <span class="name" name="pbe-with-sha1-and-rc2">pbe-with-sha1-and-rc2</span>
-    </a>
-  </div>
-<div class="desc">The algorithms used in PBES1 encryption and decryption and key generation.
-<p />The names describe the using hash functions and cryptographic schemes. For
-example, <code>pbe-with-md5-and-des</code> uses MD5 hash and DES algorithm.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-pbe-parameter2177">
-    <span class="name" name="make-pbe-parameter">make-pbe-parameter</span>
-  </a> <span class="args">salt iteration-count</span></div>
-<div class="desc"><var>salt</var> must be a bytevector.
-<p /><var>iteration-count</var> must be a non negative exact integer.
-<p />Creates a parameter for PBE key generation. <var>salt</var> is salt and
-<var>iteration-count</var> is the iteration count  for key derivation.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="generate-secret-key2178">
-    <span class="name" name="generate-secret-key">generate-secret-key</span>
-  </a>
- <span class="args">algorithm (password &lt;string&gt;)</span></div>
-<div class="desc"><var>algorithm</var> must be one of the algorithms describes above.
-<p />Creates PBE secret key based on given <var>password</var> and <var>algorithm</var>.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2179"><span class="section-number">7.24.2</span>Low level APIs</a>
-  </h4>
-<p />These APIs are for users who want to create own PBE mechanism such as PKCS#12.
-<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-12180">
-    <span class="name" name="pbkdf-1">pbkdf-1</span>
-  </a>
- <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)</span></div>
-<div class="desc">Implementation of PBKDF1 describes in PKCS#5 specification.
-<p />The arguments are plain text (bytevector), salt (bytevector), iteration count
-(non negative exact integer) and key length (non negative exact integer)
-respectively.
-<p />The keyword argument <var>hash</var> specifies which hash algorithm will be used. The
-default is SHA-1. 
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-22181">
-    <span class="name" name="pbkdf-2">pbkdf-2</span>
-  </a>
- <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)
- (prf (hash-algorithm HMAC :key P :hash hash))</span></div>
-<div class="desc">Implementation of PBKDF2 describes in PKCS#5 specification.
-<p />The arguments are plain text (bytevector), salt (bytevector), iteration count
-(non negative exact integer) and key length (non negative exact integer)
-respectively.
-<p />The keyword argument <var>hash</var> specifies which hash algorithm will be used in
-PRF function. The default is SHA-1 and if you don't have any reasonable reason,
-this must not be changed.
-<p />The keyword argument <var>prf</var> specifies underlying pseudo random function which
-must be hash object implemented with <code>&lt;user-hash-algorithm&gt;</code> describes in
-<a href="section718.html#custom.hash">Custom hash algorithm</a>. The default is HMAC and if you
-don't have any reasonable reason, this must not be changed.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="derive-key2182">
-    <span class="name" name="derive-key">derive-key</span>
-  </a>
- <span class="args">P S c dk-len :key (kdf pbkdf-2) :allow-other-keys</span></div>
-<div class="desc">The implementation of key derive function. The required arguments are
-the same as above <code>pbkdf-1</code> and <code>pbkdf-2</code>.
-<p />This procedure just calls given <var>kdf</var> with given arguments and returns
-derived key bytevector.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="derive-key&amp;iv2183">
-    <span class="name" name="derive-key&amp;iv">derive-key&amp;iv</span>
-  </a>
- <span class="args">marker (key &lt;pbe-secret-key&gt;) (parameter &lt;pbe-parameter&gt;)</span></div>
-<div class="desc"><var>marker</var> is user defined cipher type. <var>key</var> must be subclass of
-<code>&lt;pbe-secret-key&gt;</code>. <var>parameter</var> must be subclss of
-<code>&lt;pbe-parameter&gt;</code>.
-<p />This method is called in the <code>initialize</code> method of
-<code>&lt;pbe-cipher-spi&gt;</code> and must return 2 values; the first one is derived key
-as bytevector and second one is initial vector as bytevector.
-<p />The PKCS#5 encryption and decryption procedures require to derive both
-key and initial vector from given password and parameter (salt and iteration
-count). This method is used in PBE cipher to derive key and initial vector.
-<p />The purpose of this method is to re-use <code>&lt;pbe-cipher-spi&gt;</code>. For example,
-PKCS#12 can use this cipher, however it requires different key derivation
-mechanism.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2184"><span class="section-number">7.24.3</span>Supporting PBES2 functionality</a>
-  </h4>
-<p />Since I could not find any standard implementation, Sagittarius actually does
-not support PBES2 encryption and decryption. However supporting it is not so
-difficult. This is the sample code to support it.
-<p /><pre class="codeblock">(import (rnrs) (clos user) (rfc hmac) (math))
-(define-class &lt;pbkef2-with-hmac-sha1-des3&gt; () ())
-(define pbkdf2-with-hmac-sha1-des3 (make &lt;pbkef2-with-hmac-sha1-des3&gt;))
-(define-method generate-secret-key ((mark &lt;pbkef2-with-hmac-sha1-des3&gt;)
-				    (password &lt;string&gt;))
-  (make &lt;pbe-secret-key&gt; :password  password :hash (hash-algorithm HMAC)
-	:scheme DES3 :iv-size 8 :length 24
-	:type PKCS5-S2))
-(register-spi pbkdf2-with-hmac-sha1-des3 &lt;pbe-cipher-spi&gt;)
-</pre>
-<p />And using this supported PBES2 cipher is like this;
-<p /><pre class="codeblock">(let* ((param (make-pbe-parameter (string-&gt;utf8 "saltsalt") 1024))
-       (key (generate-secret-key pbkdf2-with-hmac-sha1-des3 "password"))
-       (pbe-cipher (cipher pbkdf2-with-hmac-sha1-des3 key :parameter param))
-       (ciphertext (encrypt pbe-cipher (string-&gt;utf8 "This is an example."))))
-  (utf8-&gt;string (decrypt pbe-cipher ciphertext)))
-</pre>
-<p />I suppose this is correct, but I could not find any implementation which
-supports PBES2. I usually test with JCE, so if you have some recommendation,
-please let me know.
-
+<div class="desc">This library provides database driver (DBD) for ODBC .
+<p />Importing this library is done by DBI automatically so users should not
+use this directly.
+<p />The DSN should specify the connecting database name with <code>server</code> keyword.
+Following DSN is connecting <var>foo</var> database configured in ODBC.
+<p /><code>"dbi:odbc:server=<var>foo</var>"</code>
+<p />The <code>dbi-connect</code> supports <code>:username</code>, <code>:password</code> and
+<code>:auto-commit</code> keyword arguments. The detail about DBI see
+<a href="section710.html#dbi">(dbi) - Database independent access layer</a>.
+<p /></div>
+<p />
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section723.html">(odbc) - ODBC binding</a>
+    <a class="prev" href="section723.html">(net server) - Simple server framework</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section725.html">(rsa pkcs :12) - PKCS#12</a>
+    <a class="next" href="section725.html">(rsa pkcs :5) - Password Based Cryptography library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-08-19T18:54:03+0200</i></div>
+    <div id="footer-date">Generated date: <i>2016-09-23T18:27:52+0900</i></div>
   </div>
 </html>

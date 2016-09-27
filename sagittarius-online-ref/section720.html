@@ -6,182 +6,172 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section719.html">(net mq amqp) - AMQP library</a>
+    <a class="prev" href="section719.html">(math) - Mathematics library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section721.html">(net oauth) - OAuth library</a>
+    <a class="next" href="section721.html">(net mq mqtt) - MQTT library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="net.mqtt"><span class="section-number">7.20</span>(net mq mqtt) - MQTT library</a>
+    <a class="section.anchor" name="net.amqp"><span class="section-number">7.20</span>(net mq amqp) - AMQP library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(net mq mqtt)2106">
-      <span class="name" name="(net mq mqtt)">(net mq mqtt)</span>
+    <a name="(net mq amqp)2141">
+      <span class="name" name="(net mq amqp)">(net mq amqp)</span>
     </a>
   </div>
-<div class="desc">Providing MQTT v3.1.1 and partially v3.1 client APIs.
-<p />Reference <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html">OASIS MQTT</a>.
+<div class="desc">Providing APIs for <a href="http://www.amqp.org">AMQP</a>,
+Advanced Message Queuing Protocol.
+<p />Currently, the library lacks security layer such as TLS and SAML, and
+transaction support.
 </div>
-<p />Following examples describe how to receive and publish messages.
-<p /><pre class="codeblock">(import (rnrs) (net mq mqtt))
-
-(let ((conn (open-mqtt-connection "localhost" "1883")))
-  ;; subscribes to "topic" topic with accepting QoS exactly once
-  (mqtt-subscribe conn "topic" +qos-exactly-once+
-                  (lambda (topic payload)
-                    (let ((msg (get-bytevector-all payload)))
-                      (cond ((not (eof-object? msg))
-                             (print (utf8-&gt;string msg))
-                             (string=? (utf8-&gt;string msg) "END"))
-                            (else #f)))))
-  (let loop ()
-    ;; receives until "END" message was sent
-    (unless (mqtt-receive-message conn)
-      (loop)))
-  ;; unsubscribe from "topic"
-  (mqtt-unsubscribe conn "topic")
-  (close-mqtt-connection! conn))
-</pre>
-<p /><pre class="codeblock">(import (rnrs) (net mq mqtt))
-
-(let ((conn (open-mqtt-connection "localhost" "1883")))
-  ;; publish message to "topic" topic.
-  (mqtt-publish conn "topic" (string-&gt;utf8 "Hello MQTT"))
-  (close-mqtt-connection! conn))
-</pre>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="mqtt-connection?2107">
-    <span class="name" name="mqtt-connection?">mqtt-connection?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is MQTT connection. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-mqtt-connection2108">
-    <span class="name" name="open-mqtt-connection">open-mqtt-connection</span>
-  </a> <span class="args">host port opts ...</span></div>
-<div class="desc">Creates a socket connected to <var>host</var>:<var>port</var> and
-pass it to <var>port-&gt;mqtt-connection</var> with <var>opts</var>.
-<p />The returning value is an MQTT connection object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="port-&gt;mqtt-connection2109">
-    <span class="name" name="port-&gt;mqtt-connection">port-&gt;mqtt-connection</span>
-  </a>
- <span class="args">in/out :key client-id username password keep-alive version</span></div>
-<div class="desc"><var>in/out</var> must be a binary input/outport port.
-<p />Creates an MQTT connection object using <var>in/out</var>. 
-<p /><var>client-id</var>, <var>username</var>, <var>password</var> and <var>keep-alive</var>
-keyword arguments are for optional payload of CONNECT packet. If they are
-given, then first 3 must be strings and <var>keep-alive</var> must be an integer.
-<p /><var>version</var> keyword argument is switches which version it should use.
-The value must be one of the followings;
-<p /><div class="define"><span class="define-category">Constant</span>+mqtt-3.1+</div>
-<div class="define"><span class="define-category">Constant</span>+mqtt-3.1.1+</div>
-<p />By default it uses <code>+mqtt-3.1.1+</code>.
-<p />This procedure is for future extension such as supporting websocket.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="close-mqtt-connection!2110">
-    <span class="name" name="close-mqtt-connection!">close-mqtt-connection!</span>
-  </a> <span class="args">conn</span></div>
-<div class="desc">Closes given MQTT connection.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="mqtt-subscribe2111">
-    <span class="name" name="mqtt-subscribe">mqtt-subscribe</span>
-  </a> <span class="args">conn topic qos callback</span></div>
-<div class="desc">Subscribes to given <var>topic</var> with QoS <var>qos</var>.
-<p /><var>callback</var> must be a procedure and accept 2 arguments. <var>topic</var> and
-<var>payload</var>. <var>payload</var> is an binary input port.
-<p />To receive messages, use <code>mqtt-receive-message</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-receive-message2112">
-    <span class="name" name="mqtt-receive-message">mqtt-receive-message</span>
-  </a> <span class="args">conn</span></div>
-<div class="desc">Receives one message from one of subscribed topics and call registered
-callback.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-unsubscribe2113">
-    <span class="name" name="mqtt-unsubscribe">mqtt-unsubscribe</span>
-  </a> <span class="args">conn topic</span></div>
-<div class="desc">Unsubscribes <var>conn</var> from <var>topic</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-publish2114">
-    <span class="name" name="mqtt-publish">mqtt-publish</span>
-  </a>
- <span class="args">conn topic message :key qos</span></div>
-<div class="desc">Publishes application message <var>message</var> to <var>topic</var>.
-<p />The <var>topic</var> must be a string. The <var>message</var> must be a bytevector.
-<p />If keyword argument <var>qos</var> is specified, it must be one of the followings.
-<p /><div class="define"><span class="define-category">Constant</span>+qos-at-most-once+</div>
-<div class="define"><span class="define-category">Constant</span>+qos-at-least-once+</div>
-<div class="define"><span class="define-category">Constant</span>+qos-exactly-once+</div>
-<p />By default, it uses <code>+qos-at-most-once+</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-ping2115">
-    <span class="name" name="mqtt-ping">mqtt-ping</span>
-  </a> <span class="args">conn</span></div>
-<div class="desc">Sends PINGREQ packet to the server.</div>
-<p />
-<section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2116"><span class="section-number">7.20.1</span>MQTT broker</a>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2142"><span class="section-number">7.20.1</span>Example</a>
   </h4>
+<p />Following examples describes how to send and receive messages from
+remote queues.
+<p /><pre class="codeblock">(import (rnrs) (net mq amqp api))
+
+;; Sends text message to SAMPLE.QUEUE on localhost:5672
+(call-with-amqp-connection "localhost" "5672"
+  (lambda (conn)
+    (call-with-amqp-session conn
+      (lambda (session)
+        (let ((sender (create-amqp-sender session "SAMPLE.QUEUE"))
+              (message (create-amqp-text-message "Hello AMQP!!")))
+          (send-amqp-message sender message)
+          (destroy-amqp-sender sender))))))
+
+;; Receives text message from SAMPLE.QUEUE on localhost:5672
+(call-with-amqp-connection "localhost" "5672"
+  (lambda (conn)
+    (call-with-amqp-session conn
+      (lambda (session)
+        (let* ((receiver (create-amqp-receiver session "SAMPLE.QUEUE"))
+               (message (receive-amqp-message receiver)
+          (destroy-amqp-sender receiver)
+          message)))))))
+</pre>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2143"><span class="section-number">7.20.2</span>High level APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="amqp-connection?2144">
+    <span class="name" name="amqp-connection?">amqp-connection?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is AMQP connection. Otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-amqp-connection2145">
+    <span class="name" name="open-amqp-connection">open-amqp-connection</span>
+  </a> <span class="args">host port</span></div>
+<div class="desc">Creates an AMQP connection object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="close-amqp-connection!2146">
+    <span class="name" name="close-amqp-connection!">close-amqp-connection!</span>
+  </a> <span class="args">connection</span></div>
+<div class="desc">Closes given AMQP connection.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-amqp-connection2147">
+    <span class="name" name="call-with-amqp-connection">call-with-amqp-connection</span>
+  </a> <span class="args">host port proc</span></div>
+<div class="desc">Creates an AMQP connection and pass it to <var>proc</var>. Then returns
+the result of <var>proc</var>.
+<p />The created connection will be closed both <var>proc</var> returns or raises
+an error. Thus Invoking captured continuation inside of <var>proc</var> would not
+work.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="amqp-session?2148">
+    <span class="name" name="amqp-session?">amqp-session?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is AMQP session. Otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="begin-amqp-session!2149">
+    <span class="name" name="begin-amqp-session!">begin-amqp-session!</span>
+  </a> <span class="args">connection</span></div>
+<div class="desc">Starts AMQP session on the given <var>connection</var></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="end-amqp-session!2150">
+    <span class="name" name="end-amqp-session!">end-amqp-session!</span>
+  </a> <span class="args">session</span></div>
+<div class="desc">Ends given AMQP session.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="call-with-amqp-connection2151">
+    <span class="name" name="call-with-amqp-connection">call-with-amqp-connection</span>
+  </a> <span class="args">connection proc</span></div>
+<div class="desc">Starts an AMQP session and pass it to <var>proc</var>. Then returns
+the result of <var>proc</var>.
+<p />The stated session will be ended both <var>proc</var> returns or raises
+an error. Thus Invoking captured continuation inside of <var>proc</var> would not
+work.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="amqp-sender?2152">
+    <span class="name" name="amqp-sender?">amqp-sender?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="amqp-receiver?2153">
+    <span class="name" name="amqp-receiver?">amqp-receiver?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is AMQP sender and receiver, respectively.
+Otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="create-amqp-sender2154">
+    <span class="name" name="create-amqp-sender">create-amqp-sender</span>
+  </a> <span class="args">session source-queue</span></div>
+<div class="define"><span class="define-category">Function</span><a name="create-amqp-receiver2155">
+    <span class="name" name="create-amqp-receiver">create-amqp-receiver</span>
+  </a> <span class="args">session target-queue</span></div>
+<div class="desc">Creates an AMQP sender or receiver, respectively.
+<p /><var>source-queue</var> and <var>target-queue</var> must be strings and indicating
+queue names on the remote server.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="destroy-amqp-sender2156">
+    <span class="name" name="destroy-amqp-sender">destroy-amqp-sender</span>
+  </a> <span class="args">sender</span></div>
+<div class="define"><span class="define-category">Function</span><a name="destroy-amqp-receiver2157">
+    <span class="name" name="destroy-amqp-receiver">destroy-amqp-receiver</span>
+  </a> <span class="args">receiver</span></div>
+<div class="desc">Destory given <var>sender</var> and <var>receiver</var>, respectively.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="send-amqp-message2158">
+    <span class="name" name="send-amqp-message">send-amqp-message</span>
+  </a> <span class="args">sender message</span></div>
+<div class="desc">Sends <var>message</var> to <var>sender</var>'s queue.
+<p /><var>message</var> must be am AMQP message object.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="receive-amqp-message2159">
+    <span class="name" name="receive-amqp-message">receive-amqp-message</span>
+  </a> <span class="args">receiver :key (timeout #f)</span></div>
+<div class="desc">Receives an AMQP message from <var>receiver</var>'s queue.
+<p />Keyword argument <var>timeout</var> must be #f or integer. If this is specified
+then the procedure waits only specified milliseconds.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="amqp-message?2160">
+    <span class="name" name="amqp-message?">amqp-message?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is AMQP message. Otherwise #f.</div>
 <p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(net mq mqtt broker)2117">
-      <span class="name" name="(net mq mqtt broker)">(net mq mqtt broker)</span>
+    <span class="define-category">Function</span>
+    <a name="create-amqp-text-message text2161">
+      <span class="name" name="create-amqp-text-message text">create-amqp-text-message text</span>
     </a>
   </div>
-<div class="desc">This library provides simple MQTT broker implementation.
-<p />The broker only does what broker suppose to do, thus there is no user
-customised behaviour.
+<div class="define">
+    <span class="define-category">Function</span>
+    <a name="create-amqp-binary-message data2162">
+      <span class="name" name="create-amqp-binary-message data">create-amqp-binary-message data</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Function</span>
+    <a name="create-amqp-mime-message content-type data2163">
+      <span class="name" name="create-amqp-mime-message content-type data">create-amqp-mime-message content-type data</span>
+    </a>
+  </div>
+<div class="desc">Creates an AMQP text message, binary message and data message,
+respectively.
+<p /><var>text</var> must be a string. <var>data</var> must be a bytevector. 
+<var>content-type</var> must be a string.
 </div>
-<p />The simplest broker script would look like this:
-<pre class="codeblock">(import (rnrs) (net mq mqtt broker))
-
-;; Wait on port 9000
-(define broker (make-mqtt-broker "9000")))
-
-;; start the broker.
-(mqtt-broker-start! broker)
-</pre>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-mqtt-broker2118">
-    <span class="name" name="make-mqtt-broker">make-mqtt-broker</span>
-  </a>
- <span class="args">:key config authentication-handler :allow-other-keys</span></div>
-<div class="desc">Creates MQTT broker. 
-<p />The returning broker is a sub type of <code>&lt;simple-server&gt;</code>.
-<p />If <var>config</var> keyword argument is specified, the value must be an
-configuration object created by <code>make-mqtt-broker-config</code>, then the
-specified configuration is used. Otherwise default configuration
-which can be created by <code>(make-mqtt-broker-config)</code> is used.
-<p />If <var>authentication-handler</var> keyword argument is specified, then
-the specified value which must be a procedure takes 2 arguments, username
-and password, handles authentication. If the procedure doesn't return
-true value then authentication error packet is sent to the client.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-mqtt-broker-config2119">
-    <span class="name" name="make-mqtt-broker-config">make-mqtt-broker-config</span>
-  </a>
- <span class="args">:key (max-thread 10) :allow-other-keys</span></div>
-<div class="desc">Creates a MQTT broker configuration object.
-<p />The returning value is a sub type of <code>&lt;server-config&gt;</code> with
-<code>:non-blocking?</code> option.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-broker-start!2120">
-    <span class="name" name="mqtt-broker-start!">mqtt-broker-start!</span>
-  </a> <span class="args">broker opt ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="mqtt-broker-stop!2121">
-    <span class="name" name="mqtt-broker-stop!">mqtt-broker-stop!</span>
-  </a> <span class="args">broker opt ...</span></div>
-<div class="desc">Start and stop procedure for MQTT broker. 
-<p />These procedures are mere redefinitions of <code>server-start!</code> and 
-<code>server-stop!</code>.
-</div>
+<p />
 
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section719.html">(net mq amqp) - AMQP library</a>
+    <a class="prev" href="section719.html">(math) - Mathematics library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section721.html">(net oauth) - OAuth library</a>
+    <a class="next" href="section721.html">(net mq mqtt) - MQTT library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-08-19T18:54:03+0200</i></div>
+    <div id="footer-date">Generated date: <i>2016-09-23T18:27:52+0900</i></div>
   </div>
 </html>
