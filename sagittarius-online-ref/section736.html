@@ -16,7 +16,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc smtp)2401">
+    <a name="(rfc smtp)2436">
       <span class="name" name="(rfc smtp)">(rfc smtp)</span>
     </a>
   </div>
@@ -104,14 +104,14 @@ or inlined image.
 </pre>
 <p />
 <section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2402"><span class="section-number">7.36.1</span>High level APIs</a>
+    <a class="section.anchor" name="G2437"><span class="section-number">7.36.1</span>High level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-connection?2403">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-connection?2438">
     <span class="name" name="smtp-connection?">smtp-connection?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if the given <var>obj</var> is an SMTP connection object, 
 Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-connection2404">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-connection2439">
     <span class="name" name="make-smtp-connection">make-smtp-connection</span>
   </a> 
  <span class="args">server port :optiona domain</span></div>
@@ -120,7 +120,7 @@ Otherwise #f.</div>
 for <code>EHLO</code> or <code>HELO</code> command parameter. Otherwise the result of
 <code>machine-name</code> (defined in SRFI 112) is used.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-connection-authentication-methods2405">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-connection-authentication-methods2440">
     <span class="name" name="smtp-connection-authentication-methods">smtp-connection-authentication-methods</span>
   </a> 
  <span class="args">smtp-connection</span></div>
@@ -128,7 +128,7 @@ for <code>EHLO</code> or <code>HELO</code> command parameter. Otherwise the resu
 <p />This procedure returns a proper value only after <code>smtp-connect!</code> 
 is called.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-authentication-required?2406">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-authentication-required?2441">
     <span class="name" name="smtp-authentication-required?">smtp-authentication-required?</span>
   </a> 
  <span class="args">smtp-connection</span></div>
@@ -137,11 +137,11 @@ otherwise #f.
 <p />This procedure returns a proper value only after <code>smtp-connect!</code> 
 is called.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-connect!2407">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-connect!2442">
     <span class="name" name="smtp-connect!">smtp-connect!</span>
   </a> <span class="args">smtp-connection</span></div>
 <div class="desc">Establishes connection and return SMTP connection object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-authenticate!2408">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-authenticate!2443">
     <span class="name" name="smtp-authenticate!">smtp-authenticate!</span>
   </a>
  <span class="args">smtp-connection initial-response-generator :optional next-step</span></div>
@@ -170,7 +170,7 @@ procedure is #f or returning response is <code>235</code>.
   (values (lambda () (values "LOGIN" #f)) (prompt #t)))
 </pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-send!2409">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-send!2444">
     <span class="name" name="smtp-send!">smtp-send!</span>
   </a> <span class="args">smtp-connection smtp-mail</span></div>
 <div class="desc">Sends the given <var>smtp-mail</var> and returns SMTP connection object.
@@ -180,19 +180,19 @@ the port position will be forwarded. Thus second call of the
 <code>smtp-mail-&gt;string</code> or <code>smtp-send!</code> doesn't create/send
 attachment message properly.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-connect!2410">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-connect!2445">
     <span class="name" name="smtp-connect!">smtp-connect!</span>
   </a> <span class="args">smtp-connection</span></div>
 <div class="desc">Disconnect the <var>smtp-connection</var> and returns SMTP connection.
 <p />The closed SMTP connection can be re-used.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-plain-authentication2411">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-plain-authentication2446">
     <span class="name" name="smtp-plain-authentication">smtp-plain-authentication</span>
   </a> <span class="args">username password</span></div>
 <div class="desc">Returns a thunk that can be used <code>smtp-authenticate!</code> procedure
 for PLAIN authentication.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-login-authentication2412">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-login-authentication2447">
     <span class="name" name="smtp-login-authentication">smtp-login-authentication</span>
   </a> <span class="args">:rest data</span></div>
 <div class="desc">Returns a thunk that can be used <code>smtp-authenticate!</code> procedure
@@ -202,48 +202,48 @@ then each authentication prompt uses the given data as if it's typed by
 user. If there is no data or sufficient date, then input prompt will be
 shown and let user type the authentication information.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="smtp:mail2413">
+<p /><div class="define"><span class="define-category">Macro</span><a name="smtp:mail2448">
     <span class="name" name="smtp:mail">smtp:mail</span>
   </a> <span class="args">from message-elements ...</span></div>
 <div class="define">
     <span class="define-category">Auxiliary Syntax</span>
-    <a name="smtp:from2414">
+    <a name="smtp:from2449">
       <span class="name" name="smtp:from">smtp:from</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Auxiliary Syntax</span>
-    <a name="smtp:subject2415">
+    <a name="smtp:subject2450">
       <span class="name" name="smtp:subject">smtp:subject</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Auxiliary Syntax</span>
-    <a name="smtp:to2416">
+    <a name="smtp:to2451">
       <span class="name" name="smtp:to">smtp:to</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Auxiliary Syntax</span>
-    <a name="smtp:cc2417">
+    <a name="smtp:cc2452">
       <span class="name" name="smtp:cc">smtp:cc</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Auxiliary Syntax</span>
-    <a name="smtp:bcc2418">
+    <a name="smtp:bcc2453">
       <span class="name" name="smtp:bcc">smtp:bcc</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Auxiliary Syntax</span>
-    <a name="smtp:attachment2419">
+    <a name="smtp:attachment2454">
       <span class="name" name="smtp:attachment">smtp:attachment</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Auxiliary Syntax</span>
-    <a name="smtp:header2420">
+    <a name="smtp:header2455">
       <span class="name" name="smtp:header">smtp:header</span>
     </a>
   </div>
@@ -271,36 +271,36 @@ The order of the appearance does not matter, except <var>string</var> which will
 the content of the creating SMTP mail. Except the <code>smtp:subject</code> and
 <code>smtp:alternative</code>, all elements can be appear multiple times.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-mail-&gt;string2421">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-mail-&gt;string2456">
     <span class="name" name="smtp-mail-&gt;string">smtp-mail-&gt;string</span>
   </a> <span class="args">smtp-mail</span></div>
 <div class="desc">Returns MIME string of given <var>smtp-mail</var>.
 <p />NOTE: the procedure consumes input port attachments if exists.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2422"><span class="section-number">7.36.2</span>Middle level APIs</a>
+    <a class="section.anchor" name="G2457"><span class="section-number">7.36.2</span>Middle level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-mail2423">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-mail2458">
     <span class="name" name="make-smtp-mail">make-smtp-mail</span>
   </a>
  <span class="args">from subject content :rest recipients</span></div>
 <div class="desc">Creates an SMTP mail object.</div>
-<div class="define"><span class="define-category">Function</span><a name="smtp-mail?2424">
+<div class="define"><span class="define-category">Function</span><a name="smtp-mail?2459">
     <span class="name" name="smtp-mail?">smtp-mail?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if the given <var>obj</var> is an SMTP mail object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-from2425">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-from2460">
     <span class="name" name="make-smtp-from">make-smtp-from</span>
   </a> <span class="args">email</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-smtp-from2426">
+<div class="define"><span class="define-category">Function</span><a name="make-smtp-from2461">
     <span class="name" name="make-smtp-from">make-smtp-from</span>
   </a> <span class="args">name email</span></div>
 <div class="desc">creates an SMTP from object.</div>
-<div class="define"><span class="define-category">Function</span><a name="smtp-from?2427">
+<div class="define"><span class="define-category">Function</span><a name="smtp-from?2462">
     <span class="name" name="smtp-from?">smtp-from?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if the given <var>obj</var> is an SMTP from object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-recipient?2428">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-recipient?2463">
     <span class="name" name="smtp-recipient?">smtp-recipient?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if the given <var>obj</var> is an SMTP recipient object, 
@@ -311,38 +311,38 @@ otherwise #f.
 <li class="itemlist-item">SMTP bcc object</li>
 </ul>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-to2429">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-to2464">
     <span class="name" name="make-smtp-to">make-smtp-to</span>
   </a> <span class="args">email</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-smtp-to2430">
+<div class="define"><span class="define-category">Function</span><a name="make-smtp-to2465">
     <span class="name" name="make-smtp-to">make-smtp-to</span>
   </a> <span class="args">name email</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-smtp-cc2431">
+<div class="define"><span class="define-category">Function</span><a name="make-smtp-cc2466">
     <span class="name" name="make-smtp-cc">make-smtp-cc</span>
   </a> <span class="args">email</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-smtp-cc2432">
+<div class="define"><span class="define-category">Function</span><a name="make-smtp-cc2467">
     <span class="name" name="make-smtp-cc">make-smtp-cc</span>
   </a> <span class="args">name email</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-smtp-bcc2433">
+<div class="define"><span class="define-category">Function</span><a name="make-smtp-bcc2468">
     <span class="name" name="make-smtp-bcc">make-smtp-bcc</span>
   </a> <span class="args">email</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-smtp-bcc2434">
+<div class="define"><span class="define-category">Function</span><a name="make-smtp-bcc2469">
     <span class="name" name="make-smtp-bcc">make-smtp-bcc</span>
   </a> <span class="args">name email</span></div>
 <div class="desc">Creates SMTP to, SMTP cc and SMTP bcc objects respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-to?2435">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-to?2470">
     <span class="name" name="smtp-to?">smtp-to?</span>
   </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="smtp-cc?2436">
+<div class="define"><span class="define-category">Function</span><a name="smtp-cc?2471">
     <span class="name" name="smtp-cc?">smtp-cc?</span>
   </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="smtp-bcc?2437">
+<div class="define"><span class="define-category">Function</span><a name="smtp-bcc?2472">
     <span class="name" name="smtp-bcc?">smtp-bcc?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is SMTP to, SMTP cc or SMTP bcc,
 respectively. Otherwise #f.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-attachment2438">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-attachment2473">
     <span class="name" name="make-smtp-attachment">make-smtp-attachment</span>
   </a>
  <span class="args">type subtype content :optional filename disposition-parameter headers ...</span></div>
@@ -360,7 +360,7 @@ extra mime header. Each <var>header</var> must be a list which contains 2
 elements, header name and value. The value part can also contain 
 MIME parameters.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-alternative-component2439">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-alternative-component2474">
     <span class="name" name="make-smtp-alternative-component">make-smtp-alternative-component</span>
   </a>
  <span class="args">type subtype content headers ...</span></div>
@@ -368,7 +368,7 @@ MIME parameters.
 is a mere MIME object.
 <p /><var>type</var> and <var>subtype</var> are the same as <code>make-smtp-attachment</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-alternative2440">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-smtp-alternative2475">
     <span class="name" name="make-smtp-alternative">make-smtp-alternative</span>
   </a> <span class="args">alternatives ...</span></div>
 <div class="desc">Creates an alternative message. The returning message
@@ -377,19 +377,19 @@ is a mere MIME object.
 and not <var>content</var> argument of <code>make-smtp-mail</code>. To make mail
 construction easier, use <code>smtp:mail</code> macro.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-mail-add-recipent!2441">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-mail-add-recipent!2476">
     <span class="name" name="smtp-mail-add-recipent!">smtp-mail-add-recipent!</span>
   </a> <span class="args">smtp-mail recipient</span></div>
 <div class="desc">Adds SMTP recipient <var>recipient</var> to <var>smtp-mail</var> and returns
 SMTP mail object.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-mail-add-attachment!2442">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-mail-add-attachment!2477">
     <span class="name" name="smtp-mail-add-attachment!">smtp-mail-add-attachment!</span>
   </a> <span class="args">smtp-mail attachment</span></div>
 <div class="desc">Adds SMTP attachment <var>attachment</var> to <var>smtp-mail</var> and returns
 SMTP mail object.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="smtp-mail-add-header!2443">
+<p /><div class="define"><span class="define-category">Function</span><a name="smtp-mail-add-header!2478">
     <span class="name" name="smtp-mail-add-header!">smtp-mail-add-header!</span>
   </a> <span class="args">smtp-mail name value</span></div>
 <div class="desc">Adds header to <var>smtp-mail</var> and returns SMTP mail object.
@@ -406,6 +406,6 @@ one is overwritten.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2016-12-24T11:10:14+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-01-20T19:50:45+0100</i></div>
   </div>
 </html>
