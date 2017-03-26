@@ -7,177 +7,243 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section752.html">(text markdown) -- Markdown parser</a>
+    <a class="prev" href="section752.html">(text sxml html-parser) - Flxible HTML parser</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section754.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section754.html">(text sxml object-builder) - SXML to</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.object-builder"><span class="section-number">7.53</span>(text sxml object-builder) - SXML to
-Scheme object builder</a>
+    <a class="section.anchor" name="text.markdown"><span class="section-number">7.53</span>(text markdown) -- Markdown parser</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text sxml object-builder)2749">
-      <span class="name" name="(text sxml object-builder)">(text sxml object-builder)</span>
+    <a name="(text markdown)2769">
+      <span class="name" name="(text markdown)">(text markdown)</span>
     </a>
   </div>
-<div class="desc">This library provides APIs to build Scheme object from SXML.</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2750"><span class="section-number">7.53.1</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="sxml-&gt;object2751">
-    <span class="name" name="sxml-&gt;object">sxml-&gt;object</span>
-  </a>
- <span class="args">sxml builder :optional unknown-tag-handler</span></div>
-<div class="desc">Builds a Scheme object from given SXML <var>sxml</var>. The <var>builder</var>
-must be a object-builder described below.
-<p />If optional argument <var>unknown-tag-handler</var> is given, then it must be a
-procedure accepts 2 arguments, <var>builder</var> and <var>sxml</var>. The procedure
-is called when the process met a tag which can't be handled by given
-<var>builder</var>. Users can return an object if needed. The default behaviour
-of the handler is raising an error.
+<div class="desc">This library provides markdown parser.
+<p />The library consists 3 parts, first one is the parser, second one is the
+converter which converts markdown sexp to SHTML. And the last one is the
+user APIs.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="sxml-object-builder2752">
-    <span class="name" name="sxml-object-builder">sxml-object-builder</span>
-  </a> <span class="args">spec ...</span></div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="*namespace*2753">
-      <span class="name" name="*namespace*">*namespace*</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="<!&gt;2754">
-      <span class="name" name="<!&gt;">&lt;!&gt;</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="?2755">
-      <span class="name" name="?">?</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="??2756">
-      <span class="name" name="??">??</span>
-    </a>
-  </div>
-<div class="desc">A DSL which constructs object-builder.
-<p />The <var>spec</var> must be one of the followings:
-<ul class="itemlist">
-    <li class="itemlist-item">
-      <code>(*namespace* ((ns uri) ...) spec ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(* spec ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(+ spec ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(/ spec ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(? spec ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(&lt;!&gt; <var>tag</var> builder)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>spec spec* ...</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(<var>tag</var> <var>ctr</var>)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(<var>tag</var> <var>ctr</var> <var>next</var>)</code>
-    </li>
-  </ul>
-<var>tag</var> can be either a symbol or the following clause:
-<ul class="itemlist">
-    <li class="itemlist-item">
-      <code>(?? pred)</code>
-    </li>
-  </ul>
-<var>pred</var> must be a predicate of SXML tag.
-<p /><var>ctr</var> must be a procedure which takes 3 arguments, <var>name</var>,
-<var>attributes</var> and <var>contents</var>. These are SXML's tagname, list of
-attributes and SXML contents, respectively.
-<p />The first form of the <var>spec</var> specifies aliases of namespaces. Users can
-write qualified name with prefixed instead of unprefixed qualified name.
-<p />The second to forth form of <var>spec</var> specify the amount of nested
-<var>spec ...</var> existence. The <code>*</code> means 0 or more.
-The <code>+</code> means 1 or more. And the <code>?</code> means 0 or 1.
-<p />The fifth form of <var>spec</var> means cyclic structure.
-<p />The sixth form of <var>spec</var> means set of <var>spec spec ...</var>.
-<p />The following shows how to use this DSL macro
-<pre class="codeblock">(define builder
-  (sxml-object-builder
-    (*namespace* ((ns "urn:foo")))
-    (ns:bar list
-      (ns:buz list)
-      (foo list))))
-</pre>
-The above definition can build an object from the following SXML
-<pre class="codeblock">(*TOP*
-  (urn:foo:bar
-    (urn:foo:buz "buz")
-    (foo "foo")))
-</pre>
-<p />A generic SXML builder can be written like this:
-<pre class="codeblock">(define-record-type xml-object
-  (fields name attributes contents))
-
-(define xml-object-builder
-  (sxml-object-builder
-   (&lt;!&gt; (?? values) make-xml-object)))
-</pre>
-<p /></div>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2757"><span class="section-number">7.53.1.1</span>XML object</a>
-  </h5>
-<p />This section describes convenience record type and procedures.
-<p /><div class="define">
-    <span class="define-category">Record Type</span>
-    <a name="xml-object2758">
-      <span class="name" name="xml-object">xml-object</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Function</span><a name="xml-object?2759">
-    <span class="name" name="xml-object?">xml-object?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-xml-object2760">
-    <span class="name" name="make-xml-object">make-xml-object</span>
-  </a> <span class="args">name attributes contents</span></div>
-<div class="define"><span class="define-category">Function</span><a name="xml-object-name2761">
-    <span class="name" name="xml-object-name">xml-object-name</span>
-  </a> <span class="args">xml-object</span></div>
-<div class="define"><span class="define-category">Function</span><a name="xml-object-attributes2762">
-    <span class="name" name="xml-object-attributes">xml-object-attributes</span>
-  </a> <span class="args">xml-object</span></div>
-<div class="define"><span class="define-category">Function</span><a name="xml-object-contents2763">
-    <span class="name" name="xml-object-contents">xml-object-contents</span>
-  </a> <span class="args">xml-object</span></div>
-<div class="desc">A very simple XML object type. An instance of this record type
-holds tag name (<var>name</var>), attribute as alist (<var>attributes</var>) and
-contents which must be a valid SXML or other XML objects (<var>contents</var>).
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sxml-&gt;xml-object2764">
-    <span class="name" name="sxml-&gt;xml-object">sxml-&gt;xml-object</span>
-  </a> <span class="args">sxml :optional handler</span></div>
-<div class="desc">Builds XML object described above from given <var>sxml</var>.</div>
 <p />
-</section></section></section>
+<section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2770"><span class="section-number">7.53.1</span>High level APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="markdown-read2771">
+    <span class="name" name="markdown-read">markdown-read</span>
+  </a>
+ <span class="args">in :key (as 'sxml) :allow-other-keys opt</span></div>
+<div class="desc">Reads markdown from given input port <var>in</var>.
+<p />The keyword argument <var>as</var> specifies the return value. Following 3 are
+supported:
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>sxml</code>
+      </dt>
+      <dd class="dl-item-desc">Returns SHTML. The procedure uses
+   <code>markdown-sexp-&gt;sxml</code> to convert raw markdown S-expression.</dd>
+      <dt class="dl-item-title">
+        <code>html</code>
+      </dt>
+      <dd class="dl-item-desc">Returns HTML string.  The procedure uses
+   <code>markdown-sexp-&gt;string</code> to convert raw markdown S-expression.</dd>
+      <dt class="dl-item-title">
+        <code>sexp</code>
+      </dt>
+      <dd class="dl-item-desc">Returns S-expression representation of markdown.</dd>
+    </dl>
+  </div>
+<p />Parsing markdown is done by <code>parse-markdown</code>. The rest argument <var>opt</var>
+is passed to both <code>parse-markdown</code> and underlying convertion procedure.
+So if you want to read a markdown document as an HTML string without
+indentation, then the procedure should be called like the following:
+<p /><pre class="codeblock">(markdown-read in :as 'html :no-indent #t)
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;markdown2772">
+    <span class="name" name="string-&gt;markdown">string-&gt;markdown</span>
+  </a> <span class="args">string :rest opt</span></div>
+<div class="desc">Reads markdown from given <var>string</var>.
+<p />This procedure is thin wrapper of <code>markdown-read</code>. It opens string
+input port of <var>string</var> and call the <code>markdown-read</code>.
+<p />The rest argument <var>opt</var> is passed to <code>markdown-read</code>.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2773"><span class="section-number">7.53.2</span>Supporting syntaxes</a>
+  </h4>
+<p />This section describes which syntax is supported on this library. Markdown
+has variety of dialect and it is rather impossible to provide all of them.
+So this library only provides most common features.
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">Atx heading</dt>
+      <dd class="dl-item-desc">Starting <code>#</code> up to 6 of them is supported.
+<p /><div class="codeblock-box">
+        <pre class="codeblock"># header\n</pre>
+        <span class="codeblock-arrow">=&gt;</span>
+        <span class="codeblock-result">&lt;h1&gt;header&lt;/h1&gt;</span>
+      </div>
+<p />The line can contain inline syntaxes and must end with line break. If it
+doesn't have line break, then the line is considered plain text.
+</dd>
+      <dt class="dl-item-title">Setext heading</dt>
+      <dd class="dl-item-desc">A line which have <code>=</code> or <code>-</code> in its
+next line is supported. The <code>=</code> or <code>-</code> can be more than one.
+<p /><div class="codeblock-box">
+        <pre class="codeblock">header
+======
+</pre>
+        <span class="codeblock-arrow">=&gt;</span>
+        <span class="codeblock-result">&lt;h1&gt;header&lt;/h1&gt;</span>
+      </div>
+<p />The fist line can contain inline syntaxes. The second line must end with
+line break.
+</dd>
+      <dt class="dl-item-title">Blockquote</dt>
+      <dd class="dl-item-desc">A section which starts with <code>&gt;</code> is supported.
+<p /><div class="codeblock-box">
+        <pre class="codeblock">&gt; sentence1
+&gt; sentence2
+</pre>
+        <span class="codeblock-arrow">=&gt;</span>
+        <span class="codeblock-result">&lt;blockquote&gt;sentence1\nsentence2&lt;/blockquote&gt;</span>
+      </div>
+<p />Nested blockquote is not supported.
+</dd>
+      <dt class="dl-item-title">Verbatim</dt>
+      <dd class="dl-item-desc">A section which starts with <code>"    "</code> 
+(4 spaces or one tab) is supported.
+<p /><div class="codeblock-box">
+        <pre class="codeblock">    this
+      is
+        the sentence
+</pre>
+        <span class="codeblock-arrow">=&gt;</span>
+        <span class="codeblock-result">&lt;pre&gt;thie\n  is\n    the sentence&lt;/pre&gt;</span>
+      </div>
+<p /></dd>
+      <dt class="dl-item-title">Code block</dt>
+      <dd class="dl-item-desc">A section which starts with <code>"```\n"</code> and end with
+<code>"```\n"</code> is supported.
+<p /><div class="codeblock-box">
+        <pre class="codeblock">```
+(define (print . args)
+  (for-each display args) (newline))
+```
+</pre>
+        <span class="codeblock-arrow">=&gt;</span>
+        <span class="codeblock-result">&lt;pre&gt;(define (print . args)\n  (for-each display args) (newline))&lt;/pre&gt;</span>
+      </div>
+<p /></dd>
+      <dt class="dl-item-title">Note</dt>
+      <dd class="dl-item-desc">A line which start with <code>"[^<var>$name</var>]: "</code> is 
+supported. To refer this note, use <code>"[^<var>$name</var>]"</code>. <var>$name</var>
+can be alphanumeric.
+<p /><div class="codeblock-box">
+        <pre class="codeblock">[^1]: note1
+</pre>
+        <span class="codeblock-arrow">=&gt;</span>
+        <span class="codeblock-result">&lt;div id="notes"&gt;&lt;ol&gt;&lt;li&gt;note1&lt;/li&gt;&lt;/div&gt;</span>
+      </div>
+<p />To refer:
+<p /><div class="codeblock-box">
+        <pre class="codeblock">Note to refer [^1].
+</pre>
+        <span class="codeblock-arrow">=&gt;</span>
+        <span class="codeblock-result">&lt;p&gt;Note to refer &lt;sup&gt;&lt;a href="#id"&gt;1&lt;/a&gt;&lt;/sup&gt;.</span>
+      </div>
+<p />The generated HTML also contains <code>title</code> attribute with the value of
+note.
+</dd>
+      <dt class="dl-item-title">Reference</dt>
+      <dd class="dl-item-desc">A line which start with <code>"[<var>$name</var>]: "</code> is 
+supported. To refer this note, use <code>"[^<var>$name</var>]"</code>. <var>$name</var>
+can be alphanumeric. To refer the reference, use <code>"[label][ref]"</code>.
+<p /><div class="codeblock-box">
+        <pre class="codeblock">[Ref]: http://foo (title)
+
+or
+
+[Ref]: http://foo 'title'
+
+or
+
+[Ref]: http://foo "title"
+</pre>
+        <span class="codeblock-arrow">=&gt;</span>
+        <span class="codeblock-result">&lt;div id="references"&gt;&lt;div&gt;[Ref]: http://foo 'title'&lt;/div&gt;&lt;/div&gt;</span>
+      </div>
+<p />To refer:
+<p /><div class="codeblock-box">
+        <pre class="codeblock">[label][Ref]
+</pre>
+        <span class="codeblock-arrow">=&gt;</span>
+        <span class="codeblock-result">&lt;a href="http://foo"&gt;label&lt;/a&gt;</span>
+      </div>
+<p /></dd>
+    </dl>
+  </div>
+<p />
+</section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2774"><span class="section-number">7.53.3</span>Conversion APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="markdown-sexp-&gt;sxml2775">
+    <span class="name" name="markdown-sexp-&gt;sxml">markdown-sexp-&gt;sxml</span>
+  </a>
+ <span class="args">sexp :key (no-reference #t) (no-notes #f) :allow-other-keys</span></div>
+<div class="desc">Converts given markdown S-expression <var>sexp</var> to SXML.
+<p />The keyword arguments <var>no-reference</var> and <var>no-notes</var> control the
+result SXML to have reference section and note section. If the values are
+true values, then returning SXML doesn't have reference or note section.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="markdown-sexp-&gt;string2776">
+    <span class="name" name="markdown-sexp-&gt;string">markdown-sexp-&gt;string</span>
+  </a>
+ <span class="args">sexp :key (no-indent #f) :allow-other-keys opts</span></div>
+<div class="desc">Converts given markdown S-expression <var>sexp</var> to HTML string.
+<p />The procedure first calls <code>markdown-sexp-&gt;sxml</code> passing <var>sexp</var> and
+<var>opts</var> then converts the returned value to HTML string.
+<p />The keyword argument <var>no-indent</var> controls if the returning string
+has indentation or not. If the value is true value, then returning string
+doesn't have indentation.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2777"><span class="section-number">7.53.4</span>Parser APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="markdown-parser-error?2778">
+    <span class="name" name="markdown-parser-error?">markdown-parser-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given object is a markdown parser error condition,
+otherwise #f.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="markdown-parser-position2779">
+    <span class="name" name="markdown-parser-position">markdown-parser-position</span>
+  </a> <span class="args">condition</span></div>
+<div class="define"><span class="define-category">Function</span><a name="markdown-parser-expected2780">
+    <span class="name" name="markdown-parser-expected">markdown-parser-expected</span>
+  </a> <span class="args">condition</span></div>
+<div class="desc">Returns <code>position</code> and <code>expexted</code> slot of the given
+markdown parser error condition, respectively.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-markdown2781">
+    <span class="name" name="parse-markdown">parse-markdown</span>
+  </a> <span class="args">in :allow-other-keys</span></div>
+<div class="desc">Parses given input port <var>in</var> and returns markdown S-expression.
+<p />The returning value is S-expression represented AST of markdown. The
+structure is <strong>not</strong> specified in this document yet, thus it might be
+changed in future.
+</div>
+
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section752.html">(text markdown) -- Markdown parser</a>
+    <a class="prev" href="section752.html">(text sxml html-parser) - Flxible HTML parser</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section754.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section754.html">(text sxml object-builder) - SXML to</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-02-18T11:45:36+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
   </div>
 </html>

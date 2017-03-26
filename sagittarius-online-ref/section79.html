@@ -679,66 +679,91 @@ exactly these procedures do, please see the PKCS#1 document.
 Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 </div>
 <p /><h4 class="subsubsection">
-    <a class="section.anchor" name="G1883"><span class="section-number">7.9.5</span>Cryptographic conditions</a>
+    <a class="section.anchor" name="G1883"><span class="section-number">7.9.5</span>Key wrapping</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-aes-key-wrap1884">
+    <span class="name" name="make-aes-key-wrap">make-aes-key-wrap</span>
+  </a> <span class="args">wrapping-key :key iv</span></div>
+<div class="desc">Returns AES key wrapping procedure which accepts one argument of
+bytevector to be wrapped.
+<p />The returning procedure wraps the given bytevector with AES Key Wrap algorithm
+specified by NIST or RFC 3394.
+<p />The keyword argument <var>iv</var> specifies initial value (IV) for data integrity.
+The default value is <code>#vu8(#xa6 #xa6 #xa6 #xa6 #xa6 #xa6 #xa6 #xa6)</code>
+specified by the specification.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-aes-key-unwrap1885">
+    <span class="name" name="make-aes-key-unwrap">make-aes-key-unwrap</span>
+  </a> <span class="args">wrapping-key :key iv</span></div>
+<div class="desc">Returns AES key unwrapping procedure which accepts one argument of
+bytevector to be unwrapped.
+<p />The returning procedure wraps the given bytevector with AES Key Wrap algorithm
+specified by NIST or RFC 3394.
+<p />The keyword argument <var>iv</var> specifies initial value (IV) for data integrity.
+The default value is <code>#vu8(#xa6 #xa6 #xa6 #xa6 #xa6 #xa6 #xa6 #xa6)</code>
+specified by the specification.
+</div>
+<p /><h4 class="subsubsection">
+    <a class="section.anchor" name="G1886"><span class="section-number">7.9.6</span>Cryptographic conditions</a>
   </h4>
 <div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;crypto-error1884">
+    <a name="&amp;crypto-error1887">
       <span class="name" name="&amp;crypto-error">&amp;crypto-error</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="crypto-error?1885">
+<div class="define"><span class="define-category">Function</span><a name="crypto-error?1888">
     <span class="name" name="crypto-error?">crypto-error?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Subcondition of <code>&amp;error</code>.
 <p />Base condition type of all cryptographic conditions.</div>
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;encrypt-error1886">
+    <a name="&amp;encrypt-error1889">
       <span class="name" name="&amp;encrypt-error">&amp;encrypt-error</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="encrypt-error?1887">
+<div class="define"><span class="define-category">Function</span><a name="encrypt-error?1890">
     <span class="name" name="encrypt-error?">encrypt-error?</span>
   </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-encrypt-mechanism1888">
+<div class="define"><span class="define-category">Function</span><a name="condition-encrypt-mechanism1891">
     <span class="name" name="condition-encrypt-mechanism">condition-encrypt-mechanism</span>
   </a> <span class="args">encrypt-error</span></div>
 <div class="desc">This condition will be raised when encrypt operation is failed.</div>
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;decrypt-error1889">
+    <a name="&amp;decrypt-error1892">
       <span class="name" name="&amp;decrypt-error">&amp;decrypt-error</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="decrypt-error?1890">
+<div class="define"><span class="define-category">Function</span><a name="decrypt-error?1893">
     <span class="name" name="decrypt-error?">decrypt-error?</span>
   </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-decrypt-mechanism1891">
+<div class="define"><span class="define-category">Function</span><a name="condition-decrypt-mechanism1894">
     <span class="name" name="condition-decrypt-mechanism">condition-decrypt-mechanism</span>
   </a> <span class="args">decrypt-error</span></div>
 <div class="desc">This condition will be raised when decrypt operation is failed.</div>
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;encode-error1892">
+    <a name="&amp;encode-error1895">
       <span class="name" name="&amp;encode-error">&amp;encode-error</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="encode-error?1893">
+<div class="define"><span class="define-category">Function</span><a name="encode-error?1896">
     <span class="name" name="encode-error?">encode-error?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">This condition will be raised when encoding operation is failed.</div>
 <p /><div class="define">
     <span class="define-category">Condition Type</span>
-    <a name="&amp;decode-error1894">
+    <a name="&amp;decode-error1897">
       <span class="name" name="&amp;decode-error">&amp;decode-error</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="decode-error?1895">
+<div class="define"><span class="define-category">Function</span><a name="decode-error?1898">
     <span class="name" name="decode-error?">decode-error?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">This condition will be raised when decoding operation is failed.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="raise-encrypt-error1896">
+<p /><div class="define"><span class="define-category">Function</span><a name="raise-encrypt-error1899">
     <span class="name" name="raise-encrypt-error">raise-encrypt-error</span>
   </a>
  <span class="args">who message mechanism :optional irritants</span></div>
@@ -747,7 +772,7 @@ Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 <p /><var>mechanism</var> should be a name of cryptographic algorithm.
 <p />Raises <code>&amp;encrypt-error</code>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="raise-decrypt-error1897">
+<div class="define"><span class="define-category">Function</span><a name="raise-decrypt-error1900">
     <span class="name" name="raise-decrypt-error">raise-decrypt-error</span>
   </a>
  <span class="args">who message mechanism :optional irritants</span></div>
@@ -756,7 +781,7 @@ Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 <p /><var>mechanism</var> should be a name of cryptographic algorithm.
 <p />Raises <code>&amp;decrypt-error</code>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="raise-encode-error1898">
+<div class="define"><span class="define-category">Function</span><a name="raise-encode-error1901">
     <span class="name" name="raise-encode-error">raise-encode-error</span>
   </a>
  <span class="args">who message :optional irritants</span></div>
@@ -764,7 +789,7 @@ Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 <code>assertion-violation</code>.
 <p />Raises <code>&amp;encode-error</code>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="raise-decode-error1899">
+<div class="define"><span class="define-category">Function</span><a name="raise-decode-error1902">
     <span class="name" name="raise-decode-error">raise-decode-error</span>
   </a>
  <span class="args">who message :optional irritants</span></div>
@@ -772,8 +797,21 @@ Other keyword arguments are the same as <code>pkcs1-emsa-pss-encode</code>.
 <code>assertion-violation</code>.
 <p />Raises <code>&amp;decode-error</code>.
 </div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;integrity-error1903">
+      <span class="name" name="&amp;integrity-error">&amp;integrity-error</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="integrity-error?1904">
+    <span class="name" name="integrity-error?">integrity-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Subcondition of <code>&amp;crypto-error</code>
+<p />This condition will be raised when key unwrap failed due to the
+integrity check error.
+</div>
 <p /><h4 class="subsubsection">
-    <a class="section.anchor" name="custom.cipher"><span class="section-number">7.9.6</span>Creating own cipher</a>
+    <a class="section.anchor" name="custom.cipher"><span class="section-number">7.9.7</span>Creating own cipher</a>
   </h4>
 <p />If Sagittarius does not support sufficient cipher algorithm for you, then you
 can write own cipher such as DSA. For this purpose, you might need to know how
@@ -810,7 +848,7 @@ want to create a new cipher, you just need to follow the example.
 of <code>&lt;cipher-spi&gt;</code> and register it. 
 <p /><div class="define">
     <span class="define-category">Class</span>
-    <a name="<cipher-spi&gt;1900">
+    <a name="<cipher-spi&gt;1905">
       <span class="name" name="<cipher-spi&gt;">&lt;cipher-spi&gt;</span>
     </a>
   </div>
@@ -871,11 +909,11 @@ the <code>initialize</code> method) takes at least 3 arguments, <var>key</var>,
 <code>:mode-parameter</code> keyword and <var>parameter</var> passed to
 <code>make-cipher</code>. The rest of other arguments are also passed if exist.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="cipher-spi?1901">
+<p /><div class="define"><span class="define-category">Function</span><a name="cipher-spi?1906">
     <span class="name" name="cipher-spi?">cipher-spi?</span>
   </a> <span class="args">o</span></div>
 <div class="desc">Returns #t if the given object <var>o</var> is a cipher SPI. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="register-cipher-spi1902">
+<p /><div class="define"><span class="define-category">Function</span><a name="register-cipher-spi1907">
     <span class="name" name="register-cipher-spi">register-cipher-spi</span>
   </a> <span class="args">mark spi</span></div>
 <div class="desc">Register custom cipher SPI.
@@ -912,7 +950,7 @@ implementation supply default parameter then users even can use it by default.
 <p />The <code>&lt;cipher&gt;</code> and <code>builtin-</code> prefixed classes can not have any
 subclass.
 <p /><h4 class="subsubsection">
-    <a class="section.anchor" name="G1903"><span class="section-number">7.9.7</span>Backward compatibility</a>
+    <a class="section.anchor" name="G1908"><span class="section-number">7.9.8</span>Backward compatibility</a>
   </h4>
 <p />The following procedures are kept for backward compatibility.
 <p /><ul class="itemlist"> <li class="itemlist-item"><code>cipher</code> - Use <code>make-cipher</code> instead.</li>
@@ -932,6 +970,6 @@ subclass.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-02-18T11:45:36+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
   </div>
 </html>

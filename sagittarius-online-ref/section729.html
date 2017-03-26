@@ -16,41 +16,67 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc base64)2351">
+    <a name="(rfc base64)2356">
       <span class="name" name="(rfc base64)">(rfc base64)</span>
     </a>
   </div>
 <div class="desc">This library provides Base 64 encoding and decoding procedures.</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2352"><span class="section-number">7.29.1</span>Encoding procedures</a>
+    <a class="section.anchor" name="G2357"><span class="section-number">7.29.1</span>Encoding procedures</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode2353">
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode2358">
     <span class="name" name="base64-encode">base64-encode</span>
-  </a> <span class="args">in :key (line-width 76)</span></div>
-<div class="desc"><var>in</var> must be a bytevector or binary input port.
+  </a>
+ <span class="args">in :key (line-width 76) (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-encode2359">
+    <span class="name" name="base64url-encode">base64url-encode</span>
+  </a>
+ <span class="args">in :key (line-width #f) (padding? #f)</span></div>
+<div class="desc"><var>in</var> must be either a bytevector or binary input port.
 <p />Encodes given input <var>in</var> to Base 64 encoded bytevector.
 <p />The keyword argument <var>line-width</var> specifies where the encode procedure
 should put linefeed. If this is less than 1 or #f, encoder does not put
 linefeed.
+<p />The keyword argument <var>padding?</var> controls if the result encoded value
+contains padding character <code>#\=</code> or not. If this is #f, then the result
+value won't contain padding character.
+<p />The <code>base64url-encode</code> encodes the given input to Base 64 URL safe
+encoded bytevector. Which doesn't use <code>+</code> and <code>/</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode-string2354">
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode-string2360">
     <span class="name" name="base64-encode-string">base64-encode-string</span>
   </a>
- <span class="args">string :key (line-width 76) (transcoder (native-transcoder))</span></div>
+ <span class="args">string :key (line-width 76) transcoder (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-encode-string2361">
+    <span class="name" name="base64url-encode-string">base64url-encode-string</span>
+  </a>
+ <span class="args">string :key (line-width #f) transcoder (padding? #f)</span></div>
 <div class="desc">Convenient procedure for string.
 <p />Encodes given <var>string</var> to Base 64 encoded string.
 <p />The keyword argument <var>transcoder</var> is used to convert given string to
 bytevector. The converted bytevector will be passed to the <code>base64-encode</code>
-procedure.
+procedure. The default value is a transcoder with UTF-8 codec with EOL
+style none.
+<p />The keyword argument <var>padding?</var> is the same as <code>base64-encode</code>.
+<p />The <code>base64url-encode-string</code> encodes the given input to Base 64 URL safe
+encoded bytevector. Which doesn't use <code>+</code> and <code>/</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-base64-encode-input-port2355">
+<p /><div class="define"><span class="define-category">Function</span><a name="open-base64-encode-input-port2362">
     <span class="name" name="open-base64-encode-input-port">open-base64-encode-input-port</span>
   </a>
- <span class="args">source :key (owner? #f) (line-width #f)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="open-base64-encode-output-port2356">
+ <span class="args">source :key (owner? #f) (line-width #f) (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64-encode-output-port2363">
     <span class="name" name="open-base64-encode-output-port">open-base64-encode-output-port</span>
   </a>
- <span class="args">sink :key (owner? #f) (line-width #f)</span></div>
+ <span class="args">sink :key (owner? #f) (line-width #f) (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-encode-input-port2364">
+    <span class="name" name="open-base64url-encode-input-port">open-base64url-encode-input-port</span>
+  </a>
+ <span class="args">source :key (owner? #f) (line-width #f) (padding? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-encode-output-port2365">
+    <span class="name" name="open-base64url-encode-output-port">open-base64url-encode-output-port</span>
+  </a>
+ <span class="args">sink :key (owner? #f) (line-width #f) (padding? #f)</span></div>
 <div class="desc">Creates binary Base64 encode input and output port, respectively.
 <p /><var>source</var> must be binary inpurt port.
 <p />The input port reads bytes from <var>source</var> and returns Base64 encoded
@@ -58,18 +84,29 @@ result.
 <p /><var>sink</var> must be binary inpurt port.
 <p />The output port puts encoded bytes to <var>sink</var>. The port must be closed
 to finish the encoding process properly.
+<p />The keyword argument <var>padding?</var> is the same as <code>base64-encode</code>.
+<p />The <code>open-base64url-encode-input-port</code> and
+<code>open-base64url-encode-output-port</code> encode to Base64 URL safe encode.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2357"><span class="section-number">7.29.2</span>Decoding procedures</a>
+    <a class="section.anchor" name="G2366"><span class="section-number">7.29.2</span>Decoding procedures</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode2358">
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode2367">
     <span class="name" name="base64-decode">base64-decode</span>
+  </a> <span class="args">in</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-decode2368">
+    <span class="name" name="base64url-decode">base64url-decode</span>
   </a> <span class="args">in</span></div>
 <div class="desc"><var>in</var> must be a bytevector or binary input port.
 <p />Decode Base 64 encoded input <var>in</var> to original bytevector.
+<p />The <code>base64url-decode</code> decodes Base64 URL safe encoded value.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode-string2359">
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode-string2369">
     <span class="name" name="base64-decode-string">base64-decode-string</span>
+  </a>
+ <span class="args">string :key (transcoder (native-transcoder))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-decode-string2370">
+    <span class="name" name="base64url-decode-string">base64url-decode-string</span>
   </a>
  <span class="args">string :key (transcoder (native-transcoder))</span></div>
 <div class="desc">Convenient procedure.
@@ -77,13 +114,22 @@ to finish the encoding process properly.
 <code>base64-decode</code>.
 <p />The keyword argument specifies how to convert the decoded bytevector to string.
 If this is #f, the procedure returns raw bytevector.
+<p />The <code>base64url-decode-string</code> decodes Base64 URL safe encoded value.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-base64-decode-input-port2360">
+<p /><div class="define"><span class="define-category">Function</span><a name="open-base64-decode-input-port2371">
     <span class="name" name="open-base64-decode-input-port">open-base64-decode-input-port</span>
   </a>
  <span class="args">source :key (owner? #f)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="open-base64-decode-output-port2361">
+<div class="define"><span class="define-category">Function</span><a name="open-base64-decode-output-port2372">
     <span class="name" name="open-base64-decode-output-port">open-base64-decode-output-port</span>
+  </a>
+ <span class="args">sink :key (owner? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-decode-input-port2373">
+    <span class="name" name="open-base64url-decode-input-port">open-base64url-decode-input-port</span>
+  </a>
+ <span class="args">source :key (owner? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-decode-output-port2374">
+    <span class="name" name="open-base64url-decode-output-port">open-base64url-decode-output-port</span>
   </a>
  <span class="args">sink :key (owner? #f)</span></div>
 <div class="desc">Creates binary Base64 decode input and output port, respectively.
@@ -93,6 +139,9 @@ decoded results.
 <p /><var>sink</var> must be binary inpurt port.
 <p />The output port puts decoded bytes to <var>sink</var>. The port must be closed
 to finish the encoding process properly.
+<p />The <code>open-base64url-decode-input-port</code> and
+<code>open-base64url-decode-output-port</code> decode Base64 URL safe encoded
+value.
 </div>
 <p />
 </section></section>
@@ -104,6 +153,6 @@ to finish the encoding process properly.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-02-18T11:45:36+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
   </div>
 </html>
