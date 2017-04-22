@@ -7,168 +7,66 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section751.html">(text json object-builder) -- JSON</a>
+    <a class="prev" href="section751.html">(text html-lite) - Simple HTML document builder library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section753.html">(text markdown) -- Markdown parser</a>
+    <a class="next" href="section753.html">(text json object-builder) -- JSON</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.html-parser"><span class="section-number">7.52</span>(text sxml html-parser) - Flxible HTML parser</a>
+    <a class="section.anchor" name="text.json"><span class="section-number">7.52</span>(text json) -- JSON parser</a>
   </h3>
-<p />
-<div class="define">
+<p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text sxml html-parser)2746">
-      <span class="name" name="(text sxml html-parser)">(text sxml html-parser)</span>
+    <a name="(text json)2768">
+      <span class="name" name="(text json)">(text json)</span>
     </a>
   </div>
-<div class="desc">This library provides HTML parser and printer procedures.
-<p />The provided procedures are compatible with HTMLPrag.
+<div class="desc">This library provides JSON parser and writer. 
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2747"><span class="section-number">7.52.1</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-0nf2748">
-    <span class="name" name="html-&gt;sxml-0nf">html-&gt;sxml-0nf</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-1nf2749">
-    <span class="name" name="html-&gt;sxml-1nf">html-&gt;sxml-1nf</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-2nf2750">
-    <span class="name" name="html-&gt;sxml-2nf">html-&gt;sxml-2nf</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml2751">
-    <span class="name" name="html-&gt;sxml">html-&gt;sxml</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;shtml2752">
-    <span class="name" name="html-&gt;shtml">html-&gt;shtml</span>
-  </a> <span class="args">in</span></div>
-<div class="desc">Parse given input port to SHTML. The <var>in</var> must be a textual input
-port.
-<p />The <code>html-&gt;sxml-2nf</code> procedure normalizes attributes if it doesn't have
-value. Others don't. Normalization in this context means adding attribute name
-as its value.
+<p /><div class="define">
+    <span class="define-category">Parameter</span>
+    <a name="*json-map-type*2769">
+      <span class="name" name="*json-map-type*">*json-map-type*</span>
+    </a>
+  </div>
+<div class="desc">Controls mapping of JSON map and array. The value must be either
+<code>'vector</code> or <code>'alist</code>. The first one is compatible with Chicken
+Scheme's json module, the latter one is compatible with Gauche's 
+<code>rfc.json</code> module. By default, it's set to <code>vector</code> for backward
+compatibility.
+<p />Conversion rules for <code>vector</code>:
+<pre class="codeblock">JSON array   &lt;-&gt; list
+JSON map     &lt;-&gt; vector
+JSON boolean &lt;-&gt; boolean
+JSON null    &lt;-&gt; symbol <code>null</code>
+</pre>
+<p />Conversion rules for <code>alist</code>:
+<pre class="codeblock">JSON array   &lt;-&gt; vector
+JSON map     &lt;-&gt; alist
+JSON boolean &lt;-&gt; boolean
+JSON null    &lt;-&gt; symbol <code>null</code>
+</pre>
+<p />This parameter affects the read and write procedures.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="write-shtml-as-html2753">
-    <span class="name" name="write-shtml-as-html">write-shtml-as-html</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-read2770">
+    <span class="name" name="json-read">json-read</span>
+  </a> <span class="args">:optional (port (current-input-port))</span></div>
+<div class="desc">Reads JSON from given <var>port</var> and returns representing S-expression.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-write2771">
+    <span class="name" name="json-write">json-write</span>
   </a>
- <span class="args">shtml :optional out error-filter</span></div>
-<div class="desc">Writes given <var>shtml</var> to <var>out</var>.
-<p />If optional argument <var>out</var> is given, it must be a textual output port,
-then the procedure writes to given output port. Otherwise 
-<code>current-output-port</code> is used.
-<p />Optional argument <var>error-filter</var> is used when unexpected SHTML entity is
-met. It must be a procedure takes 2 arguments, unexpected entity and boolean
-flag indicates if the entity is attribute or not. By default, it raises an
-error.
+ <span class="args">json :optional (port (current-output-port))</span></div>
+<div class="desc">Writes the given S-expression JSON representing object to given
+<var>port</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shtml-&gt;html2754">
-    <span class="name" name="shtml-&gt;html">shtml-&gt;html</span>
-  </a> <span class="args">shtml</span></div>
-<div class="desc">Converts <var>shtml</var> to string represented HTML.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2755"><span class="section-number">7.52.2</span>Low level APIs</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-comment-symbol2756">
-      <span class="name" name="shtml-comment-symbol">shtml-comment-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-decl-symbol2757">
-      <span class="name" name="shtml-decl-symbol">shtml-decl-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-empty-symbol2758">
-      <span class="name" name="shtml-empty-symbol">shtml-empty-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-end-symbol2759">
-      <span class="name" name="shtml-end-symbol">shtml-end-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-entity-symbol2760">
-      <span class="name" name="shtml-entity-symbol">shtml-entity-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-pi-symbol2761">
-      <span class="name" name="shtml-pi-symbol">shtml-pi-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-start-symbol2762">
-      <span class="name" name="shtml-start-symbol">shtml-start-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-text-symbol2763">
-      <span class="name" name="shtml-text-symbol">shtml-text-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-top-symbol2764">
-      <span class="name" name="shtml-top-symbol">shtml-top-symbol</span>
-    </a>
-  </div>
-<div class="desc">SXML entity symbols: <code>*COMMENT*</code>, <code>*DECL*</code>, <code>*EMPTY*</code>,
-<code>*END*</code>, <code>*ENTITY*</code>, <code>*PI*</code>, <code>*START*</code>, <code>*TEXT*</code> and
-<code>*TOP*</code> respectively.
-</div>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-named-char-id2765">
-      <span class="name" name="shtml-named-char-id">shtml-named-char-id</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-numeric-char-id2766">
-      <span class="name" name="shtml-numeric-char-id">shtml-numeric-char-id</span>
-    </a>
-  </div>
-<div class="desc">These variables are used in <code>*ENTITY*</code> as public identifier.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-shtml-entity2767">
-    <span class="name" name="make-shtml-entity">make-shtml-entity</span>
-  </a> <span class="args">value</span></div>
-<div class="desc">Makes SHTML character entity. The <var>value</var> must be a symbol, string
-or integer.
-<p /><div class="snipet-box">
-    <pre class="snipet">(make-shtml-entity 151)</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">(&amp; 151)</span>
-  </div>
-</div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="shtml-entity-value2768">
-      <span class="name" name="shtml-entity-value">shtml-entity-value</span>
-    </a>
-  </div>
-<div class="desc">Retrieve SHTML entity value.
-</div>
-<p />
-</section></section>
+<p /></section>
   <div class="prev-next">
-    <a class="prev" href="section751.html">(text json object-builder) -- JSON</a>
+    <a class="prev" href="section751.html">(text html-lite) - Simple HTML document builder library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section753.html">(text markdown) -- Markdown parser</a>
+    <a class="next" href="section753.html">(text json object-builder) -- JSON</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-04-21T21:14:43+0200</i></div>
   </div>
 </html>

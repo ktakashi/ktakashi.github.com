@@ -7,177 +7,168 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section753.html">(text markdown) -- Markdown parser</a>
+    <a class="prev" href="section753.html">(text json object-builder) -- JSON</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section755.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section755.html">(text markdown) -- Markdown parser</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.object-builder"><span class="section-number">7.54</span>(text sxml object-builder) - SXML to
-Scheme object builder</a>
+    <a class="section.anchor" name="text.html-parser"><span class="section-number">7.54</span>(text sxml html-parser) - Flxible HTML parser</a>
   </h3>
-<p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(text sxml object-builder)2782">
-      <span class="name" name="(text sxml object-builder)">(text sxml object-builder)</span>
-    </a>
-  </div>
-<div class="desc">This library provides APIs to build Scheme object from SXML.</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2783"><span class="section-number">7.54.1</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="sxml-&gt;object2784">
-    <span class="name" name="sxml-&gt;object">sxml-&gt;object</span>
-  </a>
- <span class="args">sxml builder :optional unknown-tag-handler</span></div>
-<div class="desc">Builds a Scheme object from given SXML <var>sxml</var>. The <var>builder</var>
-must be a object-builder described below.
-<p />If optional argument <var>unknown-tag-handler</var> is given, then it must be a
-procedure accepts 2 arguments, <var>builder</var> and <var>sxml</var>. The procedure
-is called when the process met a tag which can't be handled by given
-<var>builder</var>. Users can return an object if needed. The default behaviour
-of the handler is raising an error.
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="sxml-object-builder2785">
-    <span class="name" name="sxml-object-builder">sxml-object-builder</span>
-  </a> <span class="args">spec ...</span></div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="*namespace*2786">
-      <span class="name" name="*namespace*">*namespace*</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="<!&gt;2787">
-      <span class="name" name="<!&gt;">&lt;!&gt;</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="?2788">
-      <span class="name" name="?">?</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="??2789">
-      <span class="name" name="??">??</span>
-    </a>
-  </div>
-<div class="desc">A DSL which constructs object-builder.
-<p />The <var>spec</var> must be one of the followings:
-<ul class="itemlist">
-    <li class="itemlist-item">
-      <code>(*namespace* ((ns uri) ...) spec ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(* spec ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(+ spec ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(/ spec ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(? spec ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(&lt;!&gt; <var>tag</var> builder)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>spec spec* ...</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(<var>tag</var> <var>ctr</var>)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(<var>tag</var> <var>ctr</var> <var>next</var>)</code>
-    </li>
-  </ul>
-<var>tag</var> can be either a symbol or the following clause:
-<ul class="itemlist">
-    <li class="itemlist-item">
-      <code>(?? pred)</code>
-    </li>
-  </ul>
-<var>pred</var> must be a predicate of SXML tag.
-<p /><var>ctr</var> must be a procedure which takes 3 arguments, <var>name</var>,
-<var>attributes</var> and <var>contents</var>. These are SXML's tagname, list of
-attributes and SXML contents, respectively.
-<p />The first form of the <var>spec</var> specifies aliases of namespaces. Users can
-write qualified name with prefixed instead of unprefixed qualified name.
-<p />The second to forth form of <var>spec</var> specify the amount of nested
-<var>spec ...</var> existence. The <code>*</code> means 0 or more.
-The <code>+</code> means 1 or more. And the <code>?</code> means 0 or 1.
-<p />The fifth form of <var>spec</var> means cyclic structure.
-<p />The sixth form of <var>spec</var> means set of <var>spec spec ...</var>.
-<p />The following shows how to use this DSL macro
-<pre class="codeblock">(define builder
-  (sxml-object-builder
-    (*namespace* ((ns "urn:foo")))
-    (ns:bar list
-      (ns:buz list)
-      (foo list))))
-</pre>
-The above definition can build an object from the following SXML
-<pre class="codeblock">(*TOP*
-  (urn:foo:bar
-    (urn:foo:buz "buz")
-    (foo "foo")))
-</pre>
-<p />A generic SXML builder can be written like this:
-<pre class="codeblock">(define-record-type xml-object
-  (fields name attributes contents))
-
-(define xml-object-builder
-  (sxml-object-builder
-   (&lt;!&gt; (?? values) make-xml-object)))
-</pre>
-<p /></div>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2790"><span class="section-number">7.54.1.1</span>XML object</a>
-  </h5>
-<p />This section describes convenience record type and procedures.
-<p /><div class="define">
-    <span class="define-category">Record Type</span>
-    <a name="xml-object2791">
-      <span class="name" name="xml-object">xml-object</span>
-    </a>
-  </div>
-<div class="define"><span class="define-category">Function</span><a name="xml-object?2792">
-    <span class="name" name="xml-object?">xml-object?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-xml-object2793">
-    <span class="name" name="make-xml-object">make-xml-object</span>
-  </a> <span class="args">name attributes contents</span></div>
-<div class="define"><span class="define-category">Function</span><a name="xml-object-name2794">
-    <span class="name" name="xml-object-name">xml-object-name</span>
-  </a> <span class="args">xml-object</span></div>
-<div class="define"><span class="define-category">Function</span><a name="xml-object-attributes2795">
-    <span class="name" name="xml-object-attributes">xml-object-attributes</span>
-  </a> <span class="args">xml-object</span></div>
-<div class="define"><span class="define-category">Function</span><a name="xml-object-contents2796">
-    <span class="name" name="xml-object-contents">xml-object-contents</span>
-  </a> <span class="args">xml-object</span></div>
-<div class="desc">A very simple XML object type. An instance of this record type
-holds tag name (<var>name</var>), attribute as alist (<var>attributes</var>) and
-contents which must be a valid SXML or other XML objects (<var>contents</var>).
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sxml-&gt;xml-object2797">
-    <span class="name" name="sxml-&gt;xml-object">sxml-&gt;xml-object</span>
-  </a> <span class="args">sxml :optional handler</span></div>
-<div class="desc">Builds XML object described above from given <var>sxml</var>.</div>
 <p />
-</section></section></section>
+<div class="define">
+    <span class="define-category">Library</span>
+    <a name="(text sxml html-parser)2792">
+      <span class="name" name="(text sxml html-parser)">(text sxml html-parser)</span>
+    </a>
+  </div>
+<div class="desc">This library provides HTML parser and printer procedures.
+<p />The provided procedures are compatible with HTMLPrag.
+</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2793"><span class="section-number">7.54.1</span>High level APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-0nf2794">
+    <span class="name" name="html-&gt;sxml-0nf">html-&gt;sxml-0nf</span>
+  </a> <span class="args">in</span></div>
+<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-1nf2795">
+    <span class="name" name="html-&gt;sxml-1nf">html-&gt;sxml-1nf</span>
+  </a> <span class="args">in</span></div>
+<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-2nf2796">
+    <span class="name" name="html-&gt;sxml-2nf">html-&gt;sxml-2nf</span>
+  </a> <span class="args">in</span></div>
+<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml2797">
+    <span class="name" name="html-&gt;sxml">html-&gt;sxml</span>
+  </a> <span class="args">in</span></div>
+<div class="define"><span class="define-category">Function</span><a name="html-&gt;shtml2798">
+    <span class="name" name="html-&gt;shtml">html-&gt;shtml</span>
+  </a> <span class="args">in</span></div>
+<div class="desc">Parse given input port to SHTML. The <var>in</var> must be a textual input
+port.
+<p />The <code>html-&gt;sxml-2nf</code> procedure normalizes attributes if it doesn't have
+value. Others don't. Normalization in this context means adding attribute name
+as its value.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="write-shtml-as-html2799">
+    <span class="name" name="write-shtml-as-html">write-shtml-as-html</span>
+  </a>
+ <span class="args">shtml :optional out error-filter</span></div>
+<div class="desc">Writes given <var>shtml</var> to <var>out</var>.
+<p />If optional argument <var>out</var> is given, it must be a textual output port,
+then the procedure writes to given output port. Otherwise 
+<code>current-output-port</code> is used.
+<p />Optional argument <var>error-filter</var> is used when unexpected SHTML entity is
+met. It must be a procedure takes 2 arguments, unexpected entity and boolean
+flag indicates if the entity is attribute or not. By default, it raises an
+error.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="shtml-&gt;html2800">
+    <span class="name" name="shtml-&gt;html">shtml-&gt;html</span>
+  </a> <span class="args">shtml</span></div>
+<div class="desc">Converts <var>shtml</var> to string represented HTML.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2801"><span class="section-number">7.54.2</span>Low level APIs</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-comment-symbol2802">
+      <span class="name" name="shtml-comment-symbol">shtml-comment-symbol</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-decl-symbol2803">
+      <span class="name" name="shtml-decl-symbol">shtml-decl-symbol</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-empty-symbol2804">
+      <span class="name" name="shtml-empty-symbol">shtml-empty-symbol</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-end-symbol2805">
+      <span class="name" name="shtml-end-symbol">shtml-end-symbol</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-entity-symbol2806">
+      <span class="name" name="shtml-entity-symbol">shtml-entity-symbol</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-pi-symbol2807">
+      <span class="name" name="shtml-pi-symbol">shtml-pi-symbol</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-start-symbol2808">
+      <span class="name" name="shtml-start-symbol">shtml-start-symbol</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-text-symbol2809">
+      <span class="name" name="shtml-text-symbol">shtml-text-symbol</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-top-symbol2810">
+      <span class="name" name="shtml-top-symbol">shtml-top-symbol</span>
+    </a>
+  </div>
+<div class="desc">SXML entity symbols: <code>*COMMENT*</code>, <code>*DECL*</code>, <code>*EMPTY*</code>,
+<code>*END*</code>, <code>*ENTITY*</code>, <code>*PI*</code>, <code>*START*</code>, <code>*TEXT*</code> and
+<code>*TOP*</code> respectively.
+</div>
+<p /><div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-named-char-id2811">
+      <span class="name" name="shtml-named-char-id">shtml-named-char-id</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Variable</span>
+    <a name="shtml-numeric-char-id2812">
+      <span class="name" name="shtml-numeric-char-id">shtml-numeric-char-id</span>
+    </a>
+  </div>
+<div class="desc">These variables are used in <code>*ENTITY*</code> as public identifier.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-shtml-entity2813">
+    <span class="name" name="make-shtml-entity">make-shtml-entity</span>
+  </a> <span class="args">value</span></div>
+<div class="desc">Makes SHTML character entity. The <var>value</var> must be a symbol, string
+or integer.
+<p /><div class="snipet-box">
+    <pre class="snipet">(make-shtml-entity 151)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(&amp; 151)</span>
+  </div>
+</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="shtml-entity-value2814">
+      <span class="name" name="shtml-entity-value">shtml-entity-value</span>
+    </a>
+  </div>
+<div class="desc">Retrieve SHTML entity value.
+</div>
+<p />
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section753.html">(text markdown) -- Markdown parser</a>
+    <a class="prev" href="section753.html">(text json object-builder) -- JSON</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section755.html">(text tree) - Lightweight text generation</a>
+    <a class="next" href="section755.html">(text markdown) -- Markdown parser</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-04-21T21:14:43+0200</i></div>
   </div>
 </html>

@@ -7,128 +7,177 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section755.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section755.html">(text markdown) -- Markdown parser</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section757.html">(tlv) - TLV library</a>
+    <a class="next" href="section757.html">(text tree) - Lightweight text generation</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.timer"><span class="section-number">7.56</span>(util timer) - Timer</a>
+    <a class="section.anchor" name="text.object-builder"><span class="section-number">7.56</span>(text sxml object-builder) - SXML to
+Scheme object builder</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util timer)2801">
-      <span class="name" name="(util timer)">(util timer)</span>
+    <a name="(text sxml object-builder)2828">
+      <span class="name" name="(text sxml object-builder)">(text sxml object-builder)</span>
     </a>
   </div>
-<div class="desc">This library provides timer functionality.
-<p />Timer is the mechanism to trigger an event on specified time.
+<div class="desc">This library provides APIs to build Scheme object from SXML.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2829"><span class="section-number">7.56.1</span>High level APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="sxml-&gt;object2830">
+    <span class="name" name="sxml-&gt;object">sxml-&gt;object</span>
+  </a>
+ <span class="args">sxml builder :optional unknown-tag-handler</span></div>
+<div class="desc">Builds a Scheme object from given SXML <var>sxml</var>. The <var>builder</var>
+must be a object-builder described below.
+<p />If optional argument <var>unknown-tag-handler</var> is given, then it must be a
+procedure accepts 2 arguments, <var>builder</var> and <var>sxml</var>. The procedure
+is called when the process met a tag which can't be handled by given
+<var>builder</var>. Users can return an object if needed. The default behaviour
+of the handler is raising an error.
 </div>
-<p />The following describes how to use;
-<pre class="codeblock">(import (util timer))
-
-(let ((timer (make-timer)))
-  (timer-start! timer) ;; start timer
-  ;; execute given thunk starting after 1000ms and each 1000ms
-  (timer-schedule! timer (lambda () (display "timer!") (newline)) 1000 1000)
-  ;; do something
-  (timer-cancel! timer))
-</pre>
-<p />A timer is kind of task queue running on a timer thread. Once it's started,
-then it waits until its queue is not empty or the first task reaches the
-configured time. The tasks are executed sequentially however its order is
-not reliable if there are multiple tasks queued on the same time.
-<p /><div class="define"><span class="define-category">Function</span><a name="timer?2802">
-    <span class="name" name="timer?">timer?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if <var>obj</var> is a timer object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-timer2803">
-    <span class="name" name="make-timer">make-timer</span>
-  </a> <span class="args">:key error-handler</span></div>
-<div class="desc">Creates a timer object.
-<p />If keyword argument <var>error-handler</var> is specified, then it must be
-a procedure accepts one argument. The <var>error-handler</var> is called
-when timer procedure raises an error. If this is not specified, then
-timer stops when one of the tasks raised an error.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-state2804">
-    <span class="name" name="timer-state">timer-state</span>
-  </a> <span class="args">timer</span></div>
-<div class="desc">Returns the state of given timer. The possible states are the followings:
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">created</dt>
-      <dd class="dl-item-desc">The timer is created and not executed yet.</dd>
-      <dt class="dl-item-title">running</dt>
-      <dd class="dl-item-desc">The timer is running.</dd>
-      <dt class="dl-item-title">stopped</dt>
-      <dd class="dl-item-desc">The timer is stopped (can be resumed).</dd>
-      <dt class="dl-item-title">cancelled</dt>
-      <dd class="dl-item-desc">The timer is cancelled (cannot be resumed).</dd>
-    </dl>
+<p /><div class="define"><span class="define-category">Macro</span><a name="sxml-object-builder2831">
+    <span class="name" name="sxml-object-builder">sxml-object-builder</span>
+  </a> <span class="args">spec ...</span></div>
+<div class="define">
+    <span class="define-category">Auxiliary syntax</span>
+    <a name="*namespace*2832">
+      <span class="name" name="*namespace*">*namespace*</span>
+    </a>
   </div>
-</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="timer-start!2805">
-    <span class="name" name="timer-start!">timer-start!</span>
-  </a> <span class="args">timer</span></div>
-<div class="desc">Starts the given <code>created</code> state <var>timer</var>.
-<p />If the given timer's state is <code>stopped</code>, then this procedure resumes
-the given timer.
-<p />If the timer state is not <code>created</code> or <code>stopped</code>, then
-<code>&amp;assertion</code> is raised.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-stop!2806">
-    <span class="name" name="timer-stop!">timer-stop!</span>
-  </a> <span class="args">timer</span></div>
-<div class="desc">Stops the given <var>time</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-cancel!2807">
-    <span class="name" name="timer-cancel!">timer-cancel!</span>
-  </a> <span class="args">timer</span></div>
-<div class="desc">Cancel the given <var>time</var>. If one of the tasks raised an error and
-no error handler is specified, then this procedure will re-raise the error.
-<p />Once the timer is cancelled, then this timer is completely destroyed.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="timer-schedule!2808">
-    <span class="name" name="timer-schedule!">timer-schedule!</span>
-  </a>
- <span class="args">timer thunk first :optional (period 0)</span></div>
-<div class="desc">Schedules a timer task.
-<p /><var>first</var> can be time object or exact integer. If this is time object,
-then the timer executes the <var>thunk</var> with given time (absolute time).
-If this is an exact integer, then the timer executes the <var>thunk</var> after
-the given number milliseconds from current time.
-<p />Optional argument <var>period</var> specifies if the <var>thunk</var> is periodically 
-executed or not. 0 is not periodical task.
-<p />The returning value is an ID of scheduled task. This is needed for
-<code>timer-remove!</code> and <code>timer-exists?</code> procedures.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-reschedule!2809">
-    <span class="name" name="timer-reschedule!">timer-reschedule!</span>
-  </a>
- <span class="args">timer timer-id first :optional (period 0)</span></div>
-<div class="desc">Reschedules the timer task associated with <var>timer-id</var> and 
-returns <var>timer-id</var>
-<p />The <var>first</var> and <var>period</var> are the same as <code>timer-schedule!</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-remove!2810">
-    <span class="name" name="timer-remove!">timer-remove!</span>
-  </a> <span class="args">timer id</span></div>
-<div class="desc">Removes given <var>id</var> task from the <var>timer</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="timer-exists?2811">
-    <span class="name" name="timer-exists?">timer-exists?</span>
-  </a> <span class="args">timer id</span></div>
-<div class="desc">Returns #t if given <var>id</var> task exists in the <var>timer</var>, 
-otherwise #f.</div>
+<div class="define">
+    <span class="define-category">Auxiliary syntax</span>
+    <a name="<!&gt;2833">
+      <span class="name" name="<!&gt;">&lt;!&gt;</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Auxiliary syntax</span>
+    <a name="?2834">
+      <span class="name" name="?">?</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Auxiliary syntax</span>
+    <a name="??2835">
+      <span class="name" name="??">??</span>
+    </a>
+  </div>
+<div class="desc">A DSL which constructs object-builder.
+<p />The <var>spec</var> must be one of the followings:
+<ul class="itemlist">
+    <li class="itemlist-item">
+      <code>(*namespace* ((ns uri) ...) spec ...)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(* spec ...)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(+ spec ...)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(/ spec ...)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(? spec ...)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(&lt;!&gt; <var>tag</var> builder)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>spec spec* ...</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(<var>tag</var> <var>ctr</var>)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(<var>tag</var> <var>ctr</var> <var>next</var>)</code>
+    </li>
+  </ul>
+<var>tag</var> can be either a symbol or the following clause:
+<ul class="itemlist">
+    <li class="itemlist-item">
+      <code>(?? pred)</code>
+    </li>
+  </ul>
+<var>pred</var> must be a predicate of SXML tag.
+<p /><var>ctr</var> must be a procedure which takes 3 arguments, <var>name</var>,
+<var>attributes</var> and <var>contents</var>. These are SXML's tagname, list of
+attributes and SXML contents, respectively.
+<p />The first form of the <var>spec</var> specifies aliases of namespaces. Users can
+write qualified name with prefixed instead of unprefixed qualified name.
+<p />The second to forth form of <var>spec</var> specify the amount of nested
+<var>spec ...</var> existence. The <code>*</code> means 0 or more.
+The <code>+</code> means 1 or more. And the <code>?</code> means 0 or 1.
+<p />The fifth form of <var>spec</var> means cyclic structure.
+<p />The sixth form of <var>spec</var> means set of <var>spec spec ...</var>.
+<p />The following shows how to use this DSL macro
+<pre class="codeblock">(define builder
+  (sxml-object-builder
+    (*namespace* ((ns "urn:foo")))
+    (ns:bar list
+      (ns:buz list)
+      (foo list))))
+</pre>
+The above definition can build an object from the following SXML
+<pre class="codeblock">(*TOP*
+  (urn:foo:bar
+    (urn:foo:buz "buz")
+    (foo "foo")))
+</pre>
+<p />A generic SXML builder can be written like this:
+<pre class="codeblock">(define-record-type xml-object
+  (fields name attributes contents))
 
-</section>
+(define xml-object-builder
+  (sxml-object-builder
+   (&lt;!&gt; (?? values) make-xml-object)))
+</pre>
+<p /></div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2836"><span class="section-number">7.56.1.1</span>XML object</a>
+  </h5>
+<p />This section describes convenience record type and procedures.
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="xml-object2837">
+      <span class="name" name="xml-object">xml-object</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="xml-object?2838">
+    <span class="name" name="xml-object?">xml-object?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-xml-object2839">
+    <span class="name" name="make-xml-object">make-xml-object</span>
+  </a> <span class="args">name attributes contents</span></div>
+<div class="define"><span class="define-category">Function</span><a name="xml-object-name2840">
+    <span class="name" name="xml-object-name">xml-object-name</span>
+  </a> <span class="args">xml-object</span></div>
+<div class="define"><span class="define-category">Function</span><a name="xml-object-attributes2841">
+    <span class="name" name="xml-object-attributes">xml-object-attributes</span>
+  </a> <span class="args">xml-object</span></div>
+<div class="define"><span class="define-category">Function</span><a name="xml-object-contents2842">
+    <span class="name" name="xml-object-contents">xml-object-contents</span>
+  </a> <span class="args">xml-object</span></div>
+<div class="desc">A very simple XML object type. An instance of this record type
+holds tag name (<var>name</var>), attribute as alist (<var>attributes</var>) and
+contents which must be a valid SXML or other XML objects (<var>contents</var>).
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sxml-&gt;xml-object2843">
+    <span class="name" name="sxml-&gt;xml-object">sxml-&gt;xml-object</span>
+  </a> <span class="args">sxml :optional handler</span></div>
+<div class="desc">Builds XML object described above from given <var>sxml</var>.</div>
+<p />
+</section></section></section>
   <div class="prev-next">
-    <a class="prev" href="section755.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section755.html">(text markdown) -- Markdown parser</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section757.html">(tlv) - TLV library</a>
+    <a class="next" href="section757.html">(text tree) - Lightweight text generation</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-04-21T21:14:43+0200</i></div>
   </div>
 </html>

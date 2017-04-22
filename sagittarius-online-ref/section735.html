@@ -7,65 +7,150 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section734.html">(rfc hotp) - HMAC-based One-Time Password library</a>
+    <a class="prev" href="section734.html">(rfc http-connections) - HTTP client utilities</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section736.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="next" href="section736.html">(rfc hotp) - HMAC-based One-Time Password library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.totp"><span class="section-number">7.35</span>(rfc totp) - Time-based One-Time Password library</a>
+    <a class="section.anchor" name="rfc.pem"><span class="section-number">7.35</span>(rfc pem) - PEM format  library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc totp)2419">
-      <span class="name" name="(rfc totp)">(rfc totp)</span>
+    <a name="(rfc pem)2451">
+      <span class="name" name="(rfc pem)">(rfc pem)</span>
     </a>
   </div>
-<div class="desc">Provides Time-based One-Time Password (TOTP) generating procedures. TOTP is
-defined in RFC 6238:
-<a href="http://tools.ietf.org/html/rfc6238">RFC 6238</a>.
+<div class="desc">This library provides PEM format file parser.
+<p />Currently only supports RFC 1421 format.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="generate-time-based-one-time-password2420">
-    <span class="name" name="generate-time-based-one-time-password">generate-time-based-one-time-password</span>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2452"><span class="section-number">7.35.1</span>Conditions</a>
+  </h4>
+<p />This library defines these conditions.
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;pem-error2453">
+      <span class="name" name="&amp;pem-error">&amp;pem-error</span>
+    </a>
+  </div>
+<div class="desc">Super condition of all PEM file process related conditions.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;invalid-pem-format2454">
+      <span class="name" name="&amp;invalid-pem-format">&amp;invalid-pem-format</span>
+    </a>
+  </div>
+<div class="desc">This condition indicates, given PEM file contains invalid format.</div>
+<div class="define"><span class="define-category">Function</span><a name="invalid-pem-format?2455">
+    <span class="name" name="invalid-pem-format?">invalid-pem-format?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t, if the given <var>obj</var> is <code>&amp;invalid-pem-format</code>,
+otherwise #f.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;pre-eb-as-boundary2456">
+      <span class="name" name="&amp;pre-eb-as-boundary">&amp;pre-eb-as-boundary</span>
+    </a>
+  </div>
+<div class="desc">This condition indicates, given PEM file contains Pre-Encapsulation 
+Boundary as the end of Encapsulated Message without specifying 
+<code>:multiple</code>.</div>
+<div class="define"><span class="define-category">Function</span><a name="pre-eb-as-boundary?2457">
+    <span class="name" name="pre-eb-as-boundary?">pre-eb-as-boundary?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t, if the given <var>obj</var> is <code>&amp;pre-eb-as-boundary</code>,
+otherwise #f.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2458"><span class="section-number">7.35.2</span>Operations</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem2459">
+    <span class="name" name="parse-pem">parse-pem</span>
   </a>
-  <span class="args">K digit :key time start-time step mode</span></div>
-<div class="define"><span class="define-category">Function</span><a name="totp2421">
-    <span class="name" name="totp">totp</span>
-  </a>
-  <span class="args">K digit :key time start-time step mode</span></div>
-<div class="desc"><var>K</var> must be a bytevector represents shared secret.
-<p /><var>digit</var> must be a positive exact integer.
-<p />The keyword argument <var>time</var> is given, then it must be a UTC time object
-of SRFI-19. The procedure computes returning one-time password according to
-the given time. The default value is <code>(current-time)</code>.
-<p />NOTE: <var>time</var> keyword should not be specified unless its testing purpose.
-<p />The keyword arguments described below are system parameters, means these
-parameters must be agreed between authenticator.
-<p />The keyword argument <var>start-time</var> is given, then it must be a UTC time
-object of SRFI-19. The procedure computes returning one-time password according
-to the given time. The defaule value is <code>(make-time time-utc 0 0)</code>.
-<p />The keyword argument <var>step</var> is given, then it must be a positive exact
-integer. The procedure computes returning one-time password according
-to the given time. The defaule value is <code>30</code>.
-<p />The keyword argument <var>step</var> is given, then it must be a positive exact
-integer. The procedure computes returning one-time password according
-to the given time. The defaule value is <code>30</code>.
-<p />The keyword argument <var>mode</var> is given, then it must be a hash algorithm name
-either builtin or custom. The procedure computes returning one-time password
-according to the given time. The defaule value is <code>SHA-1</code>.
-<p />
-Generates an Time-based one-time password.
-<p /><code>totp</code> is an alias of <code>generate-time-based-one-time-password</code>.
+ <span class="args">in :key (multiple #f) (builder #f) (asn1 #f) decoder</span></div>
+<div class="desc"><var>in</var> must be textual input port.
+<p />Parses given input port <var>in</var> and returns 2 values, parameter alist and
+decoded bytevector.
+<p />Keyword arguments
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>multiple</code>
+      </dt>
+      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure returns a list which
+    contains alist of parameter and content.
+<p />    This parameter is useful for the PEM files which contains multiple contents.
+  </dd>
+      <dt class="dl-item-title">
+        <code>builder</code>
+      </dt>
+      <dd class="dl-item-desc">    This keyword argument must take a procedure which accept one argument or
+    #f. If <var>builder</var> is specified then the given procedure will be called
+    to build then contents of the PEM.
+<p />    This argument is not correspond with <var>asn1</var> keyword argument and has
+    higher priority. So if both arguments are specified, then <var>builder</var>
+    will be used.
+  </dd>
+      <dt class="dl-item-title">
+        <code>asn1</code>
+      </dt>
+      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure converts BASE64
+    bytevector to ASN.1 object defined in <code>(asn.1)</code> library.
+  </dd>
+      <dt class="dl-item-title">
+        <code>decorder</code>
+      </dt>
+      <dd class="dl-item-desc">    When this keyword argument is specified, it must be a procedure which
+    accepts one argument, then the <code>parse-pem</code> uses the specified
+    procedure to convert body of the PEM content.
+<p />    If it's not specified, the procedure uses BASE64 decoding.
+  </dd>
+    </dl>
+  </div>
+<p />The procedure may raise following conditions:
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>&amp;invalid-pem-format</code>
+      </dt>
+      <dd class="dl-item-desc">    When given <var>in</var> contains invalid PEM format.
+  </dd>
+      <dt class="dl-item-title">
+        <code>&amp;pre-eb-as-boundary</code>
+      </dt>
+      <dd class="dl-item-desc">    When given <var>in</var> contains Pre-Encapsulation Boundary as the end of
+    Encapsulated Message and <code>:multiple</code> is #f.
+<p />    For example:
+    <pre class="codeblock">-----BEGIN FOO-----
+... foo value ...
+-----BEGIN BAR-----
+... bar value...
+-----END BAR-----
+    </pre>
+    parsing PEM like above must specify <code>:multiple</code> with true value.
+    Otherwise, <code>&amp;pre-eb-as-boundary</code> is signaled.
+  </dd>
+    </dl>
+  </div>
 </div>
-
-</section>
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem-file2460">
+    <span class="name" name="parse-pem-file">parse-pem-file</span>
+  </a> <span class="args">file :rest options</span></div>
+<div class="define"><span class="define-category">Function</span><a name="parse-pem-string2461">
+    <span class="name" name="parse-pem-string">parse-pem-string</span>
+  </a> <span class="args">pem-string :rest options</span></div>
+<div class="desc">Convenient procedures.
+<p />Parse given file and PEM string, respectively.
+<p /><var>option</var> will be passed to the <code>parse-pem</code>.
+</div>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section734.html">(rfc hotp) - HMAC-based One-Time Password library</a>
+    <a class="prev" href="section734.html">(rfc http-connections) - HTTP client utilities</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section736.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="next" href="section736.html">(rfc hotp) - HMAC-based One-Time Password library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-04-21T21:14:43+0200</i></div>
   </div>
 </html>

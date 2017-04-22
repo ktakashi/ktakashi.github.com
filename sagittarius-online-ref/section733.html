@@ -9,148 +9,175 @@
   <div class="prev-next">
     <a class="prev" href="section732.html">(rfc http) - HTTP client</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section734.html">(rfc hotp) - HMAC-based One-Time Password library</a>
+    <a class="next" href="section734.html">(rfc http-connections) - HTTP client utilities</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.pem"><span class="section-number">7.33</span>(rfc pem) - PEM format  library</a>
+    <a class="section.anchor" name="rfc2.http"><span class="section-number">7.33</span>(rfc http2) - HTTP/2 client</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc pem)2405">
-      <span class="name" name="(rfc pem)">(rfc pem)</span>
+    <a name="(rfc http2)2405">
+      <span class="name" name="(rfc http2)">(rfc http2)</span>
     </a>
   </div>
-<div class="desc">This library provides PEM format file parser.
-<p />Currently only supports RFC 1421 format.
+<div class="desc">This library provides simple client HTTP/2 defined in
+<a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a>.
+<p />The library does not support <code>Upgrade</code> header defined in HTTP/1.1. Thus
+users must know if the server supports HTTP/2 or not, ahead.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2406"><span class="section-number">7.33.1</span>Conditions</a>
-  </h4>
-<p />This library defines these conditions.
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;pem-error2407">
-      <span class="name" name="&amp;pem-error">&amp;pem-error</span>
-    </a>
-  </div>
-<div class="desc">Super condition of all PEM file process related conditions.</div>
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;invalid-pem-format2408">
-      <span class="name" name="&amp;invalid-pem-format">&amp;invalid-pem-format</span>
-    </a>
-  </div>
-<div class="desc">This condition indicates, given PEM file contains invalid format.</div>
-<div class="define"><span class="define-category">Function</span><a name="invalid-pem-format?2409">
-    <span class="name" name="invalid-pem-format?">invalid-pem-format?</span>
+<p />Following is the simple example to send GET method to a HTTP/2 server.
+<pre class="codeblock">(import (rfc http2))
+
+(define conn (make-http2-client-connection "twitter.com" "443" :secure? #t))
+(http2-get conn "/")
+;; -&gt; returns 2 values
+;; header
+;; body
+(close-http2-client-connection! conn)
+</pre>
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-client-connection?2406">
+    <span class="name" name="http2-client-connection?">http2-client-connection?</span>
   </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t, if the given <var>obj</var> is <code>&amp;invalid-pem-format</code>,
+<div class="desc">Returns #t if the given <var>obj</var> is an HTTP/2 client connection,
 otherwise #f.</div>
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;pre-eb-as-boundary2410">
-      <span class="name" name="&amp;pre-eb-as-boundary">&amp;pre-eb-as-boundary</span>
-    </a>
-  </div>
-<div class="desc">This condition indicates, given PEM file contains Pre-Encapsulation 
-Boundary as the end of Encapsulated Message without specifying 
-<code>:multiple</code>.</div>
-<div class="define"><span class="define-category">Function</span><a name="pre-eb-as-boundary?2411">
-    <span class="name" name="pre-eb-as-boundary?">pre-eb-as-boundary?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t, if the given <var>obj</var> is <code>&amp;pre-eb-as-boundary</code>,
-otherwise #f.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2412"><span class="section-number">7.33.2</span>Operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem2413">
-    <span class="name" name="parse-pem">parse-pem</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-http2-client-connection2407">
+    <span class="name" name="make-http2-client-connection">make-http2-client-connection</span>
   </a>
- <span class="args">in :key (multiple #f) (builder #f) (asn1 #f) decoder</span></div>
-<div class="desc"><var>in</var> must be textual input port.
-<p />Parses given input port <var>in</var> and returns 2 values, parameter alist and
-decoded bytevector.
-<p />Keyword arguments
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>multiple</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure returns a list which
-    contains alist of parameter and content.
-<p />    This parameter is useful for the PEM files which contains multiple contents.
-  </dd>
-      <dt class="dl-item-title">
-        <code>builder</code>
-      </dt>
-      <dd class="dl-item-desc">    This keyword argument must take a procedure which accept one argument or
-    #f. If <var>builder</var> is specified then the given procedure will be called
-    to build then contents of the PEM.
-<p />    This argument is not correspond with <var>asn1</var> keyword argument and has
-    higher priority. So if both arguments are specified, then <var>builder</var>
-    will be used.
-  </dd>
-      <dt class="dl-item-title">
-        <code>asn1</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure converts BASE64
-    bytevector to ASN.1 object defined in <code>(asn.1)</code> library.
-  </dd>
-      <dt class="dl-item-title">
-        <code>decorder</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is specified, it must be a procedure which
-    accepts one argument, then the <code>parse-pem</code> uses the specified
-    procedure to convert body of the PEM content.
-<p />    If it's not specified, the procedure uses BASE64 decoding.
-  </dd>
-    </dl>
-  </div>
-<p />The procedure may raise following conditions:
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>&amp;invalid-pem-format</code>
-      </dt>
-      <dd class="dl-item-desc">    When given <var>in</var> contains invalid PEM format.
-  </dd>
-      <dt class="dl-item-title">
-        <code>&amp;pre-eb-as-boundary</code>
-      </dt>
-      <dd class="dl-item-desc">    When given <var>in</var> contains Pre-Encapsulation Boundary as the end of
-    Encapsulated Message and <code>:multiple</code> is #f.
-<p />    For example:
-    <pre class="codeblock">-----BEGIN FOO-----
-... foo value ...
------BEGIN BAR-----
-... bar value...
------END BAR-----
-    </pre>
-    parsing PEM like above must specify <code>:multiple</code> with true value.
-    Otherwise, <code>&amp;pre-eb-as-boundary</code> is signaled.
-  </dd>
-    </dl>
-  </div>
+ <span class="args">server port :key (secure? #f) user-agent</span></div>
+<div class="desc">Creates an HTTP/2 client connection.
+<p />The <var>server</var> must be a string indicating an existing server name.
+<p />The <var>post</var> must be a string of either port number or service.
+<p />The keyword argument <var>secure?</var> specifies to use TLS or not.
+<p />The keyword argument <var>user-agent</var> specifies the value of <code>user-agent</code>
+header. The default value is <code>Sagittarius-</code> followed by version number.
+<p />NOTE: The connection does not guess if it should use secure connection or
+not by looking at port number or service name. Which means, even if you
+specify <code>"https"</code> or <code>"443"</code> however <var>secure?</var> keyword
+argument must be passed.
+<p />NOTE2: Created connections hold opened socket.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem-file2414">
-    <span class="name" name="parse-pem-file">parse-pem-file</span>
-  </a> <span class="args">file :rest options</span></div>
-<div class="define"><span class="define-category">Function</span><a name="parse-pem-string2415">
-    <span class="name" name="parse-pem-string">parse-pem-string</span>
-  </a> <span class="args">pem-string :rest options</span></div>
-<div class="desc">Convenient procedures.
-<p />Parse given file and PEM string, respectively.
-<p /><var>option</var> will be passed to the <code>parse-pem</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="close-http2-client-connection!2408">
+    <span class="name" name="close-http2-client-connection!">close-http2-client-connection!</span>
+  </a> <span class="args">conn</span></div>
+<div class="desc">Closes given HTTP/2 connection.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2409"><span class="section-number">7.33.1</span>High level APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-get2410">
+    <span class="name" name="http2-get">http2-get</span>
+  </a>
+ <span class="args">conn uri :key receiver redirect-handler :allow-other-keys headers</span></div>
+<div class="desc">Sends HTTP/2 GET request to given <var>uri</var> of HTTP/2 client
+connection <var>conn</var> and returns 2 values of the response, header
+and content.
+<p />The rest arguments <var>headers</var> must be a list of keyword and string.
+The procedure sends these pairs as extra headers.
+<p />If the keyword argument <var>receiver</var> is specified, then the procedure
+uses given <var>receiver</var> to receive data. The default value is
+<code>(make-gzip-receiver)</code>.
+<p />If the keyword argument <var>redirect-handler</var> is specified, then the procedure
+uses given <var>redirect-handler</var> to handle redirection.
 </div>
-</section></section>
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-post2411">
+    <span class="name" name="http2-post">http2-post</span>
+  </a>
+ <span class="args">conn uri data :key receiver redirect-handler :allow-other-keys headers</span></div>
+<div class="desc">Sends HTTP/2 POST request to given <var>uri</var> of HTTP/2 client
+connection <var>conn</var> with given <var>data</var>  and returns 2 values of
+the response, header and content. <var>data</var> must be a bytevector.
+<p />The rest arguments <var>headers</var> must be a list of keyword and string.
+The procedure sends these pairs as extra headers.
+<p />The keyword arguments <var>receiver</var> and <var>redirect-handler</var> are the same
+as <code>http2-get</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-head2412">
+    <span class="name" name="http2-head">http2-head</span>
+  </a>
+ <span class="args">conn uri :key receiver redirect-handler :allow-other-keys headers</span></div>
+<div class="desc">Sends HTTP/2 HEAD request to given <var>uri</var> of HTTP/2 client
+connection <var>conn</var> and returns 2 values of the response, header
+and content.
+<p />The rest arguments <var>headers</var> must be a list of keyword and string.
+The procedure sends these pairs as extra headers.
+<p />The keyword arguments <var>receiver</var> and <var>redirect-handler</var> are the same
+as <code>http2-get</code>.
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="http2-request2413">
+    <span class="name" name="http2-request">http2-request</span>
+  </a>
+ <span class="args">conn method uri sender receiver :key redirect-handler</span></div>
+<div class="desc">Sends an HTTP/2 request to given HTTP/2 client connection <var>conn</var>.
+<p /><var>method</var> must be a symbol.
+<p /><var>sender</var> must be a sender described below section.
+<p /><var>receiver</var> must be a receiver described below section.
+<p /><var>redirect-handler</var> is the same as <code>http2-get</code>.
+<p />The procedure returns a list of response header and content.
+</div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2414"><span class="section-number">7.33.1.1</span>HTTP/2 sender</a>
+  </h5>
+<p />A sender is a procedure which accepts 2 arguments, internal HTTP/2 stream and
+flag. At this moment, the internal HTTP/2 stream is not exposed so users cannot
+create own sender.
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-headers-sender2415">
+    <span class="name" name="http2-headers-sender">http2-headers-sender</span>
+  </a> <span class="args">header ...</span></div>
+<div class="desc">Returns a sender which sends given <var>header</var> as HTTP/2 header.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-data-sender2416">
+    <span class="name" name="http2-data-sender">http2-data-sender</span>
+  </a> <span class="args">data</span></div>
+<div class="desc">Returns a sender which sends given <var>data</var> as HTTP/2 data.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-composite-sender2417">
+    <span class="name" name="http2-composite-sender">http2-composite-sender</span>
+  </a> <span class="args">sender ...</span></div>
+<div class="desc">Returns a composite sender.</div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2418"><span class="section-number">7.33.1.2</span>HTTP/2 receiver</a>
+  </h5>
+<p />A receiver is a procedure which accepts 4 arguments, internal HTTP/2 stream,
+header, frame and flag. The same restriction as sender is applied, thus
+users cannot create own receiver, at this moment.
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-data-receiver2419">
+    <span class="name" name="http2-data-receiver">http2-data-receiver</span>
+  </a> <span class="args">sink flusher</span></div>
+<div class="desc">Returns a receiver which receives HTTP/2 data frame and put the
+value into <var>sink</var>. When the stream reaches to the end, then <var>flusher</var>
+is called with <var>sink</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-binary-receiver2420">
+    <span class="name" name="http2-binary-receiver">http2-binary-receiver</span>
+  </a> <span class="args" /></div>
+<div class="desc">Returns a receives which receives HTTP/2 data frame as a bytevector.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-null-receiver2421">
+    <span class="name" name="http2-null-receiver">http2-null-receiver</span>
+  </a> <span class="args" /></div>
+<div class="desc">Returns a receives which receives HTTP/2 data frame and returns empty
+bytevector.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-gzip-receiver2422">
+    <span class="name" name="http2-gzip-receiver">http2-gzip-receiver</span>
+  </a> <span class="args">receiver</span></div>
+<div class="desc">Returns a receives which receives HTTP/2 data frame. If the data frame
+is compressed to gzip, then the returning receiver expand the data and forward
+to the given <var>receiver</var>. If the data frame is not compressed, then it
+simply forward the data frame to the given <var>receiver</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-gzip-receiver2423">
+    <span class="name" name="make-gzip-receiver">make-gzip-receiver</span>
+  </a> <span class="args" /></div>
+<div class="desc">Convenient procedure whose definition is the following:
+<p /><pre class="snipet">(http2-gzip-receiver (http2-binary-receiver))</pre>
+</div>
+<p />
+
+</section></section></section>
   <div class="prev-next">
     <a class="prev" href="section732.html">(rfc http) - HTTP client</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section734.html">(rfc hotp) - HMAC-based One-Time Password library</a>
+    <a class="next" href="section734.html">(rfc http-connections) - HTTP client utilities</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-04-21T21:14:43+0200</i></div>
   </div>
 </html>

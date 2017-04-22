@@ -7,160 +7,106 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section746.html">(rpc json) - JSON RPC library</a>
+    <a class="prev" href="section746.html">(rfc zlib) - zlib compression library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section748.html">(text csv) - Comma separated values parser library</a>
+    <a class="next" href="section748.html">(rpc json) - JSON RPC library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="security.keystore"><span class="section-number">7.47</span>(security keystore) - Generic Keystore Access</a>
+    <a class="section.anchor" name="utils.rpc"><span class="section-number">7.47</span>RPC support framework</a>
   </h3>
-<p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(security keystore)2683">
-      <span class="name" name="(security keystore)">(security keystore)</span>
-    </a>
-  </div>
-<div class="desc">This library provides generic access for variety of keystores.</div>
-<p />The following example shows how to use this library:
-<pre class="codeblock">(import (security keystore))
-
-(define keystore (load-keystore 'jks "keystore.jks" "storepass"))
-
-(keystore-get-key keystore "key-name" "key-pass")
-;; -&gt; &lt;private-key&gt;
-
-(keystore-get-certificate keystore "cert-name")
-;; -&gt; &lt;x509-certificate&gt;
-
-;; certs must be a list of certificates
-(keystore-set-key! keystore "key-name2" private-key "key-pass2" certs)
-
-(keystore-set-certificate! keystore "cert-name2" cert)
-
-(store-keystore-to-file keystore "keystore2.jks" "storepass2")
-</pre>
+<p />RPC is basically separated in 2 parts. One is message marshalling and other 
+one is transporting. Following sections and libraries provide some framework
+for generic use.
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2684"><span class="section-number">7.47.1</span>Generic APIs</a>
+    <a class="section.anchor" name="G2690"><span class="section-number">7.47.1</span>Message framework</a>
   </h4>
 <p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<keystore&gt;2685">
-      <span class="name" name="<keystore&gt;">&lt;keystore&gt;</span>
+    <span class="define-category">Library</span>
+    <a name="(rpc message)2691">
+      <span class="name" name="(rpc message)">(rpc message)</span>
     </a>
   </div>
-<div class="desc">Base class of keystores.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="keystore?2686">
-    <span class="name" name="keystore?">keystore?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is a keystore object. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="load-keystore2687">
-    <span class="name" name="load-keystore">load-keystore</span>
-  </a> <span class="args">type input-port storepass</span></div>
-<div class="define"><span class="define-category">Function</span><a name="load-keystore-file2688">
-    <span class="name" name="load-keystore-file">load-keystore-file</span>
-  </a> <span class="args">type file storepass</span></div>
-<div class="desc">Loads <var>type</var> keystore from <var>input-port</var> or <var>file</var>.
-<p /><var>storepass</var> must be a string and may or may not be used to decrypt 
-keystore content.
-<p /><code>load-keystore</code> loads from given binary input port <var>input-port</var>.
-<p /><code>load-keystore-file</code> loads from given file <var>file</var>.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="make-keystore2689">
-    <span class="name" name="make-keystore">make-keystore</span>
-  </a> <span class="args">type</span></div>
-<div class="desc">Returns newly created <var>type</var> keystore object.
-<p />Currently <code>pkcs12</code>, <code>jks</code> and <code>jceks</code> are supported.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-key2690">
-    <span class="name" name="keystore-get-key">keystore-get-key</span>
-  </a> <span class="args">keystore alias keypass</span></div>
-<div class="desc">The method shall return a private key associated with <var>alias</var>
-from <var>keystore</var>. If there is no key entry associated with <var>alias</var> 
-then #f shall be returned.
-<p /><var>alias</var> shall be a string.
-<p /><var>keypass</var> shall be a string. It may or may not be used to decrypt 
-the private key.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-certificate2691">
-    <span class="name" name="keystore-get-certificate">keystore-get-certificate</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">The method shall return an X509 certificate associated with <var>alias</var>
-from <var>keystore</var>. If there is no certificate entry associated with 
-<var>alias</var> then #f shall be returned.
-<p /><var>alias</var> shall be a string.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-certificate-chain2692">
-    <span class="name" name="keystore-get-certificate-chain">keystore-get-certificate-chain</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">The method shall return a list of key certificates associated 
-with <var>alias</var> from <var>keystore</var>. If there is no certificate entries
-associated with <var>alias</var> then #f shall be returned.
-<p /><var>alias</var> shall be a string.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-creation-date2693">
-    <span class="name" name="keystore-get-creation-date">keystore-get-creation-date</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">The method shall return a date object of <var>alias</var> associated entry.
-If there is no entry associated with <var>alias</var> then #f shall be returned.
-<p /><var>alias</var> shall be a string.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-contains-alias?2694">
-    <span class="name" name="keystore-contains-alias?">keystore-contains-alias?</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">The method shall return #t if <var>keystore</var> contains an entry associated
-with <var>alias</var>. Otherwise #f shall be returend.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="store-keystore2695">
-    <span class="name" name="store-keystore">store-keystore</span>
-  </a> <span class="args">keystore output-port storepass</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="store-keystore-to-file2696">
-    <span class="name" name="store-keystore-to-file">store-keystore-to-file</span>
-  </a>  <span class="args">keystore file storepass</span></div>
-<div class="desc">The methods shall write <var>keystore</var> to <var>output-port</var> or 
-<var>file</var>.
-<p />The <code>store-keystore</code> shall write to given binary output port 
-<var>output-port</var>.
-<p />The <code>store-keystore-to-file</code> shall write to given file <var>file</var>.
-<p /><var>storepass</var> shall be a string and may or may not be used to encrypt 
-whole contents.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-set-key!2697">
-    <span class="name" name="keystore-set-key!">keystore-set-key!</span>
+<div class="desc">This library provides generic functions for marshalling message.</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="rpc-marshall-message2692">
+      <span class="name" name="rpc-marshall-message">rpc-marshall-message</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Generic</span>
+    <a name="rpc-unmarshall-message2693">
+      <span class="name" name="rpc-unmarshall-message">rpc-unmarshall-message</span>
+    </a>
+  </div>
+<div class="desc">These generic function will be used transport layer to marshall or
+unmarshall messages.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="utils.rpc.transport.http"><span class="section-number">7.47.2</span>Http transport</a>
+  </h4>
+<p />Currently there is no generic transport framework and support HTTP transport.
+<p />For future, we may provide more generic way to send/receive request 
+and response.
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(rpc transport http)2694">
+      <span class="name" name="(rpc transport http)">(rpc transport http)</span>
+    </a>
+  </div>
+<div class="desc">This library provides procedures and generic function of 
+HTTP transport for RCP</div>.
+<p /><div class="define"><span class="define-category">Function</span><a name="rpc-http-request2695">
+    <span class="name" name="rpc-http-request">rpc-http-request</span>
   </a>
- <span class="args">keystore alias private-key keypass certs</span></div>
-<div class="desc"><var>alias</var> shall be a string represents the name of <var>private-key</var> in
-the <var>keystore</var>.
-<p /><var>private-key</var> shall be an RSA private key.
-<p /><var>key-pass</var> shall be a string and may or may not be used to encrypt
-given <var>private-key</var>.
-<p /><var>certs</var> shall be a list of X509 certificates which associated with
-<var>private-key</var>.
-<p />The method shall store given <var>private-key</var> to <var>keystore</var>.
+ <span class="args">url message :key (unmarshall? #t) :allow-other-keys options</span></div>
+<div class="desc">Send given <var>message</var> to <var>url</var> and returns 3 values,
+http status, header and response.
+<p />If the keyword argument <var>unmarshall?</var> is #f then the returning response
+value will not be unmarshalled.
+<p /><var>options</var> will be passed to <code>http-request</code> procedure.
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-set-certificate!2698">
-    <span class="name" name="keystore-set-certificate!">keystore-set-certificate!</span>
-  </a> <span class="args">keystore alias cert</span></div>
-<div class="desc"><var>alias</var> shall be a string represents the name of <var>cert</var> in
-the <var>keystore</var>.
-<p /><var>cert</var> shall be an X509 certificate.
-<p />The method shall store given <var>cert</var> to <var>keystore</var>.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-delete-entry!2699">
-    <span class="name" name="keystore-delete-entry!">keystore-delete-entry!</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">The method shall remove the entry associated with <var>alias</var> from 
-<var>keystore</var>.
-</div>
-<p />
-</section></section>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2696"><span class="section-number">7.47.2.1</span>Http transport hook</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-method2697">
+    <span class="name" name="rpc-http-method">rpc-http-method</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http method. Default implementation returns <code>POST</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-content-type2698">
+    <span class="name" name="rpc-http-content-type">rpc-http-content-type</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns content type. Default implementation returns 
+<code>application/octet-stream</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-sender2699">
+    <span class="name" name="rpc-http-sender">rpc-http-sender</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http sender. Default implementation returns
+<code>http-blob-sender</code> with marshalled request</div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-receiver2700">
+    <span class="name" name="rpc-http-receiver">rpc-http-receiver</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns http receiver. Default implementation returns
+<code>http-binary-receiver</code></div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-response-type2701">
+    <span class="name" name="rpc-http-response-type">rpc-http-response-type</span>
+  </a> <span class="args">request</span></div>
+<div class="desc">Returns a marker type to be used <code>rpc-http-unmarshall-message</code>.
+Default implementation returns given <var>request</var> itself</div>.
+<p /><div class="define"><span class="define-category">Method</span><a name="rpc-http-unmarshall-message2702">
+    <span class="name" name="rpc-http-unmarshall-message">rpc-http-unmarshall-message</span>
+  </a> <span class="args">type header body</span></div>
+<div class="desc">Unmarshall the given <var>body</var> according to the given <var>type</var>.
+Default implementation ignores <var>header</var> and passes <var>type</var> and
+<var>body</var> to <code>rpc-unmarshall-message</code>.</div>
+<p /></section></section></section>
   <div class="prev-next">
-    <a class="prev" href="section746.html">(rpc json) - JSON RPC library</a>
+    <a class="prev" href="section746.html">(rfc zlib) - zlib compression library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section748.html">(text csv) - Comma separated values parser library</a>
+    <a class="next" href="section748.html">(rpc json) - JSON RPC library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-04-21T21:14:43+0200</i></div>
   </div>
 </html>

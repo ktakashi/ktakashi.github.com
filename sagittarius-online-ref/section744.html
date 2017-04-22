@@ -7,232 +7,385 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section743.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="prev" href="section743.html">(rfc uuid) - UUID generate library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section745.html">RPC support framework</a>
+    <a class="next" href="section745.html">(rfc x.509) - X.509 certificate utility library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.zlib"><span class="section-number">7.44</span>(rfc zlib) - zlib compression library</a>
+    <a class="section.anchor" name="rfc.websocket"><span class="section-number">7.44</span>(rfc websocket) - WebSocket</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc zlib)2624">
-      <span class="name" name="(rfc zlib)">(rfc zlib)</span>
+    <a name="(rfc websocket)2616">
+      <span class="name" name="(rfc websocket)">(rfc websocket)</span>
     </a>
   </div>
-<div class="desc">This library provides the binding for zlib compression library. For now,
-it only provides the highest level APIs.
+<div class="desc">This library provides WebSocket APIs defined by
+<a href="https://tools.ietf.org/html/rfc6455">RFC 6455</a>.
+</div>
+<p />Following is a simple example to use user level APIs.
+<pre class="codeblock">(import (rnrs) (rfc websocket))
+
+;; Creates an WebSocket object
+(define websocket (make-websocket "wss://echo.websocket.org"))
+
+;; Sets text message event handler
+(websocket-on-text-message websocket
+  (lambda (ws text) (display text) (newline)))
+
+;; Opens the WebSocket
+(websocket-open websocket)
+
+;; Sends a message to endpoint
+(websocket-send websocket "Hello")
+
+;; Closes the WebSocket
+(websocket-close websocket)
+</pre>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2617"><span class="section-number">7.44.1</span>User level APIs</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-websocket2618">
+    <span class="name" name="make-websocket">make-websocket</span>
+  </a>
+ <span class="args">uri :key (protocols '()) (extensions '()) (engine 'http)</span></div>
+<div class="desc">Creates an WebSocket object which communicate to given <var>uri</var>.
+<p />The URI reprented by <var>uri</var> must be a valid WebSocket URI. If it's
+not a valid URI, then <code>&amp;websocket-engine</code> or its sub condition
+shall be raised.
+<p />The keyword argument <var>protocols</var> are a list of sub protocols of the
+creating WebSocket. If this is set, then handshake will send it with
+<code>Sec-WebSocket-Protocol</code> header or equivalent.
+<p />The keyword argument <var>extensions</var> are a list of extensions of the
+creating WebSocket. If this is set, then handshake will send it with
+<code>Sec-WebSocket-Extensions</code> header or equivalent.
+<p />The keyword argument <var>engine</var> is a type of handshake engine and
+must be a symbol. This determines which handshake protocol it should
+use. The default value is <code>http</code> which uses HTTP/1.1.
+<p /></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket?2619">
+    <span class="name" name="websocket?">websocket?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is an WebSocket object otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-open2620">
+    <span class="name" name="websocket-open">websocket-open</span>
+  </a> <span class="args">websocket</span></div>
+<div class="desc">Operating handshake on given WebSocket object <var>websocket</var> if
+it's not opened, yet. And returns <var>websocket</var>.
+<p />If handshake failed, then <code>&amp;websocket-engine</code> or its sub condition
+shall be raised.
+<p />After successfull call of this procedure, the <var>websocket</var> has a
+message dispatcher thread.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-close2621">
+    <span class="name" name="websocket-close">websocket-close</span>
+  </a>
+ <span class="args">websocket :key (status #f) (message "") (timeout #f)</span></div>
+<div class="desc">Closes the given <var>websocket</var> if it's open and returns the
+<var>websocket</var>. This procedure also finishes the underlying thread
+created by <code>websocket-open</code>.
+<p />The keyword argument <var>status</var> is specified, it must be a non
+negative integer which has less then or equal to 16 bits length, then
+the procedure sends it as a connection close code.
+<p />The keyword argument <var>message</var> is specified, must be a string, then
+the procedure sends it as a connection close message. This is sent only
+if the <var>status</var> is specified otherwise ignored.
+<p />The keyword argument <var>timeout</var> is used as a timeout period for waiting
+underlying dispatcher thread. If the thread didn't finish in the specified
+period, then it'd be terminated and <code>&amp;websocket-close-timeout</code> is
+raised.
+<p />If the underlying thread raised an <code>&amp;uncaught-exception</code>, then the
+procedure raises its reason.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send2622">
+    <span class="name" name="websocket-send">websocket-send</span>
+  </a>
+ <span class="args">websocket data :optional start splitter</span></div>
+<div class="desc">Sends given <var>data</var> to the <var>websocket</var> and returns
+<var>websocket</var>. This procedure runs in atomic so the <var>data</var> is sent
+in one fragmentation sequence.
+<p />The optional arguments are passed to underlying data transport procedures.
+If the <var>data</var> is a string, then <code>websocket-send-text</code> is used.
+If the <var>data</var> is a bytevector, then <code>websocket-send-binary</code> is used.
+If the <var>data</var> is not one of the aboves, then <code>&amp;assertion</code> is raised.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-ping2623">
+    <span class="name" name="websocket-ping">websocket-ping</span>
+  </a>
+ <span class="args">websocket data :optional (timeout #f) (timeout-value #f)</span></div>
+<div class="desc">Send ping control frame whose data is <var>data</var> to <var>websocket</var>
+and returns <var>websocket</var>.
+<p />The procedure waits until the endpoint returns pong control frame. If the
+pong frame doesn't contain the same <var>data</var> in its payload, then
+<code>&amp;websocket-pong</code> is raised.
+<p />The optional argument <var>timeout</var> specifies how long the procedure waits
+the pong response.
+<p />The optional argument <var>timeout-value</var> is an alternative value when
+the endpoint didn't return pong in time.
+<p />CAUTION: this procedure depends on the endpoint's behaviour.
+</div>
+<p />
+<section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2624"><span class="section-number">7.44.1.1</span>Event handling</a>
+  </h5>
+<p />The user level APIs are event driven like JavaScript's WebSocket API.
+Whenever an event is occured, then the configured event handler is
+invoked.
+<p />There are 2 types of error handler invocations. One is calling active
+procedures such as <code>websocket-send</code>. The other one is passive situation
+such as receiving frame from endpoint. The first case, all active procedures
+would catch <code>&amp;websocket</code> and its sub conditions. If the condition is
+<code>&amp;websocket-engine</code> or its sub condition, then the condition is
+re-raised. Other <code>&amp;websocket</code> conditions are not re-raised by the
+APIs. Other conditions are simply re-raised without invcating event handler.
+On the second case, it's mostly the same, but when
+<code>&amp;websocket-closed</code> is raised, then event handler won't be invoked.
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-text-message2625">
+    <span class="name" name="websocket-on-text-message">websocket-on-text-message</span>
+  </a>
+ <span class="args">websocket event-handler</span></div>
+<div class="define"><span class="define-category">Function</span><a name="websocket-on-binary-message2626">
+    <span class="name" name="websocket-on-binary-message">websocket-on-binary-message</span>
+  </a>
+ <span class="args">websocket event-handler</span></div>
+<div class="desc">Sets <var>event-handler</var> for receiving text message and binary
+message to <var>websocket</var>, respectively.
+<p />The <var>event-handler</var> must be a procedure which accepts 2 arguments,
+WebSocket object and response data, string or bytevector.
+<p />If the <var>event-handler</var> raises an error, and it's not
+a <code>&amp;websocket</code>, then the dispatcher thread opened by
+<code>websocket-open</code> stops running.
+<p />The procedure returns <var>websocket</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-open2627">
+    <span class="name" name="websocket-on-open">websocket-on-open</span>
+  </a> <span class="args">websocket event-handler</span></div>
+<div class="define"><span class="define-category">Function</span><a name="websocket-on-close2628">
+    <span class="name" name="websocket-on-close">websocket-on-close</span>
+  </a> <span class="args">websocket event-handler</span></div>
+<div class="desc">Sets <var>event-handler</var> for open and close event to <var>websocket</var>,
+respectively.
+<p />The <var>event-handler</var> must be a procedure which accepts 1 argument,
+WebSocket object.
+<p />The procedure returns <var>websocket</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-error2629">
+    <span class="name" name="websocket-on-error">websocket-on-error</span>
+  </a> <span class="args">websocket event-handler</span></div>
+<div class="desc">Sets <var>event-handler</var> for error situation to <var>websocket</var>.
+<p />The <var>event-handler</var> must be a procedure which accepts 2 arguments,
+WebSocket object and a captured error. 
+<p />If the <var>event-handler</var> raises an error, then it would be propagated
+caller of the user level APIs.
+<p />The procedure returns <var>websocket</var>.
+</div>
+<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2630"><span class="section-number">7.44.2</span>Low level APIs</a>
+  </h4>
+<p />The low level APIs can be used when users want to implement WebSocket process
+in programatic way. The user level APIs are implemented on this APIs.
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2631"><span class="section-number">7.44.2.1</span>WebSocket Connection</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-websocket-connection2632">
+    <span class="name" name="make-websocket-connection">make-websocket-connection</span>
+  </a>
+ <span class="args">uri :optional (engine 'http)</span></div>
+<div class="desc">Creates WebSocket connection object. <var>uri</var> and <var>engine</var> are
+the same as <var>make-websocket</var>.
+</div>
+ 
+<div class="define"><span class="define-category">Function</span><a name="websocket-connection?2633">
+    <span class="name" name="websocket-connection?">websocket-connection?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is WebSocket connection object
+otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-handshake!2634">
+    <span class="name" name="websocket-connection-handshake!">websocket-connection-handshake!</span>
+  </a>
+ <span class="args">connection :optional (protocols '()) (extensions '()) :rest</span></div>
+<div class="desc">Processes handshake on given <var>connection</var>. All the optional
+arguments are passed to underlying handshake engine.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-close!2635">
+    <span class="name" name="websocket-connection-close!">websocket-connection-close!</span>
+  </a> <span class="args">connection</span></div>
+<div class="desc">Closes given <var>connection</var>. This procedure simply closes
+socket connection.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-closed?2636">
+    <span class="name" name="websocket-connection-closed?">websocket-connection-closed?</span>
+  </a> <span class="args">connection</span></div>
+<div class="desc">Returns #t if the <var>connection</var> is not connected otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-pong-queue2637">
+    <span class="name" name="websocket-connection-pong-queue">websocket-connection-pong-queue</span>
+  </a> <span class="args">connection</span></div>
+<div class="desc">Returns a shared queue which stores pong data from the endpoint of
+the <var>connection</var>.</div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2638"><span class="section-number">7.44.2.2</span>WebSocket Messages</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-text2639">
+    <span class="name" name="websocket-send-text">websocket-send-text</span>
+  </a>
+ <span class="args">connection data :optional (start 0) split</span></div>
+<div class="define"><span class="define-category">Function</span><a name="websocket-send-binary2640">
+    <span class="name" name="websocket-send-binary">websocket-send-binary</span>
+  </a>
+ <span class="args">connection data :optional (start 0) split</span></div>
+<div class="desc">Sends text or binary frame of <var>data</var> to given <var>connection</var>.
+<p />If the first procedure is called, then <var>data</var> must be a string.
+<p />If the second procedure is called, then <var>data</var> must be a bytevector.
+<p />The optional argument start specifies from which point of <var>data</var> to send.
+<p />The optional argument <var>split</var> is specified, it must be an non negative
+integer or procedure which accepts 2 arguments, <var>data</var> and start, then
+the <var>data</var> is sent fragmented.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-close2641">
+    <span class="name" name="websocket-send-close">websocket-send-close</span>
+  </a>
+ <span class="args">connection :optional (data #vu8()) (wait? #t)</span></div>
+<div class="desc">Sends close control frame to given <var>connection</var>.
+<p />If the optional argument <var>data</var> is specified, it must be a properly
+coded connection close status, the it's sent as a payload of close frame.
+<p />If the optional argument <var>wait?</var> is true value, then the procedure
+waits until the endpoint sends close frame back.
+<p />If <var>wait?</var> is #f, then it is users responsibility to receive the
+response close frame and closes the connection.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-ping2642">
+    <span class="name" name="websocket-send-ping">websocket-send-ping</span>
+  </a>
+ <span class="args">connection :optional (data #vu8())</span></div>
+<div class="define"><span class="define-category">Function</span><a name="websocket-send-pong2643">
+    <span class="name" name="websocket-send-pong">websocket-send-pong</span>
+  </a>
+ <span class="args">connection :optional (data #vu8())</span></div>
+<div class="desc">Sends ping and pong frame to given <var>connection</var> respectively.
+<p />The optional argument <var>data</var> is sent as its payload.
+<p />NB: the payload must be less than 125 bytes.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-receive2644">
+    <span class="name" name="websocket-receive">websocket-receive</span>
+  </a>
+ <span class="args">connection :key (push-pong? #f)</span></div>
+<div class="desc">Receives a data frame and return 2 values, opcode and payload.
+<p />If the frame is text, then returning value is a string. Otherwise
+returning value is a bytevector.
+<p />If the keyword argument <var>push-pong?</var> is true value, then
+payload of pong control frame will be pushed in to the <code>pong-queue</code>
+of the <var>connection</var>.
+<p />This procedure doesn't return ping and pong control frame.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-receive-fragments2645">
+    <span class="name" name="websocket-receive-fragments">websocket-receive-fragments</span>
+  </a>
+ <span class="args">connection proc :key (push-pong? #f)</span></div>
+<div class="desc">Receives a data fragments until its end and return the result of
+the last call of <var>proc</var>.
+<p />The <var>proc</var> must accept 3 values, <var>finished?</var>, <var>opcode</var> and
+<var>data</var>.
+<p />This procedure is useful to receive a huge frame without concising.
+<p />The <code>websocket-receive</code> is implemented on top of this procedure
+like this:
+<pre class="codeblock">(define (websocket-receive conn :key (push-pong? #f))
+  (define (convert opcode data)
+    (if (eqv? opcode +websocket-text-frame+)
+	(values opcode (utf8-&gt;string data))
+	(values opcode data)))
+  (let-values (((out extract) (open-bytevector-output-port)))
+    (websocket-receive-fragments conn
+     (lambda (fin? opcode data)
+       (put-bytevector out data)
+       (if fin? (convert opcode (extract)) (values opcode #f)))
+     :push-pong? push-pong?)))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-compose-close-status2646">
+    <span class="name" name="websocket-compose-close-status">websocket-compose-close-status</span>
+  </a>
+ <span class="args">status :optional message</span></div>
+<div class="desc"><var>status</var> must be an non negative integer whose bit length
+must be less than or equal to 16 bits.
+<p />If optional argument <var>message</var> is specified, then it must be a
+string.
+<p />Composes a payload of close frame.
+</div>
+<div class="define"><span class="define-category">Function</span><a name="websocket-parse-close-status2647">
+    <span class="name" name="websocket-parse-close-status">websocket-parse-close-status</span>
+  </a> <span class="args">data</span></div>
+<div class="desc"><var>data</var> must be a payload of close frame.
+<p />Returns 2 values, status and mesasge of the close frame payload.
 </div>
 <p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;zlib-error2625">
-      <span class="name" name="&amp;zlib-error">&amp;zlib-error</span>
+    <span class="define-category">Constants</span>
+    <a name="+websocket-text-frame+2648">
+      <span class="name" name="+websocket-text-frame+">+websocket-text-frame+</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="zlib-error?2626">
-    <span class="name" name="zlib-error?">zlib-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="define"><span class="define-category">Function</span><a name="condition-zlib-stream2627">
-    <span class="name" name="condition-zlib-stream">condition-zlib-stream</span>
-  </a> <span class="args">zlib-error</span></div>
-<div class="desc">Subcondition of <code>&amp;error</code>.
-<p />This condition is raised when zlib process is finished unsuccessfully. You can
-obtain the cause z-stream with the <code>condition-zlib-stream</code> procedure and
-get the detail message with the <code>zlib-error-message</code> procedure. When error
-occurred, however, it is raised with <code>message-condition</code> and it has the
-error message with. So you can simply get it with <code>condition-message</code>
-procedure.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="zlib-error-message2628">
-    <span class="name" name="zlib-error-message">zlib-error-message</span>
-  </a> <span class="args">z-stream</span></div>
-<div class="desc"><var>Z-stream</var> must be z-stream object.
-<p />Retrieve error message from <var>z-stream</var>. If <var>z-stream</var> does not have any
-error message and this procedure is called, the behaviour is unspecified.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-deflating-output-port2629">
-    <span class="name" name="open-deflating-output-port">open-deflating-output-port</span>
-  </a>
- <span class="args">sink :key compression-level buffer-size window-bits memory-level
- strategy dictionary owner?</span></div>
-<div class="desc"><var>Sink</var> must be binary output port. Creates a custom binary output
-port. The port deflates its input and put the result to <var>sink</var>. With the
-optional keys, you can specify the following conditions:
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <var>compression-level</var>
-      </dt>
-      <dd class="dl-item-desc">You can specify an exact integer between 1 and 9 (inclusive) to
-<var>compression-level</var>. When it is omitted, a default compression level is
-used, which is usually 6.
-<p />The following constants are defined to specify <var>compression-level</var>
-conveniently:
 <div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_NO_COMPRESSION2630">
-          <span class="name" name="Z_NO_COMPRESSION">Z_NO_COMPRESSION</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_BEST_SPEED2631">
-          <span class="name" name="Z_BEST_SPEED">Z_BEST_SPEED</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_BEST_COMPRESSION2632">
-          <span class="name" name="Z_BEST_COMPRESSION">Z_BEST_COMPRESSION</span>
-        </a>
-      </div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_DEFAULT_COMPRESSION2633">
-          <span class="name" name="Z_DEFAULT_COMPRESSION">Z_DEFAULT_COMPRESSION</span>
-        </a>
-      </div>
-</dd>
-      <dt class="dl-item-title">
-        <var>buffer-size</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies the buffer size of the port in bytes.
-The default is 4096.
-</dd>
-      <dt class="dl-item-title">
-        <var>window-bits</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies the size of the window in exact
-integer. Typically the value should be between 8 and 15, inclusive, and it
-specifies the base two logarithm of the window size used in compression. Larger
-number yields better compression ratio, but more memory usage. The default value
-is 15.
-</dd>
-      <dt class="dl-item-title">
-        <var>memory-level</var>
-      </dt>
-      <dd class="dl-item-desc">It specifies how much memory should be allocated to
-keep the internal state during compression. 1 means smallest memory which causes
-slow and less compression. 9 means fastest and best compression with the largest
-amount of memory. The default value is 8.
-</dd>
-      <dt class="dl-item-title">
-        <var>strategy</var>
-      </dt>
-      <dd class="dl-item-desc">To fine tune compression algorithm, you can use the
-<var>strategy</var> argument. The following constants are defined as the valid value
-as <var>strategy</var>.
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_DEFAULT_STRATEGY2634">
-          <span class="name" name="Z_DEFAULT_STRATEGY">Z_DEFAULT_STRATEGY</span>
-        </a>
-      </div>
-<div class="desc">The default strategy, suitable for most ordinary data.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_FILTERED2635">
-          <span class="name" name="Z_FILTERED">Z_FILTERED</span>
-        </a>
-      </div>
-<div class="desc">Suitable for data generated by filters (or predictors). Filtered data
-consists mostly of small values with a somewhat compress them better. The
-effect of this is to force more huffman coding and less string matching.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_HUFFMAN_ONLY2636">
-          <span class="name" name="Z_HUFFMAN_ONLY">Z_HUFFMAN_ONLY</span>
-        </a>
-      </div>
-<div class="desc">Force to use huffman encoding only.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_RLE2637">
-          <span class="name" name="Z_RLE">Z_RLE</span>
-        </a>
-      </div>
-<div class="desc">This is designed to be almost as fast as Z_HUFFMAN_ONLY, but gives better
-compression for PNG image data.</div>
-<div class="define">
-        <span class="define-category">Constant</span>
-        <a name="Z_FIXED2638">
-          <span class="name" name="Z_FIXED">Z_FIXED</span>
-        </a>
-      </div>
-<div class="desc">This prevents the use of dynamic huffman codes, allowing for a simpler
-decoder for special applications.</div>
-The choice of <var>strategy</var> only affects compression ratio and speed. Any
-choice produces correct and decompressable data.
-</dd>
-      <dt class="dl-item-title">
-        <var>dictionary</var>
-      </dt>
-      <dd class="dl-item-desc">You can give an initial dictionary to the
-<var>dictionary</var> argument to be used in compression. The compressor and
-decompressor must use exactly the same dictionary.
-</dd>
-      <dt class="dl-item-title">
-        <var>owner?</var>
-      </dt>
-      <dd class="dl-item-desc">If this argument is specified true value, the created
-port automatically closes the given output port <var>sink</var> when it is closed.
-</dd>
-    </dl>
+    <span class="define-category">Constants</span>
+    <a name="+websocket-binary-frame+2649">
+      <span class="name" name="+websocket-binary-frame+">+websocket-binary-frame+</span>
+    </a>
   </div>
-<p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-inflating-input-port2639">
-    <span class="name" name="open-inflating-input-port">open-inflating-input-port</span>
-  </a>
- <span class="args">source :key buffer-size window-bits dictionary owner?</span></div>
-<div class="desc"><var>Source</var> must be a binary input port.
-<p />The <code>open-inflating-input-port</code> creates a custom binary input port, which
-reads compressed binary data from the given port <var>source</var> and decompresses
-the read data. When <var>source</var> port supports both <code>port-position</code> and
-<code>set-port-position!</code> then the procedure will set <var>source</var> position
-to offset of used bytes length when the created custom port is being closed.
-Thus if the <var>source</var> port contains mixture of deflated data and non
-deflated data then the custom port will only read deflated data and won't
-forward the original port position beyond it no matter how big the
-<var>buffer-size</var> is specified.
-<p />The meaning of <var>buffer-size</var> is the same as
- <code>open-deflating-output-port</code>.
-<p />The meaning of <var>window-bits</var> is almost the same, except if a value increased
-by 32 is given, the inflating port automatically detecs whether the source
-stream is zlib or gzip by its header.
-<p />If the input data is compressed with specified dictionary, the same dictionary
-must be given to <var>dictionary</var> argument. Otherwise &amp;zlib-error condition is
-raised.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="inflate-bytevector2640">
-    <span class="name" name="inflate-bytevector">inflate-bytevector</span>
-  </a> <span class="args">bv opts ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="deflate-bytevector2641">
-    <span class="name" name="deflate-bytevector">deflate-bytevector</span>
-  </a> <span class="args">bv opts ...</span></div>
-<div class="desc">Inflate/deflate given bytevector <var>bv</var> respectively.
-<p />These are convenient procedures. It uses <code>open-inflating-input-port</code> or
-<code>open-deflating-output-port</code> to inflate/deflate.
-<p />The <var>opts</var> will be passed to underlying procedures.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="crc322642">
-    <span class="name" name="crc32">crc32</span>
-  </a> <span class="args">bv :optional (checksum 0)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="adler322643">
-    <span class="name" name="adler32">adler32</span>
-  </a> <span class="args">bv :optional (checksum 0)</span></div>
-<div class="desc">Returns CSC32/Adler32 checksum of bytevector <var>bv</var>, respectively.
-<p />If optional <var>checksum</var> is given, then returned checksum is an update of
-<var>checksum</var> by <var>bv</var>.
-</div>
-</section>
+<div class="desc">WebSocket frame type constants. It represents text frame and
+binary frame, respectively.</div>
+<p /><div class="define">
+    <span class="define-category">Constants</span>
+    <a name="+websocket-close-frame+2650">
+      <span class="name" name="+websocket-close-frame+">+websocket-close-frame+</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constants</span>
+    <a name="+websocket-ping-frame+2651">
+      <span class="name" name="+websocket-ping-frame+">+websocket-ping-frame+</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constants</span>
+    <a name="+websocket-pong-frame+2652">
+      <span class="name" name="+websocket-pong-frame+">+websocket-pong-frame+</span>
+    </a>
+  </div>
+<div class="desc">WebSocket control frame type constants. It represents cloe frame,
+ping frame, and pong frame, respectively.</div>
+<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2653"><span class="section-number">7.44.3</span>Conditions</a>
+  </h4>
+<p /><code>&amp;websocket</code> is a base condition of the WebSocket library's condition.
+The hierarchy is the following:
+<pre class="codeblock">+ &amp;error
+  + &amp;websocket
+    + &amp;websocket-engine
+      + &amp;websocket-engine-not-found
+         - engine
+	 - reason
+      + &amp;websocket-engine-scheme
+         - scheme
+      + &amp;websocket-engine-connection
+         - host
+	 - port
+    + &amp;websocket-closed
+       - status
+       - message
+    + &amp;websocket-pong
+       - pong-data
+    + &amp;websocket-close-timeout
+</pre>
+<p />The condition types are not exported by the library.
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-error?2654">
+    <span class="name" name="websocket-error?">websocket-error?</span>
+  </a> <span class="args">obj</span></div>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section743.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="prev" href="section743.html">(rfc uuid) - UUID generate library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section745.html">RPC support framework</a>
+    <a class="next" href="section745.html">(rfc x.509) - X.509 certificate utility library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-04-21T21:14:43+0200</i></div>
   </div>
 </html>

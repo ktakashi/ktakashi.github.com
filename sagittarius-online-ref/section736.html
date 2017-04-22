@@ -7,74 +7,45 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section735.html">(rfc totp) - Time-based One-Time Password library</a>
+    <a class="prev" href="section735.html">(rfc pem) - PEM format  library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section737.html">(rfc sftp) - SFTP library</a>
+    <a class="next" href="section737.html">(rfc totp) - Time-based One-Time Password library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.quoted-printable"><span class="section-number">7.36</span>(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="section.anchor" name="rfc.hotp"><span class="section-number">7.36</span>(rfc hotp) - HMAC-based One-Time Password library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc quoted-printable)2422">
-      <span class="name" name="(rfc quoted-printable)">(rfc quoted-printable)</span>
+    <a name="(rfc hotp)2462">
+      <span class="name" name="(rfc hotp)">(rfc hotp)</span>
     </a>
   </div>
-<div class="desc">This library provides quoted printable encoding and decoding procedures.</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2423"><span class="section-number">7.36.1</span>Encoding procedures</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-encode2424">
-    <span class="name" name="quoted-printable-encode">quoted-printable-encode</span>
-  </a>
- <span class="args">bv :key (line-width 76) (binary? #f)</span></div>
-<div class="desc"><var>bv</var> must be a bytevector.
-<p />Encodes given bytevector to quoted printable encoded bytevector.
-<p />The keyword argument <var>line-width</var> specifies where the encode procedure
-should put linefeed. If this is less than 1 or #f, encoder does not put
-linefeed.
-<p />If the keyword argument <var>binary?</var> is not #f, then the procedure encodes
-#x0a and #x0b to <code>=0A</code> and <code>=0D</code> respectively.
+<div class="desc">Provides HMAC-based One-Time Password (HOTP) generating procedures. HOTP is
+defined in RFC 4226:
+<a href="http://tools.ietf.org/html/rfc4226">RFC 4226</a>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-encode-string string2425">
-    <span class="name" name="quoted-printable-encode-string string">quoted-printable-encode-string string</span>
-  </a>
- <span class="args">:key (line-width 76) transcoder (binary? #f)</span></div>
-<div class="desc">Convenient procedure for string.
-<p />Encodes given <var>string</var> to quoted printable encoded string.
-<p />The keyword argument <var>transcoder</var> is used to convert given string to
-bytevector. The converted bytevector will be passed to the
-<code>quoted-printable-encode</code> procedure. The default is utf-8 codec with
-NONE eol style.
+<p /><div class="define"><span class="define-category">Function</span><a name="generate-hmac-based-one-time-password2463">
+    <span class="name" name="generate-hmac-based-one-time-password">generate-hmac-based-one-time-password</span>
+  </a> <span class="args">K C digit</span></div>
+<div class="define"><span class="define-category">Function</span><a name="hotp2464">
+    <span class="name" name="hotp">hotp</span>
+  </a> <span class="args">K C digit</span></div>
+<div class="desc"><var>K</var> must be a bytevector represents shared secret.
+<p /><var>C</var> must be an exact integer represents counter.
+<p /><var>digit</var> must be an exact integer.
+<p />Generates an HMAC-based one-time password.
+<p /><code>hotp</code> is an alias of <code>generate-hmac-based-one-time-password</code>.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2426"><span class="section-number">7.36.2</span>Decoding procedures</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-decode2427">
-    <span class="name" name="quoted-printable-decode">quoted-printable-decode</span>
-  </a> <span class="args">bv</span></div>
-<div class="desc"><var>bv</var> must be a bytevector.
-<p />Decode quoted printable encoded bytevector to original bytevector.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="quoted-printable-decode-string2428">
-    <span class="name" name="quoted-printable-decode-string">quoted-printable-decode-string</span>
-  </a>
- <span class="args">string :key (transcoder (native-transcoder))</span></div>
-<div class="desc">Convenient procedure.
-<p />Decode quoted printable encoded string to original string. The procedure is
-using <code>quoted-printable-decode</code>.
-<p />The keyword argument specifies how to convert the decoded bytevector to string.
-If this is #f, the procedure returns raw bytevector.
-</div>
-</section></section>
+<p />
+</section>
   <div class="prev-next">
-    <a class="prev" href="section735.html">(rfc totp) - Time-based One-Time Password library</a>
+    <a class="prev" href="section735.html">(rfc pem) - PEM format  library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section737.html">(rfc sftp) - SFTP library</a>
+    <a class="next" href="section737.html">(rfc totp) - Time-based One-Time Password library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-03-24T21:24:11+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-04-21T21:14:43+0200</i></div>
   </div>
 </html>
