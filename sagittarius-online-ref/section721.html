@@ -16,7 +16,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(net mq mqtt)2233">
+    <a name="(net mq mqtt)2234">
       <span class="name" name="(net mq mqtt)">(net mq mqtt)</span>
     </a>
   </div>
@@ -51,18 +51,18 @@
   (close-mqtt-connection! conn))
 </pre>
 <p />
-<div class="define"><span class="define-category">Function</span><a name="mqtt-connection?2234">
+<div class="define"><span class="define-category">Function</span><a name="mqtt-connection?2235">
     <span class="name" name="mqtt-connection?">mqtt-connection?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is MQTT connection. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-mqtt-connection2235">
+<p /><div class="define"><span class="define-category">Function</span><a name="open-mqtt-connection2236">
     <span class="name" name="open-mqtt-connection">open-mqtt-connection</span>
   </a> <span class="args">host port opts ...</span></div>
 <div class="desc">Creates a socket connected to <var>host</var>:<var>port</var> and
 pass it to <var>port-&gt;mqtt-connection</var> with <var>opts</var>.
 <p />The returning value is an MQTT connection object.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="port-&gt;mqtt-connection2236">
+<p /><div class="define"><span class="define-category">Function</span><a name="port-&gt;mqtt-connection2237">
     <span class="name" name="port-&gt;mqtt-connection">port-&gt;mqtt-connection</span>
   </a>
  <span class="args">in/out :key client-id username password keep-alive version</span></div>
@@ -78,12 +78,12 @@ The value must be one of the followings;
 <p />By default it uses <code>+mqtt-3.1.1+</code>.
 <p />This procedure is for future extension such as supporting websocket.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="close-mqtt-connection!2237">
+<p /><div class="define"><span class="define-category">Function</span><a name="close-mqtt-connection!2238">
     <span class="name" name="close-mqtt-connection!">close-mqtt-connection!</span>
   </a> <span class="args">conn</span></div>
 <div class="desc">Closes given MQTT connection.</div>
 <p />
-<div class="define"><span class="define-category">Function</span><a name="mqtt-subscribe2238">
+<div class="define"><span class="define-category">Function</span><a name="mqtt-subscribe2239">
     <span class="name" name="mqtt-subscribe">mqtt-subscribe</span>
   </a> <span class="args">conn topic qos callback</span></div>
 <div class="desc">Subscribes to given <var>topic</var> with QoS <var>qos</var>.
@@ -91,17 +91,17 @@ The value must be one of the followings;
 <var>payload</var>. <var>payload</var> is an binary input port.
 <p />To receive messages, use <code>mqtt-receive-message</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-receive-message2239">
+<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-receive-message2240">
     <span class="name" name="mqtt-receive-message">mqtt-receive-message</span>
   </a> <span class="args">conn</span></div>
 <div class="desc">Receives one message from one of subscribed topics and call registered
 callback.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-unsubscribe2240">
+<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-unsubscribe2241">
     <span class="name" name="mqtt-unsubscribe">mqtt-unsubscribe</span>
   </a> <span class="args">conn topic</span></div>
 <div class="desc">Unsubscribes <var>conn</var> from <var>topic</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-publish2241">
+<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-publish2242">
     <span class="name" name="mqtt-publish">mqtt-publish</span>
   </a>
  <span class="args">conn topic message :key qos</span></div>
@@ -113,17 +113,17 @@ callback.
 <div class="define"><span class="define-category">Constant</span>+qos-exactly-once+</div>
 <p />By default, it uses <code>+qos-at-most-once+</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-ping2242">
+<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-ping2243">
     <span class="name" name="mqtt-ping">mqtt-ping</span>
   </a> <span class="args">conn</span></div>
 <div class="desc">Sends PINGREQ packet to the server.</div>
 <p />
 <section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2243"><span class="section-number">7.21.1</span>MQTT broker</a>
+    <a class="section.anchor" name="G2244"><span class="section-number">7.21.1</span>MQTT broker</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(net mq mqtt broker)2244">
+    <a name="(net mq mqtt broker)2245">
       <span class="name" name="(net mq mqtt broker)">(net mq mqtt broker)</span>
     </a>
   </div>
@@ -140,7 +140,7 @@ customised behaviour.
 ;; start the broker.
 (mqtt-broker-start! broker)
 </pre>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-mqtt-broker2245">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-mqtt-broker2246">
     <span class="name" name="make-mqtt-broker">make-mqtt-broker</span>
   </a>
  <span class="args">:key config authentication-handler :allow-other-keys</span></div>
@@ -155,7 +155,7 @@ the specified value which must be a procedure takes 2 arguments, username
 and password, handles authentication. If the procedure doesn't return
 true value then authentication error packet is sent to the client.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-mqtt-broker-config2246">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-mqtt-broker-config2247">
     <span class="name" name="make-mqtt-broker-config">make-mqtt-broker-config</span>
   </a>
  <span class="args">:key (max-thread 10) :allow-other-keys</span></div>
@@ -163,10 +163,10 @@ true value then authentication error packet is sent to the client.
 <p />The returning value is a sub type of <code>&lt;server-config&gt;</code> with
 <code>:non-blocking?</code> option.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-broker-start!2247">
+<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-broker-start!2248">
     <span class="name" name="mqtt-broker-start!">mqtt-broker-start!</span>
   </a> <span class="args">broker opt ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="mqtt-broker-stop!2248">
+<div class="define"><span class="define-category">Function</span><a name="mqtt-broker-stop!2249">
     <span class="name" name="mqtt-broker-stop!">mqtt-broker-stop!</span>
   </a> <span class="args">broker opt ...</span></div>
 <div class="desc">Start and stop procedure for MQTT broker. 
@@ -183,6 +183,6 @@ true value then authentication error packet is sent to the client.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-06-16T21:23:55+0200</i></div>
+    <div id="footer-date">Generated date: <i>2017-08-21T20:02:17+0200</i></div>
   </div>
 </html>
