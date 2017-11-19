@@ -16,7 +16,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc websocket)2639">
+    <a name="(rfc websocket)2659">
       <span class="name" name="(rfc websocket)">(rfc websocket)</span>
     </a>
   </div>
@@ -43,9 +43,9 @@
 (websocket-close websocket)
 </pre>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2640"><span class="section-number">7.44.1</span>User level APIs</a>
+    <a class="section.anchor" name="G2660"><span class="section-number">7.44.1</span>User level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-websocket2641">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-websocket2661">
     <span class="name" name="make-websocket">make-websocket</span>
   </a>
  <span class="args">uri :key (protocols '()) (extensions '()) (engine 'http)</span></div>
@@ -63,11 +63,11 @@ creating WebSocket. If this is set, then handshake will send it with
 must be a symbol. This determines which handshake protocol it should
 use. The default value is <code>http</code> which uses HTTP/1.1.
 <p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket?2642">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket?2662">
     <span class="name" name="websocket?">websocket?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is an WebSocket object otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-open2643">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-open2663">
     <span class="name" name="websocket-open">websocket-open</span>
   </a> <span class="args">websocket</span></div>
 <div class="desc">Operating handshake on given WebSocket object <var>websocket</var> if
@@ -77,7 +77,7 @@ shall be raised.
 <p />After successfull call of this procedure, the <var>websocket</var> has a
 message dispatcher thread.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-close2644">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-close2664">
     <span class="name" name="websocket-close">websocket-close</span>
   </a>
  <span class="args">websocket :key (status #f) (message "") (timeout #f)</span></div>
@@ -97,7 +97,7 @@ raised.
 <p />If the underlying thread raised an <code>&amp;uncaught-exception</code>, then the
 procedure raises its reason.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send2645">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send2665">
     <span class="name" name="websocket-send">websocket-send</span>
   </a>
  <span class="args">websocket data :optional start splitter</span></div>
@@ -109,7 +109,7 @@ If the <var>data</var> is a string, then <code>websocket-send-text</code> is use
 If the <var>data</var> is a bytevector, then <code>websocket-send-binary</code> is used.
 If the <var>data</var> is not one of the aboves, then <code>&amp;assertion</code> is raised.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-ping2646">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-ping2666">
     <span class="name" name="websocket-ping">websocket-ping</span>
   </a>
  <span class="args">websocket data :optional (timeout #f) (timeout-value #f)</span></div>
@@ -126,7 +126,7 @@ the endpoint didn't return pong in time.
 </div>
 <p />
 <section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2647"><span class="section-number">7.44.1.1</span>Event handling</a>
+    <a class="section.anchor" name="G2667"><span class="section-number">7.44.1.1</span>Event handling</a>
   </h5>
 <p />The user level APIs are event driven like JavaScript's WebSocket API.
 Whenever an event is occured, then the configured event handler is
@@ -140,11 +140,11 @@ re-raised. Other <code>&amp;websocket</code> conditions are not re-raised by the
 APIs. Other conditions are simply re-raised without invcating event handler.
 On the second case, it's mostly the same, but when
 <code>&amp;websocket-closed</code> is raised, then event handler won't be invoked.
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-text-message2648">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-text-message2668">
     <span class="name" name="websocket-on-text-message">websocket-on-text-message</span>
   </a>
  <span class="args">websocket event-handler</span></div>
-<div class="define"><span class="define-category">Function</span><a name="websocket-on-binary-message2649">
+<div class="define"><span class="define-category">Function</span><a name="websocket-on-binary-message2669">
     <span class="name" name="websocket-on-binary-message">websocket-on-binary-message</span>
   </a>
  <span class="args">websocket event-handler</span></div>
@@ -157,10 +157,10 @@ a <code>&amp;websocket</code>, then the dispatcher thread opened by
 <code>websocket-open</code> stops running.
 <p />The procedure returns <var>websocket</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-open2650">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-open2670">
     <span class="name" name="websocket-on-open">websocket-on-open</span>
   </a> <span class="args">websocket event-handler</span></div>
-<div class="define"><span class="define-category">Function</span><a name="websocket-on-close2651">
+<div class="define"><span class="define-category">Function</span><a name="websocket-on-close2671">
     <span class="name" name="websocket-on-close">websocket-on-close</span>
   </a> <span class="args">websocket event-handler</span></div>
 <div class="desc">Sets <var>event-handler</var> for open and close event to <var>websocket</var>,
@@ -169,7 +169,7 @@ respectively.
 WebSocket object.
 <p />The procedure returns <var>websocket</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-error2652">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-error2672">
     <span class="name" name="websocket-on-error">websocket-on-error</span>
   </a> <span class="args">websocket event-handler</span></div>
 <div class="desc">Sets <var>event-handler</var> for error situation to <var>websocket</var>.
@@ -180,14 +180,14 @@ caller of the user level APIs.
 <p />The procedure returns <var>websocket</var>.
 </div>
 <p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2653"><span class="section-number">7.44.2</span>Low level APIs</a>
+    <a class="section.anchor" name="G2673"><span class="section-number">7.44.2</span>Low level APIs</a>
   </h4>
 <p />The low level APIs can be used when users want to implement WebSocket process
 in programatic way. The user level APIs are implemented on this APIs.
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2654"><span class="section-number">7.44.2.1</span>WebSocket Connection</a>
+    <a class="section.anchor" name="G2674"><span class="section-number">7.44.2.1</span>WebSocket Connection</a>
   </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-websocket-connection2655">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-websocket-connection2675">
     <span class="name" name="make-websocket-connection">make-websocket-connection</span>
   </a>
  <span class="args">uri :optional (engine 'http)</span></div>
@@ -195,40 +195,40 @@ in programatic way. The user level APIs are implemented on this APIs.
 the same as <var>make-websocket</var>.
 </div>
  
-<div class="define"><span class="define-category">Function</span><a name="websocket-connection?2656">
+<div class="define"><span class="define-category">Function</span><a name="websocket-connection?2676">
     <span class="name" name="websocket-connection?">websocket-connection?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if given <var>obj</var> is WebSocket connection object
 otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-handshake!2657">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-handshake!2677">
     <span class="name" name="websocket-connection-handshake!">websocket-connection-handshake!</span>
   </a>
  <span class="args">connection :optional (protocols '()) (extensions '()) :rest</span></div>
 <div class="desc">Processes handshake on given <var>connection</var>. All the optional
 arguments are passed to underlying handshake engine.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-close!2658">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-close!2678">
     <span class="name" name="websocket-connection-close!">websocket-connection-close!</span>
   </a> <span class="args">connection</span></div>
 <div class="desc">Closes given <var>connection</var>. This procedure simply closes
 socket connection.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-closed?2659">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-closed?2679">
     <span class="name" name="websocket-connection-closed?">websocket-connection-closed?</span>
   </a> <span class="args">connection</span></div>
 <div class="desc">Returns #t if the <var>connection</var> is not connected otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-pong-queue2660">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-pong-queue2680">
     <span class="name" name="websocket-connection-pong-queue">websocket-connection-pong-queue</span>
   </a> <span class="args">connection</span></div>
 <div class="desc">Returns a shared queue which stores pong data from the endpoint of
 the <var>connection</var>.</div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2661"><span class="section-number">7.44.2.2</span>WebSocket Messages</a>
+    <a class="section.anchor" name="G2681"><span class="section-number">7.44.2.2</span>WebSocket Messages</a>
   </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-text2662">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-text2682">
     <span class="name" name="websocket-send-text">websocket-send-text</span>
   </a>
  <span class="args">connection data :optional (start 0) split</span></div>
-<div class="define"><span class="define-category">Function</span><a name="websocket-send-binary2663">
+<div class="define"><span class="define-category">Function</span><a name="websocket-send-binary2683">
     <span class="name" name="websocket-send-binary">websocket-send-binary</span>
   </a>
  <span class="args">connection data :optional (start 0) split</span></div>
@@ -240,7 +240,7 @@ the <var>connection</var>.</div>
 integer or procedure which accepts 2 arguments, <var>data</var> and start, then
 the <var>data</var> is sent fragmented.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-close2664">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-close2684">
     <span class="name" name="websocket-send-close">websocket-send-close</span>
   </a>
  <span class="args">connection :optional (data #vu8()) (wait? #t)</span></div>
@@ -252,11 +252,11 @@ waits until the endpoint sends close frame back.
 <p />If <var>wait?</var> is #f, then it is users responsibility to receive the
 response close frame and closes the connection.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-ping2665">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-ping2685">
     <span class="name" name="websocket-send-ping">websocket-send-ping</span>
   </a>
  <span class="args">connection :optional (data #vu8())</span></div>
-<div class="define"><span class="define-category">Function</span><a name="websocket-send-pong2666">
+<div class="define"><span class="define-category">Function</span><a name="websocket-send-pong2686">
     <span class="name" name="websocket-send-pong">websocket-send-pong</span>
   </a>
  <span class="args">connection :optional (data #vu8())</span></div>
@@ -264,7 +264,7 @@ response close frame and closes the connection.
 <p />The optional argument <var>data</var> is sent as its payload.
 <p />NB: the payload must be less than 125 bytes.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-receive2667">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-receive2687">
     <span class="name" name="websocket-receive">websocket-receive</span>
   </a>
  <span class="args">connection :key (push-pong? #f)</span></div>
@@ -276,7 +276,7 @@ payload of pong control frame will be pushed in to the <code>pong-queue</code>
 of the <var>connection</var>.
 <p />This procedure doesn't return ping and pong control frame.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-receive-fragments2668">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-receive-fragments2688">
     <span class="name" name="websocket-receive-fragments">websocket-receive-fragments</span>
   </a>
  <span class="args">connection proc :key (push-pong? #f)</span></div>
@@ -300,7 +300,7 @@ like this:
      :push-pong? push-pong?)))
 </pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-compose-close-status2669">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-compose-close-status2689">
     <span class="name" name="websocket-compose-close-status">websocket-compose-close-status</span>
   </a>
  <span class="args">status :optional message</span></div>
@@ -310,7 +310,7 @@ must be less than or equal to 16 bits.
 string.
 <p />Composes a payload of close frame.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="websocket-parse-close-status2670">
+<div class="define"><span class="define-category">Function</span><a name="websocket-parse-close-status2690">
     <span class="name" name="websocket-parse-close-status">websocket-parse-close-status</span>
   </a> <span class="args">data</span></div>
 <div class="desc"><var>data</var> must be a payload of close frame.
@@ -318,13 +318,13 @@ string.
 </div>
 <p /><div class="define">
     <span class="define-category">Constants</span>
-    <a name="+websocket-text-frame+2671">
+    <a name="+websocket-text-frame+2691">
       <span class="name" name="+websocket-text-frame+">+websocket-text-frame+</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constants</span>
-    <a name="+websocket-binary-frame+2672">
+    <a name="+websocket-binary-frame+2692">
       <span class="name" name="+websocket-binary-frame+">+websocket-binary-frame+</span>
     </a>
   </div>
@@ -332,26 +332,26 @@ string.
 binary frame, respectively.</div>
 <p /><div class="define">
     <span class="define-category">Constants</span>
-    <a name="+websocket-close-frame+2673">
+    <a name="+websocket-close-frame+2693">
       <span class="name" name="+websocket-close-frame+">+websocket-close-frame+</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constants</span>
-    <a name="+websocket-ping-frame+2674">
+    <a name="+websocket-ping-frame+2694">
       <span class="name" name="+websocket-ping-frame+">+websocket-ping-frame+</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Constants</span>
-    <a name="+websocket-pong-frame+2675">
+    <a name="+websocket-pong-frame+2695">
       <span class="name" name="+websocket-pong-frame+">+websocket-pong-frame+</span>
     </a>
   </div>
 <div class="desc">WebSocket control frame type constants. It represents cloe frame,
 ping frame, and pong frame, respectively.</div>
 <p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2676"><span class="section-number">7.44.3</span>Conditions</a>
+    <a class="section.anchor" name="G2696"><span class="section-number">7.44.3</span>Conditions</a>
   </h4>
 <p /><code>&amp;websocket</code> is a base condition of the WebSocket library's condition.
 The hierarchy is the following:
@@ -374,7 +374,7 @@ The hierarchy is the following:
     + &amp;websocket-close-timeout
 </pre>
 <p />The condition types are not exported by the library.
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-error?2677">
+<p /><div class="define"><span class="define-category">Function</span><a name="websocket-error?2697">
     <span class="name" name="websocket-error?">websocket-error?</span>
   </a> <span class="args">obj</span></div>
 </section></section>
@@ -386,6 +386,6 @@ The hierarchy is the following:
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-09-23T22:34:18+0200</i></div>
+    <div id="footer-date">Generated date: <i>2017-11-17T20:38:52+0100</i></div>
   </div>
 </html>

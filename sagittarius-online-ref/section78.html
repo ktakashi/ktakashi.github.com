@@ -692,7 +692,124 @@ otherwise #f.
 until the queue is available and returns #f.
 </div>
 <p />
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G1797"><span class="section-number">7.8.5</span>Actor</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Library</span>
+    <a name="(util concurrent actor)1798">
+      <span class="name" name="(util concurrent actor)">(util concurrent actor)</span>
+    </a>
+  </div>
+<div class="desc">A sub library of <code>(util concurrent)</code>. This library provides
+actor model like APIs.</div>
+<p />An actor is an object which contains thread, input receiver and output sender.
+This is based on the Actor model. Communication between an actor and outside of
+the actor can only be done via input receiver or output sender. From here, we
+call them channel. The following is a simple bank account example using actor.
+<p /><pre class="codeblock">(import (rnrs) (util concurrent actor) (match))
 
+(define (open-account initial-amount)
+  (define balance initial-amount)
+  (make-shared-queue-channel-actor
+   (lambda (input-receiver output-sender)
+     (let loop ()
+       (match (input-receiver)
+	 (('withdrow how-much)
+	  (if (&lt; balance how-much)
+	      (output-sender "invalid amount")
+	      (begin
+		(set! balance (- balance how-much))
+		(output-sender (cons how-much balance))))
+	  (loop))
+	 (('deposite a)
+	  (if (negative? a)
+	      (output-sender "invalid amount")
+	      (begin
+		(set! balance (+ balance a))
+		(output-sender (cons 0 balance))))
+	  (loop))
+	 (('close) #t)
+	 (else "invalid message"))))))
+
+(define client (open-account 1000))
+
+(actor-send-message! client '(withdrow 100))
+(actor-send-message! client '(deposite 100))
+(actor-send-message! client '(close))
+
+(actor-receive-message! client) ;; =&gt; (100 . 900)
+(actor-receive-message! client) ;; =&gt; (0 . 1000)
+</pre>
+<p /><div class="define"><span class="define-category">Function</span><a name="actor?1799">
+    <span class="name" name="actor?">actor?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given <var>obj</var> is an actor, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-shared-queue-channel-actor1800">
+    <span class="name" name="make-shared-queue-channel-actor">make-shared-queue-channel-actor</span>
+  </a> <span class="args">task</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-shared-priority-queue-channel-actor1801">
+    <span class="name" name="make-shared-priority-queue-channel-actor">make-shared-priority-queue-channel-actor</span>
+  </a>
+ <span class="args">task compare</span></div>
+<div class="desc">Creates actors with shared-queue or shared-priority-queue as underlying
+channel implementation, respectively.
+<p />If the <code>make-shared-priority-queue-channel-actor</code> is used, then the
+<var>compare</var> must be a procedure which takes 2 arguments and returns the
+comparison result of given 2 arguments. The value should be, -1, 0 or 1.
+<p /><var>task</var> must be an procedure accepts 2 argument, <var>input-receiver</var> and
+<var>output-sender</var>. The procedures' signatures are the followings:
+<div class="define"><span class="define-category">Function</span><a name="input-receiver1802">
+    <span class="name" name="input-receiver">input-receiver</span>
+  </a> <span class="args">:optional timeout timeout-val</span></div>
+<div class="define"><span class="define-category">Function</span><a name="output-sender1803">
+    <span class="name" name="output-sender">output-sender</span>
+  </a>
+ <span class="args">messge :optional timeout timeout-val</span></div>
+The <var>input-receiver</var> receives a message from outside of the actor.
+<p />The <var>output-sender</var> sends a message <var>message</var> to outside of the actor.
+<p />Messages can be sent to an actor via <code>actor-send-message!</code>, and be
+received from an actor via <code>actor-receive-message!</code>.
+<p />The optional arguments <var>timeout</var> and <var>timeout-val</var> are given, it shall
+behave the same as <code>shared-queue-get!</code> or <code>shared-queue-put!</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="actor-send-message!1804">
+    <span class="name" name="actor-send-message!">actor-send-message!</span>
+  </a>
+ <span class="args">actor message :optional timeout timeout-val</span></div>
+<div class="desc">Sends the given <var>message</var> to the <var>actor</var>. The operation may block
+the caller thread depending on the underlying channel implementation.
+<p />If optional argument <var>timeout</var> and <var>timeout-val</var> are given, it shall
+behave the same as <code>shared-queue-put!</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="actor-receive-message!1805">
+    <span class="name" name="actor-receive-message!">actor-receive-message!</span>
+  </a>
+ <span class="args">actor :optional timeout timeout-val</span></div>
+<div class="desc">Receives a message from given <var>actor</var>. The operation may block the
+caller thread depending on the underlying channel implementation.
+<p />If optional argument <var>timeout</var> and <var>timeout-val</var> are given, it shall
+behave the same as <code>shared-queue-get!</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="actor-running?1806">
+    <span class="name" name="actor-running?">actor-running?</span>
+  </a> <span class="args">actor</span></div>
+<div class="desc">Return #t if the given <var>actor</var> is running, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="actor-wait!1807">
+    <span class="name" name="actor-wait!">actor-wait!</span>
+  </a>
+ <span class="args">actor :optional timeout timeout-val</span></div>
+<div class="desc">Waits until the given <var>actor</var> is finished.
+<p />The optional arguments works the same as <code>thread-join!</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="actor-terminate!1808">
+    <span class="name" name="actor-terminate!">actor-terminate!</span>
+  </a> <span class="args">actor</span></div>
+<div class="desc">Terminates the given <var>actor</var>.
+<p />NOTE: This operation is not safe. It is users' responsibility to release
+resource if it's needed.
+</div>
+<p />
 </section></section>
   <div class="prev-next">
     <a class="prev" href="section77.html">(util bytevector) - Bytevector utility library</a>
@@ -702,6 +819,6 @@ until the queue is available and returns #f.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-09-23T22:34:18+0200</i></div>
+    <div id="footer-date">Generated date: <i>2017-11-17T20:38:52+0100</i></div>
   </div>
 </html>
