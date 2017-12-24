@@ -9,148 +9,78 @@
   <div class="prev-next">
     <a class="prev" href="section734.html">(rfc http-connections) - HTTP client utilities</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section736.html">(rfc hotp) - HMAC-based One-Time Password library</a>
+    <a class="next" href="section736.html">(rfc pem) - PEM format  library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.pem"><span class="section-number">7.35</span>(rfc pem) - PEM format  library</a>
+    <a class="section.anchor" name="rfc.json-pointer"><span class="section-number">7.35</span>(rfc json-pointer) - JSON Pointer</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc pem)2494">
-      <span class="name" name="(rfc pem)">(rfc pem)</span>
+    <a name="(rfc json-pointer)2494">
+      <span class="name" name="(rfc json-pointer)">(rfc json-pointer)</span>
     </a>
   </div>
-<div class="desc">This library provides PEM format file parser.
-<p />Currently only supports RFC 1421 format.
+<div class="desc">This library provides JSON Pointer procedures.
+<p />The specification of JSON Pointer is defined by the
+<a href="https://tools.ietf.org/html/rfc6901">RFC 6901</a>.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2495"><span class="section-number">7.35.1</span>Conditions</a>
-  </h4>
-<p />This library defines these conditions.
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;pem-error2496">
-      <span class="name" name="&amp;pem-error">&amp;pem-error</span>
-    </a>
+<p />The following example shows simple usage of the library:
+<p />This is an input file named <code>example.json</code>.
+<pre class="codeblock">{
+  "id": 1234,
+  "data": {
+    "datum0": [0, 1, 2],
+    "datum1": [3, 4]
+  }
+}
+</pre>
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(import (rnrs) (rfc json-pointer) (text json))
+
+(define id-pointer (json-pointer "/id"))
+
+(let ((json (call-with-input-file "example.json" json-read)))
+  (id-pointer json))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">1234</span>
   </div>
-<div class="desc">Super condition of all PEM file process related conditions.</div>
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;invalid-pem-format2497">
-      <span class="name" name="&amp;invalid-pem-format">&amp;invalid-pem-format</span>
-    </a>
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(import (rnrs) (rfc json-pointer) (text json))
+
+(define data-pointer (json-pointer "/data"))
+
+#|
+example.json
+|#
+(let ((json (call-with-input-file "example.json" json-read)))
+  ;; Retrievs /data/datum0
+  ((json-pointer "/datum0" data-pointer) json))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">'(0 1 2)</span>
   </div>
-<div class="desc">This condition indicates, given PEM file contains invalid format.</div>
-<div class="define"><span class="define-category">Function</span><a name="invalid-pem-format?2498">
-    <span class="name" name="invalid-pem-format?">invalid-pem-format?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t, if the given <var>obj</var> is <code>&amp;invalid-pem-format</code>,
-otherwise #f.</div>
-<p /><div class="define">
-    <span class="define-category">Condition Type</span>
-    <a name="&amp;pre-eb-as-boundary2499">
-      <span class="name" name="&amp;pre-eb-as-boundary">&amp;pre-eb-as-boundary</span>
-    </a>
-  </div>
-<div class="desc">This condition indicates, given PEM file contains Pre-Encapsulation 
-Boundary as the end of Encapsulated Message without specifying 
-<code>:multiple</code>.</div>
-<div class="define"><span class="define-category">Function</span><a name="pre-eb-as-boundary?2500">
-    <span class="name" name="pre-eb-as-boundary?">pre-eb-as-boundary?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t, if the given <var>obj</var> is <code>&amp;pre-eb-as-boundary</code>,
-otherwise #f.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2501"><span class="section-number">7.35.2</span>Operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem2502">
-    <span class="name" name="parse-pem">parse-pem</span>
-  </a>
- <span class="args">in :key (multiple #f) (builder #f) (asn1 #f) decoder</span></div>
-<div class="desc"><var>in</var> must be textual input port.
-<p />Parses given input port <var>in</var> and returns 2 values, parameter alist and
-decoded bytevector.
-<p />Keyword arguments
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>multiple</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure returns a list which
-    contains alist of parameter and content.
-<p />    This parameter is useful for the PEM files which contains multiple contents.
-  </dd>
-      <dt class="dl-item-title">
-        <code>builder</code>
-      </dt>
-      <dd class="dl-item-desc">    This keyword argument must take a procedure which accept one argument or
-    #f. If <var>builder</var> is specified then the given procedure will be called
-    to build then contents of the PEM.
-<p />    This argument is not correspond with <var>asn1</var> keyword argument and has
-    higher priority. So if both arguments are specified, then <var>builder</var>
-    will be used.
-  </dd>
-      <dt class="dl-item-title">
-        <code>asn1</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure converts BASE64
-    bytevector to ASN.1 object defined in <code>(asn.1)</code> library.
-  </dd>
-      <dt class="dl-item-title">
-        <code>decorder</code>
-      </dt>
-      <dd class="dl-item-desc">    When this keyword argument is specified, it must be a procedure which
-    accepts one argument, then the <code>parse-pem</code> uses the specified
-    procedure to convert body of the PEM content.
-<p />    If it's not specified, the procedure uses BASE64 decoding.
-  </dd>
-    </dl>
-  </div>
-<p />The procedure may raise following conditions:
-<div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>&amp;invalid-pem-format</code>
-      </dt>
-      <dd class="dl-item-desc">    When given <var>in</var> contains invalid PEM format.
-  </dd>
-      <dt class="dl-item-title">
-        <code>&amp;pre-eb-as-boundary</code>
-      </dt>
-      <dd class="dl-item-desc">    When given <var>in</var> contains Pre-Encapsulation Boundary as the end of
-    Encapsulated Message and <code>:multiple</code> is #f.
-<p />    For example:
-    <pre class="codeblock">-----BEGIN FOO-----
-... foo value ...
------BEGIN BAR-----
-... bar value...
------END BAR-----
-    </pre>
-    parsing PEM like above must specify <code>:multiple</code> with true value.
-    Otherwise, <code>&amp;pre-eb-as-boundary</code> is signaled.
-  </dd>
-    </dl>
-  </div>
+<p />
+<div class="define"><span class="define-category">Function</span><a name="json-pointer2495">
+    <span class="name" name="json-pointer">json-pointer</span>
+  </a> <span class="args">pointer: optional parent</span></div>
+<div class="desc">Returns a procedure taks one argument which must be a list or vector
+representing JSON object. The given <var>poinster</var> must be a string or
+textual input port which start with <code>/</code>.
+<p />The optional argument <var>parent</var> is passed, then it must be a procedure
+returned by the <code>json-pointer</code> and is called before the current
+<var>pointer</var> is processed.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem-file2503">
-    <span class="name" name="parse-pem-file">parse-pem-file</span>
-  </a> <span class="args">file :rest options</span></div>
-<div class="define"><span class="define-category">Function</span><a name="parse-pem-string2504">
-    <span class="name" name="parse-pem-string">parse-pem-string</span>
-  </a> <span class="args">pem-string :rest options</span></div>
-<div class="desc">Convenient procedures.
-<p />Parse given file and PEM string, respectively.
-<p /><var>option</var> will be passed to the <code>parse-pem</code>.
-</div>
-</section></section>
+
+</section>
   <div class="prev-next">
     <a class="prev" href="section734.html">(rfc http-connections) - HTTP client utilities</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section736.html">(rfc hotp) - HMAC-based One-Time Password library</a>
+    <a class="next" href="section736.html">(rfc pem) - PEM format  library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-11-17T20:38:52+0100</i></div>
+    <div id="footer-date">Generated date: <i>2017-12-22T22:13:46+0100</i></div>
   </div>
 </html>
