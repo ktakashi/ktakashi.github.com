@@ -44,35 +44,35 @@ to pass <code>:parameter</code> keyword to <code>cipher</code> procedure, otherw
 an error.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rsa pkcs :5)2319">
+    <a name="(rsa pkcs :5)2320">
       <span class="name" name="(rsa pkcs :5)">(rsa pkcs :5)</span>
     </a>
   </div>
 <div class="desc">This library exports PKCS#5 related cryptographic procedures.</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2320"><span class="section-number">7.25.1</span>User level APIs</a>
+    <a class="section.anchor" name="G2321"><span class="section-number">7.25.1</span>User level APIs</a>
   </h4>
 <p /><div class="define">
     <span class="define-category">Variable</span>
-    <a name="pbe-with-md5-and-des2321">
+    <a name="pbe-with-md5-and-des2322">
       <span class="name" name="pbe-with-md5-and-des">pbe-with-md5-and-des</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Variable</span>
-    <a name="pbe-with-md5-and-rc22322">
+    <a name="pbe-with-md5-and-rc22323">
       <span class="name" name="pbe-with-md5-and-rc2">pbe-with-md5-and-rc2</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Variable</span>
-    <a name="pbe-with-sha1-and-des2323">
+    <a name="pbe-with-sha1-and-des2324">
       <span class="name" name="pbe-with-sha1-and-des">pbe-with-sha1-and-des</span>
     </a>
   </div>
 <div class="define">
     <span class="define-category">Variable</span>
-    <a name="pbe-with-sha1-and-rc22324">
+    <a name="pbe-with-sha1-and-rc22325">
       <span class="name" name="pbe-with-sha1-and-rc2">pbe-with-sha1-and-rc2</span>
     </a>
   </div>
@@ -80,7 +80,7 @@ an error.
 <p />The names describe the using hash functions and cryptographic schemes. For
 example, <code>pbe-with-md5-and-des</code> uses MD5 hash and DES algorithm.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-pbe-parameter2325">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-pbe-parameter2326">
     <span class="name" name="make-pbe-parameter">make-pbe-parameter</span>
   </a> <span class="args">salt iteration-count</span></div>
 <div class="desc"><var>salt</var> must be a bytevector.
@@ -88,7 +88,7 @@ example, <code>pbe-with-md5-and-des</code> uses MD5 hash and DES algorithm.
 <p />Creates a parameter for PBE key generation. <var>salt</var> is salt and
 <var>iteration-count</var> is the iteration count  for key derivation.
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="generate-secret-key2326">
+<p /><div class="define"><span class="define-category">Generic</span><a name="generate-secret-key2327">
     <span class="name" name="generate-secret-key">generate-secret-key</span>
   </a>
  <span class="args">algorithm (password &lt;string&gt;)</span></div>
@@ -96,10 +96,10 @@ example, <code>pbe-with-md5-and-des</code> uses MD5 hash and DES algorithm.
 <p />Creates PBE secret key based on given <var>password</var> and <var>algorithm</var>.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2327"><span class="section-number">7.25.2</span>Low level APIs</a>
+    <a class="section.anchor" name="G2328"><span class="section-number">7.25.2</span>Low level APIs</a>
   </h4>
 <p />These APIs are for users who want to create own PBE mechanism such as PKCS#12.
-<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-12328">
+<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-12329">
     <span class="name" name="pbkdf-1">pbkdf-1</span>
   </a>
  <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)</span></div>
@@ -110,7 +110,7 @@ respectively.
 <p />The keyword argument <var>hash</var> specifies which hash algorithm will be used. The
 default is SHA-1. 
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-22329">
+<p /><div class="define"><span class="define-category">Function</span><a name="pbkdf-22330">
     <span class="name" name="pbkdf-2">pbkdf-2</span>
   </a>
  <span class="args">P S c dk-len :key (hash (hash-algorithm SHA-1)
@@ -127,7 +127,7 @@ must be hash object implemented with <code>&lt;user-hash-algorithm&gt;</code> de
 <a href="section719.html#custom.hash">Custom hash algorithm</a>. The default is HMAC and if you
 don't have any reasonable reason, this must not be changed.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="derive-key2330">
+<p /><div class="define"><span class="define-category">Function</span><a name="derive-key2331">
     <span class="name" name="derive-key">derive-key</span>
   </a>
  <span class="args">P S c dk-len :key (kdf pbkdf-2) :allow-other-keys</span></div>
@@ -136,7 +136,7 @@ the same as above <code>pbkdf-1</code> and <code>pbkdf-2</code>.
 <p />This procedure just calls given <var>kdf</var> with given arguments and returns
 derived key bytevector.
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="derive-key&amp;iv2331">
+<p /><div class="define"><span class="define-category">Generic</span><a name="derive-key&amp;iv2332">
     <span class="name" name="derive-key&amp;iv">derive-key&amp;iv</span>
   </a>
  <span class="args">marker (key &lt;pbe-secret-key&gt;) (parameter &lt;pbe-parameter&gt;)</span></div>
@@ -154,7 +154,7 @@ PKCS#12 can use this cipher, however it requires different key derivation
 mechanism.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2332"><span class="section-number">7.25.3</span>Supporting PBES2 functionality</a>
+    <a class="section.anchor" name="G2333"><span class="section-number">7.25.3</span>Supporting PBES2 functionality</a>
   </h4>
 <p />Since I could not find any standard implementation, Sagittarius actually does
 not support PBES2 encryption and decryption. However supporting it is not so
@@ -189,6 +189,6 @@ please let me know.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2017-12-22T22:13:46+0100</i></div>
+    <div id="footer-date">Generated date: <i>2018-02-17T20:49:47Z</i></div>
   </div>
 </html>
