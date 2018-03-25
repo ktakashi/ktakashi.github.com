@@ -16,7 +16,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(sagittarius filewatch)1187">
+    <a name="(sagittarius filewatch)1189">
       <span class="name" name="(sagittarius filewatch)">(sagittarius filewatch)</span>
     </a>
   </div> 
@@ -57,25 +57,25 @@ mechanism.
        . rest)
     (tail (car rest) (string-&gt;number offset))))
 </pre>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-filesystem-watcher1188">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-filesystem-watcher1190">
     <span class="name" name="make-filesystem-watcher">make-filesystem-watcher</span>
   </a> <span class="args">:key error-handler</span></div>
 <div class="desc">Creates and returns filesystem watcher object.
 <p />The keyword argument <var>error-handler</var> is specified, which must be a
 procedure accepts one argument, then it is called with a condition 
 when monitoring handler raised an error.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="release-filesystem-watcher!1189">
+<p /><div class="define"><span class="define-category">Function</span><a name="release-filesystem-watcher!1191">
     <span class="name" name="release-filesystem-watcher!">release-filesystem-watcher!</span>
   </a> <span class="args">watcher</span></div>
 <div class="desc">Releasing the <var>watcher</var>.
 <p />Released filesystem watcher can not be reused.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher?1190">
+<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher?1192">
     <span class="name" name="filesystem-watcher?">filesystem-watcher?</span>
   </a> <span class="args">o</span></div>
 <div class="desc">Returns #t if the given <var>o</var> is a filesystem watcher object, otherwise
 #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-add-path!1191">
+<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-add-path!1193">
     <span class="name" name="filesystem-watcher-add-path!">filesystem-watcher-add-path!</span>
   </a>
  <span class="args">watcher path flags monitoring-handler</span></div>
@@ -141,7 +141,7 @@ are the followings:
 <p />If the <var>watcher</var> started monitoring, then the procedure raises
 <code>&amp;assertion</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-remove-path!1192">
+<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-remove-path!1194">
     <span class="name" name="filesystem-watcher-remove-path!">filesystem-watcher-remove-path!</span>
   </a>
  <span class="args">watcher path</span></div>
@@ -150,7 +150,7 @@ are the followings:
 <p />If the <var>watcher</var> started monitoring, then the procedure raises
 <code>&amp;assertion</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-start-monitoring!1193">
+<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-start-monitoring!1195">
     <span class="name" name="filesystem-watcher-start-monitoring!">filesystem-watcher-start-monitoring!</span>
   </a>
  <span class="args">watcher :key (background #t)</span></div>
@@ -160,7 +160,7 @@ creates a thread and let the thread monitor the filesystem. (So the procedure
 returns after the thread invocation.) Otherwise, the procedure blocks and
 wait until other thread calls <code>filesystem-watcher-stop-monitoring!</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-stop-monitoring!1194">
+<p /><div class="define"><span class="define-category">Function</span><a name="filesystem-watcher-stop-monitoring!1196">
     <span class="name" name="filesystem-watcher-stop-monitoring!">filesystem-watcher-stop-monitoring!</span>
   </a> <span class="args">watcher</span></div>
 <div class="desc">Stops monitoring of given <var>watcher</var>.
@@ -174,7 +174,7 @@ may not stop immediately.
 limitations per operating system to avoid unexpected behaviours. The following
 sections describes the known limitations.
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1195"><span class="section-number">6.4.1.1</span>Linux</a>
+    <a class="section.anchor" name="G1197"><span class="section-number">6.4.1.1</span>Linux</a>
   </h5>
 <p />On Linux, the library is constructed on top of <code>inotify (7)</code> and
 <code>poll (2)</code>. If users add too many paths, then it may reach the
@@ -201,13 +201,13 @@ To do it, we need manual management. To keep our code as simple as possible,
 we decided not to do it for now. This decision may be changed if there's
 enough demands.
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1196"><span class="section-number">6.4.1.3</span>OS X</a>
+    <a class="section.anchor" name="G1198"><span class="section-number">6.4.1.3</span>OS X</a>
   </h5>
 <p />On OS X, the library is constructed on top of <code>kqueue</code>, thus the
 same limitation as <a href="section64.html#bsd.limitation">BSD Unix</a> is applied.
 <p />
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G1197"><span class="section-number">6.4.1.4</span>Windows</a>
+    <a class="section.anchor" name="G1199"><span class="section-number">6.4.1.4</span>Windows</a>
   </h5>
 <p />Staring Windows Vista, Microsoft decided not to change timestamp just accessing
 the file or directory by default. So <code>access</code> flag may or may not work on
@@ -225,6 +225,6 @@ even though it's only specified <code>delete</code> or <code>move</code>.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-02-17T20:49:47Z</i></div>
+    <div id="footer-date">Generated date: <i>2018-03-24T20:32:05+0100</i></div>
   </div>
 </html>

@@ -193,33 +193,54 @@ raises <code>&amp;i/o</code> condition.
 <p />The <code>file-stat-mtime</code> returns last modified time of <var>filename</var>.
 <p />The <code>file-stat-atime</code> returns last accesse time of <var>filename</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="create-symbolic-link993">
+<p /><div class="define"><span class="define-category">Function</span><a name="change-file-timestamp!993">
+    <span class="name" name="change-file-timestamp!">change-file-timestamp!</span>
+  </a> <span class="args">filename atime mtime</span></div>
+<div class="desc">Changes given <var>filename</var>'s access time and modify time.
+<p /><var>atime</var> specifies the access time of the <var>filename</var>.
+<p /><var>mtime</var> specifies the modify time of the <var>filename</var>.
+<p />If <var>atime</var> and/or <var>mtime</var> are time object, then the
+setting timestamp is the absolute time represented by the arguments.
+<p />If <var>atime</var> and/or <var>mtime</var> are real number, then the
+setting timestamp is the difference of the arguments from current time.
+<p />If <var>atime</var> and/or <var>mtime</var> are #f, then the timestamp is intact.
+<p />If <var>atime</var> and/or <var>mtime</var> are true value other then time or real
+number, then the timestamp is set to current time.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="change-file-mode994">
+    <span class="name" name="change-file-mode">change-file-mode</span>
+  </a> <span class="args">filename mode</span></div>
+<div class="desc">Changes given <var>filename</var>'s file mode.
+<p /><var>mode</var> must be a fixnum encoded with POSIX file permission.
+<p />NOTE: On Windows, only the owner permission is considered.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="create-symbolic-link995">
     <span class="name" name="create-symbolic-link">create-symbolic-link</span>
   </a> <span class="args">old-filename new-filename</span></div>
 <div class="desc">Creates symbolic link of <var>old-filename</var> as <var>new-filename</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="rename-file994">
+<p /><div class="define"><span class="define-category">Function</span><a name="rename-file996">
     <span class="name" name="rename-file">rename-file</span>
   </a> <span class="args">old-filename new-filename</span></div>
 <div class="desc">Renames given <var>old-filename</var> to <var>new-filename</var>.
 <p />If <var>old-filename</var> does not exist, it raises <code>&amp;i/o</code>.
 <p />If <var>new-filename</var> exists, it overwrite the existing file.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="create-directory995">
+<p /><div class="define"><span class="define-category">Function</span><a name="create-directory997">
     <span class="name" name="create-directory">create-directory</span>
   </a> <span class="args">path</span></div>
-<div class="define"><span class="define-category">Function</span><a name="delete-directory996">
+<div class="define"><span class="define-category">Function</span><a name="delete-directory998">
     <span class="name" name="delete-directory">delete-directory</span>
   </a> <span class="args">path</span></div>
 <div class="desc">Creates/deletes given directory. If it fails, it raises condition
 <code>&amp;i/o</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="read-directory997">
+<p /><div class="define"><span class="define-category">Function</span><a name="read-directory999">
     <span class="name" name="read-directory">read-directory</span>
   </a> <span class="args">path</span></div>
 <div class="desc">Reads directory and returns contents as a string list. If <var>path</var> does
 not exist, it returns #f.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="copy-file998">
+<p /><div class="define"><span class="define-category">Function</span><a name="copy-file1000">
     <span class="name" name="copy-file">copy-file</span>
   </a> <span class="args">src dst :optional overwrite</span></div>
 <div class="desc"><var>src</var> and <var>dst</var> must be string and <var>src</var> must indicate
@@ -229,18 +250,18 @@ existing file path.
 <p />If optional argument <var>overwrite</var> is #t then it will over write the file even
 if it exists.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="current-directory999">
+<p /><div class="define"><span class="define-category">Function</span><a name="current-directory1001">
     <span class="name" name="current-directory">current-directory</span>
   </a> <span class="args">:optional path</span></div>
 <div class="desc">Returns current working directory.
 <p />If optional argument <var>path</var> is given, the <code>current-directory</code> sets
 current working directory to <var>path</var> and returns unspecified value.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="set-current-directory1000">
+<p /><div class="define"><span class="define-category">Function</span><a name="set-current-directory1002">
     <span class="name" name="set-current-directory">set-current-directory</span>
   </a> <span class="args">path</span></div>
 <div class="desc">Sets current working directory to <var>path</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="build-path1001">
+<p /><div class="define"><span class="define-category">Function</span><a name="build-path1003">
     <span class="name" name="build-path">build-path</span>
   </a> <span class="args">path1 path2</span></div>
 <div class="desc"><var>path1</var> and <var>path2</var> must be string.
@@ -248,78 +269,78 @@ current working directory to <var>path</var> and returns unspecified value.
 </div>
 <p />
 </section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1002"><span class="section-number">6.1.5</span>Hashtables</a>
+    <a class="section.anchor" name="G1004"><span class="section-number">6.1.5</span>Hashtables</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-equal-hashtable1003">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-equal-hashtable1005">
     <span class="name" name="make-equal-hashtable">make-equal-hashtable</span>
   </a> <span class="args">:optional k weakness</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-string-hashtable1004">
+<div class="define"><span class="define-category">Function</span><a name="make-string-hashtable1006">
     <span class="name" name="make-string-hashtable">make-string-hashtable</span>
   </a> <span class="args">:optional k weakness</span></div>
 <div class="desc">Creates a hashtable.
 <p />The same as <code>make-eq-hashtable</code> and
 <code>make-eqv-hashtable</code>. It uses <code>equal?</code> or <code>string=?</code> as
 comparing procedure, respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-values1005">
+<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-values1007">
     <span class="name" name="hashtable-values">hashtable-values</span>
   </a> <span class="args">hashtable</span></div>
 <div class="desc">Returns all <var>hashtable</var>'s values. This procedure is for consistancy of
 <code>hashtable-keys</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-keys-list1006">
+<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-keys-list1008">
     <span class="name" name="hashtable-keys-list">hashtable-keys-list</span>
   </a> <span class="args">hashtable</span></div>
-<div class="define"><span class="define-category">Function</span><a name="hashtable-values-list1007">
+<div class="define"><span class="define-category">Function</span><a name="hashtable-values-list1009">
     <span class="name" name="hashtable-values-list">hashtable-values-list</span>
   </a> <span class="args">hashtable</span></div>
 <div class="desc">Returns given <var>hashtable</var>'s <var>keys</var> or <var>values</var>, respectively.
 <p />The R6RS required procedure <code>hashtable-keys</code> and <code>hashtable-values</code>
 are implemented with these procedures.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-type1008">
+<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-type1010">
     <span class="name" name="hashtable-type">hashtable-type</span>
   </a> <span class="args">hashtable</span></div>
 <div class="desc">Returns <var>hashtable</var>'s hash type as a symbol. The possible return
 values are <code>eq</code>, <code>eqv</code>, <code>equal</code>, <code>string</code> and
 <code>general</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-weakness1009">
+<p /><div class="define"><span class="define-category">Function</span><a name="hashtable-weakness1011">
     <span class="name" name="hashtable-weakness">hashtable-weakness</span>
   </a> <span class="args">hashtable</span></div> 
 <div class="desc">Returns <var>hashtable</var>'s hash weakness as a symbol if the given
 <var>hashtable</var> is weak hashtable, otherwise #f. The possible return values are
 <code>key</code>, <code>value</code> and <code>both</code>.  </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1010"><span class="section-number">6.1.6</span>I/O</a>
+    <a class="section.anchor" name="G1012"><span class="section-number">6.1.6</span>I/O</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="port-closed?1011">
+<p /><div class="define"><span class="define-category">Function</span><a name="port-closed?1013">
     <span class="name" name="port-closed?">port-closed?</span>
   </a> <span class="args">port</span></div>
 <div class="desc">Returns #t if given <var>port</var> is closed, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="put-u161012">
+<p /><div class="define"><span class="define-category">Function</span><a name="put-u161014">
     <span class="name" name="put-u16">put-u16</span>
   </a> <span class="args">out v endian</span></div>
-<div class="define"><span class="define-category">Function</span><a name="put-s161013">
+<div class="define"><span class="define-category">Function</span><a name="put-s161015">
     <span class="name" name="put-s16">put-s16</span>
   </a> <span class="args">out v endian</span></div>
-<div class="define"><span class="define-category">Function</span><a name="put-u321014">
+<div class="define"><span class="define-category">Function</span><a name="put-u321016">
     <span class="name" name="put-u32">put-u32</span>
   </a> <span class="args">out v endian</span></div>
-<div class="define"><span class="define-category">Function</span><a name="put-s321015">
+<div class="define"><span class="define-category">Function</span><a name="put-s321017">
     <span class="name" name="put-s32">put-s32</span>
   </a> <span class="args">out v endian</span></div>
 <div class="desc"><var>out</var> must be binary output port. <var>endian</var> must be a value
 returned from <code>endianness</code> macro.
 <p />Write <var>v</var> to <var>out</var> as unsigned/signed 16/32 bit integer.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="get-u161016">
+<p /><div class="define"><span class="define-category">Function</span><a name="get-u161018">
     <span class="name" name="get-u16">get-u16</span>
   </a> <span class="args">in endian</span></div>
-<div class="define"><span class="define-category">Function</span><a name="get-s161017">
+<div class="define"><span class="define-category">Function</span><a name="get-s161019">
     <span class="name" name="get-s16">get-s16</span>
   </a> <span class="args">in endian</span></div>
-<div class="define"><span class="define-category">Function</span><a name="get-u321018">
+<div class="define"><span class="define-category">Function</span><a name="get-u321020">
     <span class="name" name="get-u32">get-u32</span>
   </a> <span class="args">in endian</span></div>
-<div class="define"><span class="define-category">Function</span><a name="get-s321019">
+<div class="define"><span class="define-category">Function</span><a name="get-s321021">
     <span class="name" name="get-s32">get-s32</span>
   </a> <span class="args">in endian</span></div>
 <div class="desc"><var>in</var> must be binary input port. <var>endian</var> must be a value
@@ -329,11 +350,11 @@ returned from <code>endianness</code> macro.
 This is because benchmark told us there's not much difference between C and
 Scheme implementation. We may add 64 bit integers and floting number 
 versions in future if there's enough demand.
-<p /><div class="define"><span class="define-category">Function</span><a name="read/ss1020">
+<p /><div class="define"><span class="define-category">Function</span><a name="read/ss1022">
     <span class="name" name="read/ss">read/ss</span>
   </a>
  <span class="args">:optional (port <code>(current-input-port)</code>)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="write/ss1021">
+<div class="define"><span class="define-category">Function</span><a name="write/ss1023">
     <span class="name" name="write/ss">write/ss</span>
   </a>
  <span class="args">obj :optional (port <code>(current-output-port)</code>)</span></div>
@@ -342,10 +363,10 @@ versions in future if there's enough demand.
 <p />These are the same as <code>read</code> and <code>write</code> procedure, but it can handle
 circular list.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="format1022">
+<p /><div class="define"><span class="define-category">Function</span><a name="format1024">
     <span class="name" name="format">format</span>
   </a> <span class="args">port string arg ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="format1023">
+<div class="define"><span class="define-category">Function</span><a name="format1025">
     <span class="name" name="format">format</span>
   </a> <span class="args">string arg ...</span></div>
 <div class="desc">[SRFI-28+] Formats <var>arg</var> accoding to <var>string</var>. <var>Port</var>
@@ -532,7 +553,7 @@ parameters and flags are the same as the <b>~D</b> directive.
 Note: The format procedure's implementation and most of documentation is quoted
 from Gauche.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="port-ready?1024">
+<p /><div class="define"><span class="define-category">Function</span><a name="port-ready?1026">
     <span class="name" name="port-ready?">port-ready?</span>
   </a>
  <span class="args">:optional (port (current-input-port))</span></div>
@@ -549,7 +570,7 @@ always returns #t;
     <span class="codeblock-result">#t</span>
   </div>
 <p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="buffered-port1025">
+<p /><div class="define"><span class="define-category">Function</span><a name="buffered-port1027">
     <span class="name" name="buffered-port">buffered-port</span>
   </a> <span class="args">port buffer-mode :key buffer</span></div>
 <div class="desc"><var>port</var> must be binary port.
@@ -567,7 +588,7 @@ a bytevector, then the converted buffered port uses specified bytevector
 as its internal buffer. If the bytevector size is zero or literal bytevector
 then <code>&amp;assertion</code> is raised.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-codec1026">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-codec1028">
     <span class="name" name="make-codec">make-codec</span>
   </a> <span class="args">symbol getc putc data</span></div>
 <div class="desc">Creates a custom codec. <var>Symbol</var> is the name of the codec. <var>Getc</var>
@@ -595,18 +616,18 @@ encoding data and putting it to <var>output-port</var> as binary data.
 custom codecs.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1027"><span class="section-number">6.1.7</span>Symbols</a>
+    <a class="section.anchor" name="G1029"><span class="section-number">6.1.7</span>Symbols</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="symbol<?1028">
+<p /><div class="define"><span class="define-category">Function</span><a name="symbol<?1030">
     <span class="name" name="symbol<?">symbol&lt;?</span>
   </a> <span class="args">symbol1 symbol2 symbols ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="symbol<=?1029">
+<div class="define"><span class="define-category">Function</span><a name="symbol<=?1031">
     <span class="name" name="symbol<=?">symbol&lt;=?</span>
   </a> <span class="args">symbol1 symbol2 symbols ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="symbol&gt;?1030">
+<div class="define"><span class="define-category">Function</span><a name="symbol&gt;?1032">
     <span class="name" name="symbol&gt;?">symbol&gt;?</span>
   </a> <span class="args">symbol1 symbol2 symbols ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="symbol&gt;=?1031">
+<div class="define"><span class="define-category">Function</span><a name="symbol&gt;=?1033">
     <span class="name" name="symbol&gt;=?">symbol&gt;=?</span>
   </a> <span class="args">symbol1 symbol2 symbols ...</span></div>
 <div class="desc">Return #t if given <var>symbol1</var> is less than, less than or equal to,
@@ -620,7 +641,7 @@ are exhausted.
 However, this build-in version won't converts given symbols to strings.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1032"><span class="section-number">6.1.8</span>Keywords</a>
+    <a class="section.anchor" name="G1034"><span class="section-number">6.1.8</span>Keywords</a>
   </h4>
 <p />Sagittarius has keyword objects which starts with <code>':'</code>. It has almost the
 same feature as symbol, however it can not be bounded with any values. The 
@@ -628,31 +649,31 @@ keyword objects are self quoting so users don't have to put <code>'</code> expli
 <p />The keyword notation is *NOT* available on R6RS or R7RS reader mode. Thus
 <code>#!r6rs</code> or <code>#!r7rs</code> directive and <code>-r6</code> or <code>-r7</code>
 command line option disable it.
-<p /><div class="define"><span class="define-category">Function</span><a name="make-keyword1033">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-keyword1035">
     <span class="name" name="make-keyword">make-keyword</span>
   </a> <span class="args">symbol</span></div>
-<div class="define"><span class="define-category">Function</span><a name="symbol-&gt;keyword1034">
+<div class="define"><span class="define-category">Function</span><a name="symbol-&gt;keyword1036">
     <span class="name" name="symbol-&gt;keyword">symbol-&gt;keyword</span>
   </a> <span class="args">symbol</span></div>
 <div class="desc">Creates a new keyword from <var>symbol</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;keyword1035">
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;keyword1037">
     <span class="name" name="string-&gt;keyword">string-&gt;keyword</span>
   </a> <span class="args">string</span></div>
 <div class="desc">Creates a new keyword from <var>string</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="keyword?1036">
+<p /><div class="define"><span class="define-category">Function</span><a name="keyword?1038">
     <span class="name" name="keyword?">keyword?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if <var>obj</var> is keyword, otherwise #f.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="keyword-&gt;symbol1037">
+<p /><div class="define"><span class="define-category">Function</span><a name="keyword-&gt;symbol1039">
     <span class="name" name="keyword-&gt;symbol">keyword-&gt;symbol</span>
   </a> <span class="args">keyword</span></div>
 <div class="desc">Returns a symbol representation of given keyword <var>keyword</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="keyword-&gt;string1038">
+<p /><div class="define"><span class="define-category">Function</span><a name="keyword-&gt;string1040">
     <span class="name" name="keyword-&gt;string">keyword-&gt;string</span>
   </a> <span class="args">keyword</span></div>
 <div class="desc">Returns a string representation of given keyword <var>keyword</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="get-keyword1039">
+<p /><div class="define"><span class="define-category">Function</span><a name="get-keyword1041">
     <span class="name" name="get-keyword">get-keyword</span>
   </a> <span class="args">keyword list :optional fallback</span></div>
 <div class="desc">Returns the element after given <var>keyword</var> from given <var>list</var>.
@@ -684,52 +705,52 @@ from the <var>list</var>, the <var>fallback</var> will be return. Otherwise it r
   </div>
 <p /></div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1040"><span class="section-number">6.1.9</span>Weak box</a>
+    <a class="section.anchor" name="G1042"><span class="section-number">6.1.9</span>Weak box</a>
   </h4>
 <p />A weak  box is a reference  to an object  that doesn’t prevent the  object from
 being garbage-collected.
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-box?1041">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-box?1043">
     <span class="name" name="weak-box?">weak-box?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if <var>obj</var> is weak box otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-weak-box1042">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-weak-box1044">
     <span class="name" name="make-weak-box">make-weak-box</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns a weak box whose value is <var>obj</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-box-empty?1043">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-box-empty?1045">
     <span class="name" name="weak-box-empty?">weak-box-empty?</span>
   </a> <span class="args">wb</span></div>
 <div class="desc">Returns #t if the value of given weak box <var>wb</var> is garbage collocted.
 Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-box-ref1044">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-box-ref1046">
     <span class="name" name="weak-box-ref">weak-box-ref</span>
   </a> <span class="args">wb :optional (fallback #f)</span></div>
 <div class="desc">Returns the value of given weak box <var>wb</var> if it's not garbage 
 collocted. Otherwise returns <var>fallback</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-box-set!1045">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-box-set!1047">
     <span class="name" name="weak-box-set!">weak-box-set!</span>
   </a> <span class="args">wb obj</span></div>
 <div class="desc">Replace the value of given <var>wb</var> with <var>obj</var>.</div>
 <p />
 </section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1046"><span class="section-number">6.1.10</span>Weak vector</a>
+    <a class="section.anchor" name="G1048"><span class="section-number">6.1.10</span>Weak vector</a>
   </h4>
 <p />A weak vector is like a vector of objects, except each object can be garbage
 collected if it is not referenced from objects other than weak vectors.  If the
 object is collected, the entry of the weak vector is replaced to #f.
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-vector?1047">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-vector?1049">
     <span class="name" name="weak-vector?">weak-vector?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if <var>obj</var> is weak vector otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-weak-vector1048">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-weak-vector1050">
     <span class="name" name="make-weak-vector">make-weak-vector</span>
   </a> <span class="args">size</span></div>
 <div class="desc">Creates and returns a weak vector of size <var>size</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-vector-length1049">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-vector-length1051">
     <span class="name" name="weak-vector-length">weak-vector-length</span>
   </a> <span class="args">wvec</span></div>
 <div class="desc">Returns the length of given weak vector <var>wvec</var></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-vector-ref1050">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-vector-ref1052">
     <span class="name" name="weak-vector-ref">weak-vector-ref</span>
   </a> <span class="args">wvec k :optional fallback</span></div>
 <div class="desc">Returns <var>k</var>-th element of a weak vector <var>wvec</var>.
@@ -739,7 +760,7 @@ optional argument <var>fallback</var> is given, it is returned for such case.
 <p />If the element has been garbage collected, this procedure returns <var>fallback</var>
 if it is given, #f otherwise. 
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-vector-set!1051">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-vector-set!1053">
     <span class="name" name="weak-vector-set!">weak-vector-set!</span>
   </a> <span class="args">wvec k value</span></div>
 <div class="desc">Sets <var>k</var>-th element of the weak vector <var>wvec</var> to <var>value</var>. It
@@ -747,22 +768,22 @@ raises an <code>&amp;assertion</code> if <var>k</var> is negative or greater tha
 the size of <var>wvec</var>. 
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1052"><span class="section-number">6.1.11</span>Weak hashtable</a>
+    <a class="section.anchor" name="G1054"><span class="section-number">6.1.11</span>Weak hashtable</a>
   </h4>
 <p />A weak hashtable contains references to an object that doesn't prevent the
 object from being garbage-collected the same as weak vector. A weak hashtable
 is like a hashtable, except each entry can be garbage collected if it is not
 referenced from objects other than weak hashtable according to the constructed
 condition.
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable?1053">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable?1055">
     <span class="name" name="weak-hashtable?">weak-hashtable?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if <var>obj</var> is weak hashtable otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-weak-eq-hashtable1054">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-weak-eq-hashtable1056">
     <span class="name" name="make-weak-eq-hashtable">make-weak-eq-hashtable</span>
   </a>
  <span class="args">:key (init-size 200) (weakness 'both) default</span></div>
-<div class="define"><span class="define-category">Function</span><a name="make-weak-eqv-hashtable1055">
+<div class="define"><span class="define-category">Function</span><a name="make-weak-eqv-hashtable1057">
     <span class="name" name="make-weak-eqv-hashtable">make-weak-eqv-hashtable</span>
   </a>
  <span class="args">:key (init-size 200) (weakness 'both) default</span></div>
@@ -778,7 +799,7 @@ so is <code>value</code>. If the <code>both</code> is specified, then it will be
 is garbage collected. If this is not spceified, then undefined value will be
 used.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-ref1056">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-ref1058">
     <span class="name" name="weak-hashtable-ref">weak-hashtable-ref</span>
   </a>
  <span class="args">weak-hashtable key :optional (default #f)</span></div>
@@ -786,50 +807,50 @@ used.
 <var>weak-hashtable</var> does not contain an association for <var>key</var>, 
 <var>default</var> is returned.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-set!1057">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-set!1059">
     <span class="name" name="weak-hashtable-set!">weak-hashtable-set!</span>
   </a> <span class="args">weak-hashtable key obj</span></div>
 <div class="desc">Changes <var>weak-hashtable</var> to associate <var>key</var> with <var>obj</var>,
 adding a new association or replacing any existing association for <var>key</var>,
 and returns unspecified values.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-delete!1058">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-delete!1060">
     <span class="name" name="weak-hashtable-delete!">weak-hashtable-delete!</span>
   </a> <span class="args">weak-hashtable key</span></div>
 <div class="desc">Removes any association for <var>key</var> within <var>weak-hashtable</var> and
 returns unspecified values.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-keys-list1059">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-keys-list1061">
     <span class="name" name="weak-hashtable-keys-list">weak-hashtable-keys-list</span>
   </a> <span class="args">weak-hashtable</span></div>
-<div class="define"><span class="define-category">Function</span><a name="weak-hashtable-values-list1060">
+<div class="define"><span class="define-category">Function</span><a name="weak-hashtable-values-list1062">
     <span class="name" name="weak-hashtable-values-list">weak-hashtable-values-list</span>
   </a> <span class="args">weak-hashtable</span></div>
 <div class="desc">Returns a list of keys and values in the given <var>weak-hashtable</var>,
 respectively.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-copy1061">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-copy1063">
     <span class="name" name="weak-hashtable-copy">weak-hashtable-copy</span>
   </a> <span class="args">weak-hashtable</span></div>
 <div class="desc">Returns a copy of <var>weak-hashtable</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-shrink1062">
+<p /><div class="define"><span class="define-category">Function</span><a name="weak-hashtable-shrink1064">
     <span class="name" name="weak-hashtable-shrink">weak-hashtable-shrink</span>
   </a> <span class="args">weak-hashtable</span></div>
 <div class="desc">Shrink the given <var>weak-hashtable</var> and returns the number of
 removed entry. This is only for GC friendliness.</div>
 <p />
 </section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1063"><span class="section-number">6.1.12</span>Bytevector operations</a>
+    <a class="section.anchor" name="G1065"><span class="section-number">6.1.12</span>Bytevector operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;sinteger1064">
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;sinteger1066">
     <span class="name" name="bytevector-&gt;sinteger">bytevector-&gt;sinteger</span>
   </a>
  <span class="args">bytevector :optional start end</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;uinteger1065">
+<div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;uinteger1067">
     <span class="name" name="bytevector-&gt;uinteger">bytevector-&gt;uinteger</span>
   </a>
  <span class="args">bytevector :optional start end</span></div>
-<div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;integer1066">
+<div class="define"><span class="define-category">Function</span><a name="bytevector-&gt;integer1068">
     <span class="name" name="bytevector-&gt;integer">bytevector-&gt;integer</span>
   </a>
  <span class="args">bytevector :optional start end</span></div>
@@ -840,13 +861,13 @@ conversion only happens in big endian.
 <p />The first form converts to signed integer and the rest convert to unsigned
 integer.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="sinteger-&gt;bytevector1067">
+<p /><div class="define"><span class="define-category">Function</span><a name="sinteger-&gt;bytevector1069">
     <span class="name" name="sinteger-&gt;bytevector">sinteger-&gt;bytevector</span>
   </a> <span class="args">ei :optional size</span></div>
-<div class="define"><span class="define-category">Function</span><a name="uinteger-&gt;bytevector1068">
+<div class="define"><span class="define-category">Function</span><a name="uinteger-&gt;bytevector1070">
     <span class="name" name="uinteger-&gt;bytevector">uinteger-&gt;bytevector</span>
   </a> <span class="args">ei :optional size</span></div>
-<div class="define"><span class="define-category">Function</span><a name="integer-&gt;bytevector1069">
+<div class="define"><span class="define-category">Function</span><a name="integer-&gt;bytevector1071">
     <span class="name" name="integer-&gt;bytevector">integer-&gt;bytevector</span>
   </a> <span class="args">ei :optional size</span></div>
 <div class="desc"><var>Ei</var> must be exact integer. Converts exact integer <var>ei</var> to a
@@ -858,7 +879,7 @@ bytes.
 size bytevector.
 <p />NOTE: The conversion is processed from right most byte so if the <var>size</var> is
 smaller than given <var>ei</var> bytes, then the rest of left bytes will be dropped.
-<p />NOTE: the endianness is always big integer.
+<p />NOTE: the endianness is always big endianness.
 <p /><div class="snipet-box">
     <pre class="snipet">(integer-&gt;bytevector #x12345678 5)</pre>
     <span class="snipet-arrow">=&gt;</span>
@@ -870,13 +891,13 @@ smaller than given <var>ei</var> bytes, then the rest of left bytes will be drop
     <span class="snipet-result">#vu8(#x34 #x56 #x78)</span>
   </div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-append1070">
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-append1072">
     <span class="name" name="bytevector-append">bytevector-append</span>
   </a> <span class="args">bvs ...</span></div>
 <div class="desc">Returns a newly allocated bytevector that contains all elements in
 order from the subsequent locations in <var>bvs ...</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-concatenate1071">
+<p /><div class="define"><span class="define-category">Function</span><a name="bytevector-concatenate1073">
     <span class="name" name="bytevector-concatenate">bytevector-concatenate</span>
   </a> <span class="args">list-of-bytevectors</span></div>
 <div class="desc">Appends each bytevectors in <var>list-of-bytevectors</var>. This is
@@ -885,23 +906,23 @@ equivalent to:
 </div>
 <p />
 </section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1072"><span class="section-number">6.1.13</span>List operations</a>
+    <a class="section.anchor" name="G1074"><span class="section-number">6.1.13</span>List operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="circular-list?1073">
+<p /><div class="define"><span class="define-category">Function</span><a name="circular-list?1075">
     <span class="name" name="circular-list?">circular-list?</span>
   </a> <span class="args">list</span></div>
-<div class="define"><span class="define-category">Function</span><a name="dotted-list?1074">
+<div class="define"><span class="define-category">Function</span><a name="dotted-list?1076">
     <span class="name" name="dotted-list?">dotted-list?</span>
   </a> <span class="args">list</span></div>
 <div class="desc">[SRFI-1] Returns #t if <var>list</var> is circular or dotted list,
 respectively. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="acons1075">
+<p /><div class="define"><span class="define-category">Function</span><a name="acons1077">
     <span class="name" name="acons">acons</span>
   </a> <span class="args">obj1 obj2 obj3</span></div>
 <div class="desc">Returns <code>(cons (cons <var>obj1</var> <var>obj2</var>) <var>obj3</var>)</code>. Useful to
 put an entry at the head of an associative list.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="append!1076">
+<p /><div class="define"><span class="define-category">Function</span><a name="append!1078">
     <span class="name" name="append!">append!</span>
   </a> <span class="args">list ...</span></div>
 <div class="desc">[SRFI-1] Returns a list consisting of the elements of the first <var>list</var>
@@ -909,40 +930,60 @@ followed by the elements of the other <var>lists</var>. The cells in the lists e
 the last one may be reused to construct the result. The last argument may be any
 object.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="reverse!1077">
+<p /><div class="define"><span class="define-category">Function</span><a name="reverse!1079">
     <span class="name" name="reverse!">reverse!</span>
   </a> <span class="args">list ...</span></div>
 <div class="desc">[SRFI-1] Returns a list consisting of the elements of <var>list</var> in
 reverse order. The cells of list may be reused to construct the returned list.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1078"><span class="section-number">6.1.14</span>Vector operations</a>
+    <a class="section.anchor" name="G1080"><span class="section-number">6.1.14</span>Vector operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="vector-copy1079">
+<p /><div class="define"><span class="define-category">Function</span><a name="vector-copy1081">
     <span class="name" name="vector-copy">vector-copy</span>
   </a> <span class="args">vector :optional start end fill</span></div>
 <div class="desc">[SRFI-43] Copies a vector <var>vector</var>. Optional <var>start</var> and <var>end</var>
 arguments can be used to limit the range of <var>vector</var> to be copied. If the
 range specified by <var>start</var> and <var>end</var> falls outside of the original
 vector, the <var>fill</var> value is used to fill the result vector.
+<p /><div class="snipet-box">
+    <pre class="snipet">(vector-copy '#(0 1 2 3 4) 1 4)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#(1 2 3)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(vector-copy '#(0 1 2 3 4) 4 6 #f)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#(4 #f)</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(vector-copy '#() 0 2 #t)</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#(#t #t)</span>
+  </div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="vector-append1080">
+<p /><div class="define"><span class="define-category">Function</span><a name="vector-append1082">
     <span class="name" name="vector-append">vector-append</span>
   </a> <span class="args">vector ...</span></div>
 <div class="desc">[SRFI-43] Returns a newly allocated vector that contains all elements in
 order from the subsequent locations in <var>vector ...</var>.
+<p /><div class="snipet-box">
+    <pre class="snipet">(vector-append '#(1 2) '#(a b) '#(5))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">#(1 2 a b 5)</span>
+  </div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="vector-concatenate1081">
+<p /><div class="define"><span class="define-category">Function</span><a name="vector-concatenate1083">
     <span class="name" name="vector-concatenate">vector-concatenate</span>
   </a> <span class="args">list-of-vectors</span></div>
 <div class="desc">[SRFI-43] Appends each vectors in <var>list-of-vectors</var>. This is
 equivalent to:
 <p /><pre class="snipet">(apply vector-append <var>list-of-vectors</var>)</pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="vector-reverse1082">
+<p /><div class="define"><span class="define-category">Function</span><a name="vector-reverse1084">
     <span class="name" name="vector-reverse">vector-reverse</span>
   </a> <span class="args">vector :optional start end</span></div>
-<div class="define"><span class="define-category">Function</span><a name="vector-reverse!1083">
+<div class="define"><span class="define-category">Function</span><a name="vector-reverse!1085">
     <span class="name" name="vector-reverse!">vector-reverse!</span>
   </a> <span class="args">vector :optional start end</span></div>
 <div class="desc">[SRFI-43] Reverse the given <var>vector</var>'s elements.
@@ -951,9 +992,9 @@ equivalent to:
 if it's given. And it restricts the range of the target elements.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1084"><span class="section-number">6.1.15</span>String operations</a>
+    <a class="section.anchor" name="G1086"><span class="section-number">6.1.15</span>String operations</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="string-scan1085">
+<p /><div class="define"><span class="define-category">Function</span><a name="string-scan1087">
     <span class="name" name="string-scan">string-scan</span>
   </a> <span class="args">string item :optional return</span></div>
 <div class="desc">Scan <var>item</var> (either a string or a character) in <var>string</var>.
@@ -1002,42 +1043,41 @@ if it's given. And it restricts the range of the target elements.
   </div>
 </div>
 <p />
-<div class="define"><span class="define-category">Function</span><a name="string-concatenate1086">
+<div class="define"><span class="define-category">Function</span><a name="string-concatenate1088">
     <span class="name" name="string-concatenate">string-concatenate</span>
   </a> <span class="args">list-of-strings</span></div>
 <div class="desc">[SRFI-13] Appends each strings in <var>list-of-strings</var>. This is
 equivalent to:
 <p /><pre class="snipet">(apply string-append <var>list-of-strings</var>)</pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="istring?1087">
+<p /><div class="define"><span class="define-category">Function</span><a name="istring?1089">
     <span class="name" name="istring?">istring?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if the given <var>obj</var> is an immutable string, otherwise #f.
 <p />Immutable strings are one of the followings:
-<ul class="itemlist"><li class="itemlist-item">String literals. (c.f. <code>"abc"</code>)</li>
+<ul class="itemlist"><li class="itemlist-item">String literals. (i.e. <code>"abc"</code>)</li>
 <li class="itemlist-item">Strings converted to immutable string by <code>string-&gt;istring</code></li>
 </ul>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;istring1088">
+<p /><div class="define"><span class="define-category">Function</span><a name="string-&gt;istring1090">
     <span class="name" name="string-&gt;istring">string-&gt;istring</span>
-  </a> 
- <span class="args">string :optional start end</span></div>
+  </a> <span class="args">string :optional start end</span></div>
 <div class="desc">Returns copy of the given <var>string</var>. The returning string is
 converted to immutable string.
 <p />The optional argument <var>start</var> and <var>end</var> are given, then the
 returing string is contains only the range of given <var>string</var>.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1089"><span class="section-number">6.1.16</span>Load path</a>
+    <a class="section.anchor" name="G1091"><span class="section-number">6.1.16</span>Load path</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="add-load-path1090">
+<p /><div class="define"><span class="define-category">Function</span><a name="add-load-path1092">
     <span class="name" name="add-load-path">add-load-path</span>
   </a> <span class="args">path :key (append #f)</span></div>
 <div class="desc">Add given <var>path</var> to current loading path list.
 <p />If keyword argument <var>append</var> is <code>#t</code>, then given <var>path</var> is
 appended to the current loading path list, otherwise prepend to the list.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="add-load-suffix1091">
+<p /><div class="define"><span class="define-category">Function</span><a name="add-load-suffix1093">
     <span class="name" name="add-load-suffix">add-load-suffix</span>
   </a> <span class="args">suffix :key (append #f)</span></div>
 <div class="desc">Add given <var>suffix</var> to current suffix list.
@@ -1045,10 +1085,10 @@ appended to the current loading path list, otherwise prepend to the list.
 appended to the current suffix list, otherwise prepend to the list.
 <p />The <var>suffix</var> should contain <code>.</code> as well.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="load-path1092">
+<p /><div class="define"><span class="define-category">Function</span><a name="load-path1094">
     <span class="name" name="load-path">load-path</span>
   </a> <span class="args" /></div>
-<div class="define"><span class="define-category">Function</span><a name="load-path1093">
+<div class="define"><span class="define-category">Function</span><a name="load-path1095">
     <span class="name" name="load-path">load-path</span>
   </a> <span class="args">paths</span></div>
 <div class="desc">Retrives/sets current loading path.
@@ -1058,9 +1098,9 @@ to current loading path list. Otherwise retrieves the list.
 unexpected results.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1094"><span class="section-number">6.1.17</span>System and platform</a>
+    <a class="section.anchor" name="G1096"><span class="section-number">6.1.17</span>System and platform</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="uname1095">
+<p /><div class="define"><span class="define-category">Function</span><a name="uname1097">
     <span class="name" name="uname">uname</span>
   </a> <span class="args" /></div>
 <div class="desc">Return a vector which contains the following information.
@@ -1082,7 +1122,7 @@ unexpected results.
 <p />On Windows environment, this is the result of couple of Win32 API calls
 and formatted to look like the result of <code>uname(2)</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="get-mac-address1096">
+<p /><div class="define"><span class="define-category">Function</span><a name="get-mac-address1098">
     <span class="name" name="get-mac-address">get-mac-address</span>
   </a> <span class="args">:optional (position 0)</span></div>
 <div class="desc">Retrieves MAC address. The returning value is a bytevector which
@@ -1091,11 +1131,11 @@ contains 6 elements.
 </div>
 <p /><div class="define">
     <span class="define-category">Function</span>
-    <a name="get-process-times1097">
+    <a name="get-process-times1099">
       <span class="name" name="get-process-times">get-process-times</span>
     </a>
   </div>
-<div class="define"><span class="define-category">Function</span><a name="get-thread-times1098">
+<div class="define"><span class="define-category">Function</span><a name="get-thread-times1100">
     <span class="name" name="get-thread-times">get-thread-times</span>
   </a> <span class="args">:optional thread</span></div>
 <div class="desc">Returns a vector having 3 elements; <var>user time</var>, <var>system time</var>
@@ -1113,11 +1153,11 @@ environments which have <code>pthread_getcpuclockid</code>), or <code>_SC_CLK_TC
 users must not assume the value is one of them and calculate CPU second with
 assumed value.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="gc1099">
+<p /><div class="define"><span class="define-category">Function</span><a name="gc1101">
     <span class="name" name="gc">gc</span>
   </a> <span class="args" /></div>
 <div class="desc">Invokes garbage collection manually.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="cpu-count1100">
+<p /><div class="define"><span class="define-category">Function</span><a name="cpu-count1102">
     <span class="name" name="cpu-count">cpu-count</span>
   </a> <span class="args" /></div>
 <div class="desc">Returns number of CPUs. The result contains hyperthreading, for example,
@@ -1130,14 +1170,14 @@ initialisation by <code>taskset(1)</code>, for example the environment has 4 CPU
 but restricted to 1, then this process, however, returns 4.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G1101"><span class="section-number">6.1.18</span>Debugging aid</a>
+    <a class="section.anchor" name="G1103"><span class="section-number">6.1.18</span>Debugging aid</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="disasm1102">
+<p /><div class="define"><span class="define-category">Function</span><a name="disasm1104">
     <span class="name" name="disasm">disasm</span>
   </a> <span class="args">closure</span></div>
 <div class="desc">Disassembles the compiled body of <var>closure</var> and print it.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="arity1103">
+<p /><div class="define"><span class="define-category">Function</span><a name="arity1105">
     <span class="name" name="arity">arity</span>
   </a> <span class="args">procedure</span></div>
 <div class="desc">Returns arity of given <var>procedure</var>.
@@ -1147,12 +1187,12 @@ not.
 </div>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(time)1104">
+    <a name="(time)1106">
       <span class="name" name="(time)">(time)</span>
     </a>
   </div>
 <div class="desc">Exports <code>time</code> macro</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="time1105">
+<p /><div class="define"><span class="define-category">Macro</span><a name="time1107">
     <span class="name" name="time">time</span>
   </a> <span class="args">expr</span></div>
 <div class="desc">Evaluate <var>expr</var> and shows time usage.
@@ -1167,6 +1207,6 @@ not.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-02-17T20:49:47Z</i></div>
+    <div id="footer-date">Generated date: <i>2018-03-24T20:32:05+0100</i></div>
   </div>
 </html>

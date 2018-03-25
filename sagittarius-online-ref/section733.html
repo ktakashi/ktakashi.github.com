@@ -16,7 +16,7 @@
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc http2)2449">
+    <a name="(rfc http2)2451">
       <span class="name" name="(rfc http2)">(rfc http2)</span>
     </a>
   </div>
@@ -35,12 +35,12 @@ users must know if the server supports HTTP/2 or not, ahead.
 ;; body
 (close-http2-client-connection! conn)
 </pre>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-client-connection?2450">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-client-connection?2452">
     <span class="name" name="http2-client-connection?">http2-client-connection?</span>
   </a> <span class="args">obj</span></div>
 <div class="desc">Returns #t if the given <var>obj</var> is an HTTP/2 client connection,
 otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-http2-client-connection2451">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-http2-client-connection2453">
     <span class="name" name="make-http2-client-connection">make-http2-client-connection</span>
   </a>
  <span class="args">server port :key (secure? #f) user-agent</span></div>
@@ -56,14 +56,14 @@ specify <code>"https"</code> or <code>"443"</code> however <var>secure?</var> ke
 argument must be passed.
 <p />NOTE2: Created connections hold opened socket.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="close-http2-client-connection!2452">
+<p /><div class="define"><span class="define-category">Function</span><a name="close-http2-client-connection!2454">
     <span class="name" name="close-http2-client-connection!">close-http2-client-connection!</span>
   </a> <span class="args">conn</span></div>
 <div class="desc">Closes given HTTP/2 connection.</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2453"><span class="section-number">7.33.1</span>High level APIs</a>
+    <a class="section.anchor" name="G2455"><span class="section-number">7.33.1</span>High level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-get2454">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-get2456">
     <span class="name" name="http2-get">http2-get</span>
   </a>
  <span class="args">conn uri :key receiver redirect-handler :allow-other-keys headers</span></div>
@@ -78,7 +78,7 @@ uses given <var>receiver</var> to receive data. The default value is
 <p />If the keyword argument <var>redirect-handler</var> is specified, then the procedure
 uses given <var>redirect-handler</var> to handle redirection.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-post2455">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-post2457">
     <span class="name" name="http2-post">http2-post</span>
   </a>
  <span class="args">conn uri data :key receiver redirect-handler :allow-other-keys headers</span></div>
@@ -90,7 +90,7 @@ The procedure sends these pairs as extra headers.
 <p />The keyword arguments <var>receiver</var> and <var>redirect-handler</var> are the same
 as <code>http2-get</code>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-head2456">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-head2458">
     <span class="name" name="http2-head">http2-head</span>
   </a>
  <span class="args">conn uri :key receiver redirect-handler :allow-other-keys headers</span></div>
@@ -102,7 +102,7 @@ The procedure sends these pairs as extra headers.
 <p />The keyword arguments <var>receiver</var> and <var>redirect-handler</var> are the same
 as <code>http2-get</code>.
 </div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="http2-request2457">
+<p /><div class="define"><span class="define-category">Macro</span><a name="http2-request2459">
     <span class="name" name="http2-request">http2-request</span>
   </a>
  <span class="args">conn method uri sender receiver :key redirect-handler</span></div>
@@ -114,46 +114,46 @@ as <code>http2-get</code>.
 <p />The procedure returns a list of response header and content.
 </div>
 <p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2458"><span class="section-number">7.33.1.1</span>HTTP/2 sender</a>
+    <a class="section.anchor" name="G2460"><span class="section-number">7.33.1.1</span>HTTP/2 sender</a>
   </h5>
 <p />A sender is a procedure which accepts 2 arguments, internal HTTP/2 stream and
 flag. At this moment, the internal HTTP/2 stream is not exposed so users cannot
 create own sender.
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-headers-sender2459">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-headers-sender2461">
     <span class="name" name="http2-headers-sender">http2-headers-sender</span>
   </a> <span class="args">header ...</span></div>
 <div class="desc">Returns a sender which sends given <var>header</var> as HTTP/2 header.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-data-sender2460">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-data-sender2462">
     <span class="name" name="http2-data-sender">http2-data-sender</span>
   </a> <span class="args">data</span></div>
 <div class="desc">Returns a sender which sends given <var>data</var> as HTTP/2 data.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-composite-sender2461">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-composite-sender2463">
     <span class="name" name="http2-composite-sender">http2-composite-sender</span>
   </a> <span class="args">sender ...</span></div>
 <div class="desc">Returns a composite sender.</div>
 <p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2462"><span class="section-number">7.33.1.2</span>HTTP/2 receiver</a>
+    <a class="section.anchor" name="G2464"><span class="section-number">7.33.1.2</span>HTTP/2 receiver</a>
   </h5>
 <p />A receiver is a procedure which accepts 4 arguments, internal HTTP/2 stream,
 header, frame and flag. The same restriction as sender is applied, thus
 users cannot create own receiver, at this moment.
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-data-receiver2463">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-data-receiver2465">
     <span class="name" name="http2-data-receiver">http2-data-receiver</span>
   </a> <span class="args">sink flusher</span></div>
 <div class="desc">Returns a receiver which receives HTTP/2 data frame and put the
 value into <var>sink</var>. When the stream reaches to the end, then <var>flusher</var>
 is called with <var>sink</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-binary-receiver2464">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-binary-receiver2466">
     <span class="name" name="http2-binary-receiver">http2-binary-receiver</span>
   </a> <span class="args" /></div>
 <div class="desc">Returns a receives which receives HTTP/2 data frame as a bytevector.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-null-receiver2465">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-null-receiver2467">
     <span class="name" name="http2-null-receiver">http2-null-receiver</span>
   </a> <span class="args" /></div>
 <div class="desc">Returns a receives which receives HTTP/2 data frame and returns empty
 bytevector.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-gzip-receiver2466">
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-gzip-receiver2468">
     <span class="name" name="http2-gzip-receiver">http2-gzip-receiver</span>
   </a> <span class="args">receiver</span></div>
 <div class="desc">Returns a receives which receives HTTP/2 data frame. If the data frame
@@ -161,7 +161,7 @@ is compressed to gzip, then the returning receiver expand the data and forward
 to the given <var>receiver</var>. If the data frame is not compressed, then it
 simply forward the data frame to the given <var>receiver</var>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-gzip-receiver2467">
+<p /><div class="define"><span class="define-category">Function</span><a name="make-gzip-receiver2469">
     <span class="name" name="make-gzip-receiver">make-gzip-receiver</span>
   </a> <span class="args" /></div>
 <div class="desc">Convenient procedure whose definition is the following:
@@ -178,6 +178,6 @@ simply forward the data frame to the given <var>receiver</var>.
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-02-17T20:49:47Z</i></div>
+    <div id="footer-date">Generated date: <i>2018-03-24T20:32:05+0100</i></div>
   </div>
 </html>
