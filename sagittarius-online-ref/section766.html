@@ -7,158 +7,177 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section765.html">(tlv) - TLV library</a>
+    <a class="prev" href="section765.html">(text markdown) -- Markdown parser</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section8.html">Ported libraries</a>
+    <a class="next" href="section767.html">(text tree) - Lightweight text generation</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.treemap"><span class="section-number">7.66</span>(util treemap) - Treemap</a>
+    <a class="section.anchor" name="text.object-builder"><span class="section-number">7.66</span>(text sxml object-builder) - SXML to
+Scheme object builder</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util treemap)2937">
-      <span class="name" name="(util treemap)">(util treemap)</span>
+    <a name="(text sxml object-builder)2995">
+      <span class="name" name="(text sxml object-builder)">(text sxml object-builder)</span>
     </a>
   </div>
-<div class="desc">This library provides treemap data structure and operations.
-<p />This section uses the following name convention;
-<p /><var>tm</var> - treemap
-<p /></div>
+<div class="desc">This library provides APIs to build Scheme object from SXML.</div>
 <p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2938"><span class="section-number">7.66.1</span>Predicate and constructurs</a>
+    <a class="section.anchor" name="G2996"><span class="section-number">7.66.1</span>High level APIs</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap?2939">
-    <span class="name" name="treemap?">treemap?</span>
-  </a> <span class="args">object</span></div>
-<div class="desc">Returns #t when given <var>object</var> is a treemap.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-rb-treemap2940">
-    <span class="name" name="make-rb-treemap">make-rb-treemap</span>
-  </a> <span class="args">compare</span></div>
-<div class="desc"><var>compare</var> must be a procedure which accepts 2 arguments and
-returns integer indicating the order of given 2 arguments.
-<p />Creates red black treemap.
+<p /><div class="define"><span class="define-category">Function</span><a name="sxml-&gt;object2997">
+    <span class="name" name="sxml-&gt;object">sxml-&gt;object</span>
+  </a>
+ <span class="args">sxml builder :optional unknown-tag-handler</span></div>
+<div class="desc">Builds a Scheme object from given SXML <var>sxml</var>. The <var>builder</var>
+must be a object-builder described below.
+<p />If optional argument <var>unknown-tag-handler</var> is given, then it must be a
+procedure accepts 2 arguments, <var>builder</var> and <var>sxml</var>. The procedure
+is called when the process met a tag which can't be handled by given
+<var>builder</var>. Users can return an object if needed. The default behaviour
+of the handler is raising an error.
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2941"><span class="section-number">7.66.2</span>Basic operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-ref2942">
-    <span class="name" name="treemap-ref">treemap-ref</span>
-  </a> <span class="args">tm key :optional (fallback #f)</span></div>
-<div class="desc">Returns a value associated with <var>key</var> in <var>tm</var>. If it doesn't
-exist, then <var>fallback</var> will be returned.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-contains?2943">
-    <span class="name" name="treemap-contains?">treemap-contains?</span>
-  </a> <span class="args">tm key</span></div>
-<div class="desc">Returns #t if there is an entry associated to the given <var>key</var>,
-otherwise #f.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-set!2944">
-    <span class="name" name="treemap-set!">treemap-set!</span>
-  </a> <span class="args">tm key value</span></div>
-<div class="desc">Associate the <var>value</var> to <var>key</var> in <var>tm</var> and returns
-unspecified value.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-update!2945">
-    <span class="name" name="treemap-update!">treemap-update!</span>
-  </a> <span class="args">tm key proc default</span></div>
-<div class="desc"><var>proc</var> must be a procedure accepts one argument.
-<p />Updates the entry value associated to <var>key</var> with the returned value of 
-<var>proc</var>. If the entry doesn't exist then <var>default</var> will be passed to
-the <var>proc</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-delete!2946">
-    <span class="name" name="treemap-delete!">treemap-delete!</span>
-  </a> <span class="args">tm key</span></div>
-<div class="desc">Deletes entry of <var>key</var> in <var>tm</var> and returns unspecified value.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-clear!2947">
-    <span class="name" name="treemap-clear!">treemap-clear!</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Removes all entries and returns unspecified value.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-copy2948">
-    <span class="name" name="treemap-copy">treemap-copy</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns the copy of given <var>tm</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-size2949">
-    <span class="name" name="treemap-size">treemap-size</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns the number of entry in the given <var>tm</var>.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2950"><span class="section-number">7.66.3</span>Conversions</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-&gt;alist2951">
-    <span class="name" name="treemap-&gt;alist">treemap-&gt;alist</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns an alist of key and value in <var>tm</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="alist-&gt;treemap2952">
-    <span class="name" name="alist-&gt;treemap">alist-&gt;treemap</span>
-  </a> <span class="args">alist compare</span></div>
-<div class="desc"><var>alist</var> must be an alist.
-<var>compare</var> must be a procedure which accepts 2 arguments.
-<p />Converts <var>alist</var> to a treemap. The car part of an element of <var>alist</var>
-is a key, then cdr part of an element of <var>alist</var> is a value.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2953"><span class="section-number">7.66.4</span>Keys and values</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-keys2954">
-    <span class="name" name="treemap-keys">treemap-keys</span>
-  </a> <span class="args">tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-keys-list2955">
-    <span class="name" name="treemap-keys-list">treemap-keys-list</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns a vector or a list of keys in <var>tm</var>, respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-values2956">
-    <span class="name" name="treemap-values">treemap-values</span>
-  </a> <span class="args">tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-values-list2957">
-    <span class="name" name="treemap-values-list">treemap-values-list</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns a vector or a list of entry values in <var>tm</var>, respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-entries2958">
-    <span class="name" name="treemap-entries">treemap-entries</span>
-  </a> <span class="args">tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-entries-list2959">
-    <span class="name" name="treemap-entries-list">treemap-entries-list</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns vectors or lists of entry key and values in <var>tm</var>, 
-respectively. This procedure returns 2 values. </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2960"><span class="section-number">7.66.5</span>Iterations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-fold2961">
-    <span class="name" name="treemap-fold">treemap-fold</span>
-  </a> <span class="args">kons tm knil</span></div>
-<div class="desc"><var>kons</var> must be a procedure which accepts 3 arguments.
-<p />Iterates all keys and values in the given <var>tm</var> and passes them
-and the result of <var>kons</var> to <var>kons</var> respectively. The first iteration
-of the third argument is <var>knil</var>. The procedure returns the result of
-all iterations.
-<p />Analogous to <code>fold</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-map2962">
-    <span class="name" name="treemap-map">treemap-map</span>
-  </a> <span class="args">proc tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-for-each2963">
-    <span class="name" name="treemap-for-each">treemap-for-each</span>
-  </a> <span class="args">proc tm</span></div>
-<div class="desc"><var>proc</var> must be a procedure which accepts 2 arguments.
-<p />Iterates all keys and values in the given <var>tm</var> and passes them
-to <var>proc</var> respectively.
-<p />The <code>treemap-for-each</code> returns unspecified value. The 
-<code>treemap-map</code> returns a list of the <var>proc</var> result.
-<p />These procedures are analogous to <code>for-each</code> and <code>map</code> respectively.
-</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="sxml-object-builder2998">
+    <span class="name" name="sxml-object-builder">sxml-object-builder</span>
+  </a> <span class="args">spec ...</span></div>
+<div class="define">
+    <span class="define-category">Auxiliary syntax</span>
+    <a name="*namespace*2999">
+      <span class="name" name="*namespace*">*namespace*</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Auxiliary syntax</span>
+    <a name="<!&gt;3000">
+      <span class="name" name="<!&gt;">&lt;!&gt;</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Auxiliary syntax</span>
+    <a name="?3001">
+      <span class="name" name="?">?</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Auxiliary syntax</span>
+    <a name="??3002">
+      <span class="name" name="??">??</span>
+    </a>
+  </div>
+<div class="desc">A DSL which constructs object-builder.
+<p />The <var>spec</var> must be one of the followings:
+<ul class="itemlist">
+    <li class="itemlist-item">
+      <code>(*namespace* ((ns uri) ...) spec ...)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(* spec ...)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(+ spec ...)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(/ spec ...)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(? spec ...)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(&lt;!&gt; <var>tag</var> builder)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>spec spec* ...</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(<var>tag</var> <var>ctr</var>)</code>
+    </li>
+    <li class="itemlist-item">
+      <code>(<var>tag</var> <var>ctr</var> <var>next</var>)</code>
+    </li>
+  </ul>
+<var>tag</var> can be either a symbol or the following clause:
+<ul class="itemlist">
+    <li class="itemlist-item">
+      <code>(?? pred)</code>
+    </li>
+  </ul>
+<var>pred</var> must be a predicate of SXML tag.
+<p /><var>ctr</var> must be a procedure which takes 3 arguments, <var>name</var>,
+<var>attributes</var> and <var>contents</var>. These are SXML's tagname, list of
+attributes and SXML contents, respectively.
+<p />The first form of the <var>spec</var> specifies aliases of namespaces. Users can
+write qualified name with prefixed instead of unprefixed qualified name.
+<p />The second to forth form of <var>spec</var> specify the amount of nested
+<var>spec ...</var> existence. The <code>*</code> means 0 or more.
+The <code>+</code> means 1 or more. And the <code>?</code> means 0 or 1.
+<p />The fifth form of <var>spec</var> means cyclic structure.
+<p />The sixth form of <var>spec</var> means set of <var>spec spec ...</var>.
+<p />The following shows how to use this DSL macro
+<pre class="codeblock">(define builder
+  (sxml-object-builder
+    (*namespace* ((ns "urn:foo")))
+    (ns:bar list
+      (ns:buz list)
+      (foo list))))
+</pre>
+The above definition can build an object from the following SXML
+<pre class="codeblock">(*TOP*
+  (urn:foo:bar
+    (urn:foo:buz "buz")
+    (foo "foo")))
+</pre>
+<p />A generic SXML builder can be written like this:
+<pre class="codeblock">(define-record-type xml-object
+  (fields name attributes contents))
 
-
-</section></section>
+(define xml-object-builder
+  (sxml-object-builder
+   (&lt;!&gt; (?? values) make-xml-object)))
+</pre>
+<p /></div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G3003"><span class="section-number">7.66.1.1</span>XML object</a>
+  </h5>
+<p />This section describes convenience record type and procedures.
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="xml-object3004">
+      <span class="name" name="xml-object">xml-object</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Function</span><a name="xml-object?3005">
+    <span class="name" name="xml-object?">xml-object?</span>
+  </a> <span class="args">obj</span></div>
+<div class="define"><span class="define-category">Function</span><a name="make-xml-object3006">
+    <span class="name" name="make-xml-object">make-xml-object</span>
+  </a> <span class="args">name attributes contents</span></div>
+<div class="define"><span class="define-category">Function</span><a name="xml-object-name3007">
+    <span class="name" name="xml-object-name">xml-object-name</span>
+  </a> <span class="args">xml-object</span></div>
+<div class="define"><span class="define-category">Function</span><a name="xml-object-attributes3008">
+    <span class="name" name="xml-object-attributes">xml-object-attributes</span>
+  </a> <span class="args">xml-object</span></div>
+<div class="define"><span class="define-category">Function</span><a name="xml-object-contents3009">
+    <span class="name" name="xml-object-contents">xml-object-contents</span>
+  </a> <span class="args">xml-object</span></div>
+<div class="desc">A very simple XML object type. An instance of this record type
+holds tag name (<var>name</var>), attribute as alist (<var>attributes</var>) and
+contents which must be a valid SXML or other XML objects (<var>contents</var>).
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="sxml-&gt;xml-object3010">
+    <span class="name" name="sxml-&gt;xml-object">sxml-&gt;xml-object</span>
+  </a> <span class="args">sxml :optional handler</span></div>
+<div class="desc">Builds XML object described above from given <var>sxml</var>.</div>
+<p />
+</section></section></section>
   <div class="prev-next">
-    <a class="prev" href="section765.html">(tlv) - TLV library</a>
+    <a class="prev" href="section765.html">(text markdown) -- Markdown parser</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section8.html">Ported libraries</a>
+    <a class="next" href="section767.html">(text tree) - Lightweight text generation</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-08-31T09:05:01+0200</i></div>
+    <div id="footer-date">Generated date: <i>2019-06-05T00:07:27+0200</i></div>
   </div>
 </html>

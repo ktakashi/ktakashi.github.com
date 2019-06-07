@@ -7,80 +7,66 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section754.html">(text json object-builder) -- JSON</a>
+    <a class="prev" href="section754.html">(text html-lite) - Simple HTML document builder library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section756.html">(text json schema) - JSON Schema</a>
+    <a class="next" href="section756.html">(text json object-builder) -- JSON</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.json.pointer"><span class="section-number">7.55</span>(text json pointer) - JSON Pointer</a>
+    <a class="section.anchor" name="text.json"><span class="section-number">7.55</span>(text json) -- JSON parser</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text json pointer)2839">
-      <span class="name" name="(text json pointer)">(text json pointer)</span>
+    <a name="(text json)2872">
+      <span class="name" name="(text json)">(text json)</span>
     </a>
   </div>
-<div class="desc">This library provides JSON Pointer procedures.
-<p />The specification of JSON Pointer is defined by the
-<a href="https://tools.ietf.org/html/rfc6901">RFC 6901</a>.
+<div class="desc">This library provides JSON parser and writer. 
 </div>
-<p />The following example shows simple usage of the library:
-<p />This is an input file named <code>example.json</code>.
-<pre class="codeblock">{
-  "id": 1234,
-  "data": {
-    "datum0": [0, 1, 2],
-    "datum1": [3, 4]
-  }
-}
-</pre>
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(import (rnrs) (rfc json-pointer) (text json))
-
-(define id-pointer (json-pointer "/id"))
-
-(let ((json (call-with-input-file "example.json" json-read)))
-  (id-pointer json))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">1234</span>
+<p /><div class="define">
+    <span class="define-category">Parameter</span>
+    <a name="*json-map-type*2873">
+      <span class="name" name="*json-map-type*">*json-map-type*</span>
+    </a>
   </div>
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(import (rnrs) (rfc json-pointer) (text json))
-
-(define data-pointer (json-pointer "/data"))
-
-#|
-example.json
-|#
-(let ((json (call-with-input-file "example.json" json-read)))
-  ;; Retrievs /data/datum0
-  ((json-pointer "/datum0" data-pointer) json))
+<div class="desc">Controls mapping of JSON map and array. The value must be either
+<code>'vector</code> or <code>'alist</code>. The first one is compatible with Chicken
+Scheme's json module, the latter one is compatible with Gauche's 
+<code>rfc.json</code> module. By default, it's set to <code>vector</code> for backward
+compatibility.
+<p />Conversion rules for <code>vector</code>:
+<pre class="codeblock">JSON array   &lt;-&gt; list
+JSON map     &lt;-&gt; vector
+JSON boolean &lt;-&gt; boolean
+JSON null    &lt;-&gt; symbol <code>null</code>
 </pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">'(0 1 2)</span>
-  </div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="json-pointer2840">
-    <span class="name" name="json-pointer">json-pointer</span>
-  </a> <span class="args">pointer: optional parent</span></div>
-<div class="desc">Returns a procedure taks one argument which must be a list or vector
-representing JSON object. The given <var>poinster</var> must be a string or
-textual input port which start with <code>/</code>.
-<p />The optional argument <var>parent</var> is passed, then it must be a procedure
-returned by the <code>json-pointer</code> and is called before the current
-<var>pointer</var> is processed.
+<p />Conversion rules for <code>alist</code>:
+<pre class="codeblock">JSON array   &lt;-&gt; vector
+JSON map     &lt;-&gt; alist
+JSON boolean &lt;-&gt; boolean
+JSON null    &lt;-&gt; symbol <code>null</code>
+</pre>
+<p />This parameter affects the read and write procedures.
 </div>
-
-</section>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-read2874">
+    <span class="name" name="json-read">json-read</span>
+  </a> <span class="args">:optional (port (current-input-port))</span></div>
+<div class="desc">Reads JSON from given <var>port</var> and returns representing S-expression.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-write2875">
+    <span class="name" name="json-write">json-write</span>
+  </a>
+ <span class="args">json :optional (port (current-output-port))</span></div>
+<div class="desc">Writes the given S-expression JSON representing object to given
+<var>port</var>.
+</div>
+<p /></section>
   <div class="prev-next">
-    <a class="prev" href="section754.html">(text json object-builder) -- JSON</a>
+    <a class="prev" href="section754.html">(text html-lite) - Simple HTML document builder library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section756.html">(text json schema) - JSON Schema</a>
+    <a class="next" href="section756.html">(text json object-builder) -- JSON</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-08-31T09:05:01+0200</i></div>
+    <div id="footer-date">Generated date: <i>2019-06-05T00:07:27+0200</i></div>
   </div>
 </html>

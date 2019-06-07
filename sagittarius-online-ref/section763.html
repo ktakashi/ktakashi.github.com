@@ -7,76 +7,62 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section762.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section762.html">JSON Schema validator</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section764.html">(util timer) - Timer</a>
+    <a class="next" href="section764.html">(text sxml html-parser) - Flxible HTML parser</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.yaml"><span class="section-number">7.63</span>(text yaml) -- YAML parser</a>
+    <a class="section.anchor" name="text.json.validator"><span class="section-number">7.63</span>(text json validator) - JSON validator</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text yaml)2910">
-      <span class="name" name="(text yaml)">(text yaml)</span>
+    <a name="(text json validator)2953">
+      <span class="name" name="(text json validator)">(text json validator)</span>
     </a>
   </div>
-<div class="desc">This library provides YAML parser and writer.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="yaml-read2911">
-    <span class="name" name="yaml-read">yaml-read</span>
-  </a> <span class="args">in</span></div>
-<div class="desc">Reads YAML documents from the given textual input port <var>in</var> and
-returns a list of S-expression represented YAML documents.
-<p />The returning YAML documents are the compatible with vector JSON
-format described in <a href="section753.html#text.json">(text json)</a>.
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(yaml-read (open-string-input-port "
-%YAML 1.2
----
-foo: bar
-boo:
-- 1
-- 2
-- 3
-- 4"))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">'(#((foo . bar) (boo 1 2 3 4)))</span>
+<div class="desc">This library provides abstraction layer of JSON validation.</div>
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="<json-validator&gt;2954">
+      <span class="name" name="<json-validator&gt;">&lt;json-validator&gt;</span>
+    </a>
   </div>
+<div class="desc">Base class of JSON validators.
+<p />The record have <code>validator</code> field.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="yaml-write2912">
-    <span class="name" name="yaml-write">yaml-write</span>
-  </a> <span class="args">yaml</span></div>
-<div class="define"><span class="define-category">Function</span><a name="yaml-write2913">
-    <span class="name" name="yaml-write">yaml-write</span>
-  </a> <span class="args">yaml out</span></div>
-<div class="desc">Writes the given list of S-expression represented YAML documents
-<var>yaml</var> to the <var>out</var>.
-<p />If the first form is used, then it writes to <code>(current-output-port)</code>.
-<p /><pre class="codeblock">(yaml-write '(#(("foo" . "bar") ("boo" 1 2 3 4))))
-;; Prints the following
-#|
-%YAML 1.2
----
-foo: bar
-boo:
-- 1
-- 2
-- 3
-- 4
-...
-|#
-</pre>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-validator?2955">
+    <span class="name" name="json-validator?">json-validator?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Return <code>#t</code> if the given <var>obj</var> is a JSON validator,
+otherwise <code>#f</code>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-json-validator2956">
+    <span class="name" name="make-json-validator">make-json-validator</span>
+  </a> <span class="args">validator</span></div>
+<div class="desc">Creates a JSON validator.
+<p />The <var>validator</var> must be a procedure accepts one argument.
 </div>
-<p />
+<p /><div class="define"><span class="define-category">Function</span><a name="json-validator-validator2957">
+    <span class="name" name="json-validator-validator">json-validator-validator</span>
+  </a> <span class="args">json-validator</span></div>
+<div class="desc">Returns the <code>validator</code> field value of the given
+<var>json-validator</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="validate-json2958">
+    <span class="name" name="validate-json">validate-json</span>
+  </a> <span class="args">json-validator json</span></div>
+<div class="desc">Calls value of <code>validator</code> field of given JSON validator with
+parameter of <var>json</var>.
+</div>
+
 </section>
   <div class="prev-next">
-    <a class="prev" href="section762.html">(text tree) - Lightweight text generation</a>
+    <a class="prev" href="section762.html">JSON Schema validator</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section764.html">(util timer) - Timer</a>
+    <a class="next" href="section764.html">(text sxml html-parser) - Flxible HTML parser</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-08-31T09:05:01+0200</i></div>
+    <div id="footer-date">Generated date: <i>2019-06-05T00:07:27+0200</i></div>
   </div>
 </html>

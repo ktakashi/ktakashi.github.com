@@ -7,143 +7,160 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section751.html">(text csv) - Comma separated values parser library</a>
+    <a class="prev" href="section751.html">(rpc json) - JSON RPC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section753.html">(text json) -- JSON parser</a>
+    <a class="next" href="section753.html">(text csv) - Comma separated values parser library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.html-lite"><span class="section-number">7.52</span>(text html-lite) - Simple HTML document builder library</a>
+    <a class="section.anchor" name="security.keystore"><span class="section-number">7.52</span>(security keystore) - Generic Keystore Access</a>
   </h3>
-<p />
-<div class="define">
+<p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text html-lite)2810">
-      <span class="name" name="(text html-lite)">(text html-lite)</span>
+    <a name="(security keystore)2833">
+      <span class="name" name="(security keystore)">(security keystore)</span>
     </a>
   </div>
-<div class="desc">This library provides simple HTML builder procedures based on HTML5.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-escape2811">
-    <span class="name" name="html-escape">html-escape</span>
-  </a> <span class="args">:optional (in (current-input-port))</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-escape-string2812">
-    <span class="name" name="html-escape-string">html-escape-string</span>
-  </a> <span class="args">string</span></div>
-<div class="desc">Escapes the unsafe characters in HTML and returns escaped string.
-<p />The <code>html-escape</code> reads the string from optional argument <var>in</var> which
-must be an textual input port and returns an escaped string.
-<p />The <code>html-escape-string</code> takes a string and returns an escaped string.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-doctype2813">
-    <span class="name" name="html-doctype">html-doctype</span>
-  </a> <span class="args">:key (type :html-4.01-strict)</span></div>
-<div class="desc">Returns a doctype declaration for an HTML document. <var>type</var> can be one
-of the followings;
-<p /><div class="dl-list-wrapper">
-    <dl class="dl-list">
-      <dt class="dl-item-title">
-        <code>:html-5</code>
-      </dt>
-      <dd class="dl-item-desc">    HTML 5
-  </dd>
-      <dt class="dl-item-title">
-        <code>:html-4.01-strict :html-4.01, :strict, :html-strict</code>
-      </dt>
-      <dd class="dl-item-desc">    HTML 4.01 Strict DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:html-4.01-transitional :html-transitional, :transitional</code>
-      </dt>
-      <dd class="dl-item-desc">    HTML 4.01 Transitional DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.0-strict :xhtml-1.0</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Strict DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.0-transitional</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Transitional DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.0-frameset</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.0 Frameset DTD
-  </dd>
-      <dt class="dl-item-title">
-        <code>:xhtml-1.1</code>
-      </dt>
-      <dd class="dl-item-desc">    XHTML 1.1 DTD
-  </dd>
-    </dl>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="html:element2814">
-    <span class="name" name="html:element">html:<var>element</var></span>
-  </a> <span class="args">args ...</span></div>
-<div class="desc">Construct an HTML element <var>element</var>. Currently following elements are
-provided. 
-<p /><pre class="codeblock">   a       abbr    address  area       article  aside
-   audio   b       base     bdi        bdo      blockquote
-   body    br      button   canvas     caption  cite
-   code    col     colgroup command    datalist dd
-   del     details dfn      div        dl       dt
-   em      embed   fieldset figcaption figure   footer
-   form
-   h1      h2      h3       h4         h5       h6
-   head    header  hgroup   hr         html
-   i       iframe  img      input      ins      kbd
-   keygen  label   legend   li         link     map
-   mark    menu    meta     meter      nav      noscript
-   object  ol      optgroup option     output   p
-   param   pre     progress q          rp       rt
-   ruby    s       samp     script     section  select
-   small   source  span     strong     style    sub
-   summary sup     table    tbody      td       textarea
-   tfoot   th      thead    time       title    tr
-   track   u       ul       var        video    wbr
+<div class="desc">This library provides generic access for variety of keystores.</div>
+<p />The following example shows how to use this library:
+<pre class="codeblock">(import (security keystore))
+
+(define keystore (load-keystore 'jks "keystore.jks" "storepass"))
+
+(keystore-get-key keystore "key-name" "key-pass")
+;; -&gt; &lt;private-key&gt;
+
+(keystore-get-certificate keystore "cert-name")
+;; -&gt; &lt;x509-certificate&gt;
+
+;; certs must be a list of certificates
+(keystore-set-key! keystore "key-name2" private-key "key-pass2" certs)
+
+(keystore-set-certificate! keystore "cert-name2" cert)
+
+(store-keystore-to-file keystore "keystore2.jks" "storepass2")
 </pre>
-<p />The result of these functions is a tree of text segments, which can be written
-out to a port by <code>write-tree</code> or can be converted to a string by
-<code>tree-&gt;string</code> <a href="section762.html#text.tree">(text tree) - Lightweight text generation</a>.
-<p />You can specify attributes of the element by using a keyword-value notation
-before the actual content.
-<p /><div class="snipet-box">
-    <pre class="snipet">(tree-&gt;string (html:a :href "http://example.com" "example")) </pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">&lt;a href="http://example.com"&gt;example&lt;/a&gt;</span>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2834"><span class="section-number">7.52.1</span>Generic APIs</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<keystore&gt;2835">
+      <span class="name" name="<keystore&gt;">&lt;keystore&gt;</span>
+    </a>
   </div>
-<p />The boolean value given to the attribute has special meaning. If #t is given,
-the attribute is rendered without a value. If #f is given, the attribute is not
-rendered.
-<p /><div class="snipet-box">
-    <pre class="snipet">(tree-&gt;string (html:table :border #t))</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">&lt;table border&gt;&lt;/table&gt;</span>
-  </div>
-<div class="snipet-box">
-    <pre class="snipet">(tree-&gt;string (html:table :border #f))</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">&lt;table&gt;&lt;/table&gt;</span>
-  </div>
-<p />Special characters in attribute values are escaped by the function, but the
-ones in the content are not.
-<p /><div class="snipet-box">
-    <pre class="snipet">(tree-&gt;string (html:div :foo "&lt;&gt;&amp;\"" "&lt;not escaped&gt;")) </pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">&lt;div foo="&amp;lt;&amp;gt;&amp;amp;&amp;quot;"&gt;&lt;not escaped&gt;&lt;/div&gt;</span>
-  </div>
-<p />
+<div class="desc">Base class of keystores.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="keystore?2836">
+    <span class="name" name="keystore?">keystore?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if given <var>obj</var> is a keystore object. Otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="load-keystore2837">
+    <span class="name" name="load-keystore">load-keystore</span>
+  </a> <span class="args">type input-port storepass</span></div>
+<div class="define"><span class="define-category">Function</span><a name="load-keystore-file2838">
+    <span class="name" name="load-keystore-file">load-keystore-file</span>
+  </a> <span class="args">type file storepass</span></div>
+<div class="desc">Loads <var>type</var> keystore from <var>input-port</var> or <var>file</var>.
+<p /><var>storepass</var> must be a string and may or may not be used to decrypt 
+keystore content.
+<p /><code>load-keystore</code> loads from given binary input port <var>input-port</var>.
+<p /><code>load-keystore-file</code> loads from given file <var>file</var>.
 </div>
-</section>
+<div class="define"><span class="define-category">Function</span><a name="make-keystore2839">
+    <span class="name" name="make-keystore">make-keystore</span>
+  </a> <span class="args">type</span></div>
+<div class="desc">Returns newly created <var>type</var> keystore object.
+<p />Currently <code>pkcs12</code>, <code>jks</code> and <code>jceks</code> are supported.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-key2840">
+    <span class="name" name="keystore-get-key">keystore-get-key</span>
+  </a> <span class="args">keystore alias keypass</span></div>
+<div class="desc">The method shall return a private key associated with <var>alias</var>
+from <var>keystore</var>. If there is no key entry associated with <var>alias</var> 
+then #f shall be returned.
+<p /><var>alias</var> shall be a string.
+<p /><var>keypass</var> shall be a string. It may or may not be used to decrypt 
+the private key.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-certificate2841">
+    <span class="name" name="keystore-get-certificate">keystore-get-certificate</span>
+  </a> <span class="args">keystore alias</span></div>
+<div class="desc">The method shall return an X509 certificate associated with <var>alias</var>
+from <var>keystore</var>. If there is no certificate entry associated with 
+<var>alias</var> then #f shall be returned.
+<p /><var>alias</var> shall be a string.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-certificate-chain2842">
+    <span class="name" name="keystore-get-certificate-chain">keystore-get-certificate-chain</span>
+  </a> <span class="args">keystore alias</span></div>
+<div class="desc">The method shall return a list of key certificates associated 
+with <var>alias</var> from <var>keystore</var>. If there is no certificate entries
+associated with <var>alias</var> then #f shall be returned.
+<p /><var>alias</var> shall be a string.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-creation-date2843">
+    <span class="name" name="keystore-get-creation-date">keystore-get-creation-date</span>
+  </a> <span class="args">keystore alias</span></div>
+<div class="desc">The method shall return a date object of <var>alias</var> associated entry.
+If there is no entry associated with <var>alias</var> then #f shall be returned.
+<p /><var>alias</var> shall be a string.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-contains-alias?2844">
+    <span class="name" name="keystore-contains-alias?">keystore-contains-alias?</span>
+  </a> <span class="args">keystore alias</span></div>
+<div class="desc">The method shall return #t if <var>keystore</var> contains an entry associated
+with <var>alias</var>. Otherwise #f shall be returend.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="store-keystore2845">
+    <span class="name" name="store-keystore">store-keystore</span>
+  </a> <span class="args">keystore output-port storepass</span></div>
+<div class="define"><span class="define-category">Generic</span><a name="store-keystore-to-file2846">
+    <span class="name" name="store-keystore-to-file">store-keystore-to-file</span>
+  </a>  <span class="args">keystore file storepass</span></div>
+<div class="desc">The methods shall write <var>keystore</var> to <var>output-port</var> or 
+<var>file</var>.
+<p />The <code>store-keystore</code> shall write to given binary output port 
+<var>output-port</var>.
+<p />The <code>store-keystore-to-file</code> shall write to given file <var>file</var>.
+<p /><var>storepass</var> shall be a string and may or may not be used to encrypt 
+whole contents.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-set-key!2847">
+    <span class="name" name="keystore-set-key!">keystore-set-key!</span>
+  </a>
+ <span class="args">keystore alias private-key keypass certs</span></div>
+<div class="desc"><var>alias</var> shall be a string represents the name of <var>private-key</var> in
+the <var>keystore</var>.
+<p /><var>private-key</var> shall be an RSA private key.
+<p /><var>key-pass</var> shall be a string and may or may not be used to encrypt
+given <var>private-key</var>.
+<p /><var>certs</var> shall be a list of X509 certificates which associated with
+<var>private-key</var>.
+<p />The method shall store given <var>private-key</var> to <var>keystore</var>.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-set-certificate!2848">
+    <span class="name" name="keystore-set-certificate!">keystore-set-certificate!</span>
+  </a> <span class="args">keystore alias cert</span></div>
+<div class="desc"><var>alias</var> shall be a string represents the name of <var>cert</var> in
+the <var>keystore</var>.
+<p /><var>cert</var> shall be an X509 certificate.
+<p />The method shall store given <var>cert</var> to <var>keystore</var>.
+</div>
+<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-delete-entry!2849">
+    <span class="name" name="keystore-delete-entry!">keystore-delete-entry!</span>
+  </a> <span class="args">keystore alias</span></div>
+<div class="desc">The method shall remove the entry associated with <var>alias</var> from 
+<var>keystore</var>.
+</div>
+<p />
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section751.html">(text csv) - Comma separated values parser library</a>
+    <a class="prev" href="section751.html">(rpc json) - JSON RPC library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section753.html">(text json) -- JSON parser</a>
+    <a class="next" href="section753.html">(text csv) - Comma separated values parser library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-08-31T09:05:01+0200</i></div>
+    <div id="footer-date">Generated date: <i>2019-06-05T00:07:27+0200</i></div>
   </div>
 </html>

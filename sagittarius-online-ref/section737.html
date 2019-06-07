@@ -7,45 +7,150 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section736.html">(rfc pem) - PEM format  library</a>
+    <a class="prev" href="section736.html">(rfc json-pointer) - JSON Pointer</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section738.html">(rfc totp) - Time-based One-Time Password library</a>
+    <a class="next" href="section738.html">(rfc hotp) - HMAC-based One-Time Password library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.hotp"><span class="section-number">7.37</span>(rfc hotp) - HMAC-based One-Time Password library</a>
+    <a class="section.anchor" name="rfc.pem"><span class="section-number">7.37</span>(rfc pem) - PEM format  library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc hotp)2509">
-      <span class="name" name="(rfc hotp)">(rfc hotp)</span>
+    <a name="(rfc pem)2552">
+      <span class="name" name="(rfc pem)">(rfc pem)</span>
     </a>
   </div>
-<div class="desc">Provides HMAC-based One-Time Password (HOTP) generating procedures. HOTP is
-defined in RFC 4226:
-<a href="http://tools.ietf.org/html/rfc4226">RFC 4226</a>.
+<div class="desc">This library provides PEM format file parser.
+<p />Currently only supports RFC 1421 format.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="generate-hmac-based-one-time-password2510">
-    <span class="name" name="generate-hmac-based-one-time-password">generate-hmac-based-one-time-password</span>
-  </a> <span class="args">K C digit</span></div>
-<div class="define"><span class="define-category">Function</span><a name="hotp2511">
-    <span class="name" name="hotp">hotp</span>
-  </a> <span class="args">K C digit</span></div>
-<div class="desc"><var>K</var> must be a bytevector represents shared secret.
-<p /><var>C</var> must be an exact integer represents counter.
-<p /><var>digit</var> must be an exact integer.
-<p />Generates an HMAC-based one-time password.
-<p /><code>hotp</code> is an alias of <code>generate-hmac-based-one-time-password</code>.
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2553"><span class="section-number">7.37.1</span>Conditions</a>
+  </h4>
+<p />This library defines these conditions.
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;pem-error2554">
+      <span class="name" name="&amp;pem-error">&amp;pem-error</span>
+    </a>
+  </div>
+<div class="desc">Super condition of all PEM file process related conditions.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;invalid-pem-format2555">
+      <span class="name" name="&amp;invalid-pem-format">&amp;invalid-pem-format</span>
+    </a>
+  </div>
+<div class="desc">This condition indicates, given PEM file contains invalid format.</div>
+<div class="define"><span class="define-category">Function</span><a name="invalid-pem-format?2556">
+    <span class="name" name="invalid-pem-format?">invalid-pem-format?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t, if the given <var>obj</var> is <code>&amp;invalid-pem-format</code>,
+otherwise #f.</div>
+<p /><div class="define">
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;pre-eb-as-boundary2557">
+      <span class="name" name="&amp;pre-eb-as-boundary">&amp;pre-eb-as-boundary</span>
+    </a>
+  </div>
+<div class="desc">This condition indicates, given PEM file contains Pre-Encapsulation 
+Boundary as the end of Encapsulated Message without specifying 
+<code>:multiple</code>.</div>
+<div class="define"><span class="define-category">Function</span><a name="pre-eb-as-boundary?2558">
+    <span class="name" name="pre-eb-as-boundary?">pre-eb-as-boundary?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t, if the given <var>obj</var> is <code>&amp;pre-eb-as-boundary</code>,
+otherwise #f.</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2559"><span class="section-number">7.37.2</span>Operations</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem2560">
+    <span class="name" name="parse-pem">parse-pem</span>
+  </a>
+ <span class="args">in :key (multiple #f) (builder #f) (asn1 #f) decoder</span></div>
+<div class="desc"><var>in</var> must be textual input port.
+<p />Parses given input port <var>in</var> and returns 2 values, parameter alist and
+decoded bytevector.
+<p />Keyword arguments
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>multiple</code>
+      </dt>
+      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure returns a list which
+    contains alist of parameter and content.
+<p />    This parameter is useful for the PEM files which contains multiple contents.
+  </dd>
+      <dt class="dl-item-title">
+        <code>builder</code>
+      </dt>
+      <dd class="dl-item-desc">    This keyword argument must take a procedure which accept one argument or
+    #f. If <var>builder</var> is specified then the given procedure will be called
+    to build then contents of the PEM.
+<p />    This argument is not correspond with <var>asn1</var> keyword argument and has
+    higher priority. So if both arguments are specified, then <var>builder</var>
+    will be used.
+  </dd>
+      <dt class="dl-item-title">
+        <code>asn1</code>
+      </dt>
+      <dd class="dl-item-desc">    When this keyword argument is #t, then the procedure converts BASE64
+    bytevector to ASN.1 object defined in <code>(asn.1)</code> library.
+  </dd>
+      <dt class="dl-item-title">
+        <code>decorder</code>
+      </dt>
+      <dd class="dl-item-desc">    When this keyword argument is specified, it must be a procedure which
+    accepts one argument, then the <code>parse-pem</code> uses the specified
+    procedure to convert body of the PEM content.
+<p />    If it's not specified, the procedure uses BASE64 decoding.
+  </dd>
+    </dl>
+  </div>
+<p />The procedure may raise following conditions:
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>&amp;invalid-pem-format</code>
+      </dt>
+      <dd class="dl-item-desc">    When given <var>in</var> contains invalid PEM format.
+  </dd>
+      <dt class="dl-item-title">
+        <code>&amp;pre-eb-as-boundary</code>
+      </dt>
+      <dd class="dl-item-desc">    When given <var>in</var> contains Pre-Encapsulation Boundary as the end of
+    Encapsulated Message and <code>:multiple</code> is #f.
+<p />    For example:
+    <pre class="codeblock">-----BEGIN FOO-----
+... foo value ...
+-----BEGIN BAR-----
+... bar value...
+-----END BAR-----
+    </pre>
+    parsing PEM like above must specify <code>:multiple</code> with true value.
+    Otherwise, <code>&amp;pre-eb-as-boundary</code> is signaled.
+  </dd>
+    </dl>
+  </div>
 </div>
-<p />
-</section>
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-pem-file2561">
+    <span class="name" name="parse-pem-file">parse-pem-file</span>
+  </a> <span class="args">file :rest options</span></div>
+<div class="define"><span class="define-category">Function</span><a name="parse-pem-string2562">
+    <span class="name" name="parse-pem-string">parse-pem-string</span>
+  </a> <span class="args">pem-string :rest options</span></div>
+<div class="desc">Convenient procedures.
+<p />Parse given file and PEM string, respectively.
+<p /><var>option</var> will be passed to the <code>parse-pem</code>.
+</div>
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section736.html">(rfc pem) - PEM format  library</a>
+    <a class="prev" href="section736.html">(rfc json-pointer) - JSON Pointer</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section738.html">(rfc totp) - Time-based One-Time Password library</a>
+    <a class="next" href="section738.html">(rfc hotp) - HMAC-based One-Time Password library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-08-31T09:05:01+0200</i></div>
+    <div id="footer-date">Generated date: <i>2019-06-05T00:07:27+0200</i></div>
   </div>
 </html>

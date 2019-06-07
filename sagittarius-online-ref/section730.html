@@ -7,61 +7,152 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section729.html">(rfc base64) - Base 64 encode and decode library</a>
+    <a class="prev" href="section729.html">(rfc :5322) - Internet message format library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section731.html">(rfc hmac) - HMAC library</a>
+    <a class="next" href="section731.html">(rfc cmac) - CMAC library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.cmac"><span class="section-number">7.30</span>(rfc cmac) - CMAC library</a>
+    <a class="section.anchor" name="rfc.base64"><span class="section-number">7.30</span>(rfc base64) - Base 64 encode and decode library</a>
   </h3>
-<p />This section describes the CMAC extension of hash algorithm. The CMAC itself
-is described <a href="http://tools.ietf.org/html/rfc4493">RFC 4493</a>.
-The provided library make user be able to use the algorithm with the APIs of
-math library's hash algorithm APIs. For the APIs detail, see
-<a href="section719.html#math.hash">Hash operations</a>.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc cmac)2421">
-      <span class="name" name="(rfc cmac)">(rfc cmac)</span>
+    <a name="(rfc base64)2456">
+      <span class="name" name="(rfc base64)">(rfc base64)</span>
     </a>
   </div>
-<div class="desc">Provides CMAC hash algorithm.</div>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="CMAC2422">
-      <span class="name" name="CMAC">CMAC</span>
-    </a>
-  </div>
-<div class="desc">The name for CMAC hash algorithm.
-<p />The following example explains, how to use it.
-<p /><pre class="codeblock">(import (rnrs) (rfc cmac) (math) (crypto))
-
-(define K (generate-secret-key AES (integer-&gt;bytevector 
-				    #x2b7e151628aed2a6abf7158809cf4f3c)))
-
-(define aes-cipher (cipher AES K))
-
-(hash CMAC #vu8() :cipher aes-cipher)
-;; =&gt; #vu8(187 29 105 41 233 89 55 40 127 163 125 18 155 117 103 70)
-
-;; for AES-CMAC-96
-(hash CMAC #vu8() :cipher aes-cipher :size (/ 96 8))
-;; =&gt; #vu8(187 29 105 41 233 89 55 40 127 163 125 18)
-</pre>
-<p />The RFC is defined for only AES block cipher however the implementation
-can take any block cipher such as DES3.
-<p />CAUTION: only AES cipher is tested.
+<div class="desc">This library provides Base 64 encoding and decoding procedures.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2457"><span class="section-number">7.30.1</span>Encoding procedures</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode2458">
+    <span class="name" name="base64-encode">base64-encode</span>
+  </a>
+ <span class="args">in :key (line-width 76) (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-encode2459">
+    <span class="name" name="base64url-encode">base64url-encode</span>
+  </a>
+ <span class="args">in :key (line-width #f) (padding? #f)</span></div>
+<div class="desc"><var>in</var> must be either a bytevector or binary input port.
+<p />Encodes given input <var>in</var> to Base 64 encoded bytevector.
+<p />The keyword argument <var>line-width</var> specifies where the encode procedure
+should put linefeed. If this is less than 1 or #f, encoder does not put
+linefeed.
+<p />The keyword argument <var>padding?</var> controls if the result encoded value
+contains padding character <code>#\=</code> or not. If this is #f, then the result
+value won't contain padding character.
+<p />The <code>base64url-encode</code> encodes the given input to Base 64 URL safe
+encoded bytevector. Which doesn't use <code>+</code> and <code>/</code>.
 </div>
-
-</section>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode-string2460">
+    <span class="name" name="base64-encode-string">base64-encode-string</span>
+  </a>
+ <span class="args">string :key (line-width 76) transcoder (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-encode-string2461">
+    <span class="name" name="base64url-encode-string">base64url-encode-string</span>
+  </a>
+ <span class="args">string :key (line-width #f) transcoder (padding? #f)</span></div>
+<div class="desc">Convenient procedure for string.
+<p />Encodes given <var>string</var> to Base 64 encoded string.
+<p />The keyword argument <var>transcoder</var> is used to convert given string to
+bytevector. The converted bytevector will be passed to the <code>base64-encode</code>
+procedure. The default value is a transcoder with UTF-8 codec with EOL
+style none.
+<p />The keyword argument <var>padding?</var> is the same as <code>base64-encode</code>.
+<p />The <code>base64url-encode-string</code> encodes the given input to Base 64 URL safe
+encoded bytevector. Which doesn't use <code>+</code> and <code>/</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-base64-encode-input-port2462">
+    <span class="name" name="open-base64-encode-input-port">open-base64-encode-input-port</span>
+  </a>
+ <span class="args">source :key (owner? #f) (line-width #f) (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64-encode-output-port2463">
+    <span class="name" name="open-base64-encode-output-port">open-base64-encode-output-port</span>
+  </a>
+ <span class="args">sink :key (owner? #f) (line-width #f) (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-encode-input-port2464">
+    <span class="name" name="open-base64url-encode-input-port">open-base64url-encode-input-port</span>
+  </a>
+ <span class="args">source :key (owner? #f) (line-width #f) (padding? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-encode-output-port2465">
+    <span class="name" name="open-base64url-encode-output-port">open-base64url-encode-output-port</span>
+  </a>
+ <span class="args">sink :key (owner? #f) (line-width #f) (padding? #f)</span></div>
+<div class="desc">Creates binary Base64 encode input and output port, respectively.
+<p /><var>source</var> must be binary inpurt port.
+<p />The input port reads bytes from <var>source</var> and returns Base64 encoded
+result.
+<p /><var>sink</var> must be binary inpurt port.
+<p />The output port puts encoded bytes to <var>sink</var>. The port must be closed
+to finish the encoding process properly.
+<p />The keyword argument <var>padding?</var> is the same as <code>base64-encode</code>.
+<p />The <code>open-base64url-encode-input-port</code> and
+<code>open-base64url-encode-output-port</code> encode to Base64 URL safe encode.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2466"><span class="section-number">7.30.2</span>Decoding procedures</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode2467">
+    <span class="name" name="base64-decode">base64-decode</span>
+  </a> <span class="args">in</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-decode2468">
+    <span class="name" name="base64url-decode">base64url-decode</span>
+  </a> <span class="args">in</span></div>
+<div class="desc"><var>in</var> must be a bytevector or binary input port.
+<p />Decode Base 64 encoded input <var>in</var> to original bytevector.
+<p />The <code>base64url-decode</code> decodes Base64 URL safe encoded value.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode-string2469">
+    <span class="name" name="base64-decode-string">base64-decode-string</span>
+  </a>
+ <span class="args">string :key (transcoder (native-transcoder))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-decode-string2470">
+    <span class="name" name="base64url-decode-string">base64url-decode-string</span>
+  </a>
+ <span class="args">string :key (transcoder (native-transcoder))</span></div>
+<div class="desc">Convenient procedure.
+<p />Decode Base 64 encoded string to original string. The procedure is using
+<code>base64-decode</code>.
+<p />The keyword argument specifies how to convert the decoded bytevector to string.
+If this is #f, the procedure returns raw bytevector.
+<p />The <code>base64url-decode-string</code> decodes Base64 URL safe encoded value.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-base64-decode-input-port2471">
+    <span class="name" name="open-base64-decode-input-port">open-base64-decode-input-port</span>
+  </a>
+ <span class="args">source :key (owner? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64-decode-output-port2472">
+    <span class="name" name="open-base64-decode-output-port">open-base64-decode-output-port</span>
+  </a>
+ <span class="args">sink :key (owner? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-decode-input-port2473">
+    <span class="name" name="open-base64url-decode-input-port">open-base64url-decode-input-port</span>
+  </a>
+ <span class="args">source :key (owner? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-decode-output-port2474">
+    <span class="name" name="open-base64url-decode-output-port">open-base64url-decode-output-port</span>
+  </a>
+ <span class="args">sink :key (owner? #f)</span></div>
+<div class="desc">Creates binary Base64 decode input and output port, respectively.
+<p /><var>source</var> must be binary inpurt port.
+<p />The input port reads Base64 encoded bytes from <var>source</var> and returns 
+decoded results.
+<p /><var>sink</var> must be binary inpurt port.
+<p />The output port puts decoded bytes to <var>sink</var>. The port must be closed
+to finish the encoding process properly.
+<p />The <code>open-base64url-decode-input-port</code> and
+<code>open-base64url-decode-output-port</code> decode Base64 URL safe encoded
+value.
+</div>
+<p />
+</section></section>
   <div class="prev-next">
-    <a class="prev" href="section729.html">(rfc base64) - Base 64 encode and decode library</a>
+    <a class="prev" href="section729.html">(rfc :5322) - Internet message format library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section731.html">(rfc hmac) - HMAC library</a>
+    <a class="next" href="section731.html">(rfc cmac) - CMAC library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-08-31T09:05:01+0200</i></div>
+    <div id="footer-date">Generated date: <i>2019-06-05T00:07:27+0200</i></div>
   </div>
 </html>

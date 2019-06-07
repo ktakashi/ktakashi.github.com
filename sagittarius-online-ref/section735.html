@@ -7,32 +7,187 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section734.html">(rfc http-connections) - HTTP client utilities</a>
+    <a class="prev" href="section734.html">(rfc http2) - HTTP/2 client</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section736.html">(rfc pem) - PEM format  library</a>
+    <a class="next" href="section736.html">(rfc json-pointer) - JSON Pointer</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.json-pointer"><span class="section-number">7.35</span>(rfc json-pointer) - JSON Pointer</a>
+    <a class="section.anchor" name="rfc.http-connections"><span class="section-number">7.35</span>(rfc http-connections) - HTTP client utilities
+</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc json-pointer)2497">
-      <span class="name" name="(rfc json-pointer)">(rfc json-pointer)</span>
+    <a name="(rfc http)2524">
+      <span class="name" name="(rfc http)">(rfc http)</span>
     </a>
   </div>
-<div class="desc">This library is re-exporting of <code>(text json pointer)</code>.
-<p />For more information, please see <a href="section755.html#text.json.pointer">(text json pointer) - JSON Pointer</a>
+<div class="desc">This library provides common interfaces of 
+<a href="section733.html#rfc.http">
+    <code>(rfc http)</code>
+  </a> and
+<a href="#rfc.http2">
+    <code>(rfc http2)</code>
+  </a> library.
 </div>
-
+<p /><div class="define"><span class="define-category">Function</span><a name="http-connection?2525">
+    <span class="name" name="http-connection?">http-connection?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given object is an HTTP connection.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http1-connection?2526">
+    <span class="name" name="http1-connection?">http1-connection?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given object is an HTTP/1.1 connection.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-http1-connection2527">
+    <span class="name" name="make-http1-connection">make-http1-connection</span>
+  </a> <span class="args">server secure?</span></div>
+<div class="desc">Creates an HTTP/1.1 connection with destination server <var>server</var>.
+<p />If the <var>secure?</var> is true value, then it uses TLS socket.
+<p />The HTTP/1.1 connection uses <code>http-request</code> defined in <code>(rfc http)</code>
+library to send an request.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http2-connection?2528">
+    <span class="name" name="http2-connection?">http2-connection?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given object is an HTTP/2 connection.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-http2-connection2529">
+    <span class="name" name="make-http2-connection">make-http2-connection</span>
+  </a> <span class="args">server secure?</span></div>
+<div class="desc">Creates an HTTP/2 connection with destination server <var>server</var>.
+<p />If the <var>secure?</var> is true value, then it uses TLS socket.
+<p />The HTTP/1.1 connection uses <code>http2-request</code> defined in <code>(rfc http2)</code>
+library to send an request.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-connection-secure?2530">
+    <span class="name" name="http-connection-secure?">http-connection-secure?</span>
+  </a> <span class="args">http-connection</span></div>
+<div class="desc">Returns #t if the given <var>http-connection</var> uses TLS socket to
+connect target server.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-connection-server2531">
+    <span class="name" name="http-connection-server">http-connection-server</span>
+  </a> <span class="args">http-connection</span></div>
+<div class="desc">Returns destination server of the <var>http-connection</var> as string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-connection-server&amp;port2532">
+    <span class="name" name="http-connection-server&amp;port">http-connection-server&amp;port</span>
+  </a> <span class="args">http-connection</span></div>
+<div class="desc">Returns destination server and port of the <var>http-connection</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-http-connection!2533">
+    <span class="name" name="open-http-connection!">open-http-connection!</span>
+  </a> <span class="args">http-connection</span></div>
+<div class="desc">Opens given <var>http-connection</var> and returns it.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="close-http-connection!2534">
+    <span class="name" name="close-http-connection!">close-http-connection!</span>
+  </a> <span class="args">http-connection</span></div>
+<div class="desc">Closes given <var>http-connection</var> and returns it.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-request2535">
+    <span class="name" name="http-request">http-request</span>
+  </a> <span class="args">http-connection method path . opt</span></div>
+<div class="desc">Sends HTTP request to the path <var>path</var> of destination server
+of <var>http-connection</var> with HTTP method <var>methos</var>.
+<p />The rest value of <var>opt</var> is passed to underling request sending procedure.
+<p />The procedure returns 3 values, HTTP status, HTTP header and content as
+bytevector.
+</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="http-null-receiver2536">
+      <span class="name" name="http-null-receiver">http-null-receiver</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Method</span><a name="http-null-receiver2537">
+    <span class="name" name="http-null-receiver">http-null-receiver</span>
+  </a> <span class="args">(conn http1-connection)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="http-null-receiver2538">
+    <span class="name" name="http-null-receiver">http-null-receiver</span>
+  </a> <span class="args">(conn http2-connection)</span></div>
+<div class="desc">Generic method of null http receiver.
+<p />The <code>http-null-receiver</code> forwards <code>http-null-receiver</code> defined
+in <code>(rfc http)</code> for <code>http1-connection</code> and
+<code>http2-null-receiver</code> defined
+in <code>(rfc http2)</code> for <code>http2-connection</code>
+</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="http-oport-receiver2539">
+      <span class="name" name="http-oport-receiver">http-oport-receiver</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Method</span><a name="http-oport-receiver2540">
+    <span class="name" name="http-oport-receiver">http-oport-receiver</span>
+  </a>
+ <span class="args">(conn http1-connection) sink flusher</span></div>
+<div class="define"><span class="define-category">Method</span><a name="http-oport-receiver2541">
+    <span class="name" name="http-oport-receiver">http-oport-receiver</span>
+  </a>
+ <span class="args">(conn http2-connection) sink flusher</span></div>
+<div class="desc">Generic method of output port http receiver.
+<p />The <code>http-oport-receiver</code> forwards <code>http-oport-receiver</code> defined
+in <code>(rfc http)</code> for <code>http1-connection</code> and
+<code>http2-data-receiver</code> defined in <code>(rfc http2)</code> for
+<code>http2-connection</code>
+</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="http-blob-sender2542">
+      <span class="name" name="http-blob-sender">http-blob-sender</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Method</span><a name="http-blob-sender2543">
+    <span class="name" name="http-blob-sender">http-blob-sender</span>
+  </a> <span class="args">(conn http1-connection) blob</span></div>
+<div class="define"><span class="define-category">Method</span><a name="http-blob-sender2544">
+    <span class="name" name="http-blob-sender">http-blob-sender</span>
+  </a> <span class="args">(conn http2-connection) blob</span></div>
+<div class="desc">Generic method of http blob sender.
+<p />The <code>http-blob-sender</code> forwards <code>http-blob-sender</code> defined
+in <code>(rfc http)</code> for <code>http1-connection</code> and
+<code>http2-data-sender</code> defined in <code>(rfc http2)</code> for
+<code>http2-connection</code>
+</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="http-string-sender2545">
+      <span class="name" name="http-string-sender">http-string-sender</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Method</span><a name="http-string-sender2546">
+    <span class="name" name="http-string-sender">http-string-sender</span>
+  </a> <span class="args">(conn http1-connection) string</span></div>
+<div class="define"><span class="define-category">Method</span><a name="http-string-sender2547">
+    <span class="name" name="http-string-sender">http-string-sender</span>
+  </a> <span class="args">(conn http2-connection) string</span></div>
+<div class="desc">Generic method of http string sender.
+<p />The <code>http-string-sender</code> forwards <code>http-string-sender</code> defined
+in <code>(rfc http)</code> for <code>http1-connection</code> and
+<code>http2-data-sender</code> defined in <code>(rfc http2)</code> with given
+<var>string</var> converted by <code>string-&gt;utf8</code> procedure defined
+for <code>http2-connection</code>
+</div>
+<p /><div class="define">
+    <span class="define-category">Generic</span>
+    <a name="http-null-sender2548">
+      <span class="name" name="http-null-sender">http-null-sender</span>
+    </a>
+  </div>
+<div class="define"><span class="define-category">Method</span><a name="http-null-sender2549">
+    <span class="name" name="http-null-sender">http-null-sender</span>
+  </a> <span class="args">(conn http1-connection)</span></div>
+<div class="define"><span class="define-category">Method</span><a name="http-null-sender2550">
+    <span class="name" name="http-null-sender">http-null-sender</span>
+  </a> <span class="args">(conn http2-connection)</span></div>
+<div class="desc">Generic method of http null sender.
+<p />The <code>http-null-sender</code> forwards <code>http-null-sender</code> defined
+in <code>(rfc http)</code> for <code>http1-connection</code> and does nothing
+for <code>http2-connection</code>.
+</div>
 </section>
   <div class="prev-next">
-    <a class="prev" href="section734.html">(rfc http-connections) - HTTP client utilities</a>
+    <a class="prev" href="section734.html">(rfc http2) - HTTP/2 client</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section736.html">(rfc pem) - PEM format  library</a>
+    <a class="next" href="section736.html">(rfc json-pointer) - JSON Pointer</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-08-31T09:05:01+0200</i></div>
+    <div id="footer-date">Generated date: <i>2019-06-05T00:07:27+0200</i></div>
   </div>
 </html>

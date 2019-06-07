@@ -7,168 +7,80 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section758.html">(text json validator) - JSON validator</a>
+    <a class="prev" href="section758.html">(text json mutable) - Mutable JSON</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section760.html">(text markdown) -- Markdown parser</a>
+    <a class="next" href="section760.html">(text json patch) - JSON Patch</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.html-parser"><span class="section-number">7.59</span>(text sxml html-parser) - Flxible HTML parser</a>
+    <a class="section.anchor" name="text.json.pointer"><span class="section-number">7.59</span>(text json pointer) - JSON Pointer</a>
   </h3>
-<p />
-<div class="define">
+<p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text sxml html-parser)2855">
-      <span class="name" name="(text sxml html-parser)">(text sxml html-parser)</span>
+    <a name="(text json pointer)2933">
+      <span class="name" name="(text json pointer)">(text json pointer)</span>
     </a>
   </div>
-<div class="desc">This library provides HTML parser and printer procedures.
-<p />The provided procedures are compatible with HTMLPrag.
+<div class="desc">This library provides JSON Pointer procedures.
+<p />The specification of JSON Pointer is defined by the
+<a href="https://tools.ietf.org/html/rfc6901">RFC 6901</a>.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2856"><span class="section-number">7.59.1</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-0nf2857">
-    <span class="name" name="html-&gt;sxml-0nf">html-&gt;sxml-0nf</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-1nf2858">
-    <span class="name" name="html-&gt;sxml-1nf">html-&gt;sxml-1nf</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml-2nf2859">
-    <span class="name" name="html-&gt;sxml-2nf">html-&gt;sxml-2nf</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;sxml2860">
-    <span class="name" name="html-&gt;sxml">html-&gt;sxml</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="html-&gt;shtml2861">
-    <span class="name" name="html-&gt;shtml">html-&gt;shtml</span>
-  </a> <span class="args">in</span></div>
-<div class="desc">Parse given input port to SHTML. The <var>in</var> must be a textual input
-port.
-<p />The <code>html-&gt;sxml-2nf</code> procedure normalizes attributes if it doesn't have
-value. Others don't. Normalization in this context means adding attribute name
-as its value.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="write-shtml-as-html2862">
-    <span class="name" name="write-shtml-as-html">write-shtml-as-html</span>
-  </a>
- <span class="args">shtml :optional out error-filter</span></div>
-<div class="desc">Writes given <var>shtml</var> to <var>out</var>.
-<p />If optional argument <var>out</var> is given, it must be a textual output port,
-then the procedure writes to given output port. Otherwise 
-<code>current-output-port</code> is used.
-<p />Optional argument <var>error-filter</var> is used when unexpected SHTML entity is
-met. It must be a procedure takes 2 arguments, unexpected entity and boolean
-flag indicates if the entity is attribute or not. By default, it raises an
-error.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="shtml-&gt;html2863">
-    <span class="name" name="shtml-&gt;html">shtml-&gt;html</span>
-  </a> <span class="args">shtml</span></div>
-<div class="desc">Converts <var>shtml</var> to string represented HTML.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2864"><span class="section-number">7.59.2</span>Low level APIs</a>
-  </h4>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-comment-symbol2865">
-      <span class="name" name="shtml-comment-symbol">shtml-comment-symbol</span>
-    </a>
+<p />The following example shows simple usage of the library:
+<p />This is an input file named <code>example.json</code>.
+<pre class="codeblock">{
+  "id": 1234,
+  "data": {
+    "datum0": [0, 1, 2],
+    "datum1": [3, 4]
+  }
+}
+</pre>
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(import (rnrs) (rfc json-pointer) (text json))
+
+(define id-pointer (json-pointer "/id"))
+
+(let ((json (call-with-input-file "example.json" json-read)))
+  (id-pointer json))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">1234</span>
   </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-decl-symbol2866">
-      <span class="name" name="shtml-decl-symbol">shtml-decl-symbol</span>
-    </a>
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(import (rnrs) (rfc json-pointer) (text json))
+
+(define data-pointer (json-pointer "/data"))
+
+#|
+example.json
+|#
+(let ((json (call-with-input-file "example.json" json-read)))
+  ;; Retrievs /data/datum0
+  ((json-pointer "/datum0" data-pointer) json))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">'(0 1 2)</span>
   </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-empty-symbol2867">
-      <span class="name" name="shtml-empty-symbol">shtml-empty-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-end-symbol2868">
-      <span class="name" name="shtml-end-symbol">shtml-end-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-entity-symbol2869">
-      <span class="name" name="shtml-entity-symbol">shtml-entity-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-pi-symbol2870">
-      <span class="name" name="shtml-pi-symbol">shtml-pi-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-start-symbol2871">
-      <span class="name" name="shtml-start-symbol">shtml-start-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-text-symbol2872">
-      <span class="name" name="shtml-text-symbol">shtml-text-symbol</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-top-symbol2873">
-      <span class="name" name="shtml-top-symbol">shtml-top-symbol</span>
-    </a>
-  </div>
-<div class="desc">SXML entity symbols: <code>*COMMENT*</code>, <code>*DECL*</code>, <code>*EMPTY*</code>,
-<code>*END*</code>, <code>*ENTITY*</code>, <code>*PI*</code>, <code>*START*</code>, <code>*TEXT*</code> and
-<code>*TOP*</code> respectively.
-</div>
-<p /><div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-named-char-id2874">
-      <span class="name" name="shtml-named-char-id">shtml-named-char-id</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Variable</span>
-    <a name="shtml-numeric-char-id2875">
-      <span class="name" name="shtml-numeric-char-id">shtml-numeric-char-id</span>
-    </a>
-  </div>
-<div class="desc">These variables are used in <code>*ENTITY*</code> as public identifier.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-shtml-entity2876">
-    <span class="name" name="make-shtml-entity">make-shtml-entity</span>
-  </a> <span class="args">value</span></div>
-<div class="desc">Makes SHTML character entity. The <var>value</var> must be a symbol, string
-or integer.
-<p /><div class="snipet-box">
-    <pre class="snipet">(make-shtml-entity 151)</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">(&amp; 151)</span>
-  </div>
-</div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="shtml-entity-value2877">
-      <span class="name" name="shtml-entity-value">shtml-entity-value</span>
-    </a>
-  </div>
-<div class="desc">Retrieve SHTML entity value.
-</div>
 <p />
-</section></section>
+<div class="define"><span class="define-category">Function</span><a name="json-pointer2934">
+    <span class="name" name="json-pointer">json-pointer</span>
+  </a> <span class="args">pointer: optional parent</span></div>
+<div class="desc">Returns a procedure taks one argument which must be a list or vector
+representing JSON object. The given <var>poinster</var> must be a string or
+textual input port which start with <code>/</code>.
+<p />The optional argument <var>parent</var> is passed, then it must be a procedure
+returned by the <code>json-pointer</code> and is called before the current
+<var>pointer</var> is processed.
+</div>
+
+</section>
   <div class="prev-next">
-    <a class="prev" href="section758.html">(text json validator) - JSON validator</a>
+    <a class="prev" href="section758.html">(text json mutable) - Mutable JSON</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section760.html">(text markdown) -- Markdown parser</a>
+    <a class="next" href="section760.html">(text json patch) - JSON Patch</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-08-31T09:05:01+0200</i></div>
+    <div id="footer-date">Generated date: <i>2019-06-05T00:07:27+0200</i></div>
   </div>
 </html>

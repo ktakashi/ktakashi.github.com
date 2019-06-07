@@ -7,65 +7,45 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section737.html">(rfc hotp) - HMAC-based One-Time Password library</a>
+    <a class="prev" href="section737.html">(rfc pem) - PEM format  library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section739.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="next" href="section739.html">(rfc totp) - Time-based One-Time Password library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.totp"><span class="section-number">7.38</span>(rfc totp) - Time-based One-Time Password library</a>
+    <a class="section.anchor" name="rfc.hotp"><span class="section-number">7.38</span>(rfc hotp) - HMAC-based One-Time Password library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc totp)2512">
-      <span class="name" name="(rfc totp)">(rfc totp)</span>
+    <a name="(rfc hotp)2563">
+      <span class="name" name="(rfc hotp)">(rfc hotp)</span>
     </a>
   </div>
-<div class="desc">Provides Time-based One-Time Password (TOTP) generating procedures. TOTP is
-defined in RFC 6238:
-<a href="http://tools.ietf.org/html/rfc6238">RFC 6238</a>.
+<div class="desc">Provides HMAC-based One-Time Password (HOTP) generating procedures. HOTP is
+defined in RFC 4226:
+<a href="http://tools.ietf.org/html/rfc4226">RFC 4226</a>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="generate-time-based-one-time-password2513">
-    <span class="name" name="generate-time-based-one-time-password">generate-time-based-one-time-password</span>
-  </a>
-  <span class="args">K digit :key time start-time step mode</span></div>
-<div class="define"><span class="define-category">Function</span><a name="totp2514">
-    <span class="name" name="totp">totp</span>
-  </a>
-  <span class="args">K digit :key time start-time step mode</span></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="generate-hmac-based-one-time-password2564">
+    <span class="name" name="generate-hmac-based-one-time-password">generate-hmac-based-one-time-password</span>
+  </a> <span class="args">K C digit</span></div>
+<div class="define"><span class="define-category">Function</span><a name="hotp2565">
+    <span class="name" name="hotp">hotp</span>
+  </a> <span class="args">K C digit</span></div>
 <div class="desc"><var>K</var> must be a bytevector represents shared secret.
-<p /><var>digit</var> must be a positive exact integer.
-<p />The keyword argument <var>time</var> is given, then it must be a UTC time object
-of SRFI-19. The procedure computes returning one-time password according to
-the given time. The default value is <code>(current-time)</code>.
-<p />NOTE: <var>time</var> keyword should not be specified unless its testing purpose.
-<p />The keyword arguments described below are system parameters, means these
-parameters must be agreed between authenticator.
-<p />The keyword argument <var>start-time</var> is given, then it must be a UTC time
-object of SRFI-19. The procedure computes returning one-time password according
-to the given time. The defaule value is <code>(make-time time-utc 0 0)</code>.
-<p />The keyword argument <var>step</var> is given, then it must be a positive exact
-integer. The procedure computes returning one-time password according
-to the given time. The defaule value is <code>30</code>.
-<p />The keyword argument <var>step</var> is given, then it must be a positive exact
-integer. The procedure computes returning one-time password according
-to the given time. The defaule value is <code>30</code>.
-<p />The keyword argument <var>mode</var> is given, then it must be a hash algorithm name
-either builtin or custom. The procedure computes returning one-time password
-according to the given time. The defaule value is <code>SHA-1</code>.
-<p />
-Generates an Time-based one-time password.
-<p /><code>totp</code> is an alias of <code>generate-time-based-one-time-password</code>.
+<p /><var>C</var> must be an exact integer represents counter.
+<p /><var>digit</var> must be an exact integer.
+<p />Generates an HMAC-based one-time password.
+<p /><code>hotp</code> is an alias of <code>generate-hmac-based-one-time-password</code>.
 </div>
-
+<p />
 </section>
   <div class="prev-next">
-    <a class="prev" href="section737.html">(rfc hotp) - HMAC-based One-Time Password library</a>
+    <a class="prev" href="section737.html">(rfc pem) - PEM format  library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section739.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+    <a class="next" href="section739.html">(rfc totp) - Time-based One-Time Password library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-08-31T09:05:01+0200</i></div>
+    <div id="footer-date">Generated date: <i>2019-06-05T00:07:27+0200</i></div>
   </div>
 </html>

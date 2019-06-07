@@ -7,378 +7,143 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section753.html">(text json) -- JSON parser</a>
+    <a class="prev" href="section753.html">(text csv) - Comma separated values parser library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section755.html">(text json pointer) - JSON Pointer</a>
+    <a class="next" href="section755.html">(text json) -- JSON parser</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.json.object-builder"><span class="section-number">7.54</span>(text json object-builder) -- JSON
-object builder/serializer</a>
+    <a class="section.anchor" name="text.html-lite"><span class="section-number">7.54</span>(text html-lite) - Simple HTML document builder library</a>
   </h3>
-<p /><div class="define">
+<p />
+<div class="define">
     <span class="define-category">Library</span>
-    <a name="(text json object-builder)2819">
-      <span class="name" name="(text json object-builder)">(text json object-builder)</span>
+    <a name="(text html-lite)2867">
+      <span class="name" name="(text html-lite)">(text html-lite)</span>
     </a>
   </div>
-<div class="desc">This library provides Scheme object -&gt; JSON string and vice versa
-utilities.
+<div class="desc">This library provides simple HTML builder procedures based on HTML5.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="html-escape2868">
+    <span class="name" name="html-escape">html-escape</span>
+  </a> <span class="args">:optional (in (current-input-port))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="html-escape-string2869">
+    <span class="name" name="html-escape-string">html-escape-string</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Escapes the unsafe characters in HTML and returns escaped string.
+<p />The <code>html-escape</code> reads the string from optional argument <var>in</var> which
+must be an textual input port and returns an escaped string.
+<p />The <code>html-escape-string</code> takes a string and returns an escaped string.
 </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2820"><span class="section-number">7.54.1</span>JSON object builder</a>
-  </h4>
-<p />JSON object builder is a Schem object which contains information to
-construct a Scheme object from JSON representation. Currently this can be
-created only via <code>json-object-builder</code> macro.
-<p /><div class="define"><span class="define-category">Function</span><a name="json:builder?2821">
-    <span class="name" name="json:builder?">json:builder?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is a JSON object builder.</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="json-object-builder2822">
-    <span class="name" name="json-object-builder">json-object-builder</span>
-  </a> <span class="args">ctr spec ...</span></div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="?2823">
-      <span class="name" name="?">?</span>
-    </a>
+<p /><div class="define"><span class="define-category">Function</span><a name="html-doctype2870">
+    <span class="name" name="html-doctype">html-doctype</span>
+  </a> <span class="args">:key (type :html-4.01-strict)</span></div>
+<div class="desc">Returns a doctype declaration for an HTML document. <var>type</var> can be one
+of the followings;
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>:html-5</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 5
+  </dd>
+      <dt class="dl-item-title">
+        <code>:html-4.01-strict :html-4.01, :strict, :html-strict</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 4.01 Strict DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:html-4.01-transitional :html-transitional, :transitional</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 4.01 Transitional DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-strict :xhtml-1.0</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Strict DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-transitional</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Transitional DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-frameset</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Frameset DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.1</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.1 DTD
+  </dd>
+    </dl>
   </div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="@2824">
-      <span class="name" name="@">@</span>
-    </a>
-  </div>
-<div class="desc">A DSL which constructs JSON object builder.
-<p />The <var>spec</var> must be one of the followings:
-<ul class="itemlist">
-    <li class="itemlist-item">
-      <code>(@ -&gt;array spec)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(@ -&gt;array)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(ctr mapping ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>ctr/builder</code>
-    </li>
-  </ul>
-<var>-&gt;array</var> must be a procedure which accepts variable length of
-arguments, such as <code>list</code> or <code>vector</code>.
-<p /><var>ctr</var> must be a procedure which accepts the same number of the
-specified keys in the <var>mapping</var> and constucts object.
-<p /><var>ctr/builder</var> must be either object constructor described above
-or JSON object builder created by the <code>json-object-builder</code>.
-<p />If the first 2 form is used, then the created builder handles JSON
-array.
-<p />If the 3rd form is used, then the created builder handles JSON object
-(a.k.a map).
-<p />If the lsst form is used, then the created builder handles simple
-JSON values, such as JSON string and number.
-<p />The <var>mapping</var> must be one of the followings:
-<ul class="itemlist">
-    <li class="itemlist-item">
-      <code>(? key default spec)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(? key default)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(key spec)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>key</code>
-    </li>
-  </ul>
-<var>key</var> must be a string represents the JSON object's key.
-<p /><var>default</var> must be a Scheme object which is used when the <var>key</var> is
-absent.
-<p />The first 2 forms represetns optional values. If the JSON object key
-<var>key</var> is not present, then <var>default</var> is mapped to the result
-Scheme object.
-<p />Here are some of examples:
-<pre class="codeblock">(json-object-builder
- (make-image-holder
-  ("Image"
-  (make-image
-   "Width"
-   "Height"
-   "Title"
-   ("Thumbnail"
-    (make-thumbnail
-     "Url"
-     "Height"
-     "Width"))
-   "Animated"
-   ("IDs" (  list))))))
-#|
-Above construct Scheme object from JSON like the following:
-{
-  "Image": {
-    "Width":  800,
-    "Height": 600,
-    "Title":  "View from 15th Floor",
-    "Thumbnail": {
-      "Url":    "http://www.example.com/image/481989943",
-      "Height": 125,
-      "Width":  100
-  },
-    "Animated" : false,
-    "IDs": [116, 943, 234, 38793]
-  }
-}
-|#
-</pre>
-<p /><pre class="codeblock">(json-object-builder
- (  list
-    (make-location
-     "precision"
-     "Latitude"
-     "Longitude"
-     (? "Address" #f)
-     "City"
-     "State"
-     "Zip"
-     "Country")))
-#|
-Above construct Scheme object from JSON like the following:
-[
-  {
-    "precision": "zip",
-    "Latitude":  37.7668,
-    "Longitude": -122.3959,
-    "Address":   "",
-    "City":      "SAN FRANCISCO",
-    "State":     "CA",
-    "Zip":       "94107",
-    "Country":   "US"
-  },
-  {
-    "precision": "zip",
-    "Latitude":  37.371991,
-    "Longitude": -122.026020,
-    "City":      "SUNNYVALE",
-    "State":     "CA",
-    "Zip":       "94085",
-    "Country":   "US"
-  }
-]
-|#
-</pre>
-<p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-&gt;object2825">
-    <span class="name" name="json-&gt;object">json-&gt;object</span>
-  </a>
- <span class="args">json builder :optional missing-key-handler</span></div>
-<div class="define"><span class="define-category">Function</span><a name="json-string-&gt;object2826">
-    <span class="name" name="json-string-&gt;object">json-string-&gt;object</span>
-  </a>
- <span class="args">json-string builder :optional missing-key-handler</span></div>
-<div class="define"><span class="define-category">Function</span><a name="read-object-from-json2827">
-    <span class="name" name="read-object-from-json">read-object-from-json</span>
-  </a>
- <span class="args">builder :optional (in-port (current-input-port)) missing-key-handler</span></div>
-<div class="desc">Constructs Scheme object from given <var>json</var>, <var>json-string</var>
-or <var>in-port</var>, according to the given <var>builder</var>.
-<p />If the first form is used, then <var>json</var> must be a vector type JSON
-representation specified by the <code>*json-map-type*</code> parameter.
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(let ((json-string "{\"bar\": {\"buz\": 1}}"))
-  (define-record-type foo
-    (fields bar))
-  (define-record-type bar
-    (fields buz))
-  (define bar-builder (json-object-builder (make-bar "buz")))
-  (define builder (json-object-builder (make-foo ("bar" bar-builder))))
-
-  (json-string-&gt;object json-string builder))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">foo</span>
-  </div>
-<p />If <var>missing-key-handler</var> is given, then it must be a procedure accepts 2
-arguments. This procedure is called when the conversion procedure met keys
-which is not defined in <var>builder</var>. The default behaviour is raising an
-error.
 </div>
-<p /><div class="define">
-    <span class="define-category">Parameter</span>
-    <a name="*post-json-object-build*2828">
-      <span class="name" name="*post-json-object-build*">*post-json-object-build*</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Parameter</span>
-    <a name="*post-json-array-build*2829">
-      <span class="name" name="*post-json-array-build*">*post-json-array-build*</span>
-    </a>
-  </div>
-<div class="desc">These parameters hold a procedure which is called when an object is
-constructed from JSON object (map) or JSON array, respectively.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2830"><span class="section-number">7.54.2</span>JSON object serializer</a>
-  </h4>
-<p />JSON object serializer is a Schem object which contains information to
-construct a JSON representaion from Scheme object. Currently this can be
-created only via <code>json-object-serializer</code> macro.
-<p /><div class="define"><span class="define-category">Function</span><a name="json:serializer?2831">
-    <span class="name" name="json:serializer?">json:serializer?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is a JSON object serializer.</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="json-object-serializer2832">
-    <span class="name" name="json-object-serializer">json-object-serializer</span>
-  </a> <span class="args">ctr spec ...</span></div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="?2833">
-      <span class="name" name="?">?</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="@2834">
-      <span class="name" name="@">@</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Auxiliary syntax</span>
-    <a name="-&gt;2835">
-      <span class="name" name="-&gt;">-&gt;</span>
-    </a>
-  </div>
-<div class="desc">A DSL which constructs JSON object serializer.
-<p />The <var>spec</var> must be one of the followings:
-<ul class="itemlist">
-    <li class="itemlist-item">
-      <code>(-&gt; car cdr null? spec)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(-&gt; car cdr null?)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(-&gt; spec)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(-&gt;)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(@ ref length spec)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(@ ref length)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(@ spec)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(@)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(mapping mapping* ...)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>converter/serializer</code>
-    </li>
-  </ul>
-<code>-&gt;</code> indicates that the given object is a listlike object which can
-be accessed sequentially. <var>car</var>, <var>cdr</var> and <var>null?</var> specifies
-how to retrieve the car part and cdr part, and how to check if the object
-is empty or not, respectively. If these are not given then the macro
-uses <code>car</code>, <code>cdr</code> and <code>null?</code>.
-<p /><code>
-    <atmar />
-  </code> indicates that the given object is a vectorlike object which
-can be accessed randomly. <var>ref</var> and <var>length</var> specifies how to access
-the element of the object, and how to retrieve the length of the object,
-respectively. If these are not given then the macro uses <code>vector-ref</code>,
-and <code>vector-length</code>.
-<p />If both of the form don't have <code>spec</code>, then the macro uses the given
-value.
-<p /><code>mapping</code> must be one of the followings:
-<ul class="itemlist">
-    <li class="itemlist-item">
-      <code>(? name absent ref spec)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(? name absent ref)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(name ref spec)</code>
-    </li>
-    <li class="itemlist-item">
-      <code>(name ref)</code>
-    </li>
-  </ul>
-<code>?</code> indicates that referencing object might be absent.
-<p /><var>name</var> must be a string which represents JSON object's key.
-<p /><var>absent</var> must be an object indicating absent value. If the converting
-object is equal to this value in sense of <code>equal?</code>, then the constructed
-JSON representaion don't have <var>name</var>.
-<p /><var>ref</var> must be a accessor which is a procedure accepts one argument.
-<p /><var>converter/serializer</var> must be either a JSON object serializer or
-a procedure which accepts one argument and returns JSON representaion.
-<p /><pre class="codeblock">(json-object-serializer
-  (-&gt; (("precision" location-precision)
-       ("Latitude" location-latitude)
-       ("Longitude" location-longitude)
-       (? "Address" #f location-address)
-       ("City" location-city)
-       ("State" location-state)
-       ("Zip" location-zip)
-       ("Country" location-country))))
-
-;; Above constructs JSON representaion from the following record type.
-(define-record-type location
-  (fields precision latitude longitude address city state zip country))
+<p /><div class="define"><span class="define-category">Function</span><a name="html:element2871">
+    <span class="name" name="html:element">html:<var>element</var></span>
+  </a> <span class="args">args ...</span></div>
+<div class="desc">Construct an HTML element <var>element</var>. Currently following elements are
+provided. 
+<p /><pre class="codeblock">   a       abbr    address  area       article  aside
+   audio   b       base     bdi        bdo      blockquote
+   body    br      button   canvas     caption  cite
+   code    col     colgroup command    datalist dd
+   del     details dfn      div        dl       dt
+   em      embed   fieldset figcaption figure   footer
+   form
+   h1      h2      h3       h4         h5       h6
+   head    header  hgroup   hr         html
+   i       iframe  img      input      ins      kbd
+   keygen  label   legend   li         link     map
+   mark    menu    meta     meter      nav      noscript
+   object  ol      optgroup option     output   p
+   param   pre     progress q          rp       rt
+   ruby    s       samp     script     section  select
+   small   source  span     strong     style    sub
+   summary sup     table    tbody      td       textarea
+   tfoot   th      thead    time       title    tr
+   track   u       ul       var        video    wbr
 </pre>
-<pre class="codeblock">(json-object-serializer
- (("Image" image-holder-image
-   (("Width" image-width)
-    ("Height" image-height)
-    ("Title" image-title)
-    ("Thumbnail" image-thumbnail
-	(("Url" thumbnail-url)
-	 ("Height" thumbnail-height)
-	 ("Width" thumbnail-width)))
-    ("Animated" image-animated)
-    ("IDs" image-ids (-&gt;))))))
-
-;; Above constructs JSON representaion from the following record type.
-(define-record-type image-holder
-  (fields image))
-(define-record-type image
-  (fields width height title thumbnail animated ids))
-(define-record-type thumbnail
-  (fields url height width))
-</pre>
+<p />The result of these functions is a tree of text segments, which can be written
+out to a port by <code>write-tree</code> or can be converted to a string by
+<code>tree-&gt;string</code> <a href="section767.html#text.tree">(text tree) - Lightweight text generation</a>.
+<p />You can specify attributes of the element by using a keyword-value notation
+before the actual content.
+<p /><div class="snipet-box">
+    <pre class="snipet">(tree-&gt;string (html:a :href "http://example.com" "example")) </pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&lt;a href="http://example.com"&gt;example&lt;/a&gt;</span>
+  </div>
+<p />The boolean value given to the attribute has special meaning. If #t is given,
+the attribute is rendered without a value. If #f is given, the attribute is not
+rendered.
+<p /><div class="snipet-box">
+    <pre class="snipet">(tree-&gt;string (html:table :border #t))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&lt;table border&gt;&lt;/table&gt;</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(tree-&gt;string (html:table :border #f))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&lt;table&gt;&lt;/table&gt;</span>
+  </div>
+<p />Special characters in attribute values are escaped by the function, but the
+ones in the content are not.
+<p /><div class="snipet-box">
+    <pre class="snipet">(tree-&gt;string (html:div :foo "&lt;&gt;&amp;\"" "&lt;not escaped&gt;")) </pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&lt;div foo="&amp;lt;&amp;gt;&amp;amp;&amp;quot;"&gt;&lt;not escaped&gt;&lt;/div&gt;</span>
+  </div>
+<p />
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="object-&gt;json2836">
-    <span class="name" name="object-&gt;json">object-&gt;json</span>
-  </a> <span class="args">obj serializer</span></div>
-<div class="desc">Converts Scheme object to JSON representaion.
-<p />The converted JSON representaion is the same as <code>'vector</code> representaion.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="object-&gt;json-string2837">
-    <span class="name" name="object-&gt;json-string">object-&gt;json-string</span>
-  </a> <span class="args">obj serializer</span></div>
-<div class="desc">Converts Scheme object to JSON string.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="write-object-as-json2838">
-    <span class="name" name="write-object-as-json">write-object-as-json</span>
-  </a>
- <span class="args">obj serializer :optional (out-port (current-output-port))</span></div>
-<div class="desc">Writes JSON string converted from <var>obj</var> to <var>out-port</var>.</div>
-</section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section753.html">(text json) -- JSON parser</a>
+    <a class="prev" href="section753.html">(text csv) - Comma separated values parser library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section755.html">(text json pointer) - JSON Pointer</a>
+    <a class="next" href="section755.html">(text json) -- JSON parser</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2018-08-31T09:05:01+0200</i></div>
+    <div id="footer-date">Generated date: <i>2019-06-05T00:07:27+0200</i></div>
   </div>
 </html>
