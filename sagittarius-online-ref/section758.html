@@ -7,144 +7,66 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section757.html">(text json jmespath) - JMESPath</a>
+    <a class="prev" href="section757.html">(text html-lite) - Simple HTML document builder library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section759.html">(text json pointer) - JSON Pointer</a>
+    <a class="next" href="section759.html">(text json object-builder) -- JSON</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.json.mutable"><span class="section-number">7.58</span>(text json mutable) - Mutable JSON</a>
+    <a class="section.anchor" name="text.json"><span class="section-number">7.58</span>(text json) -- JSON parser</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text json mutable)2921">
-      <span class="name" name="(text json mutable)">(text json mutable)</span>
+    <a name="(text json)2959">
+      <span class="name" name="(text json)">(text json)</span>
     </a>
   </div>
-<div class="desc">This library provides an mutable JSON representation.</div>
-<p />The following example shows how to use:
-<pre class="codeblock">(import (rnrs)
-        (text json mutable))
-
-(define json '#(("key" . "value")))
-(define mutable-json (json-&gt;mutable-json json))
-
-(mutable-json-object-set! mutable-json "key" '#(("value" . "as object")))
-
-(mutable-json-&gt;json mutable-json)
-;; -&gt; #(("key" . #(("value" . "as object"))))
+<div class="desc">This library provides JSON parser and writer. 
+</div>
+<p /><div class="define">
+    <span class="define-category">Parameter</span>
+    <a name="*json-map-type*2960">
+      <span class="name" name="*json-map-type*">*json-map-type*</span>
+    </a>
+  </div>
+<div class="desc">Controls mapping of JSON map and array. The value must be either
+<code>'vector</code> or <code>'alist</code>. The first one is compatible with Chicken
+Scheme's json module, the latter one is compatible with Gauche's 
+<code>rfc.json</code> module. By default, it's set to <code>vector</code> for backward
+compatibility.
+<p />Conversion rules for <code>vector</code>:
+<pre class="codeblock">JSON array   &lt;-&gt; list
+JSON map     &lt;-&gt; vector
+JSON boolean &lt;-&gt; boolean
+JSON null    &lt;-&gt; symbol <code>null</code>
 </pre>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="json-&gt;mutable-json2922">
-    <span class="name" name="json-&gt;mutable-json">json-&gt;mutable-json</span>
-  </a> <span class="args">json</span></div>
-<div class="desc">Converts the given <var>json</var> to a mutable JSON.</div>
-<div class="define"><span class="define-category">Function</span><a name="mutable-json-&gt;json2923">
-    <span class="name" name="mutable-json-&gt;json">mutable-json-&gt;json</span>
-  </a> <span class="args">mutable-json</span></div>
-<div class="desc">Converts the given <var>mutable-json</var> to a JSON.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mutable-json?2924">
-    <span class="name" name="mutable-json?">mutable-json?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns <code>#t</code> if the given <var>obj</var> is a mutable JSON,
-otherwise <code>#f</code>.</div>
-<p />Mutable JSON object consists with 2 containers
-<ul class="itemlist">
-    <li class="itemlist-item">Mutable JSON object</li>
-    <li class="itemlist-item">Mutable JSON array</li>
-  </ul>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2925"><span class="section-number">7.58.1</span>Mutable JSON object</a>
-  </h4>
-<p />Mutable JSON object is a JSON object. The difference is a mutable JSON object
-doesn't allow to have multiple identical keys while JSON object allows it.
-<p /><div class="define"><span class="define-category">Function</span><a name="mutable-json-object?2926">
-    <span class="name" name="mutable-json-object?">mutable-json-object?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns <code>#t</code> if the given <var>obj</var> is a mutable JSON object,
-otherwise <code>#f</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mutable-json-object-set!2927">
-    <span class="name" name="mutable-json-object-set!">mutable-json-object-set!</span>
-  </a>
- <span class="args">mutable-json-object key value</span></div>
-<div class="desc">Associates the given <var>key</var> and <var>value</var> to the <var>mutable-json</var>.</div>
-<div class="define"><span class="define-category">Function</span><a name="mutable-json-object-merge!2928">
-    <span class="name" name="mutable-json-object-merge!">mutable-json-object-merge!</span>
-  </a>
- <span class="args">mutable-json-object mutable-json-object1 ... mutable-json-object*</span></div>
-<div class="desc">Merges the <var>mutable-json-object1</var> and <var>mutable-json-object*</var> into
-<var>mutable-json-object</var>.
+<p />Conversion rules for <code>alist</code>:
+<pre class="codeblock">JSON array   &lt;-&gt; vector
+JSON map     &lt;-&gt; alist
+JSON boolean &lt;-&gt; boolean
+JSON null    &lt;-&gt; symbol <code>null</code>
+</pre>
+<p />This parameter affects the read and write procedures.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="mutable-json-object-delete!2929">
-    <span class="name" name="mutable-json-object-delete!">mutable-json-object-delete!</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-read2961">
+    <span class="name" name="json-read">json-read</span>
+  </a> <span class="args">:optional (port (current-input-port))</span></div>
+<div class="desc">Reads JSON from given <var>port</var> and returns representing S-expression.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-write2962">
+    <span class="name" name="json-write">json-write</span>
   </a>
- <span class="args">mutable-json-object key</span></div>
-<div class="desc">Remves the given <var>key</var> from the <var>mutable-json-object</var>.</div>
-<div class="define"><span class="define-category">Function</span><a name="mutable-json-object-contains?2930">
-    <span class="name" name="mutable-json-object-contains?">mutable-json-object-contains?</span>
-  </a>
- <span class="args">mutable-json-object key</span></div>
-<div class="desc">Returns <code>#t</code> if the given <var>key</var> exists in the
-<var>mutable-json-object</var>, otherwise <code>#f</code>.</div>
-<div class="define"><span class="define-category">Function</span><a name="mutable-json-object-ref2931">
-    <span class="name" name="mutable-json-object-ref">mutable-json-object-ref</span>
-  </a>
- <span class="args">mutable-json-object key</span></div>
-<div class="desc">Returns the value associated with the given <var>key</var> in the
-<var>mutable-json-object</var>, otherwise returns <code>mutable JSON not found</code>
-object.
+ <span class="args">json :optional (port (current-output-port))</span></div>
+<div class="desc">Writes the given S-expression JSON representing object to given
+<var>port</var>.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="mutable-json-not-found?2932">
-    <span class="name" name="mutable-json-not-found?">mutable-json-not-found?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns <code>#t</code> if the given <var>obj</var> is a mutable JSON not found,
-otherwise <code>#f</code>.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2933"><span class="section-number">7.58.2</span>Mutable JSON array</a>
-  </h4>
-<p />Mutable JSON array is a JSON array with capability of expansion or shrinking.
-<p /><div class="define"><span class="define-category">Function</span><a name="mutable-json-array?2934">
-    <span class="name" name="mutable-json-array?">mutable-json-array?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns <code>#t</code> if the given <var>obj</var> is a mutable JSON array
-otherwise <code>#f</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mutable-json-array-set!2935">
-    <span class="name" name="mutable-json-array-set!">mutable-json-array-set!</span>
-  </a>
- <span class="args">mutable-json-array index value</span></div>
-<div class="desc">Sets the given value <var>value</var> to the <var>mutable-json-array</var>
-on position of <var>index</var>.</div>
-<div class="define"><span class="define-category">Function</span><a name="mutable-json-array-insert!2936">
-    <span class="name" name="mutable-json-array-insert!">mutable-json-array-insert!</span>
-  </a>
- <span class="args">mutable-json-array index value</span></div>
-<div class="desc">Insets the given value <var>value</var> to the <var>mutable-json-array</var>
-on position of <var>index</var>.</div>
-<div class="define"><span class="define-category">Function</span><a name="mutable-json-array-delete!2937">
-    <span class="name" name="mutable-json-array-delete!">mutable-json-array-delete!</span>
-  </a>
- <span class="args">mutable-json-array index</span></div>
-<div class="desc">Deletes the value of given <var>mutable-json-array</var>
-on position of <var>index</var> and shrink it.</div>
-<div class="define"><span class="define-category">Function</span><a name="mutable-json-array-ref2938">
-    <span class="name" name="mutable-json-array-ref">mutable-json-array-ref</span>
-  </a>
- <span class="args">mutable-json-array index</span></div>
-<div class="desc">Retrieves the value of <var>mutable-json-array</var> on position of
-<var>index</var>.</div>
-<div class="define"><span class="define-category">Function</span><a name="mutable-json-array-size2939">
-    <span class="name" name="mutable-json-array-size">mutable-json-array-size</span>
-  </a> <span class="args">mutable-json-array</span></div>
-<div class="desc">Returns the size of the given <var>mutable-json-array</var>.</div>
-
-</section></section>
+<p /></section>
   <div class="prev-next">
-    <a class="prev" href="section757.html">(text json jmespath) - JMESPath</a>
+    <a class="prev" href="section757.html">(text html-lite) - Simple HTML document builder library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section759.html">(text json pointer) - JSON Pointer</a>
+    <a class="next" href="section759.html">(text json object-builder) -- JSON</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

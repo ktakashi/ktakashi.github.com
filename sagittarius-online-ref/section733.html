@@ -7,303 +7,226 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section732.html">(rfc hmac) - HMAC library</a>
+    <a class="prev" href="section732.html">(rfc :5322) - Internet message format library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section734.html">(rfc http2) - HTTP/2 client</a>
+    <a class="next" href="section734.html">(rfc cmac) - CMAC library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.http"><span class="section-number">7.33</span>(rfc http) - HTTP client</a>
+    <a class="section.anchor" name="rfc.base64"><span class="section-number">7.33</span>(rfc base64) - Base 64 encode and decode library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc http)2486">
-      <span class="name" name="(rfc http)">(rfc http)</span>
+    <a name="(rfc base64)2536">
+      <span class="name" name="(rfc base64)">(rfc base64)</span>
     </a>
   </div>
-<div class="desc">This library provides simple HTTP client defined in 
-<a href="https://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a>.
-<p />The library only talks to HTTP 1.1 and provides part of the specified features.
-We may implement complete specification in future.
-</div>
-<p />Following is the simple example to send GET method to a HTTP server.
-<pre class="codeblock">(import (rfc http))
-
-(define url "http://example.com/path")
-
-(let-values (((server path) (url-server&amp;path url)))
-  (http-get server path))
-;; -&gt; return 3 values
-;; status
-;; header
-;; body
-</pre>
-<p /><div class="define">
-    <span class="define-category">Condition</span>
-    <a name="&amp;http-error2487">
-      <span class="name" name="&amp;http-error">&amp;http-error</span>
-    </a>
-  </div>
-<div class="desc">HTTP error condition. </div>
-<div class="define"><span class="define-category">Function</span><a name="http-error?2488">
-    <span class="name" name="http-error?">http-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Return #t if given <var>obj</var> is HTTP condition, otherwise #f.</div>
-<p />
-<section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2489"><span class="section-number">7.33.1</span>Request APIs</a>
+<div class="desc">This library provides Base 64 encoding and decoding procedures.</div>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2537"><span class="section-number">7.33.1</span>Encoding procedures</a>
   </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="http-get2490">
-    <span class="name" name="http-get">http-get</span>
-  </a> <span class="args">server path options ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="http-head2491">
-    <span class="name" name="http-head">http-head</span>
-  </a> <span class="args">server path options ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="http-post2492">
-    <span class="name" name="http-post">http-post</span>
-  </a> <span class="args">server path body options ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="http-put2493">
-    <span class="name" name="http-put">http-put</span>
-  </a> <span class="args">server path body options ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="http-delete2494">
-    <span class="name" name="http-delete">http-delete</span>
-  </a> <span class="args">server path options ...</span></div>
-<div class="desc">Sends HTTP request to given <var>path</var> on <var>server</var>. The using
-methods are <code>GET</code>, <code>HEAD</code>, <code>POST</code>, <code>PUT</code>, and
-<code>DELETE</code>, respectively.
-<p />The <var>body</var> argument of <code>http-post</code> and <code>http-put</code> can be
-UTF-8 string, bytevector or list of body parameters. The parameters are
-used for sending multipart form data. The detail parameter form is described
-in the <code>http-compose-form-data</code>.
-<p />The keyword <var>:value</var> and <var>file</var> should not be represented 
-simultaneously, if both keywords are found then <var>:file</var> is used.
-<p />Optional arguments <var>options</var> are passed to underling procedure
-<code>http-request</code>.
-</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="http-request2495">
-    <span class="name" name="http-request">http-request</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode2538">
+    <span class="name" name="base64-encode">base64-encode</span>
   </a>
- <span class="args">method server request-uri
-      :key (no-redirect #f)
-           (auth-handler #f)
-           (auth-user #f)
-	   (auth-password #f)
-	   (user-agent (*http-user-agent*))
-	   (secure #f)
-	   (receiver (http-string-receiver))
-	   (sender #f)
-      :allow-other-keys opts</span></div>
-<div class="desc">Sends HTTP request to <var>request-uri</var> on <var>server</var> with
-<var>method</var>.
-<p />The keyword argument <var>receiver</var> is used to receive the response data.
-The value must be a procedure which takes four arguments, status code,
-headers, size of content, and thunk to retrieve remote binary port and its 
-size.
-<p />The keyword argument <var>sender</var> is used for <code>POST</code> and <code>PUT</code>
-HTTP method to send data. If it's specified then it must be a procedure
-which takes three arguments, headers, encoding and header-sink.
-<p />NOTE: Users can define own receiver and sender however the API may change
-in the future. So if the predefined ones are sufficient, it is safe to use
-them.
-<p />The keyword arguments start with <var>auth-</var> handle authentication.
-If the server respond status code <code>401</code> then those values are
-used. <var>auth-handler</var> must be a procedure and takes five arguments
-alist of connection-info, <var>auth-user</var>, <var>auth-password</var>, response
-headers and response body. If the handler returns list of "authorization"
-value then <code>http-request</code> sends it as the authentication data. For
-example, if the server requires BASIC authentication then the procedure
-should return something like following value;
-<p /><pre class="snipet">(("authorization" "Basic dXNlcjpwYXNz"))</pre>
-<p />Following is the complete example of <var>auth-handler</var>;
-<p /><pre class="codeblock">(define (basic-auth-handler info user pass headers body)
-  (let ((m (format "~a:~a" user pass)))
-    `(("authorization" ,(format "Basic ~a" (base64-encode-string m))))))
-</pre>
-<p /><code>http-request</code> supports BASIC authentication and Digest authentication
-by default. If you know that the server requires one of each then specifying
-<var>auth-user</var> and <var>auth-password</var> is sufficient.
-<p />If keyword argument <var>secure</var> is true value then TLS socket is used for
-physical connection.
-<p />The rest arguments <var>opts</var> is converted to request header.
+ <span class="args">in :key (line-width 76) (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-encode2539">
+    <span class="name" name="base64url-encode">base64url-encode</span>
+  </a>
+ <span class="args">in :key (line-width #f) (padding? #f)</span></div>
+<div class="desc"><var>in</var> must be either a bytevector or binary input port.
+<p />Encodes given input <var>in</var> to Base 64 encoded bytevector.
+<p />The keyword argument <var>line-width</var> specifies where the encode procedure
+should put linefeed. If this is less than 1 or #f, encoder does not put
+linefeed.
+<p />The keyword argument <var>padding?</var> controls if the result encoded value
+contains padding character <code>#\=</code> or not. If this is #f, then the result
+value won't contain padding character.
+<p />The <code>base64url-encode</code> encodes the given input to Base 64 URL safe
+encoded bytevector. Which doesn't use <code>+</code> and <code>/</code>.
 </div>
-<p /><div class="define">
-    <span class="define-category">Parameter</span>
-    <a name="*http-user-agent*2496">
-      <span class="name" name="*http-user-agent*">*http-user-agent*</span>
-    </a>
-  </div>
-<div class="desc">This parameter value is used for <code>user-agent</code> header.
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode-string2540">
+    <span class="name" name="base64-encode-string">base64-encode-string</span>
+  </a>
+ <span class="args">string :key (line-width 76) transcoder (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-encode-string2541">
+    <span class="name" name="base64url-encode-string">base64url-encode-string</span>
+  </a>
+ <span class="args">string :key (line-width #f) transcoder (padding? #f)</span></div>
+<div class="desc">Convenient procedure for string.
+<p />Encodes given <var>string</var> to Base 64 encoded string.
+<p />The keyword argument <var>transcoder</var> is used to convert given string to
+bytevector. The converted bytevector will be passed to the <code>base64-encode</code>
+procedure. The default value is a transcoder with UTF-8 codec with EOL
+style none.
+<p />The keyword argument <var>padding?</var> is the same as <code>base64-encode</code>.
+<p />The <code>base64url-encode-string</code> encodes the given input to Base 64 URL safe
+encoded bytevector. Which doesn't use <code>+</code> and <code>/</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-base64-encode-input-port2542">
+    <span class="name" name="open-base64-encode-input-port">open-base64-encode-input-port</span>
+  </a>
+ <span class="args">source :key (owner? #f) (line-width #f) (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64-encode-output-port2543">
+    <span class="name" name="open-base64-encode-output-port">open-base64-encode-output-port</span>
+  </a>
+ <span class="args">sink :key (owner? #f) (line-width #f) (padding? #t)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-encode-input-port2544">
+    <span class="name" name="open-base64url-encode-input-port">open-base64url-encode-input-port</span>
+  </a>
+ <span class="args">source :key (owner? #f) (line-width #f) (padding? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-encode-output-port2545">
+    <span class="name" name="open-base64url-encode-output-port">open-base64url-encode-output-port</span>
+  </a>
+ <span class="args">sink :key (owner? #f) (line-width #f) (padding? #f)</span></div>
+<div class="desc">Creates binary Base64 encode input and output port, respectively.
+<p /><var>source</var> must be binary inpurt port.
+<p />The input port reads bytes from <var>source</var> and returns Base64 encoded
+result.
+<p /><var>sink</var> must be binary inpurt port.
+<p />The output port puts encoded bytes to <var>sink</var>. The port must be closed
+to finish the encoding process properly.
+<p />The keyword argument <var>padding?</var> is the same as <code>base64-encode</code>.
+<p />The <code>open-base64url-encode-input-port</code> and
+<code>open-base64url-encode-output-port</code> encode to Base64 URL safe encode.
 </div>
 <p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2497"><span class="section-number">7.33.2</span>Senders and receivers</a>
+    <a class="section.anchor" name="G2546"><span class="section-number">7.33.2</span>Decoding procedures</a>
   </h4>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="http-null-sender2498">
-      <span class="name" name="http-null-sender">http-null-sender</span>
-    </a>
-  </div>
-<div class="desc">Creates a sender which sends nothing.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http-string-sender2499">
-    <span class="name" name="http-string-sender">http-string-sender</span>
-  </a> <span class="args">str</span></div>
-<div class="desc">Creates a sender which content is <var>str</var>.
-<p />The string will be converted to bytevector according to the
-<var>encoding</var> argument when the sender is called.
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode2547">
+    <span class="name" name="base64-decode">base64-decode</span>
+  </a> <span class="args">in</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-decode2548">
+    <span class="name" name="base64url-decode">base64url-decode</span>
+  </a> <span class="args">in</span></div>
+<div class="desc"><var>in</var> must be a bytevector or binary input port.
+<p />Decode Base 64 encoded input <var>in</var> to original bytevector.
+<p />The <code>base64url-decode</code> decodes Base64 URL safe encoded value.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http-blob-sender2500">
-    <span class="name" name="http-blob-sender">http-blob-sender</span>
-  </a> <span class="args">blob</span></div>
-<div class="desc"><var>blob</var> must be a string or bytevector.
-<p />Creates a sender which content is <var>blob</var>. If the <var>blob</var> is string,
-it will be converted to bytevector with <code>string-&gt;utf8</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http-multipart-sender2501">
-    <span class="name" name="http-multipart-sender">http-multipart-sender</span>
-  </a> <span class="args">params</span></div>
-<div class="desc">Creates a sender which send <code>multipart/form-data</code> with
-content of <var>param</var>.
-<p />The content will be created by <code>http-compose-form-data</code> procedure
-passing <var>param</var>.
-</div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="http-string-receiver2502">
-      <span class="name" name="http-string-receiver">http-string-receiver</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Function</span>
-    <a name="http-binary-receiver2503">
-      <span class="name" name="http-binary-receiver">http-binary-receiver</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Function</span>
-    <a name="http-null-receiver2504">
-      <span class="name" name="http-null-receiver">http-null-receiver</span>
-    </a>
-  </div>
-<div class="desc">Creates a receiver which returning content is string, bytevecotor and
-unspecified value, respectively.
-<p />
-<div class="codeblock-box">
-    <pre class="codeblock">(http-get "google.com" "/" :receiver (http-string-receiver))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">status headers and string representation of received content</span>
-  </div>
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(http-get "google.com" "/" :receiver (http-binary-receiver))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">status headers and bytevector representation of received content</span>
-  </div>
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(http-get "google.com" "/" :receiver (http-null-receiver))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">status headers and unspecified value</span>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http-oport-receiver2505">
-    <span class="name" name="http-oport-receiver">http-oport-receiver</span>
-  </a> <span class="args">sink flusher</span></div>
-<div class="desc">The <var>sink</var> must be a binary output port, <var>flusher</var> must be
-a procedure takes two arguments, <var>sink</var> and headers.
-<p />Creates a receiver which stores the content of response to <var>sink</var> and
-returns the result of <var>flusher</var>.
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(http-get "google.com" "/"
-          :receiver (let-values (((port extract) 
-                                  (open-bytevector-output-port)))
-                      (http-oport-receiver port 
-                                           (lambda (port size) (extract)))))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">status headers and bytevector representation of received content</span>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http-file-receiver2506">
-    <span class="name" name="http-file-receiver">http-file-receiver</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode-string2549">
+    <span class="name" name="base64-decode-string">base64-decode-string</span>
   </a>
- <span class="args">filename :key (temporary? #f)</span></div>
-<div class="desc"><var>filename</var> must be a string.
-<p />Creates a receiver which stores the content to a file. The receiver
-returns the file name.
-<p />If keyword arguments <var>temporary?</var> specified with true value, then
-the returning file name is temporary file.
-<p />If there is no response or <code>content-length</code> header contains non
-number value, then the file will be cleaned.
-<p /><div class="codeblock-box">
-    <pre class="codeblock">(http-get "google.com" "/" :receiver (http-file-receiver "google.html"))
+ <span class="args">string :key (transcoder (native-transcoder))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="base64url-decode-string2550">
+    <span class="name" name="base64url-decode-string">base64url-decode-string</span>
+  </a>
+ <span class="args">string :key (transcoder (native-transcoder))</span></div>
+<div class="desc">Convenient procedure.
+<p />Decode Base 64 encoded string to original string. The procedure is using
+<code>base64-decode</code>.
+<p />The keyword argument specifies how to convert the decoded bytevector to string.
+If this is #f, the procedure returns raw bytevector.
+<p />The <code>base64url-decode-string</code> decodes Base64 URL safe encoded value.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-base64-decode-input-port2551">
+    <span class="name" name="open-base64-decode-input-port">open-base64-decode-input-port</span>
+  </a>
+ <span class="args">source :key (owner? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64-decode-output-port2552">
+    <span class="name" name="open-base64-decode-output-port">open-base64-decode-output-port</span>
+  </a>
+ <span class="args">sink :key (owner? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-decode-input-port2553">
+    <span class="name" name="open-base64url-decode-input-port">open-base64url-decode-input-port</span>
+  </a>
+ <span class="args">source :key (owner? #f)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="open-base64url-decode-output-port2554">
+    <span class="name" name="open-base64url-decode-output-port">open-base64url-decode-output-port</span>
+  </a>
+ <span class="args">sink :key (owner? #f)</span></div>
+<div class="desc">Creates binary Base64 decode input and output port, respectively.
+<p /><var>source</var> must be binary inpurt port.
+<p />The input port reads Base64 encoded bytes from <var>source</var> and returns 
+decoded results.
+<p /><var>sink</var> must be binary inpurt port.
+<p />The output port puts decoded bytes to <var>sink</var>. The port must be closed
+to finish the encoding process properly.
+<p />The <code>open-base64url-decode-input-port</code> and
+<code>open-base64url-decode-output-port</code> decode Base64 URL safe encoded
+value.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2555"><span class="section-number">7.33.3</span>Low level APIs</a>
+  </h4>
+<p />Both encode and decode procedures are using encoder and decoder. Both
+encoder and decoder are just a procedure which takes 2 arguments
+<var>get</var> and <var>put</var> and not reentrant as they have own internal
+buffer to process the input.
+<p /><div class="define"><span class="define-category">Function</span><a name="make-base64-encoder2556">
+    <span class="name" name="make-base64-encoder">make-base64-encoder</span>
+  </a>
+ <span class="args">:key (encode-table *base64-encode-table*) (line-width 76) (padding? #t)</span></div>
+<div class="desc">Creates a Base64 encoder. An encoder is a procedure which takes 2
+arguments <var>get</var> and <var>put</var>.
+<p /><var>get</var> must be a procedure takes 0 argument and it must return one
+of the followings; a fixnum of range 0 to 255, EOF object, or negative
+integer. The fixnum value is treated as an input of the encoding
+value. The negative integer value is treated as a continue
+marker. When the encoder receives this value, then it won't encode
+until the next value is available.
+<p /><var>put</var> must be a procedure takes 1 argument which is either a
+fixnum of range 0 to 255 or <code>#f</code>. The fixnum is the encoded value
+of the input. <code>#f</code> indicates line break point, so user can
+determine which line break this encoder should use.
+<p />The following shows how to make Base64 encoder with line break of CRLF.
+<p /><pre class="codeblock">(define (base64-encode-w/crlf bv)
+  (let-values (((out e) (open-bytevector-output-port)))
+    (define (put v)
+      (if v
+	  (put-u8 out v)
+	  (begin (put-u8 out #x0d) (put-u8 out #x0a))))
+    (define inp (open-bytevector-input-port bv))
+    (define (in) (get-u8 inp))
+    (define encoder (make-base64-encoder))
+    (do () ((encoder in put)))
+    (e)))
 </pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">status headers and "google.html"</span>
-  </div>
 <p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http-gzip-receiver2507">
-    <span class="name" name="http-gzip-receiver">http-gzip-receiver</span>
-  </a> <span class="args">receiver</span></div>
-<div class="desc"><var>receiver</var> must be an HTTP receiver.
-<p />
-Creates a receiver which handles gzip encoded response. If HTTP response
-contains <code>Content-Encoding</code> header with value <code>gzip</code>, then the
-receiver decodes the response and propagates to given <var>receiver</var>. 
-Otherwise, it simply forwards the response to <var>receiver</var>.
-<p />The following describes how to use it:
-<pre class="codeblock">(http-get "google.com" "/"
-          :accept-encoding "gzip"
-          :receiver (http-gzip-receiver (http-string-receiver)))
-</pre>
-</div>
-<p />
-</section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2508"><span class="section-number">7.33.3</span>Utilities</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="http-compose-query2509">
-    <span class="name" name="http-compose-query">http-compose-query</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-base64-decoder2557">
+    <span class="name" name="make-base64-decoder">make-base64-decoder</span>
   </a>
- <span class="args">path params :optional (encoding 'utf-8)</span></div>
-<div class="desc">Composes query string.
-<p />If given <var>path</var> is #f then only composed query string is returned,
-otherwise this returns <code><var>path</var>?<var>composed query</var></code> form.
-<p /><var>params</var> must be a list of name &amp; value list or null list.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http-compose-form-data2510">
-    <span class="name" name="http-compose-form-data">http-compose-form-data</span>
-  </a>
- <span class="args">params port :optional (encoding 'utf-8)</span></div>
-<div class="desc">Composes  multipart form data.
-<p />If <var>port</var> is #f then it returns composed string. if it's a port then
-the result is stored in the given <var>port</var>.
-<p />The <var>params</var> must be following form;
-<p /><pre class="codeblock"> &lt;params&gt; : (&lt;params&gt; ...)
- &lt;param&gt;  : (&lt;name&gt; &lt;value&gt;)
-          | (&lt;name&gt; &lt;key&gt; &lt;value&gt; &lt;key2&gt; &lt;value2&gt; ...)
- &lt;key&gt;    : :value | :file | :content-type | :content-transfer-encoding
-          | other keyword (used as a header name)
-</pre>
-<p /><var>&lt;value&gt;</var> is the content of <var>&lt;name&gt;</var> parameter. It can be any of
-Scheme object however it is converted to string representation except
- bytevector.
-<p />If <var>:file</var> keyword is used then it read the content of <var>&lt;value&gt;</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="url-server&amp;path2511">
-    <span class="name" name="url-server&amp;path">url-server&amp;path</span>
-  </a> <span class="args">url</span></div>
-<div class="desc">Decompose the given <var>url</var> and returns auth part of URL and
-path + query + fragment.
-</div>
+ <span class="args">:key (decode-table *base64-decode-table*)</span></div>
+<div class="desc">Creates a Base64 decoder. A decoder is a procedure which takes 2
+arguments <var>get</var> and <var>put</var>.
+<p /><var>get</var> is the same as the one from encoder.
+<p /><var>put</var> must be a procedure takes 1 arguments which is a fixnm of
+range 0 to 255. The value is always a decoded byte.
+<p /></div>
+<p /><div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*base64-encode-table*2558">
+      <span class="name" name="*base64-encode-table*">*base64-encode-table*</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*base64-decode-table*2559">
+      <span class="name" name="*base64-decode-table*">*base64-decode-table*</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*base64-encode-url-table*2560">
+      <span class="name" name="*base64-encode-url-table*">*base64-encode-url-table*</span>
+    </a>
+  </div>
+<div class="define">
+    <span class="define-category">Constant</span>
+    <a name="*base64-decode-url-table*2561">
+      <span class="name" name="*base64-decode-url-table*">*base64-decode-url-table*</span>
+    </a>
+  </div>
+<div class="desc">Default encode or decode tables. If the name contains <code>url</code>, then it
+is suitable for "base64url".
+<p /></div>
+
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section732.html">(rfc hmac) - HMAC library</a>
+    <a class="prev" href="section732.html">(rfc :5322) - Internet message format library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section734.html">(rfc http2) - HTTP/2 client</a>
+    <a class="next" href="section734.html">(rfc cmac) - CMAC library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

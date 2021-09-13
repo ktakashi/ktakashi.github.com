@@ -7,160 +7,232 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section751.html">(rpc json) - JSON RPC library</a>
+    <a class="prev" href="section751.html">(rfc x.509) - X.509 certificate utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section753.html">(text csv) - Comma separated values parser library</a>
+    <a class="next" href="section753.html">RPC support framework</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="security.keystore"><span class="section-number">7.52</span>(security keystore) - Generic Keystore Access</a>
+    <a class="section.anchor" name="rfc.zlib"><span class="section-number">7.52</span>(rfc zlib) - zlib compression library</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(security keystore)2840">
-      <span class="name" name="(security keystore)">(security keystore)</span>
+    <a name="(rfc zlib)2861">
+      <span class="name" name="(rfc zlib)">(rfc zlib)</span>
     </a>
   </div>
-<div class="desc">This library provides generic access for variety of keystores.</div>
-<p />The following example shows how to use this library:
-<pre class="codeblock">(import (security keystore))
-
-(define keystore (load-keystore 'jks "keystore.jks" "storepass"))
-
-(keystore-get-key keystore "key-name" "key-pass")
-;; -&gt; &lt;private-key&gt;
-
-(keystore-get-certificate keystore "cert-name")
-;; -&gt; &lt;x509-certificate&gt;
-
-;; certs must be a list of certificates
-(keystore-set-key! keystore "key-name2" private-key "key-pass2" certs)
-
-(keystore-set-certificate! keystore "cert-name2" cert)
-
-(store-keystore-to-file keystore "keystore2.jks" "storepass2")
-</pre>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2841"><span class="section-number">7.52.1</span>Generic APIs</a>
-  </h4>
+<div class="desc">This library provides the binding for zlib compression library. For now,
+it only provides the highest level APIs.
+</div>
 <p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<keystore&gt;2842">
-      <span class="name" name="<keystore&gt;">&lt;keystore&gt;</span>
+    <span class="define-category">Condition Type</span>
+    <a name="&amp;zlib-error2862">
+      <span class="name" name="&amp;zlib-error">&amp;zlib-error</span>
     </a>
   </div>
-<div class="desc">Base class of keystores.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="keystore?2843">
-    <span class="name" name="keystore?">keystore?</span>
+<div class="define"><span class="define-category">Function</span><a name="zlib-error?2863">
+    <span class="name" name="zlib-error?">zlib-error?</span>
   </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is a keystore object. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="load-keystore2844">
-    <span class="name" name="load-keystore">load-keystore</span>
-  </a> <span class="args">type input-port storepass</span></div>
-<div class="define"><span class="define-category">Function</span><a name="load-keystore-file2845">
-    <span class="name" name="load-keystore-file">load-keystore-file</span>
-  </a> <span class="args">type file storepass</span></div>
-<div class="desc">Loads <var>type</var> keystore from <var>input-port</var> or <var>file</var>.
-<p /><var>storepass</var> must be a string and may or may not be used to decrypt 
-keystore content.
-<p /><code>load-keystore</code> loads from given binary input port <var>input-port</var>.
-<p /><code>load-keystore-file</code> loads from given file <var>file</var>.
+<div class="define"><span class="define-category">Function</span><a name="condition-zlib-stream2864">
+    <span class="name" name="condition-zlib-stream">condition-zlib-stream</span>
+  </a> <span class="args">zlib-error</span></div>
+<div class="desc">Subcondition of <code>&amp;error</code>.
+<p />This condition is raised when zlib process is finished unsuccessfully. You can
+obtain the cause z-stream with the <code>condition-zlib-stream</code> procedure and
+get the detail message with the <code>zlib-error-message</code> procedure. When error
+occurred, however, it is raised with <code>message-condition</code> and it has the
+error message with. So you can simply get it with <code>condition-message</code>
+procedure.
 </div>
-<div class="define"><span class="define-category">Function</span><a name="make-keystore2846">
-    <span class="name" name="make-keystore">make-keystore</span>
-  </a> <span class="args">type</span></div>
-<div class="desc">Returns newly created <var>type</var> keystore object.
-<p />Currently <code>pkcs12</code>, <code>jks</code> and <code>jceks</code> are supported.
+<p /><div class="define"><span class="define-category">Function</span><a name="zlib-error-message2865">
+    <span class="name" name="zlib-error-message">zlib-error-message</span>
+  </a> <span class="args">z-stream</span></div>
+<div class="desc"><var>Z-stream</var> must be z-stream object.
+<p />Retrieve error message from <var>z-stream</var>. If <var>z-stream</var> does not have any
+error message and this procedure is called, the behaviour is unspecified.
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-key2847">
-    <span class="name" name="keystore-get-key">keystore-get-key</span>
-  </a> <span class="args">keystore alias keypass</span></div>
-<div class="desc">The method shall return a private key associated with <var>alias</var>
-from <var>keystore</var>. If there is no key entry associated with <var>alias</var> 
-then #f shall be returned.
-<p /><var>alias</var> shall be a string.
-<p /><var>keypass</var> shall be a string. It may or may not be used to decrypt 
-the private key.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-certificate2848">
-    <span class="name" name="keystore-get-certificate">keystore-get-certificate</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">The method shall return an X509 certificate associated with <var>alias</var>
-from <var>keystore</var>. If there is no certificate entry associated with 
-<var>alias</var> then #f shall be returned.
-<p /><var>alias</var> shall be a string.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-certificate-chain2849">
-    <span class="name" name="keystore-get-certificate-chain">keystore-get-certificate-chain</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">The method shall return a list of key certificates associated 
-with <var>alias</var> from <var>keystore</var>. If there is no certificate entries
-associated with <var>alias</var> then #f shall be returned.
-<p /><var>alias</var> shall be a string.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-get-creation-date2850">
-    <span class="name" name="keystore-get-creation-date">keystore-get-creation-date</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">The method shall return a date object of <var>alias</var> associated entry.
-If there is no entry associated with <var>alias</var> then #f shall be returned.
-<p /><var>alias</var> shall be a string.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-contains-alias?2851">
-    <span class="name" name="keystore-contains-alias?">keystore-contains-alias?</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">The method shall return #t if <var>keystore</var> contains an entry associated
-with <var>alias</var>. Otherwise #f shall be returend.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="store-keystore2852">
-    <span class="name" name="store-keystore">store-keystore</span>
-  </a> <span class="args">keystore output-port storepass</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="store-keystore-to-file2853">
-    <span class="name" name="store-keystore-to-file">store-keystore-to-file</span>
-  </a>  <span class="args">keystore file storepass</span></div>
-<div class="desc">The methods shall write <var>keystore</var> to <var>output-port</var> or 
-<var>file</var>.
-<p />The <code>store-keystore</code> shall write to given binary output port 
-<var>output-port</var>.
-<p />The <code>store-keystore-to-file</code> shall write to given file <var>file</var>.
-<p /><var>storepass</var> shall be a string and may or may not be used to encrypt 
-whole contents.
-</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-set-key!2854">
-    <span class="name" name="keystore-set-key!">keystore-set-key!</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-deflating-output-port2866">
+    <span class="name" name="open-deflating-output-port">open-deflating-output-port</span>
   </a>
- <span class="args">keystore alias private-key keypass certs</span></div>
-<div class="desc"><var>alias</var> shall be a string represents the name of <var>private-key</var> in
-the <var>keystore</var>.
-<p /><var>private-key</var> shall be an RSA private key.
-<p /><var>key-pass</var> shall be a string and may or may not be used to encrypt
-given <var>private-key</var>.
-<p /><var>certs</var> shall be a list of X509 certificates which associated with
-<var>private-key</var>.
-<p />The method shall store given <var>private-key</var> to <var>keystore</var>.
+ <span class="args">sink :key compression-level buffer-size window-bits memory-level
+ strategy dictionary owner?</span></div>
+<div class="desc"><var>Sink</var> must be binary output port. Creates a custom binary output
+port. The port deflates its input and put the result to <var>sink</var>. With the
+optional keys, you can specify the following conditions:
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <var>compression-level</var>
+      </dt>
+      <dd class="dl-item-desc">You can specify an exact integer between 1 and 9 (inclusive) to
+<var>compression-level</var>. When it is omitted, a default compression level is
+used, which is usually 6.
+<p />The following constants are defined to specify <var>compression-level</var>
+conveniently:
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_NO_COMPRESSION2867">
+          <span class="name" name="Z_NO_COMPRESSION">Z_NO_COMPRESSION</span>
+        </a>
+      </div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_BEST_SPEED2868">
+          <span class="name" name="Z_BEST_SPEED">Z_BEST_SPEED</span>
+        </a>
+      </div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_BEST_COMPRESSION2869">
+          <span class="name" name="Z_BEST_COMPRESSION">Z_BEST_COMPRESSION</span>
+        </a>
+      </div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_DEFAULT_COMPRESSION2870">
+          <span class="name" name="Z_DEFAULT_COMPRESSION">Z_DEFAULT_COMPRESSION</span>
+        </a>
+      </div>
+</dd>
+      <dt class="dl-item-title">
+        <var>buffer-size</var>
+      </dt>
+      <dd class="dl-item-desc">It specifies the buffer size of the port in bytes.
+The default is 4096.
+</dd>
+      <dt class="dl-item-title">
+        <var>window-bits</var>
+      </dt>
+      <dd class="dl-item-desc">It specifies the size of the window in exact
+integer. Typically the value should be between 8 and 15, inclusive, and it
+specifies the base two logarithm of the window size used in compression. Larger
+number yields better compression ratio, but more memory usage. The default value
+is 15.
+</dd>
+      <dt class="dl-item-title">
+        <var>memory-level</var>
+      </dt>
+      <dd class="dl-item-desc">It specifies how much memory should be allocated to
+keep the internal state during compression. 1 means smallest memory which causes
+slow and less compression. 9 means fastest and best compression with the largest
+amount of memory. The default value is 8.
+</dd>
+      <dt class="dl-item-title">
+        <var>strategy</var>
+      </dt>
+      <dd class="dl-item-desc">To fine tune compression algorithm, you can use the
+<var>strategy</var> argument. The following constants are defined as the valid value
+as <var>strategy</var>.
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_DEFAULT_STRATEGY2871">
+          <span class="name" name="Z_DEFAULT_STRATEGY">Z_DEFAULT_STRATEGY</span>
+        </a>
+      </div>
+<div class="desc">The default strategy, suitable for most ordinary data.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_FILTERED2872">
+          <span class="name" name="Z_FILTERED">Z_FILTERED</span>
+        </a>
+      </div>
+<div class="desc">Suitable for data generated by filters (or predictors). Filtered data
+consists mostly of small values with a somewhat compress them better. The
+effect of this is to force more huffman coding and less string matching.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_HUFFMAN_ONLY2873">
+          <span class="name" name="Z_HUFFMAN_ONLY">Z_HUFFMAN_ONLY</span>
+        </a>
+      </div>
+<div class="desc">Force to use huffman encoding only.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_RLE2874">
+          <span class="name" name="Z_RLE">Z_RLE</span>
+        </a>
+      </div>
+<div class="desc">This is designed to be almost as fast as Z_HUFFMAN_ONLY, but gives better
+compression for PNG image data.</div>
+<div class="define">
+        <span class="define-category">Constant</span>
+        <a name="Z_FIXED2875">
+          <span class="name" name="Z_FIXED">Z_FIXED</span>
+        </a>
+      </div>
+<div class="desc">This prevents the use of dynamic huffman codes, allowing for a simpler
+decoder for special applications.</div>
+The choice of <var>strategy</var> only affects compression ratio and speed. Any
+choice produces correct and decompressable data.
+</dd>
+      <dt class="dl-item-title">
+        <var>dictionary</var>
+      </dt>
+      <dd class="dl-item-desc">You can give an initial dictionary to the
+<var>dictionary</var> argument to be used in compression. The compressor and
+decompressor must use exactly the same dictionary.
+</dd>
+      <dt class="dl-item-title">
+        <var>owner?</var>
+      </dt>
+      <dd class="dl-item-desc">If this argument is specified true value, the created
+port automatically closes the given output port <var>sink</var> when it is closed.
+</dd>
+    </dl>
+  </div>
+<p /></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="open-inflating-input-port2876">
+    <span class="name" name="open-inflating-input-port">open-inflating-input-port</span>
+  </a>
+ <span class="args">source :key buffer-size window-bits dictionary owner?</span></div>
+<div class="desc"><var>Source</var> must be a binary input port.
+<p />The <code>open-inflating-input-port</code> creates a custom binary input port, which
+reads compressed binary data from the given port <var>source</var> and decompresses
+the read data. When <var>source</var> port supports both <code>port-position</code> and
+<code>set-port-position!</code> then the procedure will set <var>source</var> position
+to offset of used bytes length when the created custom port is being closed.
+Thus if the <var>source</var> port contains mixture of deflated data and non
+deflated data then the custom port will only read deflated data and won't
+forward the original port position beyond it no matter how big the
+<var>buffer-size</var> is specified.
+<p />The meaning of <var>buffer-size</var> is the same as
+ <code>open-deflating-output-port</code>.
+<p />The meaning of <var>window-bits</var> is almost the same, except if a value increased
+by 32 is given, the inflating port automatically detecs whether the source
+stream is zlib or gzip by its header.
+<p />If the input data is compressed with specified dictionary, the same dictionary
+must be given to <var>dictionary</var> argument. Otherwise &amp;zlib-error condition is
+raised.
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-set-certificate!2855">
-    <span class="name" name="keystore-set-certificate!">keystore-set-certificate!</span>
-  </a> <span class="args">keystore alias cert</span></div>
-<div class="desc"><var>alias</var> shall be a string represents the name of <var>cert</var> in
-the <var>keystore</var>.
-<p /><var>cert</var> shall be an X509 certificate.
-<p />The method shall store given <var>cert</var> to <var>keystore</var>.
+<p /><div class="define"><span class="define-category">Function</span><a name="inflate-bytevector2877">
+    <span class="name" name="inflate-bytevector">inflate-bytevector</span>
+  </a> <span class="args">bv opts ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="deflate-bytevector2878">
+    <span class="name" name="deflate-bytevector">deflate-bytevector</span>
+  </a> <span class="args">bv opts ...</span></div>
+<div class="desc">Inflate/deflate given bytevector <var>bv</var> respectively.
+<p />These are convenient procedures. It uses <code>open-inflating-input-port</code> or
+<code>open-deflating-output-port</code> to inflate/deflate.
+<p />The <var>opts</var> will be passed to underlying procedures.
 </div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="keystore-delete-entry!2856">
-    <span class="name" name="keystore-delete-entry!">keystore-delete-entry!</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">The method shall remove the entry associated with <var>alias</var> from 
-<var>keystore</var>.
+<p /><div class="define"><span class="define-category">Function</span><a name="crc322879">
+    <span class="name" name="crc32">crc32</span>
+  </a> <span class="args">bv :optional (checksum 0)</span></div>
+<div class="define"><span class="define-category">Function</span><a name="adler322880">
+    <span class="name" name="adler32">adler32</span>
+  </a> <span class="args">bv :optional (checksum 0)</span></div>
+<div class="desc">Returns CSC32/Adler32 checksum of bytevector <var>bv</var>, respectively.
+<p />If optional <var>checksum</var> is given, then returned checksum is an update of
+<var>checksum</var> by <var>bv</var>.
 </div>
-<p />
-</section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section751.html">(rpc json) - JSON RPC library</a>
+    <a class="prev" href="section751.html">(rfc x.509) - X.509 certificate utility library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section753.html">(text csv) - Comma separated values parser library</a>
+    <a class="next" href="section753.html">RPC support framework</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

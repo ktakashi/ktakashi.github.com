@@ -7,238 +7,143 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section756.html">(text json object-builder) -- JSON</a>
+    <a class="prev" href="section756.html">(text csv) - Comma separated values parser library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section758.html">(text json mutable) - Mutable JSON</a>
+    <a class="next" href="section758.html">(text json) -- JSON parser</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.json.jmespath"><span class="section-number">7.57</span>(text json jmespath) - JMESPath</a>
+    <a class="section.anchor" name="text.html-lite"><span class="section-number">7.57</span>(text html-lite) - Simple HTML document builder library</a>
   </h3>
-<p /><div class="define">
+<p />
+<div class="define">
     <span class="define-category">Library</span>
-    <a name="(text json jmespath)2903">
-      <span class="name" name="(text json jmespath)">(text json jmespath)</span>
+    <a name="(text html-lite)2954">
+      <span class="name" name="(text html-lite)">(text html-lite)</span>
     </a>
   </div>
-<div class="desc">This library provides JMESPath procedures. JMESPath is defined on
-<a href="http://jmespath.org/specification.html">JMESPath</a>.
+<div class="desc">This library provides simple HTML builder procedures based on HTML5.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="html-escape2955">
+    <span class="name" name="html-escape">html-escape</span>
+  </a> <span class="args">:optional (in (current-input-port))</span></div>
+<div class="define"><span class="define-category">Function</span><a name="html-escape-string2956">
+    <span class="name" name="html-escape-string">html-escape-string</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Escapes the unsafe characters in HTML and returns escaped string.
+<p />The <code>html-escape</code> reads the string from optional argument <var>in</var> which
+must be an textual input port and returns an escaped string.
+<p />The <code>html-escape-string</code> takes a string and returns an escaped string.
 </div>
-<p />The following example shows how to use the library:
-<div class="codeblock-box">
-    <pre class="codeblock">(import (rnrs) (text json jmespath))
-
-((jmespath "a") '#(("a" . "foo") ("b" . "bar") ("c" . "baz")))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">foo</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="html-doctype2957">
+    <span class="name" name="html-doctype">html-doctype</span>
+  </a> <span class="args">:key (type :html-4.01-strict)</span></div>
+<div class="desc">Returns a doctype declaration for an HTML document. <var>type</var> can be one
+of the followings;
+<p /><div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>:html-5</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 5
+  </dd>
+      <dt class="dl-item-title">
+        <code>:html-4.01-strict :html-4.01, :strict, :html-strict</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 4.01 Strict DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:html-4.01-transitional :html-transitional, :transitional</code>
+      </dt>
+      <dd class="dl-item-desc">    HTML 4.01 Transitional DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-strict :xhtml-1.0</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Strict DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-transitional</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Transitional DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.0-frameset</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.0 Frameset DTD
+  </dd>
+      <dt class="dl-item-title">
+        <code>:xhtml-1.1</code>
+      </dt>
+      <dd class="dl-item-desc">    XHTML 1.1 DTD
+  </dd>
+    </dl>
   </div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2904"><span class="section-number">7.57.1</span>Scheme APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="jmespath2905">
-    <span class="name" name="jmespath">jmespath</span>
-  </a> <span class="args">path</span></div>
-<div class="desc">Returns a procedure takes one argument, which must be a vector
-representad JSON.
-<p />The given <var>path</var> must be a string which is a valid JMESPath, otherwise
-raises <code>&amp;jmespath</code>.
 </div>
+<p /><div class="define"><span class="define-category">Function</span><a name="html:element2958">
+    <span class="name" name="html:element">html:<var>element</var></span>
+  </a> <span class="args">args ...</span></div>
+<div class="desc">Construct an HTML element <var>element</var>. Currently following elements are
+provided. 
+<p /><pre class="codeblock">   a       abbr    address  area       article  aside
+   audio   b       base     bdi        bdo      blockquote
+   body    br      button   canvas     caption  cite
+   code    col     colgroup command    datalist dd
+   del     details dfn      div        dl       dt
+   em      embed   fieldset figcaption figure   footer
+   form
+   h1      h2      h3       h4         h5       h6
+   head    header  hgroup   hr         html
+   i       iframe  img      input      ins      kbd
+   keygen  label   legend   li         link     map
+   mark    menu    meta     meter      nav      noscript
+   object  ol      optgroup option     output   p
+   param   pre     progress q          rp       rt
+   ruby    s       samp     script     section  select
+   small   source  span     strong     style    sub
+   summary sup     table    tbody      td       textarea
+   tfoot   th      thead    time       title    tr
+   track   u       ul       var        video    wbr
+</pre>
+<p />The result of these functions is a tree of text segments, which can be written
+out to a port by <code>write-tree</code> or can be converted to a string by
+<code>tree-&gt;string</code> <a href="section770.html#text.tree">(text tree) - Lightweight text generation</a>.
+<p />You can specify attributes of the element by using a keyword-value notation
+before the actual content.
+<p /><div class="snipet-box">
+    <pre class="snipet">(tree-&gt;string (html:a :href "http://example.com" "example")) </pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&lt;a href="http://example.com"&gt;example&lt;/a&gt;</span>
+  </div>
+<p />The boolean value given to the attribute has special meaning. If #t is given,
+the attribute is rendered without a value. If #f is given, the attribute is not
+rendered.
+<p /><div class="snipet-box">
+    <pre class="snipet">(tree-&gt;string (html:table :border #t))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&lt;table border&gt;&lt;/table&gt;</span>
+  </div>
+<div class="snipet-box">
+    <pre class="snipet">(tree-&gt;string (html:table :border #f))</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&lt;table&gt;&lt;/table&gt;</span>
+  </div>
+<p />Special characters in attribute values are escaped by the function, but the
+ones in the content are not.
+<p /><div class="snipet-box">
+    <pre class="snipet">(tree-&gt;string (html:div :foo "&lt;&gt;&amp;\"" "&lt;not escaped&gt;")) </pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">&lt;div foo="&amp;lt;&amp;gt;&amp;amp;&amp;quot;"&gt;&lt;not escaped&gt;&lt;/div&gt;</span>
+  </div>
 <p />
-<section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2906"><span class="section-number">7.57.1.1</span>Conditions</a>
-  </h5>
-<p />This section describes conditions might be raised by the <code>jmespath</code>
-procedure or the procedure returned by the <code>jmespath</code> procedure.
-<p />The library doesn't export the condition type itself. (e.g. <code>&amp;jmespath</code>
-isn't exported from the library). However for the comprehensivity, we
-also describe the hierarchy of the conditions here:
-<p /><pre class="codeblock">+ &amp;error (standard R6RS error)
-  + &amp;jmespath
-    + &amp;jmespath:parse
-    + &amp;jmespath:expression
-        - expression
-        - argument
-      + &amp;jmespath:compile
-      + &amp;jmespath:runtime
-</pre>
-<p />The <code>&amp;jmespath</code> is the root condition. This condition itself won't be
-raised.
-<p />The <code>&amp;jmespath:parse</code> is the condition raised by the parser. This means
-either the given expression is lexically incorrect or grammartically incorrect.
-<p />The <code>&amp;jmespath:expression</code> is the base condition of both
-<code>&amp;jmespath:compile</code> and <code>&amp;jmespath:runtime</code>. This condition itself
-won't be raised.
-<p />The <code>&amp;jmespath:compile</code> is the condition raised by the compiler. This means
-the parsed expression is syntatically incorrect.
-<p />The <code>&amp;jmespath:runtime</code> is the condition raised by the returned procedure.
-This means evaluation error. For example, a string is passed to the <code>avg</code>
-function.
-<p /><div class="define"><span class="define-category">Function</span><a name="jmespath-error?2907">
-    <span class="name" name="jmespath-error?">jmespath-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is an instance of <code>&amp;jmespath</code>,
-otherwise #f.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="jmespath-parse-error?2908">
-    <span class="name" name="jmespath-parse-error?">jmespath-parse-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is an instance of <code>&amp;jmespath:parse</code>,
-otherwise #f.
-<p />The <code>&amp;jmespath:parse</code> is a sub condition of <code>&amp;jmespath</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="jmespath-error-expression2909">
-    <span class="name" name="jmespath-error-expression">jmespath-error-expression</span>
-  </a> <span class="args">jmespath-error</span></div>
-<div class="desc">Returns <code>expression</code> field of the given <var>jmespath-error</var>.
-<p />The the given <var>jmespath-error</var> must be a sub condition of
-<code>&amp;jmespath:expression</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="jmespath-error-arguments2910">
-    <span class="name" name="jmespath-error-arguments">jmespath-error-arguments</span>
-  </a> <span class="args">jmespath-error</span></div>
-<div class="desc">Returns <code>arguments</code> field of the given <var>jmespath-error</var>.
-<p />The the given <var>jmespath-error</var> must be a sub condition of
-<code>&amp;jmespath:expression</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="jmespath-compile-error?2911">
-    <span class="name" name="jmespath-compile-error?">jmespath-compile-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is an instance of <code>&amp;jmespath:compile</code>,
-otherwise #f.
-<p />The <code>&amp;jmespath:compile</code> is a sub condition of <code>&amp;jmespath:expression</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="jmespath-runtime-error?2912">
-    <span class="name" name="jmespath-runtime-error?">jmespath-runtime-error?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is an instance of <code>&amp;jmespath:runtime</code>,
-otherwise #f.
-<p />The <code>&amp;jmespath:runtime</code> is a sub condition of <code>&amp;jmespath:expression</code>.
-</div>
-<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2913"><span class="section-number">7.57.2</span>Extra functions</a>
-  </h4>
-<p />This library provides extra functions for usability.
-<p /><div class="define"><span class="define-category">JMESPath Function</span><a name="parent2914">
-    <span class="name" name="parent">parent</span>
-  </a> <span class="args">node</span></div>
-<div class="desc">Returns parent node of the given <var>node</var>. This function can be
-used like this:
-<p /><div class="codeblock-box">
-    <pre class="codeblock">((jmespath "*.bar.parent(@)") '#(("foo" . #(("bar" . 1)))))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">'(#((bar . 1)))</span>
-  </div>
-<p />A literal doesn't have a parent so returns <code>null</code>.
-<div class="codeblock-box">
-    <pre class="codeblock">((jmespath "parent(`{}`)") '#(("foo" . #(("bar" . 1)))))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">'null</span>
-  </div>
-</div>
-<p /><div class="define"><span class="define-category">JMESPath Function</span><a name="unique2915">
-    <span class="name" name="unique">unique</span>
-  </a> <span class="args">array</span></div>
-<div class="desc">Returns unique elements of the given <var>array</var>. This function can be
-used like this:
-<p /><div class="codeblock-box">
-    <pre class="codeblock">((jmespath "unique(@)") '(1 2 1 2 3))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">'(1 2 3)</span>
-  </div>
-<p />It raises a <code>&amp;jmespath:runtime</code> if the give <var>array</var> is not an array.
-</div>
-<p /><div class="define"><span class="define-category">JMESPath Function</span><a name="is_odd2916">
-    <span class="name" name="is_odd">is_odd</span>
-  </a> <span class="args">number</span></div>
-<div class="desc">Returns #t if the given <var>number</var> is an odd number.
-This function can be used like this:
-<p /><div class="snipet-box">
-    <pre class="snipet">((jmespath "is_odd(@)") '5)</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">#t</span>
-  </div>
-<p />It raises a <code>&amp;jmespath:runtime</code> if the give <var>number</var> is not a number.
-</div>
-<p /><div class="define"><span class="define-category">JMESPath Function</span><a name="is_even2917">
-    <span class="name" name="is_even">is_even</span>
-  </a> <span class="args">number</span></div>
-<div class="desc">Returns #t if the given <var>number</var> is an even number.
-This function can be used like this:
-<p /><div class="snipet-box">
-    <pre class="snipet">((jmespath "is_even(@)") '5)</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">#t</span>
-  </div>
-<p />It raises a <code>&amp;jmespath:runtime</code> if the give <var>number</var> is not a number.
-</div>
-<p /><div class="define"><span class="define-category">JMESPath Function</span><a name="remove2918">
-    <span class="name" name="remove">remove</span>
-  </a> <span class="args">array/object expr</span></div>
-<div class="desc">Removes element from the given <var>array/object</var> if the <var>expr</var>
-returns true value.
-<p />The <var>array/object</var> must be an array or object.
-<p />The <var>expr</var> must be an expression reference. 
-<p />The <var>expr</var> is executed in the context of the elements of <var>array/object</var>.
-Means if the <code>@</code> is passed to the <var>expr</var>, then the receiving
-value is one of the elements of the <var>array/object</var>.
-<p />This function can be used like this:
-<p /><div class="snipet-box">
-    <pre class="snipet">((jmespath "remove(@, &amp;odd(@))") '(1 2 3 4 5))</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">'(1 3 5)</span>
-  </div>
-<p />It raises a <code>&amp;jmespath:runtime</code> if the give <var>array/object</var> is not
-either an array or object, or if the given <var>expr</var> is not a function
-reference.
-</div>
-<p /><div class="define"><span class="define-category">JMESPath Function</span><a name="remove_entry2919">
-    <span class="name" name="remove_entry">remove_entry</span>
-  </a> <span class="args">object array/expr</span></div>
-<div class="desc">Removes entries from the given <var>object</var> either
-if <var>array/expr</var> is an array of string and it contains the key of the entry
-or if <var>array/expr</var> is a function expression and returns true value.
-<p />The <var>object</var> must be an object.
-<p />This function can be used like this:
-<p /><div class="codeblock-box">
-    <pre class="codeblock">((jmespath "remove_entry(@, `[\"key2\"]`)") '#(("key" . 1)))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">'#((key . 1))</span>
-  </div>
-<div class="codeblock-box">
-    <pre class="codeblock">((jmespath "remove_entry(@, &amp;contains(`[\"key2\"]`, @))")
- '#(("key" . 1) ("key2" . 2)))
-</pre>
-    <span class="codeblock-arrow">=&gt;</span>
-    <span class="codeblock-result">'#((key . 1))</span>
-  </div>
-<p />It raises a <code>&amp;jmespath:runtime</code> if the give <var>object</var> is not an object,
-or if the given <var>array/expr</var> is not an array of string or function
-reference.
-</div>
-<p /><div class="define"><span class="define-category">JMESPath Function</span><a name="array_of2920">
-    <span class="name" name="array_of">array_of</span>
-  </a> <span class="args">any</span> ...</div>
-<div class="desc">Returns array of given arguments <var>any</var>.
-<p /><div class="snipet-box">
-    <pre class="snipet">((jmespath "array_of(`1`, `2`, `3`)") 'null)</pre>
-    <span class="snipet-arrow">=&gt;</span>
-    <span class="snipet-result">'(1 2 3)</span>
-  </div>
-</div>
-
-</section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section756.html">(text json object-builder) -- JSON</a>
+    <a class="prev" href="section756.html">(text csv) - Comma separated values parser library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section758.html">(text json mutable) - Mutable JSON</a>
+    <a class="next" href="section758.html">(text json) -- JSON parser</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

@@ -7,109 +7,71 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section747.html">(rfc websocket) - WebSocket</a>
+    <a class="prev" href="section747.html">(rfc uri) - Parse and construct URIs</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section749.html">(rfc zlib) - zlib compression library</a>
+    <a class="next" href="section749.html">(rfc uuid) - UUID generate library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.x.509"><span class="section-number">7.48</span>(rfc x.509) - X.509 certificate utility library</a>
+    <a class="section.anchor" name="rfc.uri-template"><span class="section-number">7.48</span>(rfc uri-template) - URI template</a>
   </h3>
-<p />This library does not support whole feature of X.509, it just parse and verify
-a message and signature. So it can not verify certificate itself.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc x.509)2766">
-      <span class="name" name="(rfc x.509)">(rfc x.509)</span>
+    <a name="(rfc uri-template)2780">
+      <span class="name" name="(rfc uri-template)">(rfc uri-template)</span>
     </a>
   </div>
-<div class="desc">Exports X.509 utility procedures.</div>
-<p /><div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate2767">
-    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
-  </a> <span class="args">(in &lt;port&gt;)</span></div>
-<div class="define"><span class="define-category">Generic</span><a name="make-x509-certificate2768">
-    <span class="name" name="make-x509-certificate">make-x509-certificate</span>
-  </a>
- <span class="args">(sequence &lt;asn.1-sequence&gt;)</span></div>
-<div class="desc">Creates an X.509 certificate object from given binary input port or ASN.1
-sequence object (second form).
+<div class="desc">This library provides RFC6570 'URI Template' procedures.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="parse-uri-template2781">
+    <span class="name" name="parse-uri-template">parse-uri-template</span>
+  </a> <span class="args">in</span></div>
+<div class="desc">Parses the given URI template into S-expression.
+<p />The given <var>in</var> must be either a textual input port or a string.
+<p />The parsed form consists with the following rules:
+<p /><ul class="itemlist">
+    <li class="itemlist-item">uri-template ::= <code>(template-unit)</code></li>
+    <li class="itemlist-item">template-unit ::= <code>string</code></li>
+    <li class="itemlist-item">template-unit ::= <code>(template)</code></li>
+    <li class="itemlist-item">template ::= <code>(operator varaible)</code></li>
+    <li class="itemlist-item">operator ::= <code>character</code></li>
+    <li class="itemlist-item">variable ::= <code>string</code></li>
+    <li class="itemlist-item">variable ::= <code>(string modifier)</code></li>
+    <li class="itemlist-item">modifier ::= <code>*</code></li>
+    <li class="itemlist-item">modifier ::= <code>positive exact integer</code></li>
+  </ul>
+<p /><var>operator</var> must be a valid URI template operator
+<p /><div class="snipet-box">
+    <pre class="snipet">(parse-uri-template "http://{domain*}/{/path}") </pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(http:// ((domain *)) / (/ path))</span>
+  </div>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate?2769">
-    <span class="name" name="x509-certificate?">x509-certificate?</span>
-  </a> <span class="args">o</span></div>
-<div class="desc">Return #t if the <var>o</var> is X.509 certificate object, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-version2770">
-    <span class="name" name="x509-certificate-get-version">x509-certificate-get-version</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return version of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-serial-number2771">
-    <span class="name" name="x509-certificate-get-serial-number">x509-certificate-get-serial-number</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return serial number of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-issuer-dn2772">
-    <span class="name" name="x509-certificate-get-issuer-dn">x509-certificate-get-issuer-dn</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return issuer DN of given X.509 certificate object as X.509 principal.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-subject-dn2773">
-    <span class="name" name="x509-certificate-get-subject-dn">x509-certificate-get-subject-dn</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return subject DN of given X.509 certificate object as X.509 principal.
-<p />NOTE: These Issuer DN and Subject DN getters return &lt;x.509-principal&gt; object,
-however I did not implement any utility for this class, so it's just useless
-for now.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-before2774">
-    <span class="name" name="x509-certificate-get-not-before">x509-certificate-get-not-before</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return start date of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-not-after2775">
-    <span class="name" name="x509-certificate-get-not-after">x509-certificate-get-not-after</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return end date of given X.509 certificate object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature2776">
-    <span class="name" name="x509-certificate-get-signature">x509-certificate-get-signature</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return signature of given X.509 certificate object. 
-<p />NOTE: This signature is not for <code>verify</code> described below.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-signature-algorithm2777">
-    <span class="name" name="x509-certificate-get-signature-algorithm">x509-certificate-get-signature-algorithm</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return signature algorithm of given X.509 certificate object as an OID
-string.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="x509-certificate-get-public-key2778">
-    <span class="name" name="x509-certificate-get-public-key">x509-certificate-get-public-key</span>
-  </a> <span class="args">x509</span></div>
-<div class="desc">Return public key of given X.509 certificate object. The return value is
-<code>&lt;public-key&gt;</code> described in the section
-<a href="section79.html#crypto">(crypto) - Cryptographic library</a>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="verify2779">
-    <span class="name" name="verify">verify</span>
-  </a> <span class="args">x509 message signature
-  :key (verify pkcs1-emsa-v1.5-verify) (hash SHA-1)</span></div>
-<div class="desc"><var>message</var> and <var>signature</var> must be bytevector.
-<p />Verify given <var>message</var> with <var>signature</var> and <var>x509</var> certificate.
-<p />This procedure uses the <code>verify</code> procedure in <code>(crypto)</code> library. The
-keyword arguments will be passed to it. For more detail, see
-<a href="section79.html#crypto">(crypto) - Cryptographic library</a>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="check-validity2780">
-    <span class="name" name="check-validity">check-validity</span>
-  </a>
- <span class="args">x509 :optional (date (current-date))</span></div>
-<div class="desc">Validate if the given certificate is valid in given <var>date</var>. Return #t
-if it's valid, otherwise raises <code>&amp;assertion</code>.
+<p /><div class="define"><span class="define-category">Function</span><a name="expand-uri-template2782">
+    <span class="name" name="expand-uri-template">expand-uri-template</span>
+  </a> <span class="args">uri-template parameter</span></div>
+<div class="desc">Expands the given <var>uri-template</var> and returns a string.
+<p />The <var>parameter</var> must be a vector of pair of string and <var>value</var>.
+<p />The <var>value</var> must be one of the followings:
+<ul class="itemlist">
+    <li class="itemlist-item">string</li>
+    <li class="itemlist-item">list of string</li>
+    <li class="itemlist-item">vector of pair of string</li>
+  </ul>
+<p /><div class="snipet-box">
+    <pre class="snipet">(expand-uri-template '((#\? ("keys" *))) '#(("keys" . #(("semi" . ";") ("dot" . ".") ("comma" . ","))))) </pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">?semi=%3B&amp;dot=.&amp;comma=%2C</span>
+  </div>
 </div>
 
 </section>
   <div class="prev-next">
-    <a class="prev" href="section747.html">(rfc websocket) - WebSocket</a>
+    <a class="prev" href="section747.html">(rfc uri) - Parse and construct URIs</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section749.html">(rfc zlib) - zlib compression library</a>
+    <a class="next" href="section749.html">(rfc uuid) - UUID generate library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

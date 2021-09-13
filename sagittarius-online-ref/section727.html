@@ -7,164 +7,415 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section726.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="prev" href="section726.html">(odbc) - ODBC binding</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section728.html">(util queue) - Queue</a>
+    <a class="next" href="section728.html">(rsa pkcs :5) - Password Based Cryptography library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="pkcs.12"><span class="section-number">7.27</span>(rsa pkcs :12) - PKCS#12</a>
+    <a class="section.anchor" name="peg"><span class="section-number">7.27</span>(peg) - PEG library</a>
   </h3>
-<p />This section describes the implementation of PKCS#12 specification library.
-However we do not describe PKCS#12 itself and I don't think it is necessary to
-know it if you just want to use it.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="rsa pkcs :122396">
-      <span class="name" name="rsa pkcs :12">rsa pkcs :12</span>
+    <a name="(peg)2416">
+      <span class="name" name="(peg)">(peg)</span>
     </a>
   </div>
-<div class="desc">This library provides procedures for PKCS#12 operations.</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2397"><span class="section-number">7.27.1</span>Keystore APIs</a>
-  </h4>
-<p />The example shows how to use keystore APIs:
-<p /><pre class="codeblock">(import (rnrs) (rsa pkcs :12))
+<div class="desc">A parser combinators library.
+<p />This library is named PEG (Paring Expression Grammar), howerver it
+only provides parser combinator not syntactical layer, yet.
+</div>
+<p />The following example shows parsing simple arithmetic expressions.
+<p />The first part of the example shows how to define the parser. The parser
+is defined with the name of <code>calc:expr</code>. This parser accepts one
+argument which is a lazy sequence provided by SRFI-127 <code>(srfi :127)</code>,
+and returns 3 values, parse state, parser value and next input.
+<p />NOTE: A lazy sequence is a pair, whose <code>cdr</code> part might be a generator.
+A normal pair can also be a lazy sequence.
+<p /><pre class="codeblock">(import (rnrs)
+	(peg)
+	(peg chars)
+	(srfi :14 char-sets)
+	(srfi :121 generators)
+	(srfi :127 lseqs))
 
-(define keystore (load-pkcs12-keystore-file "keystore.p12" "pass"))
+(define ascii-digits (char-set-intersection char-set:digit char-set:ascii))
+(define calc:num
+  ($do (s ($optional ($or ($eqv? #\+) ($eqv? #\-)) #\+))
+       (n ($many ($char-set-contains? ascii-digits) 1))
+       ($return (string-&gt;number (apply string s n)))))
+(define (calc:op c)
+  ($seq ($many ($satisfy char-whitespace?))
+	($eqv? c)
+	($many ($satisfy char-whitespace?))))
+(define calc:+ (calc:op #\+))
+(define calc:* (calc:op #\*))
+(define calc:open (calc:op #\())
+(define calc:close (calc:op #\)))
 
-(pkcs12-keystore-get-key keystore "key-name" "key-pass")
-;; -&gt; &lt;private-key&gt;
-
-(pkcs12-keystore-get-certificate keystore "cert-name")
-;; -&gt; &lt;x509-certificate&gt;
-
-;; certs are list of X509 certificate associated with given private-key
-(pkcs12-keystore-set-key! keystore "key-name2" private-key "key-pass2" certs)
-
-;; cert must be an X509 certificate
-(pkcs12-keystore-set-certificate! keystore "cert-name2" cert)
-
-(store-pkcs12-keystore-to-file keystore "keystore2.p12" "pass2")
+(define calc:simple
+  ($or ($do calc:open (a ($lazy calc:expr)) calc:close ($return a))
+       calc:num))
+(define calc:mulexp
+  ($or ($do (a calc:simple) calc:* (b calc:simple) ($return (* a b)))
+       calc:simple))
+(define calc:expr
+  ($or ($do (a calc:mulexp) calc:+ (b calc:mulexp) ($return (+ a b)))
+       calc:mulexp))
 </pre>
-<p /><div class="define">
-    <span class="define-category">Class</span>
-    <a name="<pkcs12-keystore&gt;2398">
-      <span class="name" name="<pkcs12-keystore&gt;">&lt;pkcs12-keystore&gt;</span>
-    </a>
+<p />The parser can be called like this:
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(calc:expr (generator-&gt;lseq (string-&gt;generator "1 + 2")))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">#&lt;parse-succcess&gt; 3 '()</span>
   </div>
-<div class="desc">PKCS#12 keystore class.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore?2399">
-    <span class="name" name="pkcs12-keystore?">pkcs12-keystore?</span>
+<p />The parser doesn't check if the input is consumed entirely. So this also
+returns success:
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(calc:expr (generator-&gt;lseq (string-&gt;generator "1 - 2")))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">#&lt;parse-succcess&gt; 1 '(#space #- #space #2)</span>
+  </div>
+<p />If you want to make sure that the entire input is consumed, then you need to
+check if the next input is <code>()</code> or not.
+<p />NOTE: An input of parsers, which is lazy sequence, doesn't necessarily be a
+character sequence. So users can implmenet own lexer.
+<p />NOTE2: The above example of the parser usage can also be like this:
+<div class="codeblock-box">
+    <pre class="codeblock">(calc:expr (string-&gt;list "1 + 2"))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">#&lt;parse-succcess&gt; 3 '()</span>
+  </div>
+In this document, we always convert to a lazy sequence.
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2417"><span class="section-number">7.27.1</span>Predefined parsers</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="$return2418">
+    <span class="name" name="$return">$return</span>
+  </a> <span class="args">v</span></div>
+<div class="define"><span class="define-category">Function</span><a name="$return2419">
+    <span class="name" name="$return">$return</span>
+  </a> <span class="args">v state</span></div>
+<div class="define"><span class="define-category">Function</span><a name="$return2420">
+    <span class="name" name="$return">$return</span>
+  </a> <span class="args">v state l</span></div>
+<div class="desc">Returns a parser which returns given <var>v</var> as its value.
+<p />The second form specifies the state of parser result, which must be
+one of the followings:
+<ul class="itemlist"><li class="itemlist-item"><code>+parse-success+</code> - Indicating successful parse result</li>
+<li class="itemlist-item"><code>+parse-fail+</code> - Indicating failure parse result</li>
+<li class="itemlist-item"><code>+parse-expect+</code> - Indicating different from expected input</li>
+<li class="itemlist-item"><code>+parse-unexpect+</code> - Indicating unexpectedly matched input</li>
+</ul>
+<p />The third form specifies the state described above and the next input.
+The next input must be a lazy sequence.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$fail2421">
+    <span class="name" name="$fail">$fail</span>
+  </a> <span class="args">message</span></div>
+<div class="desc">Returns a parser whose returning state is <code>+parse-fail+</code> and
+return value is given <var>message</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$expect2422">
+    <span class="name" name="$expect">$expect</span>
+  </a> <span class="args">message</span></div>
+<div class="desc">Returns a parser whose returning state is <code>+parse-expect+</code> and
+return value is given <var>message</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$eof2423">
+    <span class="name" name="$eof">$eof</span>
+  </a> <span class="args">input</span></div>
+<div class="desc">A parser which check if the <var>input</var> is exhausted or not.
+<p />It returns success if the <var>input</var> is exhausted otherwise
+<code>+parse-expect+</code> as its state.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$any2424">
+    <span class="name" name="$any">$any</span>
+  </a> <span class="args">input</span></div>
+<div class="desc">A parser which consume the first element of <var>input</var> and returns
+success.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$empty2425">
+    <span class="name" name="$empty">$empty</span>
+  </a> <span class="args">v</span></div>
+<div class="desc">Returns a parser which returns success and given <var>v</var> as its value
+without consuming input.
+<p />In the context of BNF term, this is called epsilon.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$satisfy2426">
+    <span class="name" name="$satisfy">$satisfy</span>
+  </a> <span class="args">pred</span></div>
+<div class="define"><span class="define-category">Function</span><a name="$satisfy2427">
+    <span class="name" name="$satisfy">$satisfy</span>
+  </a> <span class="args">pred message</span></div>
+<div class="desc">Returns a parser which check if the first element of the input
+of the parser satisfies the given <var>pred</var> or not.
+<p />If the <var>pred</var> returns true value, then it return success and the
+first element. Otherwise <code>+parse-expect+</code>.
+<p />If the second form is used, then the <var>message</var> is returned when
+the <var>pred</var> returned <code>#f</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$not2428">
+    <span class="name" name="$not">$not</span>
+  </a> <span class="args">parser</span></div>
+<div class="desc">Returns a parser which uses the given <var>parser</var> as its parser
+and check if the returning state is not successful or not.
+<p />If the state is successful, then returns <code>+parse-unexpect+</code>,
+otherwise return successful and <code>#f</code> as its returning value.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$seq2429">
+    <span class="name" name="$seq">$seq</span>
+  </a> <span class="args">parser ...</span></div>
+<div class="desc">Returns a parser which uses the given <var>parser</var>s as its parser.
+<p />It returns successful if all the given <var>parser</var>s return successful.
+The returning value is the last parser's value. Otherwise
+<code>+parse-expect+</code> is returned.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$or2430">
+    <span class="name" name="$or">$or</span>
+  </a> <span class="args">parser ...</span></div>
+<div class="desc">Returns a parser which uses the given <var>parser</var>s as its parser.
+<p />It returns successful if one of the given <var>parser</var>s return successful.
+The returning value is the first successful parser's value. Otherwise
+<code>+parse-expect+</code> is returned.
+<p />If one of the parser returns <code>+parse-fail+</code>, then the entire parser
+returned by this procedure fails. For example, the parser after the
+<code>$fail</code> won't be evaluated.
+<pre class="codeblock">($or ($satisfy char-whitespace?)
+     ($fail "Boom!")
+     ($satisfy char-lower-case?))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$many2431">
+    <span class="name" name="$many">$many</span>
+  </a> <span class="args">parser</span></div>
+<div class="define"><span class="define-category">Function</span><a name="$many2432">
+    <span class="name" name="$many">$many</span>
+  </a> <span class="args">parser at-least</span></div>
+<div class="define"><span class="define-category">Function</span><a name="$many2433">
+    <span class="name" name="$many">$many</span>
+  </a> <span class="args">parser at-least at-most</span></div>
+<div class="desc">Returns a parser which uses the given <var>parser</var> as its parser.
+<p />The parser parses the input as long as the given <var>parser</var> returns
+successful state. The returning value is a list of the values returned by
+the given <var>parser</var>.
+<p />If the second or third form is used, then it limits the number of
+trial.
+<p /><var>at-least</var> specifies the number of minimum parse. If the given
+<var>parser</var> returned non successful state before this number, then
+the parser return <code>+parse-expect+</code>.
+<p /><var>at-most</var> specifies the number of maximum parse. If the parser
+parsed <var>at-most</var> input, then it returns successful even the
+rest of the input contains the valid input of the given <var>parser</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$peek2434">
+    <span class="name" name="$peek">$peek</span>
+  </a> <span class="args">parser</span></div>
+<div class="desc">Returns a parser which uses the given <var>parser</var> as its parser.
+<p />The parser returns successful if the given <var>parser</var> returns successful.
+The returning next input will not be consumed by the parser.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$eqv?2435">
+    <span class="name" name="$eqv?">$eqv?</span>
   </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is PKCS#12 keystore object, otherwise #f.</div>
+<div class="desc">Returns a parser which compares the first element of the input
+and the given <var>obj</var> using <code>eqv?</code>.
+<p />If the comparison result is <code>#t</code>, then it returns successful.
+<p />This procedure is equivalent with the following:
+<codeblogk>(define ($eqv? v) ($satisfy (lambda (e) (eqv? e v))))
+</codeblogk>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$optional2436">
+    <span class="name" name="$optional">$optional</span>
+  </a> <span class="args">parser</span></div>
+<div class="define"><span class="define-category">Function</span><a name="$optional2437">
+    <span class="name" name="$optional">$optional</span>
+  </a> <span class="args">parser fallback</span></div>
+<div class="desc">Returns a parser which uses the given <var>parser</var> as its parser.
+<p />The parser returns always successful state. The returning value is the
+value of the given <var>parser</var> if the <var>parser</var> returns successful.
+Otherwise <code>#f</code>.
+<p />If the second form is used, then <var>fallback</var> is returned when the
+<var>parser</var> returned non successful.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$repeat2438">
+    <span class="name" name="$repeat">$repeat</span>
+  </a> <span class="args">parser n</span></div>
+<div class="desc">Returns a parser which uses the given <var>parser</var> as its parser.
+<p />The parser parses input exactly <var>n</var> times and returns a list of
+result value if the given <var>parser</var> returns <var>n</var> times successful.
+<p />This is equivalent with the following code:
+<codeblogk>(define ($repeat parser n) ($many parser n n))
+</codeblogk>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$bind2439">
+    <span class="name" name="$bind">$bind</span>
+  </a> <span class="args">parser f</span></div>
+<div class="desc">Returns a parser which uses the given <var>parser</var> as its parser.
+<p />The <var>f</var> must be a procedure which takes one argument and returns a parser.
+<p />The parser returns the result of the parser created by <var>f</var>. The <var>f</var> is
+called when the given <var>parser</var> returned successful state, passed the
+returning value of the given <var>parser</var>.
+<p />The <code>$bind</code> is useful to take the result of the parsers.
+<p />This procedure is used to implement <code>$do</code> described below.
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="$do2440">
+    <span class="name" name="$do">$do</span>
+  </a> <span class="args">clause <dot /> body</span></div>
+<div class="desc">A macro which creates a parser.
+<p />The <code>$do</code> macro makes users easier to bind variables. The syntax is
+the following:
+<pre class="codeblock">$do    ::= ($do clause ... parser)
+clause ::= (var parser)
+         | (parser)
+	 | parser
+</pre>
+The following example shows how to bind a variable returned by the <code>$many</code>
+procedure.
+<p /><pre class="codeblock">($do (c* ($many ($satisfy char-numeric?)))
+     ($return (string-&gt;number (list-&gt;string c*))))
+</pre>
+The above parser parses given numeric character sequence and returns a number.
+The <var>c*</var> is the result of the <var>$many</var>.
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="$lazy2441">
+    <span class="name" name="$lazy">$lazy</span>
+  </a> <span class="args">parser</span></div>
+<div class="desc">A macro which creates a parser.
+<p />The <code>$lazy</code> macro delays the creation of <var>parser</var>. This macro is
+useful to handle cross reference. For example:
+<pre class="codeblock">(define a ($do (c b) ($return c)))
+(define b ($do (c a) ($return c)))
+</pre>
+The above code causes unbound variable in runtime when the definition of
+<code>a</code> is evaluated. To avoid this, users can use the <code>$lazy</code> like this:
+<pre class="codeblock">(define a ($do (c ($lazy b)) ($return c)))
+(define b ($do (c a) ($return c)))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="$if2442">
+    <span class="name" name="$if">$if</span>
+  </a> <span class="args">pred then else</span></div>
+<div class="desc">A macro which creates a parser.
+<p />The returning parser calls either <var>then</var> or <var>else</var> parser depending
+on the result of <var>pred</var>.
+<p />This is the simple example.
+<pre class="codeblock">($if #t ($eqv? #\t) ($eqv? #\f))
+;; ($eqv? #\t) will ba called
+</pre>
+<p />The <code>$if</code> can be used to dispatch parsers by the results like this:
+<pre class="codeblock">($do (c ($optional ($eqv? #\t)))
+     ($if c
+          ($return c)
+	  ($return 'something)))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="$cond2443">
+    <span class="name" name="$cond">$cond</span>
+  </a> <span class="args">clause ...</span></div>
+<div class="define"><span class="define-category">Macro</span><a name="$cond2444">
+    <span class="name" name="$cond">$cond</span>
+  </a> <span class="args">clause ... (else parser)</span></div>
+<div class="desc">A macro which creates a parser.
+<p />The <var>clause</var> must be the following form:
+<pre class="codeblock">clause ::= (pred parser)
+</pre>
+<p />The parser returned by this macro is similar with the one from <code>$if</code>,
+the difference is this macro can handle multiple predicates.
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="$when2445">
+    <span class="name" name="$when">$when</span>
+  </a> <span class="args">pred parser</span></div>
+<div class="define"><span class="define-category">Macro</span><a name="$unless2446">
+    <span class="name" name="$unless">$unless</span>
+  </a> <span class="args">pred parser</span></div>
+<div class="desc">A macro which creates a parser.
+<p />The <code>$when</code> macro returns a parser which calls the given <var>parser</var>
+only if the <var>pred</var> returned true value.
+<p />The <code>$unless</code> macro returns a parser which calls the given <var>parser</var>
+only if the <var>pred</var> returned <code>#f</code>.
+<p />They are defined like this:
+<pre class="codeblock">(define-syntax $when
+  (syntax-rules ()
+    ((_ pred body)
+     ($if pred body ($fail 'pred)))))
+
+(define-syntax $unless
+  (syntax-rules ()
+    ((_ pred body)
+     ($when (not pred) body))))
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="$parameterize2447">
+    <span class="name" name="$parameterize">$parameterize</span>
+  </a> <span class="args">bindings parser</span></div>
+<div class="desc">A macro which creates a parser.
+<p />The <code>$parameterize</code> macro returns a parser which calls the given
+<var>parser</var> in the extended dynamic extend with the given <var>bindings</var>.
+<p />The <var>bindings</var> must be the following form:
+<pre class="codeblock">bindings ::= ((parameter value) ...)
+</pre>
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="$guard2448">
+    <span class="name" name="$guard">$guard</span>
+  </a> <span class="args">guard-clause parser</span></div>
+<div class="desc">A macro which creates a parser.
+<p />The <code>$guard</code> macro returns a parser which is wrapped by the <code>guard</code>.
+When the given <var>parser</var> raises an error during parsing, then the
+<var>guard-clause</var> will be executed.
+<p />The <var>guard-clause</var> must be the following form:
+<code>guard-clause ::= (variable (pred clause) ...)
+</code>
+The <var>pred</var> must be a expression which checks if the raised condition
+should be handled by the coupled <var>clause</var> or not. If the <var>pred</var>
+is evaluated to true value, then the coupled <var>clause</var> is called with
+the input of the given <var>parser</var>.
+</div>
+<p />
+</section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2449"><span class="section-number">7.27.2</span>Character specific parsers</a>
+  </h4>
+<p />The procedures provided by the <code>(peg)</code> can be used for all kinds of
+input. This section describes parsers which can only be used for character
+input.
 <p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="make-pkcs12-keystore2400">
-      <span class="name" name="make-pkcs12-keystore">make-pkcs12-keystore</span>
+    <span class="define-category">Library</span>
+    <a name="(peg chars)2450">
+      <span class="name" name="(peg chars)">(peg chars)</span>
     </a>
   </div>
-<div class="desc">Returns newly created PKCS#12 keystore object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="load-pkcs12-keystore2401">
-    <span class="name" name="load-pkcs12-keystore">load-pkcs12-keystore</span>
-  </a> <span class="args">input-port storepass</span></div>
-<div class="define"><span class="define-category">Function</span><a name="load-pkcs12-keystore-file2402">
-    <span class="name" name="load-pkcs12-keystore-file">load-pkcs12-keystore-file</span>
-  </a> <span class="args">file storepass</span></div>
-<div class="desc">Loads PKCS#12 keystore from given <var>input-port</var> or <var>file</var> and
-returns newly created keystore object.
-<p />The <code>load-pkcs12-keystore</code> loads from given binary input port.
-<p />The <code>load-pkcs12-keystore-file</code> loads from given file.
-<p /><var>storepass</var> must be a string and a password for given keystore.
+<div class="desc">Character specific PEG parser library.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="$char-set-contains?2451">
+    <span class="name" name="$char-set-contains?">$char-set-contains?</span>
+  </a> <span class="args">char-set</span></div>
+<div class="desc">Returns a parser which returns successful if the given
+<var>char-set</var> contains the input of the parser.
+<p />This procedure is defined like this:
+<pre class="codeblock">(define ($char-set-contains? s) 
+  ($satisfy (lambda (c) (char-set-contains? s c)) s))
+</pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-get-key2403">
-    <span class="name" name="pkcs12-keystore-get-key">pkcs12-keystore-get-key</span>
-  </a> 
- <span class="args">keystore alias keypass</span></div>
-<div class="desc">Retrives a private key associated with <var>alias</var> from <var>keystore</var>.
-If there is no key entry associated with <var>alias</var> then #f is returned.
-<p /><var>alias</var> must be a string.
-<p /><var>keypass</var> must be a string. It is used to decrypt the private key and
-it is <b>not</b> allowed to pass empty password.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-get-certificate2404">
-    <span class="name" name="pkcs12-keystore-get-certificate">pkcs12-keystore-get-certificate</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">Retrives a certificate associated with <var>alias</var> from <var>keystore</var>.
-If there is no certificate entry associated with <var>alias</var> then #f is 
-returned.
-<p /><var>alias</var> must be a string.
+<p /><div class="define"><span class="define-category">Function</span><a name="$token2452">
+    <span class="name" name="$token">$token</span>
+  </a> <span class="args">string</span></div>
+<div class="desc">Returns a parser which returns successful if the input of
+the parser matches with the given <var>string</var>.
+<p />This procedure is defined like this:
+<pre class="codeblock">(define ($token s) (apply $seq (map $eqv? (string-&gt;list s))))
+</pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-get-certificate-chain2405">
-    <span class="name" name="pkcs12-keystore-get-certificate-chain">pkcs12-keystore-get-certificate-chain</span>
-  </a>
- <span class="args">keystore alias</span></div>
-<div class="desc">Retrives certificate chain associated with given key alias <var>alias</var>
-from <var>keystore</var>. If there is no certificate chain then <code>'()</code> is
-returned.
-<p /><var>alias</var> must be a string.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-contains-alias?2406">
-    <span class="name" name="pkcs12-keystore-contains-alias?">pkcs12-keystore-contains-alias?</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc">Returns #t if <var>keystore</var> contains <var>alias</var>. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="store-pkcs12-keystore2407">
-    <span class="name" name="store-pkcs12-keystore">store-pkcs12-keystore</span>
-  </a>
- <span class="args">keystore output-port storepass</span></div>
-<div class="define"><span class="define-category">Function</span><a name="store-pkcs12-keystore-to-file2408">
-    <span class="name" name="store-pkcs12-keystore-to-file">store-pkcs12-keystore-to-file</span>
-  </a>
- <span class="args">keystore file storepass</span></div>
-<div class="desc">Writes given <var>keystore</var> to <var>output-port</var> or <var>file</var>.
-<p />The <code>store-pkcs12-keystore</code> writes to given binary output port
-<var>output-port</var>.
-<p />The <code>store-pkcs12-keystore-to-file</code> writes to given file <var>file</var>.
-<p /><var>storepass</var> must be a string and is used to encrypt whole contents.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-set-key!2409">
-    <span class="name" name="pkcs12-keystore-set-key!">pkcs12-keystore-set-key!</span>
-  </a>
- <span class="args">keystore alias private-key key-pass certs</span></div>
-<div class="desc"><var>alias</var> must be a string represents the name of <var>private-key</var> in
-the <var>keystore</var>.
-<p /><var>private-key</var> must be an RSA private key.
-<p /><var>key-pass</var> must be a string and is used to encrypt given <var>private-key</var>.
-<p /><var>certs</var> must be a list of X509 certificates which associated with
-<var>private-key</var>.
-<p />Stores given <var>private-key</var> to <var>keystore</var>.
-<p />The implementation allows users to set separate password from storepass.
-Be aware that current implementation of Bouncy Castle JCE uses the same
-password as storepass to encrypt a private key. Thus if you use different
-password, then it is not compatible with Bouncy Castle.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-set-certificate!2410">
-    <span class="name" name="pkcs12-keystore-set-certificate!">pkcs12-keystore-set-certificate!</span>
-  </a>
- <span class="args">keystore alias cert</span></div>
-<div class="desc"><var>alias</var> must be a string represents the name of <var>cert</var> in
-<var>keystore</var>.
-<p /><var>cert</var> must be an X509 certificate.
-<p />Stores given <var>cert</var> to <var>keystore</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-delete-entry!2411">
-    <span class="name" name="pkcs12-keystore-delete-entry!">pkcs12-keystore-delete-entry!</span>
-  </a> <span class="args">keystore alias</span></div>
-<div class="desc"><var>alias</var> must be a string.
-<p />Removes the entry associated with <var>alias</var> in <var>keystore</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="pkcs12-keystore-aliases2412">
-    <span class="name" name="pkcs12-keystore-aliases">pkcs12-keystore-aliases</span>
-  </a> <span class="args">keystore</span></div>
-<div class="desc">Returns all defined names in <var>keystore</var>.</div>
-<p />
+
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section726.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+    <a class="prev" href="section726.html">(odbc) - ODBC binding</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section728.html">(util queue) - Queue</a>
+    <a class="next" href="section728.html">(rsa pkcs :5) - Password Based Cryptography library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

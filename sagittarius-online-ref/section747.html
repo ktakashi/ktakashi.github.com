@@ -7,385 +7,175 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section746.html">(rfc uuid) - UUID generate library</a>
+    <a class="prev" href="section746.html">(rfc tls) - TLS protocol library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section748.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="next" href="section748.html">(rfc uri-template) - URI template</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.websocket"><span class="section-number">7.47</span>(rfc websocket) - WebSocket</a>
+    <a class="section.anchor" name="rfc.uri"><span class="section-number">7.47</span>(rfc uri) - Parse and construct URIs</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc websocket)2727">
-      <span class="name" name="(rfc websocket)">(rfc websocket)</span>
+    <a name="(rfc uri)2767">
+      <span class="name" name="(rfc uri)">(rfc uri)</span>
     </a>
   </div>
-<div class="desc">This library provides WebSocket APIs defined by
-<a href="https://tools.ietf.org/html/rfc6455">RFC 6455</a>.
-</div>
-<p />Following is a simple example to use user level APIs.
-<pre class="codeblock">(import (rnrs) (rfc websocket))
-
-;; Creates an WebSocket object
-(define websocket (make-websocket "wss://echo.websocket.org"))
-
-;; Sets text message event handler
-(websocket-on-text-message websocket
-  (lambda (ws text) (display text) (newline)))
-
-;; Opens the WebSocket
-(websocket-open websocket)
-
-;; Sends a message to endpoint
-(websocket-send websocket "Hello")
-
-;; Closes the WebSocket
-(websocket-close websocket)
+<div class="desc">This library provides RFC3986 'URI Generic Syntax' procedures.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-parse2768">
+    <span class="name" name="uri-parse">uri-parse</span>
+  </a> <span class="args">uri</span></div>
+<div class="desc"><var>uri</var> must be string.
+<p />Parses given <var>uri</var> and returns following 7 values;
+<ul class="itemlist"><li class="itemlist-item">
+    <var>scheme</var>
+  </li>
+<li class="itemlist-item">
+    <var>user-info</var>
+  </li>
+<li class="itemlist-item">
+    <var>host</var>
+  </li>
+<li class="itemlist-item">
+    <var>port</var>
+  </li>
+<li class="itemlist-item">
+    <var>path</var>
+  </li>
+<li class="itemlist-item">
+    <var>query</var>
+  </li>
+<li class="itemlist-item">
+    <var>fragment</var>
+  </li>
+</ul>
+<p />Following examples are from RFC3986 text;
+<pre class="codeblock">   foo://example.com:8042/over/there?name=ferret#nose
+   \_/   \______________/\_________/ \_________/ \__/
+    |           |            |            |        |
+ scheme     authority       path        query   fragment
+    |   _____________________|__
+   / \ /                        \
+   urn:example:animal:ferret:nose
 </pre>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2728"><span class="section-number">7.47.1</span>User level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-websocket2729">
-    <span class="name" name="make-websocket">make-websocket</span>
-  </a>
- <span class="args">uri :key (protocols '()) (extensions '()) (engine 'http)</span></div>
-<div class="desc">Creates an WebSocket object which communicate to given <var>uri</var>.
-<p />The URI reprented by <var>uri</var> must be a valid WebSocket URI. If it's
-not a valid URI, then <code>&amp;websocket-engine</code> or its sub condition
-shall be raised.
-<p />The keyword argument <var>protocols</var> are a list of sub protocols of the
-creating WebSocket. If this is set, then handshake will send it with
-<code>Sec-WebSocket-Protocol</code> header or equivalent.
-<p />The keyword argument <var>extensions</var> are a list of extensions of the
-creating WebSocket. If this is set, then handshake will send it with
-<code>Sec-WebSocket-Extensions</code> header or equivalent.
-<p />The keyword argument <var>engine</var> is a type of handshake engine and
-must be a symbol. This determines which handshake protocol it should
-use. The default value is <code>http</code> which uses HTTP/1.1.
+<p />authority = [ <var>user-info</var> "@" ] <var>host</var> [ ":" <var>port</var> ]
+<p />If given <var>uri</var> does not contain the part described above, it will be #f.
+ex)
+<div class="snipet-box">
+    <pre class="snipet">(uri-parse "http://localhost")</pre>
+    <span class="snipet-arrow">=&gt;</span>
+    <span class="snipet-result">(values http #f localhost #f #f #f #f)</span>
+  </div>
 <p /></div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket?2730">
-    <span class="name" name="websocket?">websocket?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is an WebSocket object otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-open2731">
-    <span class="name" name="websocket-open">websocket-open</span>
-  </a> <span class="args">websocket</span></div>
-<div class="desc">Operating handshake on given WebSocket object <var>websocket</var> if
-it's not opened, yet. And returns <var>websocket</var>.
-<p />If handshake failed, then <code>&amp;websocket-engine</code> or its sub condition
-shall be raised.
-<p />After successfull call of this procedure, the <var>websocket</var> has a
-message dispatcher thread.
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-scheme&amp;specific2769">
+    <span class="name" name="uri-scheme&amp;specific">uri-scheme&amp;specific</span>
+  </a> <span class="args">uri</span></div>
+<div class="desc"><var>uri</var> must be string.
+<p />Parse given <var>uri</var> into scheme and rest. Returns the 2 values.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-close2732">
-    <span class="name" name="websocket-close">websocket-close</span>
-  </a>
- <span class="args">websocket :key (status #f) (message "") (timeout #f)</span></div>
-<div class="desc">Closes the given <var>websocket</var> if it's open and returns the
-<var>websocket</var>. This procedure also finishes the underlying thread
-created by <code>websocket-open</code>.
-<p />The keyword argument <var>status</var> is specified, it must be a non
-negative integer which has less then or equal to 16 bits length, then
-the procedure sends it as a connection close code.
-<p />The keyword argument <var>message</var> is specified, must be a string, then
-the procedure sends it as a connection close message. This is sent only
-if the <var>status</var> is specified otherwise ignored.
-<p />The keyword argument <var>timeout</var> is used as a timeout period for waiting
-underlying dispatcher thread. If the thread didn't finish in the specified
-period, then it'd be terminated and <code>&amp;websocket-close-timeout</code> is
-raised.
-<p />If the underlying thread raised an <code>&amp;uncaught-exception</code>, then the
-procedure raises its reason.
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decompose-hierarchical2770">
+    <span class="name" name="uri-decompose-hierarchical">uri-decompose-hierarchical</span>
+  </a> <span class="args">specific</span></div>
+<div class="desc"><var>specific</var> must be string.
+<p /><var>specific</var> is a URI without scheme. For example, the specific of following 
+URI 'http://localhost/foo.html' if '//localhost/foo.html'.
+<p />Parse given <var>specific</var> into 4 values <var>authority</var>, <var>path</var>,
+<var>query</var> and <var>fragment</var>.
+<p />If the <var>specific</var> does not contain the part, it will be #f.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send2733">
-    <span class="name" name="websocket-send">websocket-send</span>
-  </a>
- <span class="args">websocket data :optional start splitter</span></div>
-<div class="desc">Sends given <var>data</var> to the <var>websocket</var> and returns
-<var>websocket</var>. This procedure runs in atomic so the <var>data</var> is sent
-in one fragmentation sequence.
-<p />The optional arguments are passed to underlying data transport procedures.
-If the <var>data</var> is a string, then <code>websocket-send-text</code> is used.
-If the <var>data</var> is a bytevector, then <code>websocket-send-binary</code> is used.
-If the <var>data</var> is not one of the aboves, then <code>&amp;assertion</code> is raised.
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decompose-authority2771">
+    <span class="name" name="uri-decompose-authority">uri-decompose-authority</span>
+  </a> <span class="args">authority</span></div>
+<div class="desc"><var>authority</var> must be string.
+<p />Parse given <var>authority</var> into  3 values, <var>user-info</var>, <var>host</var> and
+<var>post</var>.
+<p />If the <var>authority</var> does not contain the part, it will be #f.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-ping2734">
-    <span class="name" name="websocket-ping">websocket-ping</span>
-  </a>
- <span class="args">websocket data :optional (timeout #f) (timeout-value #f)</span></div>
-<div class="desc">Send ping control frame whose data is <var>data</var> to <var>websocket</var>
-and returns <var>websocket</var>.
-<p />The procedure waits until the endpoint returns pong control frame. If the
-pong frame doesn't contain the same <var>data</var> in its payload, then
-<code>&amp;websocket-pong</code> is raised.
-<p />The optional argument <var>timeout</var> specifies how long the procedure waits
-the pong response.
-<p />The optional argument <var>timeout-value</var> is an alternative value when
-the endpoint didn't return pong in time.
-<p />CAUTION: this procedure depends on the endpoint's behaviour.
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decode2772">
+    <span class="name" name="uri-decode">uri-decode</span>
+  </a> <span class="args">in out :key (cgi-decode #f)</span></div>
+<div class="desc"><var>in</var> must be binary input port.
+<p /><var>out</var> must binary output port.
+<p />Reads and decodes given <var>in</var> and put the result into <var>out</var>.
+<p />If the keyword argument <var>cgi-decode</var> is #t, the procedure decodes
+<code>#x2b</code>('+') to <code>#x20</code>('#\space').
 </div>
-<p />
-<section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2735"><span class="section-number">7.47.1.1</span>Event handling</a>
-  </h5>
-<p />The user level APIs are event driven like JavaScript's WebSocket API.
-Whenever an event is occured, then the configured event handler is
-invoked.
-<p />There are 2 types of error handler invocations. One is calling active
-procedures such as <code>websocket-send</code>. The other one is passive situation
-such as receiving frame from endpoint. The first case, all active procedures
-would catch <code>&amp;websocket</code> and its sub conditions. If the condition is
-<code>&amp;websocket-engine</code> or its sub condition, then the condition is
-re-raised. Other <code>&amp;websocket</code> conditions are not re-raised by the
-APIs. Other conditions are simply re-raised without invcating event handler.
-On the second case, it's mostly the same, but when
-<code>&amp;websocket-closed</code> is raised, then event handler won't be invoked.
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-text-message2736">
-    <span class="name" name="websocket-on-text-message">websocket-on-text-message</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-decode-string2773">
+    <span class="name" name="uri-decode-string">uri-decode-string</span>
   </a>
- <span class="args">websocket event-handler</span></div>
-<div class="define"><span class="define-category">Function</span><a name="websocket-on-binary-message2737">
-    <span class="name" name="websocket-on-binary-message">websocket-on-binary-message</span>
+ <span class="args">string :key (encoding 'utf-8) (cgi-decode #f)</span></div>
+<div class="desc">Decodes given <var>string</var> and returns decoded string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-encode2774">
+    <span class="name" name="uri-encode">uri-encode</span>
   </a>
- <span class="args">websocket event-handler</span></div>
-<div class="desc">Sets <var>event-handler</var> for receiving text message and binary
-message to <var>websocket</var>, respectively.
-<p />The <var>event-handler</var> must be a procedure which accepts 2 arguments,
-WebSocket object and response data, string or bytevector.
-<p />If the <var>event-handler</var> raises an error, and it's not
-a <code>&amp;websocket</code>, then the dispatcher thread opened by
-<code>websocket-open</code> stops running.
-<p />The procedure returns <var>websocket</var>.
+ <span class="args">in out :key (noescape *rfc3986-unreserved-char-set*) (upper-case #t)</span></div>
+<div class="desc"><var>in</var> must be binary input port.
+<p /><var>out</var> must binary output port.
+<p />Reads and encodes given <var>in</var> and put the result into <var>out</var>.
+<p />The keyword argument <var>noescape</var> specifies which character must be escaped.
+<p />The keyword argument <var>upper-case</var> specifies the result case of encoded
+value. If the value is true value then it encodes to upper case (default),
+otherwise lower case.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-open2738">
-    <span class="name" name="websocket-on-open">websocket-on-open</span>
-  </a> <span class="args">websocket event-handler</span></div>
-<div class="define"><span class="define-category">Function</span><a name="websocket-on-close2739">
-    <span class="name" name="websocket-on-close">websocket-on-close</span>
-  </a> <span class="args">websocket event-handler</span></div>
-<div class="desc">Sets <var>event-handler</var> for open and close event to <var>websocket</var>,
-respectively.
-<p />The <var>event-handler</var> must be a procedure which accepts 1 argument,
-WebSocket object.
-<p />The procedure returns <var>websocket</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-on-error2740">
-    <span class="name" name="websocket-on-error">websocket-on-error</span>
-  </a> <span class="args">websocket event-handler</span></div>
-<div class="desc">Sets <var>event-handler</var> for error situation to <var>websocket</var>.
-<p />The <var>event-handler</var> must be a procedure which accepts 2 arguments,
-WebSocket object and a captured error. 
-<p />If the <var>event-handler</var> raises an error, then it would be propagated
-caller of the user level APIs.
-<p />The procedure returns <var>websocket</var>.
-</div>
-<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2741"><span class="section-number">7.47.2</span>Low level APIs</a>
-  </h4>
-<p />The low level APIs can be used when users want to implement WebSocket process
-in programatic way. The user level APIs are implemented on this APIs.
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2742"><span class="section-number">7.47.2.1</span>WebSocket Connection</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-websocket-connection2743">
-    <span class="name" name="make-websocket-connection">make-websocket-connection</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-encode-string2775">
+    <span class="name" name="uri-encode-string">uri-encode-string</span>
   </a>
- <span class="args">uri :optional (engine 'http)</span></div>
-<div class="desc">Creates WebSocket connection object. <var>uri</var> and <var>engine</var> are
-the same as <var>make-websocket</var>.
-</div>
- 
-<div class="define"><span class="define-category">Function</span><a name="websocket-connection?2744">
-    <span class="name" name="websocket-connection?">websocket-connection?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is WebSocket connection object
-otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-handshake!2745">
-    <span class="name" name="websocket-connection-handshake!">websocket-connection-handshake!</span>
+ <span class="args">string :key (encoding 'utf-8) :allow-other-keys</span></div>
+<div class="desc">Encodes given <var>string</var> and returns encoded string.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-compose2776">
+    <span class="name" name="uri-compose">uri-compose</span>
   </a>
- <span class="args">connection :optional (protocols '()) (extensions '()) :rest</span></div>
-<div class="desc">Processes handshake on given <var>connection</var>. All the optional
-arguments are passed to underlying handshake engine.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-close!2746">
-    <span class="name" name="websocket-connection-close!">websocket-connection-close!</span>
-  </a> <span class="args">connection</span></div>
-<div class="desc">Closes given <var>connection</var>. This procedure simply closes
-socket connection.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-closed?2747">
-    <span class="name" name="websocket-connection-closed?">websocket-connection-closed?</span>
-  </a> <span class="args">connection</span></div>
-<div class="desc">Returns #t if the <var>connection</var> is not connected otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-connection-pong-queue2748">
-    <span class="name" name="websocket-connection-pong-queue">websocket-connection-pong-queue</span>
-  </a> <span class="args">connection</span></div>
-<div class="desc">Returns a shared queue which stores pong data from the endpoint of
-the <var>connection</var>.</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2749"><span class="section-number">7.47.2.2</span>WebSocket Messages</a>
-  </h5>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-text2750">
-    <span class="name" name="websocket-send-text">websocket-send-text</span>
-  </a>
- <span class="args">connection data :optional (start 0) split</span></div>
-<div class="define"><span class="define-category">Function</span><a name="websocket-send-binary2751">
-    <span class="name" name="websocket-send-binary">websocket-send-binary</span>
-  </a>
- <span class="args">connection data :optional (start 0) split</span></div>
-<div class="desc">Sends text or binary frame of <var>data</var> to given <var>connection</var>.
-<p />If the first procedure is called, then <var>data</var> must be a string.
-<p />If the second procedure is called, then <var>data</var> must be a bytevector.
-<p />The optional argument start specifies from which point of <var>data</var> to send.
-<p />The optional argument <var>split</var> is specified, it must be an non negative
-integer or procedure which accepts 2 arguments, <var>data</var> and start, then
-the <var>data</var> is sent fragmented.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-close2752">
-    <span class="name" name="websocket-send-close">websocket-send-close</span>
-  </a>
- <span class="args">connection :optional (data #vu8()) (wait? #t)</span></div>
-<div class="desc">Sends close control frame to given <var>connection</var>.
-<p />If the optional argument <var>data</var> is specified, it must be a properly
-coded connection close status, the it's sent as a payload of close frame.
-<p />If the optional argument <var>wait?</var> is true value, then the procedure
-waits until the endpoint sends close frame back.
-<p />If <var>wait?</var> is #f, then it is users responsibility to receive the
-response close frame and closes the connection.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-send-ping2753">
-    <span class="name" name="websocket-send-ping">websocket-send-ping</span>
-  </a>
- <span class="args">connection :optional (data #vu8())</span></div>
-<div class="define"><span class="define-category">Function</span><a name="websocket-send-pong2754">
-    <span class="name" name="websocket-send-pong">websocket-send-pong</span>
-  </a>
- <span class="args">connection :optional (data #vu8())</span></div>
-<div class="desc">Sends ping and pong frame to given <var>connection</var> respectively.
-<p />The optional argument <var>data</var> is sent as its payload.
-<p />NB: the payload must be less than 125 bytes.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-receive2755">
-    <span class="name" name="websocket-receive">websocket-receive</span>
-  </a>
- <span class="args">connection :key (push-pong? #f)</span></div>
-<div class="desc">Receives a data frame and return 2 values, opcode and payload.
-<p />If the frame is text, then returning value is a string. Otherwise
-returning value is a bytevector.
-<p />If the keyword argument <var>push-pong?</var> is true value, then
-payload of pong control frame will be pushed in to the <code>pong-queue</code>
-of the <var>connection</var>.
-<p />This procedure doesn't return ping and pong control frame.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-receive-fragments2756">
-    <span class="name" name="websocket-receive-fragments">websocket-receive-fragments</span>
-  </a>
- <span class="args">connection proc :key (push-pong? #f)</span></div>
-<div class="desc">Receives a data fragments until its end and return the result of
-the last call of <var>proc</var>.
-<p />The <var>proc</var> must accept 3 values, <var>finished?</var>, <var>opcode</var> and
-<var>data</var>.
-<p />This procedure is useful to receive a huge frame without concising.
-<p />The <code>websocket-receive</code> is implemented on top of this procedure
-like this:
-<pre class="codeblock">(define (websocket-receive conn :key (push-pong? #f))
-  (define (convert opcode data)
-    (if (eqv? opcode +websocket-text-frame+)
-	(values opcode (utf8-&gt;string data))
-	(values opcode data)))
-  (let-values (((out extract) (open-bytevector-output-port)))
-    (websocket-receive-fragments conn
-     (lambda (fin? opcode data)
-       (put-bytevector out data)
-       (if fin? (convert opcode (extract)) (values opcode #f)))
-     :push-pong? push-pong?)))
+ <span class="args">:key (scheme #f) (userinfo #f) (host #f) (port #f) (authority #f)
+            (path #f) (path* #f) (query #f) (fragment #f) (specific #f)</span></div>
+<div class="desc">Composes URI from given arguments.
+<p />If all keyword arguments are #f, the procedure returns empty string.
+<p />The procedure put priority on bigger chunk of URI part. For example, if keyword
+argument <var>specific</var> is specified, the procedure uses only <var>scheme</var> and
+<var>specific</var>. Following describes the priority hierarchy;
+<pre class="codeblock"><var>scheme</var>
+<var>specific</var>
+  +- <var>authority</var>
+       +- <var>userinfo</var>
+       +- <var>host</var>
+       +- <var>port</var>
+  +- <var>path*</var>
+       +- <var>path</var>
+       +- <var>query</var>
+       +- <var>fragment</var>
 </pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-compose-close-status2757">
-    <span class="name" name="websocket-compose-close-status">websocket-compose-close-status</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="uri-merge2777">
+    <span class="name" name="uri-merge">uri-merge</span>
   </a>
- <span class="args">status :optional message</span></div>
-<div class="desc"><var>status</var> must be an non negative integer whose bit length
-must be less than or equal to 16 bits.
-<p />If optional argument <var>message</var> is specified, then it must be a
-string.
-<p />Composes a payload of close frame.
-</div>
-<div class="define"><span class="define-category">Function</span><a name="websocket-parse-close-status2758">
-    <span class="name" name="websocket-parse-close-status">websocket-parse-close-status</span>
-  </a> <span class="args">data</span></div>
-<div class="desc"><var>data</var> must be a payload of close frame.
-<p />Returns 2 values, status and mesasge of the close frame payload.
+ <span class="args">base-uri relative-uri1 relative-uri2 ...</span></div>
+<div class="desc">Merges given <var>relative-uris</var> to <var>base-uri</var> according to RFC 3986
+section 5.
 </div>
 <p /><div class="define">
-    <span class="define-category">Constants</span>
-    <a name="+websocket-text-frame+2759">
-      <span class="name" name="+websocket-text-frame+">+websocket-text-frame+</span>
+    <span class="define-category">Variable</span>
+    <a name="*rfc3986-unreserved-char-set*2778">
+      <span class="name" name="*rfc3986-unreserved-char-set*">*rfc3986-unreserved-char-set*</span>
     </a>
   </div>
 <div class="define">
-    <span class="define-category">Constants</span>
-    <a name="+websocket-binary-frame+2760">
-      <span class="name" name="+websocket-binary-frame+">+websocket-binary-frame+</span>
+    <span class="define-category">Variable</span>
+    <a name="*rfc2396-unreserved-char-set*2779">
+      <span class="name" name="*rfc2396-unreserved-char-set*">*rfc2396-unreserved-char-set*</span>
     </a>
   </div>
-<div class="desc">WebSocket frame type constants. It represents text frame and
-binary frame, respectively.</div>
-<p /><div class="define">
-    <span class="define-category">Constants</span>
-    <a name="+websocket-close-frame+2761">
-      <span class="name" name="+websocket-close-frame+">+websocket-close-frame+</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constants</span>
-    <a name="+websocket-ping-frame+2762">
-      <span class="name" name="+websocket-ping-frame+">+websocket-ping-frame+</span>
-    </a>
-  </div>
-<div class="define">
-    <span class="define-category">Constants</span>
-    <a name="+websocket-pong-frame+2763">
-      <span class="name" name="+websocket-pong-frame+">+websocket-pong-frame+</span>
-    </a>
-  </div>
-<div class="desc">WebSocket control frame type constants. It represents cloe frame,
-ping frame, and pong frame, respectively.</div>
-<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2764"><span class="section-number">7.47.3</span>Conditions</a>
-  </h4>
-<p /><code>&amp;websocket</code> is a base condition of the WebSocket library's condition.
-The hierarchy is the following:
-<pre class="codeblock">+ &amp;error
-  + &amp;websocket
-    + &amp;websocket-engine
-      + &amp;websocket-engine-not-found
-         - engine
-	 - reason
-      + &amp;websocket-engine-scheme
-         - scheme
-      + &amp;websocket-engine-connection
-         - host
-	 - port
-    + &amp;websocket-closed
-       - status
-       - message
-    + &amp;websocket-pong
-       - pong-data
-    + &amp;websocket-close-timeout
-</pre>
-<p />The condition types are not exported by the library.
-<p /><div class="define"><span class="define-category">Function</span><a name="websocket-error?2765">
-    <span class="name" name="websocket-error?">websocket-error?</span>
-  </a> <span class="args">obj</span></div>
-</section></section>
+<div class="desc">Charsets which contains no escape needed characters.
+<p />There is slight difference between RFC2396 and RFC3986. This library uses
+RFC3986 charset by default to encode.
+</div>
+
+</section>
   <div class="prev-next">
-    <a class="prev" href="section746.html">(rfc uuid) - UUID generate library</a>
+    <a class="prev" href="section746.html">(rfc tls) - TLS protocol library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section748.html">(rfc x.509) - X.509 certificate utility library</a>
+    <a class="next" href="section748.html">(rfc uri-template) - URI template</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

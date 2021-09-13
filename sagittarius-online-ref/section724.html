@@ -7,151 +7,293 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section723.html">(net server) - Simple server framework</a>
+    <a class="prev" href="section723.html">(net oauth) - OAuth library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section725.html">(peg) - PEG library</a>
+    <a class="next" href="section725.html">(net socket) - Modern Socket library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="odbc"><span class="section-number">7.24</span>(odbc) - ODBC binding</a>
+    <a class="section.anchor" name="net.server"><span class="section-number">7.24</span>(net server) - Simple server framework</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(odbc)2323">
-      <span class="name" name="(odbc)">(odbc)</span>
+    <a name="(net server)2364">
+      <span class="name" name="(net server)">(net server)</span>
     </a>
   </div>
-<div class="desc">This library provides ODBC access procedures.
-<p />ODBC is a common database access interface so that it doesn't depend on specific
-APIs. This library is for implementing ODBC DBD for <a href="section710.html#dbi">DBI</a>, using
-this library directly is not recommended.
-<p />NOTE: the library is supported only your platform is supporting ODBC.
-</div>
-<p /><div class="define">
-    <span class="define-category">Function</span>
-    <a name="create-odbc-env2324">
-      <span class="name" name="create-odbc-env">create-odbc-env</span>
-    </a>
-  </div>
-<div class="desc">Creates and returns ODBC environment object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="odbc-env?2325">
-    <span class="name" name="odbc-env?">odbc-env?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is ODBC environment object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="free-handle2326">
-    <span class="name" name="free-handle">free-handle</span>
-  </a> <span class="args">odbc-ctx</span></div>
-<div class="desc">Releases given ODBC resource.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="connect!2327">
-    <span class="name" name="connect!">connect!</span>
-  </a>
- <span class="args">ocbc-env server username password :optional (auto-commit #t)</span></div>
-<div class="desc"><var>odbc-env</var> must be an ODBC environment object created by
-<code>create-odbc-env</code>.
-<p /><var>server</var> must be a string indicating ODBC database name.
-<p /><var>username</var> and <var>password</var> must be string.
-<p />Connects to <var>server</var> with authentication of <var>username</var> and
-<var>password</var> and returns ODBC database connection object. If optional
-argument <var>auto-commit</var> is #f then the connection won't commit transaction
-automatically.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="odbc-connection?2328">
-    <span class="name" name="odbc-connection?">odbc-connection?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is ODBC connection object.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="disconnect!2329">
-    <span class="name" name="disconnect!">disconnect!</span>
-  </a> <span class="args">odbc-dbc</span></div>
-<div class="desc">Disconnect from the database.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="connection-open?2330">
-    <span class="name" name="connection-open?">connection-open?</span>
-  </a> <span class="args">odbc-dbc</span></div>
-<div class="desc">Returns #t if the given ODBC connection is available, otherwise #f.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="prepare2331">
-    <span class="name" name="prepare">prepare</span>
-  </a> <span class="args">odbc-dbc sql</span></div>
-<div class="desc">Creates and returns a ODBC statement object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="odbc-statement?2332">
-    <span class="name" name="odbc-statement?">odbc-statement?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is ODBC statement object.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="statement-open?2333">
-    <span class="name" name="statement-open?">statement-open?</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Returns #t if the given ODBC statement is available, otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="num-prams2334">
-    <span class="name" name="num-prams">num-prams</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Returns number of parameters in an SQL statement.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="bind-parameter!2335">
-    <span class="name" name="bind-parameter!">bind-parameter!</span>
-  </a> <span class="args">odbc-stmt index value</span></div>
-<div class="desc">Binds the given <var>value</var> at position <var>index</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="execute!2336">
-    <span class="name" name="execute!">execute!</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Execute given ODBC statement.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="fetch!2337">
-    <span class="name" name="fetch!">fetch!</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Forwarding current cursor to next and returns #t if there is data
-otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="get-data!2338">
-    <span class="name" name="get-data!">get-data!</span>
-  </a> <span class="args">odbc-stmt index</span></div>
-<div class="desc">Retrieve data from statement at position <var>index</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="row-count2339">
-    <span class="name" name="row-count">row-count</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Returns the number of rows affected by UPDATE, INSERT or DELETE
-statement.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="column-count2340">
-    <span class="name" name="column-count">column-count</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Returns the number of columns in a result statement.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="result-columns2341">
-    <span class="name" name="result-columns">result-columns</span>
-  </a> <span class="args">odbc-stmt</span></div>
-<div class="desc">Returns the column names in a result statement.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="commit!2342">
-    <span class="name" name="commit!">commit!</span>
-  </a> <span class="args">odbc-ctx</span></div>
-<div class="define"><span class="define-category">Function</span><a name="rollback!2343">
-    <span class="name" name="rollback!">rollback!</span>
-  </a> <span class="args">odbc-ctx</span></div>
-<div class="desc">Commits/rollbacks given ODBC context.</div>
+<div class="desc">This library provides simple server framework.</div>
+<p />Following example describes how to write a simple echo server with the APIs
+this library provides.
+<pre class="codeblock">(import (net server) (sagittarius socket))
+
+(define (handler server socket)
+  ;; echo message is limited to 255 bytes in this example
+  (let ((r (socket-recv socket 255)))
+    ;; socket will be closed by the framework
+    (socket-send socket r)))
+
+(define server (make-simple-server "5000" handler))
+
+(server-start! server)
+</pre>
+<p />Above example creates only one thread and if there are more than one
+connection, then the latter one needs to wait until first one is done.
+The library also provides mult threading server. Following example describes
+how to make multi threading server.
+<pre class="codeblock">(import (net server) (sagittarius socket))
+
+;; specifies maximum thread number
+(define server-config (make-server-config :max-thread 5))
+
+(define (handler server socket)
+  (let ((r (socket-recv socket 255)))
+    ;; socket will be closed by the framework
+    (socket-send socket r)))
+
+(define server (make-simple-server "5000" handler :config server-config))
+
+(server-start! server)
+</pre>
+If the server gets more than 5 connection simultaneously, then it tries to
+wait until one of the connection's task finishes. If it doesn't finish in
+time, then connection will be refused.
+<p />If clients keep the connection but server wants to handle requests more than
+configured thread number, then specify <var>non-blocking?</var> keyword argument
+with #t.
+<pre class="codeblock">(import (net server) (sagittarius socket))
+
+;; specifies maximum thread number
+(define server-config (make-server-config :max-thread 5 :non-blocking? #t))
+
+(define (handler server socket)
+  (let ((r (socket-recv socket 255)))
+    (if (eof-object? r)
+        ;; close the socket after the process
+        (socket-close socket)
+        (socket-send socket r))))
+
+(define server (make-simple-server "5000" handler :config server-config))
+
+(server-start! server)
+</pre>
+Above server example creates 5 threads and accept all requests. The requests
+are dispatched to the least busy thread. There are couple of restrictions
+to use this server. See the descirption of <var>non-blocking?</var> keyword
+argument.
 <p />
 <section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="dbd.odbc"><span class="section-number">7.24.1</span>(dbd odbc) - DBD for ODBC</a>
+    <a class="section.anchor" name="G2365"><span class="section-number">7.24.1</span>Server</a>
   </h4>
 <p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(dbd odbc)2344">
-      <span class="name" name="(dbd odbc)">(dbd odbc)</span>
+    <span class="define-category">Class</span>
+    <a name="<simple-server&gt;2366">
+      <span class="name" name="<simple-server&gt;">&lt;simple-server&gt;</span>
     </a>
   </div>
-<div class="desc">This library provides database driver (DBD) for ODBC .
-<p />Importing this library is done by DBI automatically so users should not
-use this directly.
-<p />The DSN should specify the connecting database name with <code>server</code> keyword.
-Following DSN is connecting <var>foo</var> database configured in ODBC.
-<p /><code>"dbi:odbc:server=<var>foo</var>"</code>
-<p />The <code>dbi-connect</code> supports <code>:username</code>, <code>:password</code> and
-<code>:auto-commit</code> keyword arguments. The detail about DBI see
-<a href="section710.html#dbi">(dbi) - Database independent access layer</a>.
-<p /></div>
+<div class="desc">Simple server class.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="server?2367">
+    <span class="name" name="server?">server?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;simple-server&gt;</code>,
+otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-simple-server2368">
+    <span class="name" name="make-simple-server">make-simple-server</span>
+  </a>
+ <span class="args">service handler :key server-class config :allow-other-keys</span></div>
+<div class="desc">Creates a server object.
+<p /><var>service</var> must be a string and indicates the service name or port number.
+<p /><var>handler</var> must be a procedure accepts 2 arguments, server object 
+<var>server</var> created with this procedure and socket object <var>socket</var>.
+<p />Keyword argument <var>server-class</var> is specified, it must be a class
+inherits <code>&lt;simple-server&gt;</code>, then the procedure uses the class to
+instantiate. And during instantiation, given other keys are passed.
+<p />Keyword argument <var>config</var> is specified, it must be an instance
+of <var>&lt;server-config&gt;</var> or subclass of it, then the server is created
+according to the configuration.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="server-config2369">
+    <span class="name" name="server-config">server-config</span>
+  </a> <span class="args">server</span></div>
+<div class="desc">Returns configuration object used to create given server object
+<var>server</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="server-stopped?2370">
+    <span class="name" name="server-stopped?">server-stopped?</span>
+  </a> <span class="args">server</span></div>
+<div class="desc">Returns #t if given server is stopped.
+<p />NOTE: this also returns #t if the server is not started.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="server-start!2371">
+    <span class="name" name="server-start!">server-start!</span>
+  </a>
+ <span class="args">server :key background :allow-other-keys</span></div>
+<div class="desc">Starts the given <var>server</var>.
+<p />Keyword argument <var>background</var> is true value then the server is started
+background. By default it's #f.
+<p />The rest of keywords are passed to <code>on-server-start!</code>.
+<p />NOTE: Server object is not reusable thus once server is started, it is
+impossible to restart the server.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="server-stop!2372">
+    <span class="name" name="server-stop!">server-stop!</span>
+  </a>
+ <span class="args">server :allow-other-keys</span></div>
+<div class="desc">Stops the given <var>server</var>.
+<p />The rest of keywords are passed to <code>on-server-stop!</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="wait-server-stop!2373">
+    <span class="name" name="wait-server-stop!">wait-server-stop!</span>
+  </a> <span class="args">server :optional timeout</span></div>
+<div class="desc">Waits until the <var>server</var> stops.
+<p />The <var>server</var> must be stopping by accessing shutdown port otherwise
+this procedure waits forever/for <var>timeout</var> period.
+<p />Optional argument <var>timeout</var> must be #f, time object or real number.
+If the value is #f then this procedure waits forever until the <var>server</var>
+stops. By default #f.
+</div>
+<p /><div class="define"><span class="define-category">Method</span><a name="on-server-start!2374">
+    <span class="name" name="on-server-start!">on-server-start!</span>
+  </a>
+ <span class="args">(server &lt;simple-server&gt;) rest ...</span></div>
+<div class="define"><span class="define-category">Method</span><a name="on-server-stop!2375">
+    <span class="name" name="on-server-stop!">on-server-stop!</span>
+  </a>
+ <span class="args">(server &lt;simple-server&gt;) rest ...</span></div>
+<div class="desc">Hook methods for subclasses.
+<p />The first method is called when server is starting.
+<p />The second method is called after server is stopped.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2376"><span class="section-number">7.24.2</span>Configuration</a>
+  </h4>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<server-config&gt;2377">
+      <span class="name" name="<server-config&gt;">&lt;server-config&gt;</span>
+    </a>
+  </div>
+<div class="desc">Server configuration class.</div>
+<div class="define"><span class="define-category">Function</span><a name="server-config?2378">
+    <span class="name" name="server-config?">server-config?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is an instance of <code>&lt;server-config&gt;</code>,
+otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-server-config2379">
+    <span class="name" name="make-server-config">make-server-config</span>
+  </a>
+ <span class="args">:key shutdown-port shutdown-handler exception-handler max-thread
+            max-retry use-ipv6? secure? certificates</span></div>
+<div class="desc">Creates a server config object.
+<p />Following is the description of keyword arguments.
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <var>shutdown-port</var>
+      </dt>
+      <dd class="dl-item-desc">    Specifying shutdown port. The value must be a string. If this is not
+    specified, then the server doesn't have shutdown port.
+  </dd>
+      <dt class="dl-item-title">
+        <var>shutdown-handler</var>
+      </dt>
+      <dd class="dl-item-desc">    This is only used then <var>shutdown-port</var> is specified. The value
+    must be a procedure takes 2 arguments, <var>server</var> and <var>socket</var>.
+    When the procedure returns true value then server will be stopped.
+    By default, it's a procedure always returns #t.
+  </dd>
+      <dt class="dl-item-title">
+        <var>exception-handler</var>
+      </dt>
+      <dd class="dl-item-desc">    Specifying exception handler. The value must be a procedure accepts
+    3 arguments, <var>server</var>, <var>socket</var> and <var>condition</var>. This
+    is called when the server <var>handler</var> raises an error. 
+<p />    NOTE: The passing <var>socket</var> is <b>not</b> closed so that the handler can
+    send messages to client socket.
+  </dd>
+      <dt class="dl-item-title">
+        <var>max-thread</var>
+      </dt>
+      <dd class="dl-item-desc">    Specifying max thread count. Default value is 1.
+  </dd>
+      <dt class="dl-item-title">
+        <var>max-retry</var>
+      </dt>
+      <dd class="dl-item-desc">    Specifying max retry count. When connection reached <var>max-thread</var>,
+    then the server waits if the one of the connections finishes. The
+    waiting period is half second (500 ms) and this value specifies
+    how many times server waits.
+<p />    Default value is 10.
+  </dd>
+      <dt class="dl-item-title">
+        <var>non-blocking?</var>
+      </dt>
+      <dd class="dl-item-desc">    Creating non blocking server.
+<p />    If the server is non blocking server, then the server <var>handler</var>
+    must follow the following rules:
+<p />    <ul class="itemlist">      <li class="itemlist-item">the <var>handler</var> process must not block/stop even if the
+            given socket is active.</li>
+      <li class="itemlist-item">the <var>handler</var> process must close the socket when it's
+            not needed.</li>
+    </ul>
+    
+    When handler raises an error and <var>exception-handler</var> is specified,
+    then the given socket won't be closed. So <var>exception-handler</var> needs
+    to decide whether the exception is continuable or not. Otherwise, server
+    closes the socket.
+<p />    Specifying this keyword argument makes server ignore <var>max-retry</var>.
+  </dd>
+      <dt class="dl-item-title">
+        <var>use-ipv6?</var>
+      </dt>
+      <dd class="dl-item-desc">    Specifying whether or not the server uses IPv6.
+<p />    Default value is #f. (only IPv4)
+  </dd>
+      <dt class="dl-item-title">
+        <var>secure?</var>
+      </dt>
+      <dt class="dl-item-title">
+        <var>certificates</var>
+      </dt>
+      <dd class="dl-item-desc">    If <var>secure?</var> is true value and <var>certificates</var> is a list of
+    X509 certificates, then the server uses TLS.
+  </dd>
+      <dt class="dl-item-title">
+        <var>private-key</var>
+      </dt>
+      <dd class="dl-item-desc">    If the server uses TLS, then this keyword argument is passed to
+    <code>make-server-tls-socket</code>. It is strongly recommended to
+    specify this keyword argument, otherwise key exchange is done
+    anonymously, means no signature is sent.
+  </dd>
+    </dl>
+  </div>
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2380"><span class="section-number">7.24.3</span>Socket detaching</a>
+  </h4>
+<p />Non blocking server manages sockets per threads. This feature is useful if
+the server handler is reused per socket. However this prevents users to
+write asynchronous call. The following procedure allow users to detach
+sockets from the server.
+<p /><div class="define"><span class="define-category">Function</span><a name="server-detach-socket!2381">
+    <span class="name" name="server-detach-socket!">server-detach-socket!</span>
+  </a> <span class="args">server socket</span></div>
+<div class="desc">Detaches the given <var>socket</var>.
+<p />If the socket is detached, then all resource managements, including closing
+socket, become users' responsibility.
+<p />This procedure is only available on non blocking server and can be called
+inside of server handler. If the condition is not met, then <code>&amp;assertion</code>
+is signaled.
+</div>
 <p />
 </section></section>
   <div class="prev-next">
-    <a class="prev" href="section723.html">(net server) - Simple server framework</a>
+    <a class="prev" href="section723.html">(net oauth) - OAuth library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section725.html">(peg) - PEG library</a>
+    <a class="next" href="section725.html">(net socket) - Modern Socket library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

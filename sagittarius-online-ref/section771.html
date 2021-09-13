@@ -7,157 +7,76 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section770.html">(tlv) - TLV library</a>
+    <a class="prev" href="section770.html">(text tree) - Lightweight text generation</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section772.html">(util vector) - Extra vector utility library</a>
+    <a class="next" href="section772.html">(util timer) - Timer</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="util.treemap"><span class="section-number">7.71</span>(util treemap) - Treemap</a>
+    <a class="section.anchor" name="text.yaml"><span class="section-number">7.71</span>(text yaml) -- YAML parser</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(util treemap)3048">
-      <span class="name" name="(util treemap)">(util treemap)</span>
+    <a name="(text yaml)3101">
+      <span class="name" name="(text yaml)">(text yaml)</span>
     </a>
   </div>
-<div class="desc">This library provides treemap data structure and operations.
-<p />This section uses the following name convention;
-<p /><var>tm</var> - treemap
-<p /></div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G3049"><span class="section-number">7.71.1</span>Predicate and constructurs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap?3050">
-    <span class="name" name="treemap?">treemap?</span>
-  </a> <span class="args">object</span></div>
-<div class="desc">Returns #t when given <var>object</var> is a treemap.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-rb-treemap3051">
-    <span class="name" name="make-rb-treemap">make-rb-treemap</span>
-  </a> <span class="args">compare</span></div>
-<div class="desc"><var>compare</var> must be a procedure which accepts 2 arguments and
-returns integer indicating the order of given 2 arguments.
-<p />Creates red black treemap.
+<div class="desc">This library provides YAML parser and writer.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="yaml-read3102">
+    <span class="name" name="yaml-read">yaml-read</span>
+  </a> <span class="args">in</span></div>
+<div class="desc">Reads YAML documents from the given textual input port <var>in</var> and
+returns a list of S-expression represented YAML documents.
+<p />The returning YAML documents are the compatible with vector JSON
+format described in <a href="section758.html#text.json">(text json)</a>.
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(yaml-read (open-string-input-port "
+%YAML 1.2
+---
+foo: bar
+boo:
+- 1
+- 2
+- 3
+- 4"))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">'(#((foo . bar) (boo 1 2 3 4)))</span>
+  </div>
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G3052"><span class="section-number">7.71.2</span>Basic operations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-ref3053">
-    <span class="name" name="treemap-ref">treemap-ref</span>
-  </a> <span class="args">tm key :optional (fallback #f)</span></div>
-<div class="desc">Returns a value associated with <var>key</var> in <var>tm</var>. If it doesn't
-exist, then <var>fallback</var> will be returned.
+<p /><div class="define"><span class="define-category">Function</span><a name="yaml-write3103">
+    <span class="name" name="yaml-write">yaml-write</span>
+  </a> <span class="args">yaml</span></div>
+<div class="define"><span class="define-category">Function</span><a name="yaml-write3104">
+    <span class="name" name="yaml-write">yaml-write</span>
+  </a> <span class="args">yaml out</span></div>
+<div class="desc">Writes the given list of S-expression represented YAML documents
+<var>yaml</var> to the <var>out</var>.
+<p />If the first form is used, then it writes to <code>(current-output-port)</code>.
+<p /><pre class="codeblock">(yaml-write '(#(("foo" . "bar") ("boo" 1 2 3 4))))
+;; Prints the following
+#|
+%YAML 1.2
+---
+foo: bar
+boo:
+- 1
+- 2
+- 3
+- 4
+...
+|#
+</pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-contains?3054">
-    <span class="name" name="treemap-contains?">treemap-contains?</span>
-  </a> <span class="args">tm key</span></div>
-<div class="desc">Returns #t if there is an entry associated to the given <var>key</var>,
-otherwise #f.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-set!3055">
-    <span class="name" name="treemap-set!">treemap-set!</span>
-  </a> <span class="args">tm key value</span></div>
-<div class="desc">Associate the <var>value</var> to <var>key</var> in <var>tm</var> and returns
-unspecified value.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-update!3056">
-    <span class="name" name="treemap-update!">treemap-update!</span>
-  </a> <span class="args">tm key proc default</span></div>
-<div class="desc"><var>proc</var> must be a procedure accepts one argument.
-<p />Updates the entry value associated to <var>key</var> with the returned value of 
-<var>proc</var>. If the entry doesn't exist then <var>default</var> will be passed to
-the <var>proc</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-delete!3057">
-    <span class="name" name="treemap-delete!">treemap-delete!</span>
-  </a> <span class="args">tm key</span></div>
-<div class="desc">Deletes entry of <var>key</var> in <var>tm</var> and returns unspecified value.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-clear!3058">
-    <span class="name" name="treemap-clear!">treemap-clear!</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Removes all entries and returns unspecified value.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-copy3059">
-    <span class="name" name="treemap-copy">treemap-copy</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns the copy of given <var>tm</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-size3060">
-    <span class="name" name="treemap-size">treemap-size</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns the number of entry in the given <var>tm</var>.</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G3061"><span class="section-number">7.71.3</span>Conversions</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-&gt;alist3062">
-    <span class="name" name="treemap-&gt;alist">treemap-&gt;alist</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns an alist of key and value in <var>tm</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="alist-&gt;treemap3063">
-    <span class="name" name="alist-&gt;treemap">alist-&gt;treemap</span>
-  </a> <span class="args">alist compare</span></div>
-<div class="desc"><var>alist</var> must be an alist.
-<var>compare</var> must be a procedure which accepts 2 arguments.
-<p />Converts <var>alist</var> to a treemap. The car part of an element of <var>alist</var>
-is a key, then cdr part of an element of <var>alist</var> is a value.
-</div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G3064"><span class="section-number">7.71.4</span>Keys and values</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-keys3065">
-    <span class="name" name="treemap-keys">treemap-keys</span>
-  </a> <span class="args">tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-keys-list3066">
-    <span class="name" name="treemap-keys-list">treemap-keys-list</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns a vector or a list of keys in <var>tm</var>, respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-values3067">
-    <span class="name" name="treemap-values">treemap-values</span>
-  </a> <span class="args">tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-values-list3068">
-    <span class="name" name="treemap-values-list">treemap-values-list</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns a vector or a list of entry values in <var>tm</var>, respectively.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-entries3069">
-    <span class="name" name="treemap-entries">treemap-entries</span>
-  </a> <span class="args">tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-entries-list3070">
-    <span class="name" name="treemap-entries-list">treemap-entries-list</span>
-  </a> <span class="args">tm</span></div>
-<div class="desc">Returns vectors or lists of entry key and values in <var>tm</var>, 
-respectively. This procedure returns 2 values. </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G3071"><span class="section-number">7.71.5</span>Iterations</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-fold3072">
-    <span class="name" name="treemap-fold">treemap-fold</span>
-  </a> <span class="args">kons tm knil</span></div>
-<div class="desc"><var>kons</var> must be a procedure which accepts 3 arguments.
-<p />Iterates all keys and values in the given <var>tm</var> and passes them
-and the result of <var>kons</var> to <var>kons</var> respectively. The first iteration
-of the third argument is <var>knil</var>. The procedure returns the result of
-all iterations.
-<p />Analogous to <code>fold</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="treemap-map3073">
-    <span class="name" name="treemap-map">treemap-map</span>
-  </a> <span class="args">proc tm</span></div>
-<div class="define"><span class="define-category">Function</span><a name="treemap-for-each3074">
-    <span class="name" name="treemap-for-each">treemap-for-each</span>
-  </a> <span class="args">proc tm</span></div>
-<div class="desc"><var>proc</var> must be a procedure which accepts 2 arguments.
-<p />Iterates all keys and values in the given <var>tm</var> and passes them
-to <var>proc</var> respectively.
-<p />The <code>treemap-for-each</code> returns unspecified value. The 
-<code>treemap-map</code> returns a list of the <var>proc</var> result.
-<p />These procedures are analogous to <code>for-each</code> and <code>map</code> respectively.
-</div>
-
-</section></section>
+<p />
+</section>
   <div class="prev-next">
-    <a class="prev" href="section770.html">(tlv) - TLV library</a>
+    <a class="prev" href="section770.html">(text tree) - Lightweight text generation</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section772.html">(util vector) - Extra vector utility library</a>
+    <a class="next" href="section772.html">(util timer) - Timer</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

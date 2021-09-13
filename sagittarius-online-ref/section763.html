@@ -7,62 +7,117 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section762.html">JSON Schema validator</a>
+    <a class="prev" href="section762.html">(text json pointer) - JSON Pointer</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section764.html">(text sxml html-parser) - Flxible HTML parser</a>
+    <a class="next" href="section764.html">(text json schema) - JSON Schema</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="text.json.validator"><span class="section-number">7.63</span>(text json validator) - JSON validator</a>
+    <a class="section.anchor" name="text.json.patch"><span class="section-number">7.63</span>(text json patch) - JSON Patch</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(text json validator)2960">
-      <span class="name" name="(text json validator)">(text json validator)</span>
+    <a name="(text json pointer)3022">
+      <span class="name" name="(text json pointer)">(text json pointer)</span>
     </a>
   </div>
-<div class="desc">This library provides abstraction layer of JSON validation.</div>
-<p /><div class="define">
-    <span class="define-category">Record Type</span>
-    <a name="<json-validator&gt;2961">
-      <span class="name" name="<json-validator&gt;">&lt;json-validator&gt;</span>
-    </a>
-  </div>
-<div class="desc">Base class of JSON validators.
-<p />The record have <code>validator</code> field.
+<div class="desc">This library provides JSON Patch procedures.
+<p />The specification of JSON Patch is defined by the
+<a href="https://tools.ietf.org/html/rfc6902">RFC 6902</a>.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-validator?2962">
-    <span class="name" name="json-validator?">json-validator?</span>
+<p />The following example shows simple usage of the library:
+<p />This is an input file named <code>example.json</code>.
+<pre class="codeblock">{
+  "id": 1234,
+  "data": {
+    "datum0": [0, 1, 2],
+    "datum1": [3, 4]
+  }
+}
+</pre>
+<p /><div class="codeblock-box">
+    <pre class="codeblock">(import (rnrs) (text json patch) (text json))
+
+(define data-patcher
+ (json-patcher 
+  '(#(("op" . "replace") ("path" . "/data/datum0") ("value" . "ok"))
+    #(("op" . "remove") ("path" . "/data/datum1")))))
+
+(let ((json (call-with-input-file "example.json" json-read)))
+  (data-patcher json))
+</pre>
+    <span class="codeblock-arrow">=&gt;</span>
+    <span class="codeblock-result">#((id . 1234) (data . #((datum0 . ok))))</span>
+  </div>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-patcher3023">
+    <span class="name" name="json-patcher">json-patcher</span>
+  </a> <span class="args">patch</span></div>
+<div class="desc">Returns a procedure takes one argument which must be a list or vector
+representing JSON object. The given <var>patch</var> must be a list of vector
+which represents JSON patch.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-patch-error?3024">
+    <span class="name" name="json-patch-error?">json-patch-error?</span>
   </a> <span class="args">obj</span></div>
-<div class="desc">Return <code>#t</code> if the given <var>obj</var> is a JSON validator,
-otherwise <code>#f</code>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-json-validator2963">
-    <span class="name" name="make-json-validator">make-json-validator</span>
-  </a> <span class="args">validator</span></div>
-<div class="desc">Creates a JSON validator.
-<p />The <var>validator</var> must be a procedure accepts one argument.
+<div class="desc">Returns #t if the given <var>obj</var> is an instance of <code>&amp;json-patch</code>
+condition.
+<p /><code>&amp;json-patch</code> is the base condition of this library. The hierarchy is
+the following:
+<pre class="codeblock">&amp;json-patch
+ + &amp;json-patch:runtime (path)
+   + &amp;json-patch-path-not-found
+   + &amp;json-patch-illegal-type
+ + &amp;json-patch:compile (patch)
+</pre>
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="json-validator-validator2964">
-    <span class="name" name="json-validator-validator">json-validator-validator</span>
-  </a> <span class="args">json-validator</span></div>
-<div class="desc">Returns the <code>validator</code> field value of the given
-<var>json-validator</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="validate-json2965">
-    <span class="name" name="validate-json">validate-json</span>
-  </a> <span class="args">json-validator json</span></div>
-<div class="desc">Calls value of <code>validator</code> field of given JSON validator with
-parameter of <var>json</var>.
-</div>
+<div class="define"><span class="define-category">Function</span><a name="json-patch-compile-error?3025">
+    <span class="name" name="json-patch-compile-error?">json-patch-compile-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given <var>obj</var> is an instance of
+<code>&amp;json-patch:compile</code> condition.</div>
+<div class="define"><span class="define-category">Function</span><a name="json-patch-error?3026">
+    <span class="name" name="json-patch-error?">json-patch-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given <var>obj</var> is an instance of
+<code>&amp;json-patch:runtime</code> condition.</div>
+<div class="define"><span class="define-category">Function</span><a name="json-patch-path-not-found-error?3027">
+    <span class="name" name="json-patch-path-not-found-error?">json-patch-path-not-found-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given <var>obj</var> is an instance of
+<code>&amp;json-patch-path-not-found</code> condition.</div>
+<div class="define"><span class="define-category">Function</span><a name="json-patch-path-illegal-type-error?3028">
+    <span class="name" name="json-patch-path-illegal-type-error?">json-patch-path-illegal-type-error?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the given <var>obj</var> is an instance of
+<code>&amp;json-patch-illegal-type</code> condition.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="json-patch-error-path3029">
+    <span class="name" name="json-patch-error-path">json-patch-error-path</span>
+  </a> <span class="args">json-patch-error</span></div>
+<div class="desc">Returns the <code>path</code> field of the given <var>json-patch-error</var> if
+the condition is type of <code>&amp;json-patch-runtime</code>.</div>
+<div class="define"><span class="define-category">Function</span><a name="json-patch-error-patch3030">
+    <span class="name" name="json-patch-error-patch">json-patch-error-patch</span>
+  </a> <span class="args">json-patch-error</span></div>
+<div class="desc">Returns the <code>patch</code> field of the given <var>json-patch-error</var> if
+the condition is type of <code>&amp;json-patch-compile</code>.</div>
+<p /><div class="define">
+    <span class="define-category">Parameter</span>
+    <a name="*json-patcher:ignore-no-such-path*3031">
+      <span class="name" name="*json-patcher:ignore-no-such-path*">*json-patcher:ignore-no-such-path*</span>
+    </a>
+  </div>
+<div class="desc">Flag to supress no such path error. The value must be either a symbol
+or a list of symbol of the name of the patch command. If the value is matched
+with the patch command, then the runtime doesn't raise a condition. </div>
 
 </section>
   <div class="prev-next">
-    <a class="prev" href="section762.html">JSON Schema validator</a>
+    <a class="prev" href="section762.html">(text json pointer) - JSON Pointer</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section764.html">(text sxml html-parser) - Flxible HTML parser</a>
+    <a class="next" href="section764.html">(text json schema) - JSON Schema</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

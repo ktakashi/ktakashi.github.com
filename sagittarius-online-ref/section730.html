@@ -7,152 +7,246 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section729.html">(rfc :5322) - Internet message format library</a>
+    <a class="prev" href="section729.html">(rsa pkcs :12) - PKCS#12</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section731.html">(rfc cmac) - CMAC library</a>
+    <a class="next" href="section731.html">(record builder) - Record builder</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc.base64"><span class="section-number">7.30</span>(rfc base64) - Base 64 encode and decode library</a>
+    <a class="section.anchor" name="util.queue"><span class="section-number">7.30</span>(util queue) - Queue</a>
   </h3>
-<p /><div class="define">
+<p />
+<div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc base64)2463">
-      <span class="name" name="(rfc base64)">(rfc base64)</span>
+    <a name="(util queue)2484">
+      <span class="name" name="(util queue)">(util queue)</span>
     </a>
   </div>
-<div class="desc">This library provides Base 64 encoding and decoding procedures.</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2464"><span class="section-number">7.30.1</span>Encoding procedures</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode2465">
-    <span class="name" name="base64-encode">base64-encode</span>
-  </a>
- <span class="args">in :key (line-width 76) (padding? #t)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="base64url-encode2466">
-    <span class="name" name="base64url-encode">base64url-encode</span>
-  </a>
- <span class="args">in :key (line-width #f) (padding? #f)</span></div>
-<div class="desc"><var>in</var> must be either a bytevector or binary input port.
-<p />Encodes given input <var>in</var> to Base 64 encoded bytevector.
-<p />The keyword argument <var>line-width</var> specifies where the encode procedure
-should put linefeed. If this is less than 1 or #f, encoder does not put
-linefeed.
-<p />The keyword argument <var>padding?</var> controls if the result encoded value
-contains padding character <code>#\=</code> or not. If this is #f, then the result
-value won't contain padding character.
-<p />The <code>base64url-encode</code> encodes the given input to Base 64 URL safe
-encoded bytevector. Which doesn't use <code>+</code> and <code>/</code>.
+<div class="desc">This library provides queue (FIFO) data structure and its operations.
+<p />You can create a simple queue, which is not thread-safe, or an MT queue, a
+thread-safe queue. Basic queue operations work on both type of queues. When
+a mtqueue is passed to the procedures listed in this section, each operation
+is done in atomic way, unless otherwise noted.
+<p />There are also a set of procedures for mtqueues that can be used for thread
+synchronisation; for example, you can let the consumer thread block if an
+mtqueue is empty, and/or the producer thread block if the number of items in
+the mtqueue reaches a specified limit. Using these procedures allows the
+program to use an mtqueue as a <var>channel</var>.
+<p />The simple queue API is a super set of SLIB's queue implementation.
+<p />NOTE: <a href="section712.html#util.deque">(util deque)</a> is used as underlying library.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="base64-encode-string2467">
-    <span class="name" name="base64-encode-string">base64-encode-string</span>
-  </a>
- <span class="args">string :key (line-width 76) transcoder (padding? #t)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="base64url-encode-string2468">
-    <span class="name" name="base64url-encode-string">base64url-encode-string</span>
-  </a>
- <span class="args">string :key (line-width #f) transcoder (padding? #f)</span></div>
-<div class="desc">Convenient procedure for string.
-<p />Encodes given <var>string</var> to Base 64 encoded string.
-<p />The keyword argument <var>transcoder</var> is used to convert given string to
-bytevector. The converted bytevector will be passed to the <code>base64-encode</code>
-procedure. The default value is a transcoder with UTF-8 codec with EOL
-style none.
-<p />The keyword argument <var>padding?</var> is the same as <code>base64-encode</code>.
-<p />The <code>base64url-encode-string</code> encodes the given input to Base 64 URL safe
-encoded bytevector. Which doesn't use <code>+</code> and <code>/</code>.
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<queue&gt;2485">
+      <span class="name" name="<queue&gt;">&lt;queue&gt;</span>
+    </a>
+  </div>
+<div class="desc">A class of simple queue. </div>
+<p /><div class="define">
+    <span class="define-category">Class</span>
+    <a name="<mtqueue&gt;2486">
+      <span class="name" name="<mtqueue&gt;">&lt;mtqueue&gt;</span>
+    </a>
+  </div>
+<div class="desc">A class of mtqueue. Inherits <code>&lt;queue&gt;</code>.</div>
+<p /><div class="define">
+    <span class="define-category">Function</span>
+    <a name="make-queue2487">
+      <span class="name" name="make-queue">make-queue</span>
+    </a>
+  </div>
+<div class="desc">Creates and return an empty simple queue.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-mtqueue2488">
+    <span class="name" name="make-mtqueue">make-mtqueue</span>
+  </a> <span class="args">:key max-length</span></div>
+<div class="desc">Creates and return an empty mtqueue.
+<p />The keyword argument <var>max-length</var> specifies the maximum entry count of
+the queue. Negative number indicates unlimited number of entry. If the given
+number is zero then the queue cannot hold any item.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-base64-encode-input-port2469">
-    <span class="name" name="open-base64-encode-input-port">open-base64-encode-input-port</span>
-  </a>
- <span class="args">source :key (owner? #f) (line-width #f) (padding? #t)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="open-base64-encode-output-port2470">
-    <span class="name" name="open-base64-encode-output-port">open-base64-encode-output-port</span>
-  </a>
- <span class="args">sink :key (owner? #f) (line-width #f) (padding? #t)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="open-base64url-encode-input-port2471">
-    <span class="name" name="open-base64url-encode-input-port">open-base64url-encode-input-port</span>
-  </a>
- <span class="args">source :key (owner? #f) (line-width #f) (padding? #f)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="open-base64url-encode-output-port2472">
-    <span class="name" name="open-base64url-encode-output-port">open-base64url-encode-output-port</span>
-  </a>
- <span class="args">sink :key (owner? #f) (line-width #f) (padding? #f)</span></div>
-<div class="desc">Creates binary Base64 encode input and output port, respectively.
-<p /><var>source</var> must be binary inpurt port.
-<p />The input port reads bytes from <var>source</var> and returns Base64 encoded
-result.
-<p /><var>sink</var> must be binary inpurt port.
-<p />The output port puts encoded bytes to <var>sink</var>. The port must be closed
-to finish the encoding process properly.
-<p />The keyword argument <var>padding?</var> is the same as <code>base64-encode</code>.
-<p />The <code>open-base64url-encode-input-port</code> and
-<code>open-base64url-encode-output-port</code> encode to Base64 URL safe encode.
+<p /><div class="define"><span class="define-category">Function</span><a name="queue?2489">
+    <span class="name" name="queue?">queue?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is a queue (either a simple queue or an mtqueue).</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue?2490">
+    <span class="name" name="mtqueue?">mtqueue?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if <var>obj</var> is an mtqueue.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="queue-empty?2491">
+    <span class="name" name="queue-empty?">queue-empty?</span>
+  </a> <span class="args">queue</span></div>
+<div class="desc">Returns #t if <var>queue</var> is an empty queue.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="queue-length2492">
+    <span class="name" name="queue-length">queue-length</span>
+  </a> <span class="args">queue</span></div>
+<div class="desc">Returns the number of the items in the queue.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue-max-length2493">
+    <span class="name" name="mtqueue-max-length">mtqueue-max-length</span>
+  </a> <span class="args">mtqueue</span></div>
+<div class="desc">Returns the maximum number of items <var>mtqueue</var> can hold. 
+#f indicates unlimited.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="mtqueue-room2494">
+    <span class="name" name="mtqueue-room">mtqueue-room</span>
+  </a> <span class="args">mtqueue</span></div>
+<div class="desc">Returns the number of elements <var>mtqueue</var> can accept at this moment
+before it hits its maximum length. If the queue has unlimited capacity then
+the procedure returns <code>+inf.0</code>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="copy-queue2495">
+    <span class="name" name="copy-queue">copy-queue</span>
+  </a> <span class="args">queue</span></div>
+<div class="desc">Returns a copy of <var>queue</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="enqueue!2496">
+    <span class="name" name="enqueue!">enqueue!</span>
+  </a> <span class="args">queue obj more-objs ...</span></div>
+<div class="desc">Adds <var>obj</var> to the end of  <var>queue</var>. You may give more than
+one object, and each of them are enqueued in order.
+<p />If <var>queue</var> is an mtqueue, all the objects are enqueued atomically; no
+other objects from other threads can be inserted between the objects given
+to a single <code>enqueue!</code> call. Besides, if the value of the result of
+<code>mtqueue-max-length</code> is positive, and adding <var>objs</var> makes the
+number of element in <var>queue</var> exceeds it, an error is raised and 
+<var>queue</var> won't be modified. (If the maximum length is zero, this procedure
+always fail. Use <code>enqueue/wait!</code> below.)
 </div>
-<p /></section><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2473"><span class="section-number">7.30.2</span>Decoding procedures</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode2474">
-    <span class="name" name="base64-decode">base64-decode</span>
-  </a> <span class="args">in</span></div>
-<div class="define"><span class="define-category">Function</span><a name="base64url-decode2475">
-    <span class="name" name="base64url-decode">base64url-decode</span>
-  </a> <span class="args">in</span></div>
-<div class="desc"><var>in</var> must be a bytevector or binary input port.
-<p />Decode Base 64 encoded input <var>in</var> to original bytevector.
-<p />The <code>base64url-decode</code> decodes Base64 URL safe encoded value.
+<p /><div class="define"><span class="define-category">Function</span><a name="queue-push!2497">
+    <span class="name" name="queue-push!">queue-push!</span>
+  </a> <span class="args">queue obj more-objs ...</span></div>
+<div class="desc">Adds <var>obj</var> to in front of <var>queue</var>. You may give more than
+one object, and each of them are pushed in order.
+<p />Like <code>enqueue!</code>, when <var>queue</var> is an mtqueue, all objects are added
+atomically, and the value of max length is checked. See <code>enqueue!</code> above
+for more detail.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="base64-decode-string2476">
-    <span class="name" name="base64-decode-string">base64-decode-string</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="enqueue-unique!2498">
+    <span class="name" name="enqueue-unique!">enqueue-unique!</span>
   </a>
- <span class="args">string :key (transcoder (native-transcoder))</span></div>
-<div class="define"><span class="define-category">Function</span><a name="base64url-decode-string2477">
-    <span class="name" name="base64url-decode-string">base64url-decode-string</span>
+ <span class="args">queue eq-proc obj more-objs ...</span></div>
+<div class="define"><span class="define-category">Function</span><a name="queue-push-unique!2499">
+    <span class="name" name="queue-push-unique!">queue-push-unique!</span>
   </a>
- <span class="args">string :key (transcoder (native-transcoder))</span></div>
-<div class="desc">Convenient procedure.
-<p />Decode Base 64 encoded string to original string. The procedure is using
-<code>base64-decode</code>.
-<p />The keyword argument specifies how to convert the decoded bytevector to string.
-If this is #f, the procedure returns raw bytevector.
-<p />The <code>base64url-decode-string</code> decodes Base64 URL safe encoded value.
+ <span class="args">queue eq-proc obj more-objs ...</span></div>
+<div class="desc">Like <code>enqueue!</code> and <code>queue-push!</code>, respectively, except that
+these don't modify <var>queue</var> if it already contains <var>objs</var> (elements are
+compared by two-argument procedure <var>eq-proc</var>).
+<p />When <var>queue</var> is an mtqueue, all objects are added atomically, and the max
+length is checked. See <code>enqueue!</code> above for the detail.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-base64-decode-input-port2478">
-    <span class="name" name="open-base64-decode-input-port">open-base64-decode-input-port</span>
-  </a>
- <span class="args">source :key (owner? #f)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="open-base64-decode-output-port2479">
-    <span class="name" name="open-base64-decode-output-port">open-base64-decode-output-port</span>
-  </a>
- <span class="args">sink :key (owner? #f)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="open-base64url-decode-input-port2480">
-    <span class="name" name="open-base64url-decode-input-port">open-base64url-decode-input-port</span>
-  </a>
- <span class="args">source :key (owner? #f)</span></div>
-<div class="define"><span class="define-category">Function</span><a name="open-base64url-decode-output-port2481">
-    <span class="name" name="open-base64url-decode-output-port">open-base64url-decode-output-port</span>
-  </a>
- <span class="args">sink :key (owner? #f)</span></div>
-<div class="desc">Creates binary Base64 decode input and output port, respectively.
-<p /><var>source</var> must be binary inpurt port.
-<p />The input port reads Base64 encoded bytes from <var>source</var> and returns 
-decoded results.
-<p /><var>sink</var> must be binary inpurt port.
-<p />The output port puts decoded bytes to <var>sink</var>. The port must be closed
-to finish the encoding process properly.
-<p />The <code>open-base64url-decode-input-port</code> and
-<code>open-base64url-decode-output-port</code> decode Base64 URL safe encoded
-value.
+<p /><div class="define"><span class="define-category">Function</span><a name="dequeue!2500">
+    <span class="name" name="dequeue!">dequeue!</span>
+  </a> <span class="args">queue :optional fallback</span></div>
+<div class="define"><span class="define-category">Function</span><a name="queue-pop!2501">
+    <span class="name" name="queue-pop!">queue-pop!</span>
+  </a> <span class="args">queue :optional fallback</span></div>
+<div class="desc">Take one object from the front of <var>queue</var> and return it. Both 
+function work the same, but <code>queue-pop!</code> may be used to emphasize it
+works with <code>queue-push!</code>.
+<p />If <var>queue</var> is empty, <var>fallback</var> is returned if give, otherwise an 
+error is raised.
+<p />If <var>queue</var> is mtqueue and its max length is zero, then the queue is
+always empty. Use <code>dequeue/wait!</code> to use such a queue as a 
+synchronisation device.
 </div>
-<p />
-</section></section>
+<p /><div class="define"><span class="define-category">Function</span><a name="dequeue-all!2502">
+    <span class="name" name="dequeue-all!">dequeue-all!</span>
+  </a> <span class="args">queue</span></div>
+<div class="desc">Returns the whole content of <var>queue</var> by a list, with emptying 
+<var>queue</var>. If <var>queue</var> is empty, returns an empty list. See also
+<code>queue-&gt;list</code> below.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="queue-front2503">
+    <span class="name" name="queue-front">queue-front</span>
+  </a> <span class="args">queue :optional fallback</span></div>
+<div class="define"><span class="define-category">Function</span><a name="queue-rear2504">
+    <span class="name" name="queue-rear">queue-rear</span>
+  </a> <span class="args">queue :optional fallback</span></div>
+<div class="desc">Peek the head or the tail of <var>queue</var> and return the object, 
+respectively.
+<p />If <var>queue</var> is empty, <var>fallback</var> is returned if give, otherwise an 
+error is raised.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="list-&gt;queue2505">
+    <span class="name" name="list-&gt;queue">list-&gt;queue</span>
+  </a> <span class="args">list :optional class :rest initargs</span></div>
+<div class="desc">Returns a new queue which content is the elements in <var>list</var>, in
+the given order.
+<p />By default the created queue is a simple queue, but you can create mtqueue
+or instance of other subclass <code>&lt;queue&gt;</code> by giving the class to the
+optional <var>class</var> arguments. The optional <var>initargs</var> arguments are
+passed to the constructor of <var>class</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="queue-&gt;list2506">
+    <span class="name" name="queue-&gt;list">queue-&gt;list</span>
+  </a> <span class="args">queue</span></div>
+<div class="desc">Returns a list whose content is the items in <var>queue</var> in order.
+Unlike <code>dequeue-all!</code>, the content of <var>queue</var> remains intact.
+The returning list is a copy of the content. So modifying the list won't
+affect <var>queue</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="find-in-queue2507">
+    <span class="name" name="find-in-queue">find-in-queue</span>
+  </a> <span class="args">pred queue</span></div>
+<div class="desc">Returns the first item in <var>queue</var> that satisfies a predicate
+<var>pred</var>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="any-in-queue2508">
+    <span class="name" name="any-in-queue">any-in-queue</span>
+  </a> <span class="args">pred queue</span></div>
+<div class="desc">Apply <var>pred</var> on each item in <var>queue</var> until it evaluates true,
+and returns that true value. If no item satisfies <var>pred</var>, #f is returned.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="every-in-queue2509">
+    <span class="name" name="every-in-queue">every-in-queue</span>
+  </a> <span class="args">pred queue</span></div>
+<div class="desc">Apply <var>pred</var> on each item in <var>queue</var>. If <var>pred</var> returns #f,
+stops iteration and returns #f immediately. Otherwise, returns the result of
+<var>pred</var> on the last item of <var>queue</var>. If the queue is empty, #t is
+returned.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="remove-from-queue!2510">
+    <span class="name" name="remove-from-queue!">remove-from-queue!</span>
+  </a> <span class="args">pred queue</span></div>
+<div class="desc">Removes all items in <var>queue</var> that satisfies <var>pred</var>. Returns
+#t if any item is removed. Otherwise #f.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="enqueue/wait!2511">
+    <span class="name" name="enqueue/wait!">enqueue/wait!</span>
+  </a>
+ <span class="args">mtqueue obj :optional timeout timeout-val</span></div>
+<div class="define"><span class="define-category">Function</span><a name="queue-push/wait!2512">
+    <span class="name" name="queue-push/wait!">queue-push/wait!</span>
+  </a>
+ <span class="args">mtqueue obj :optional timeout timeout-val</span></div>
+<div class="define"><span class="define-category">Function</span><a name="dequeue/wait!2513">
+    <span class="name" name="dequeue/wait!">dequeue/wait!</span>
+  </a>
+ <span class="args">mtqueue :optional timeout timeout-val</span></div>
+<div class="define"><span class="define-category">Function</span><a name="queue-pop/wait!2514">
+    <span class="name" name="queue-pop/wait!">queue-pop/wait!</span>
+  </a>
+ <span class="args">mtqueue :optional timeout timeout-val</span></div>
+<div class="desc">These synchronising variants work on an mtqueue and make the caller
+thread block when the mtqueue has reached its maximum length (for
+<code>enqueue/wait!</code> and <var>queue-push/wait!</var>), or the mtqueue is empty
+(for <code>dequeue/wait!</code> and <var>queue-pop/wait!</var>). The blocked caller
+thread is unblocked either the blocking condition is resolved, or the
+timeout condition is met.
+<p />The optional <var>timeout</var> argument specifies the timeout condition. If it
+is #f, those procedure wait indefinitely. If it is a real number, they wait
+at least the given number of seconds.
+<p />In case the call is blocked then timed out, the value of <var>timeout-val</var> is
+returned, which default value is #t.
+<p />When <code>enqueue/wait!</code> and <code>queue-push/wait!</code> succeeds without hitting
+timeout, they return #t.
+</div>
+
+</section>
   <div class="prev-next">
-    <a class="prev" href="section729.html">(rfc :5322) - Internet message format library</a>
+    <a class="prev" href="section729.html">(rsa pkcs :12) - PKCS#12</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section731.html">(rfc cmac) - CMAC library</a>
+    <a class="next" href="section731.html">(record builder) - Record builder</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

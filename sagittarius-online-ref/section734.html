@@ -7,177 +7,61 @@
     <title>Sagittarius Users' Reference</title>
   </head>
   <div class="prev-next">
-    <a class="prev" href="section733.html">(rfc http) - HTTP client</a>
+    <a class="prev" href="section733.html">(rfc base64) - Base 64 encode and decode library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section735.html">(rfc http-connections) - HTTP client utilities</a>
+    <a class="next" href="section735.html">(rfc hmac) - HMAC library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="rfc2.http"><span class="section-number">7.34</span>(rfc http2) - HTTP/2 client</a>
+    <a class="section.anchor" name="rfc.cmac"><span class="section-number">7.34</span>(rfc cmac) - CMAC library</a>
   </h3>
+<p />This section describes the CMAC extension of hash algorithm. The CMAC itself
+is described <a href="http://tools.ietf.org/html/rfc4493">RFC 4493</a>.
+The provided library make user be able to use the algorithm with the APIs of
+math library's hash algorithm APIs. For the APIs detail, see
+<a href="section719.html#math.hash">Hash operations</a>.
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(rfc http2)2512">
-      <span class="name" name="(rfc http2)">(rfc http2)</span>
+    <a name="(rfc cmac)2562">
+      <span class="name" name="(rfc cmac)">(rfc cmac)</span>
     </a>
   </div>
-<div class="desc">This library provides simple client HTTP/2 defined in
-<a href="https://tools.ietf.org/html/rfc7540">RFC 7540</a>.
-<p />The library does not support <code>Upgrade</code> header defined in HTTP/1.1. Thus
-users must know if the server supports HTTP/2 or not, ahead.
-</div>
-<p />Following is the simple example to send GET method to a HTTP/2 server.
-<pre class="codeblock">(import (rfc http2))
+<div class="desc">Provides CMAC hash algorithm.</div>
+<p /><div class="define">
+    <span class="define-category">Variable</span>
+    <a name="CMAC2563">
+      <span class="name" name="CMAC">CMAC</span>
+    </a>
+  </div>
+<div class="desc">The name for CMAC hash algorithm.
+<p />The following example explains, how to use it.
+<p /><pre class="codeblock">(import (rnrs) (rfc cmac) (math) (crypto))
 
-(define conn (make-http2-client-connection "twitter.com" "443" :secure? #t))
-(http2-get conn "/")
-;; -&gt; returns 2 values
-;; header
-;; body
-(close-http2-client-connection! conn)
+(define K (generate-secret-key AES (integer-&gt;bytevector 
+				    #x2b7e151628aed2a6abf7158809cf4f3c)))
+
+(define aes-cipher (cipher AES K))
+
+(hash CMAC #vu8() :cipher aes-cipher)
+;; =&gt; #vu8(187 29 105 41 233 89 55 40 127 163 125 18 155 117 103 70)
+
+;; for AES-CMAC-96
+(hash CMAC #vu8() :cipher aes-cipher :size (/ 96 8))
+;; =&gt; #vu8(187 29 105 41 233 89 55 40 127 163 125 18)
 </pre>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-client-connection?2513">
-    <span class="name" name="http2-client-connection?">http2-client-connection?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if the given <var>obj</var> is an HTTP/2 client connection,
-otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-http2-client-connection2514">
-    <span class="name" name="make-http2-client-connection">make-http2-client-connection</span>
-  </a>
- <span class="args">server port :key (secure? #f) user-agent</span></div>
-<div class="desc">Creates an HTTP/2 client connection.
-<p />The <var>server</var> must be a string indicating an existing server name.
-<p />The <var>post</var> must be a string of either port number or service.
-<p />The keyword argument <var>secure?</var> specifies to use TLS or not.
-<p />The keyword argument <var>user-agent</var> specifies the value of <code>user-agent</code>
-header. The default value is <code>Sagittarius-</code> followed by version number.
-<p />NOTE: The connection does not guess if it should use secure connection or
-not by looking at port number or service name. Which means, even if you
-specify <code>"https"</code> or <code>"443"</code> however <var>secure?</var> keyword
-argument must be passed.
-<p />NOTE2: Created connections hold opened socket.
+<p />The RFC is defined for only AES block cipher however the implementation
+can take any block cipher such as DES3.
+<p />CAUTION: only AES cipher is tested.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="close-http2-client-connection!2515">
-    <span class="name" name="close-http2-client-connection!">close-http2-client-connection!</span>
-  </a> <span class="args">conn</span></div>
-<div class="desc">Closes given HTTP/2 connection.</div>
-<p /><section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2516"><span class="section-number">7.34.1</span>High level APIs</a>
-  </h4>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-get2517">
-    <span class="name" name="http2-get">http2-get</span>
-  </a>
- <span class="args">conn uri :key receiver redirect-handler :allow-other-keys headers</span></div>
-<div class="desc">Sends HTTP/2 GET request to given <var>uri</var> of HTTP/2 client
-connection <var>conn</var> and returns 2 values of the response, header
-and content.
-<p />The rest arguments <var>headers</var> must be a list of keyword and string.
-The procedure sends these pairs as extra headers.
-<p />If the keyword argument <var>receiver</var> is specified, then the procedure
-uses given <var>receiver</var> to receive data. The default value is
-<code>(make-gzip-receiver)</code>.
-<p />If the keyword argument <var>redirect-handler</var> is specified, then the procedure
-uses given <var>redirect-handler</var> to handle redirection.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-post2518">
-    <span class="name" name="http2-post">http2-post</span>
-  </a>
- <span class="args">conn uri data :key receiver redirect-handler :allow-other-keys headers</span></div>
-<div class="desc">Sends HTTP/2 POST request to given <var>uri</var> of HTTP/2 client
-connection <var>conn</var> with given <var>data</var>  and returns 2 values of
-the response, header and content. <var>data</var> must be a bytevector.
-<p />The rest arguments <var>headers</var> must be a list of keyword and string.
-The procedure sends these pairs as extra headers.
-<p />The keyword arguments <var>receiver</var> and <var>redirect-handler</var> are the same
-as <code>http2-get</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-head2519">
-    <span class="name" name="http2-head">http2-head</span>
-  </a>
- <span class="args">conn uri :key receiver redirect-handler :allow-other-keys headers</span></div>
-<div class="desc">Sends HTTP/2 HEAD request to given <var>uri</var> of HTTP/2 client
-connection <var>conn</var> and returns 2 values of the response, header
-and content.
-<p />The rest arguments <var>headers</var> must be a list of keyword and string.
-The procedure sends these pairs as extra headers.
-<p />The keyword arguments <var>receiver</var> and <var>redirect-handler</var> are the same
-as <code>http2-get</code>.
-</div>
-<p /><div class="define"><span class="define-category">Macro</span><a name="http2-request2520">
-    <span class="name" name="http2-request">http2-request</span>
-  </a>
- <span class="args">conn method uri sender receiver :key redirect-handler</span></div>
-<div class="desc">Sends an HTTP/2 request to given HTTP/2 client connection <var>conn</var>.
-<p /><var>method</var> must be a symbol.
-<p /><var>sender</var> must be a sender described below section.
-<p /><var>receiver</var> must be a receiver described below section.
-<p /><var>redirect-handler</var> is the same as <code>http2-get</code>.
-<p />The procedure returns a list of response header and content.
-</div>
-<p /><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2521"><span class="section-number">7.34.1.1</span>HTTP/2 sender</a>
-  </h5>
-<p />A sender is a procedure which accepts 2 arguments, internal HTTP/2 stream and
-flag. At this moment, the internal HTTP/2 stream is not exposed so users cannot
-create own sender.
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-headers-sender2522">
-    <span class="name" name="http2-headers-sender">http2-headers-sender</span>
-  </a> <span class="args">header ...</span></div>
-<div class="desc">Returns a sender which sends given <var>header</var> as HTTP/2 header.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-data-sender2523">
-    <span class="name" name="http2-data-sender">http2-data-sender</span>
-  </a> <span class="args">data</span></div>
-<div class="desc">Returns a sender which sends given <var>data</var> as HTTP/2 data.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-composite-sender2524">
-    <span class="name" name="http2-composite-sender">http2-composite-sender</span>
-  </a> <span class="args">sender ...</span></div>
-<div class="desc">Returns a composite sender.</div>
-<p /></section><section class="sub-section"><h5 class="sub-section">
-    <a class="section.anchor" name="G2525"><span class="section-number">7.34.1.2</span>HTTP/2 receiver</a>
-  </h5>
-<p />A receiver is a procedure which accepts 4 arguments, internal HTTP/2 stream,
-header, frame and flag. The same restriction as sender is applied, thus
-users cannot create own receiver, at this moment.
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-data-receiver2526">
-    <span class="name" name="http2-data-receiver">http2-data-receiver</span>
-  </a> <span class="args">sink flusher</span></div>
-<div class="desc">Returns a receiver which receives HTTP/2 data frame and put the
-value into <var>sink</var>. When the stream reaches to the end, then <var>flusher</var>
-is called with <var>sink</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-binary-receiver2527">
-    <span class="name" name="http2-binary-receiver">http2-binary-receiver</span>
-  </a> <span class="args" /></div>
-<div class="desc">Returns a receives which receives HTTP/2 data frame as a bytevector.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-null-receiver2528">
-    <span class="name" name="http2-null-receiver">http2-null-receiver</span>
-  </a> <span class="args" /></div>
-<div class="desc">Returns a receives which receives HTTP/2 data frame and returns empty
-bytevector.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="http2-gzip-receiver2529">
-    <span class="name" name="http2-gzip-receiver">http2-gzip-receiver</span>
-  </a> <span class="args">receiver</span></div>
-<div class="desc">Returns a receives which receives HTTP/2 data frame. If the data frame
-is compressed to gzip, then the returning receiver expand the data and forward
-to the given <var>receiver</var>. If the data frame is not compressed, then it
-simply forward the data frame to the given <var>receiver</var>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-gzip-receiver2530">
-    <span class="name" name="make-gzip-receiver">make-gzip-receiver</span>
-  </a> <span class="args" /></div>
-<div class="desc">Convenient procedure whose definition is the following:
-<p /><pre class="snipet">(http2-gzip-receiver (http2-binary-receiver))</pre>
-</div>
-<p />
 
-</section></section></section>
+</section>
   <div class="prev-next">
-    <a class="prev" href="section733.html">(rfc http) - HTTP client</a>
+    <a class="prev" href="section733.html">(rfc base64) - Base 64 encode and decode library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section735.html">(rfc http-connections) - HTTP client utilities</a>
+    <a class="next" href="section735.html">(rfc hmac) - HMAC library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>

@@ -9,180 +9,450 @@
   <div class="prev-next">
     <a class="prev" href="section720.html">(net mq amqp) - AMQP library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section722.html">(net oauth) - OAuth library</a>
+    <a class="next" href="section722.html">(net mq mqtt) - MQTT library</a>
   </div>
   <section class="subsection"><h3 class="subsection">
-    <a class="section.anchor" name="net.mqtt"><span class="section-number">7.21</span>(net mq mqtt) - MQTT library</a>
+    <a class="section.anchor" name="net.http-client"><span class="section-number">7.21</span>(net http-client) - Modern HTTP client</a>
   </h3>
 <p /><div class="define">
     <span class="define-category">Library</span>
-    <a name="(net mq mqtt)2278">
-      <span class="name" name="(net mq mqtt)">(net mq mqtt)</span>
+    <a name="(net http-client)2292">
+      <span class="name" name="(net http-client)">(net http-client)</span>
     </a>
   </div>
-<div class="desc">Providing MQTT v3.1.1 and partially v3.1 client APIs.
-<p />Reference <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html">OASIS MQTT</a>.
-</div>
-<p />Following examples describe how to receive and publish messages.
-<p /><pre class="codeblock">(import (rnrs) (net mq mqtt))
+<div class="desc">Providing, probably, modern HTTP client.</div>
+<p />The <code>(net http-client)</code> provides a modern HTTP client, which handles
+connection pooling, client certificate, redirect and cookie. The client
+also provides asynchronous calling atop future object of
+<code>(util concurrent)</code>.
+<p />The following example shows how to use in a nutshell.
+<p /><pre class="codeblock">(import (rnrs)
+        (net http-client)
+        (util concurrent))
 
-(let ((conn (open-mqtt-connection "localhost" "1883")))
-  ;; subscribes to "topic" topic with accepting QoS exactly once
-  (mqtt-subscribe conn "topic" +qos-exactly-once+
-                  (lambda (topic payload)
-                    (let ((msg (get-bytevector-all payload)))
-                      (cond ((not (eof-object? msg))
-                             (print (utf8-&gt;string msg))
-                             (string=? (utf8-&gt;string msg) "END"))
-                            (else #f)))))
-  (let loop ()
-    ;; receives until "END" message was sent
-    (unless (mqtt-receive-message conn)
-      (loop)))
-  ;; unsubscribe from "topic"
-  (mqtt-unsubscribe conn "topic")
-  (close-mqtt-connection! conn))
-</pre>
-<p /><pre class="codeblock">(import (rnrs) (net mq mqtt))
+(define client (http:client-builder
+                (follow-redirects (http:redirect normal))))
 
-(let ((conn (open-mqtt-connection "localhost" "1883")))
-  ;; publish message to "topic" topic.
-  (mqtt-publish conn "topic" (string-&gt;utf8 "Hello MQTT"))
-  (close-mqtt-connection! conn))
+(let ((future (http:client-send-async client
+                                      (http:request-builder
+                                       (uri "http://google.com")))))
+  ;; do whatever you need to do during the above HTTP call
+  (let ((response (future-get future)))
+    (http:response-status response)  ;; -&gt; 200
+    (http:response-headers response) ;; -&gt; header object
+    (http:response-body response)    ;; -&gt; body as bytevector
+    ))
 </pre>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="mqtt-connection?2279">
-    <span class="name" name="mqtt-connection?">mqtt-connection?</span>
-  </a> <span class="args">obj</span></div>
-<div class="desc">Returns #t if given <var>obj</var> is MQTT connection. Otherwise #f.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="open-mqtt-connection2280">
-    <span class="name" name="open-mqtt-connection">open-mqtt-connection</span>
-  </a> <span class="args">host port opts ...</span></div>
-<div class="desc">Creates a socket connected to <var>host</var>:<var>port</var> and
-pass it to <var>port-&gt;mqtt-connection</var> with <var>opts</var>.
-<p />The returning value is an MQTT connection object.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="port-&gt;mqtt-connection2281">
-    <span class="name" name="port-&gt;mqtt-connection">port-&gt;mqtt-connection</span>
-  </a>
- <span class="args">in/out :key client-id username password keep-alive version</span></div>
-<div class="desc"><var>in/out</var> must be a binary input/outport port.
-<p />Creates an MQTT connection object using <var>in/out</var>. 
-<p /><var>client-id</var>, <var>username</var>, <var>password</var> and <var>keep-alive</var>
-keyword arguments are for optional payload of CONNECT packet. If they are
-given, then first 3 must be strings and <var>keep-alive</var> must be an integer.
-<p /><var>version</var> keyword argument is switches which version it should use.
-The value must be one of the followings;
-<p /><div class="define"><span class="define-category">Constant</span>+mqtt-3.1+</div>
-<div class="define"><span class="define-category">Constant</span>+mqtt-3.1.1+</div>
-<p />By default it uses <code>+mqtt-3.1.1+</code>.
-<p />This procedure is for future extension such as supporting websocket.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="close-mqtt-connection!2282">
-    <span class="name" name="close-mqtt-connection!">close-mqtt-connection!</span>
-  </a> <span class="args">conn</span></div>
-<div class="desc">Closes given MQTT connection.</div>
-<p />
-<div class="define"><span class="define-category">Function</span><a name="mqtt-subscribe2283">
-    <span class="name" name="mqtt-subscribe">mqtt-subscribe</span>
-  </a> <span class="args">conn topic qos callback</span></div>
-<div class="desc">Subscribes to given <var>topic</var> with QoS <var>qos</var>.
-<p /><var>callback</var> must be a procedure and accept 2 arguments. <var>topic</var> and
-<var>payload</var>. <var>payload</var> is an binary input port.
-<p />To receive messages, use <code>mqtt-receive-message</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-receive-message2284">
-    <span class="name" name="mqtt-receive-message">mqtt-receive-message</span>
-  </a> <span class="args">conn</span></div>
-<div class="desc">Receives one message from one of subscribed topics and call registered
-callback.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-unsubscribe2285">
-    <span class="name" name="mqtt-unsubscribe">mqtt-unsubscribe</span>
-  </a> <span class="args">conn topic</span></div>
-<div class="desc">Unsubscribes <var>conn</var> from <var>topic</var>.</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-publish2286">
-    <span class="name" name="mqtt-publish">mqtt-publish</span>
-  </a>
- <span class="args">conn topic message :key qos</span></div>
-<div class="desc">Publishes application message <var>message</var> to <var>topic</var>.
-<p />The <var>topic</var> must be a string. The <var>message</var> must be a bytevector.
-<p />If keyword argument <var>qos</var> is specified, it must be one of the followings.
-<p /><div class="define"><span class="define-category">Constant</span>+qos-at-most-once+</div>
-<div class="define"><span class="define-category">Constant</span>+qos-at-least-once+</div>
-<div class="define"><span class="define-category">Constant</span>+qos-exactly-once+</div>
-<p />By default, it uses <code>+qos-at-most-once+</code>.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-ping2287">
-    <span class="name" name="mqtt-ping">mqtt-ping</span>
-  </a> <span class="args">conn</span></div>
-<div class="desc">Sends PINGREQ packet to the server.</div>
-<p />
-<section class="subsubsection"><h4 class="subsubsection">
-    <a class="section.anchor" name="G2288"><span class="section-number">7.21.1</span>MQTT broker</a>
+<p /><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2293"><span class="section-number">7.21.1</span>HTTP client</a>
   </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:client?2294">
+    <span class="name" name="http:client?">http:client?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Returns #t if the given <var>o</var> is a HTTP client, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="http:client-builder2295">
+    <span class="name" name="http:client-builder">http:client-builder</span>
+  </a> <span class="args">field ...</span></div>
+<div class="desc">A constructor macro to build a HTTP client.
+<p />The <var>field</var>s must be one or more of the following:
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>follow-redirects</code>
+      </dt>
+      <dd class="dl-item-desc">Specifies redirection strategy, the value must be a valid value of <code>http:redirect</code>.</dd>
+      <dt class="dl-item-title">
+        <code>cookie-handler</code>
+      </dt>
+      <dd class="dl-item-desc">Specifies a cookie handler. Currently, <code>http:make-default-cookie-handler</code> is the only option.</dd>
+      <dt class="dl-item-title">
+        <code>connection-manager</code>
+      </dt>
+      <dd class="dl-item-desc">Specifies a connection manager. See Connection Manager section for more detail.</dd>
+      <dt class="dl-item-title">
+        <code>version</code>
+      </dt>
+      <dd class="dl-item-desc">Specifies a HTTP version. The value must be a valid value of <code>http:version</code>. The client handles both HTTP/1.1 and HTTP/2 by default.</dd>
+      <dt class="dl-item-title">
+        <code>executor</code>
+      </dt>
+      <dd class="dl-item-desc">Specifies an executor. The the default executor has 5 threads, but it'd be shared by all the client created without this field, so if you want to use the client in a intense situation, it's a good idea to specify own executor.</dd>
+    </dl>
+  </div>
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="http:version2296">
+    <span class="name" name="http:version">http:version</span>
+  </a> <span class="args">value</span></div>
+<div class="desc">A macro checks if the given <var>value</var> is a valid supporting HTTP
+version.
+<p />The value must be either <code>http/1.1</code> or <code>http/2</code>. If the later one
+is specified, it first tries to connect with HTTP/2, and falls back to
+HTTP/1.1 if HTTP/2 is not avaiable.
+<p />HTTP/2 works only on TLS environment, as the client uses ALPN to detect the
+version.
+</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="http:redirect2297">
+    <span class="name" name="http:redirect">http:redirect</span>
+  </a> <span class="args">value</span></div>
+<div class="desc">A macro checks if the given <var>value</var> is a valid supporting redirect
+strategy.
+<p />The value must be one of <code>never</code>, <code>always</code> or <code>normal</code>. The
+default value is <code>never</code>.
+<p /><code>never</code> won't redirect, it is suitable if you want to handle 3xx result
+manually.
+<p /><code>always</code> redirects as long as the 3xx status is returned. This means
+insecure redirection may happen (i.e. HTTPS to HTTP)
+<p /><code>normal</code> redirects 3xx status if the scheme is the same or more secure.
+</div>
+<p />
+</section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2298"><span class="section-number">7.21.2</span>HTTP request and response</a>
+  </h4>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:request?2299">
+    <span class="name" name="http:request?">http:request?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Returns #t if the given <var>o</var> is an HTTP request object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="http:request-builder2300">
+    <span class="name" name="http:request-builder">http:request-builder</span>
+  </a> <span class="args">field* ...</span></div>
+<div class="desc">Builds a HTTP request object.
+<p />The <code>field</code> must be one or more the followings.
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>uri</code>
+      </dt>
+      <dd class="dl-item-desc">The URI of the request, it has to be an URI object of <code>(net uri)</code> or valid URI string. This field is mandatory.</dd>
+      <dt class="dl-item-title">
+        <code>method</code>
+      </dt>
+      <dd class="dl-item-desc">A valid HTTP method. Default value is <code>GET</code>.</dd>
+      <dt class="dl-item-title">
+        <code>content-type</code>
+      </dt>
+      <dd class="dl-item-desc">A content type header, this is used when the method is allowed to have body. Default value <code>"application/octet-stream"</code>.</dd>
+      <dt class="dl-item-title">
+        <code>body</code>
+      </dt>
+      <dd class="dl-item-desc">Content of the request. The value must be either a bytevector ot binary input port.</dd>
+      <dt class="dl-item-title">
+        <code>headers</code>
+      </dt>
+      <dd class="dl-item-desc">A list of headers or a HTTP header object. If it's a list of header, then the element must contain a pair of name and values.</dd>
+      <dt class="dl-item-title">
+        <code>cookies</code>
+      </dt>
+      <dd class="dl-item-desc">A list of cookies. The elements must be cookie object of <code>(rfc cookie)</code></dd>
+    </dl>
+  </div>
+<p /></div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:headers?2301">
+    <span class="name" name="http:headers?">http:headers?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Returns #t if the given <var>o</var> is a HTTP headers object, otherwise #f.</div>
 <p /><div class="define">
-    <span class="define-category">Library</span>
-    <a name="(net mq mqtt broker)2289">
-      <span class="name" name="(net mq mqtt broker)">(net mq mqtt broker)</span>
+    <span class="define-category">Function</span>
+    <a name="http:make-headers2302">
+      <span class="name" name="http:make-headers">http:make-headers</span>
     </a>
   </div>
-<div class="desc">This library provides simple MQTT broker implementation.
-<p />The broker only does what broker suppose to do, thus there is no user
-customised behaviour.
+<div class="desc">Make a HTTP headers object.
+<p />A HTTP headers object can contain multiple values on one headers.
 </div>
-<p />The simplest broker script would look like this:
-<pre class="codeblock">(import (rnrs) (net mq mqtt broker))
+<p /><div class="define"><span class="define-category">Function</span><a name="http:headers-ref*2303">
+    <span class="name" name="http:headers-ref*">http:headers-ref*</span>
+  </a> <span class="args">headers name</span></div>
+<div class="desc">Retrieve a list of value of the header <var>name</var> from <var>headers</var>.
+<p />If the <var>name</var> doesn't exists, then it returns <code>()</code>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:headers-ref2304">
+    <span class="name" name="http:headers-ref">http:headers-ref</span>
+  </a> <span class="args">headers name</span></div>
+<div class="desc">Retrieve the first value of the header <var>name</var> from <var>headers</var>.
+<p />If the <var>name</var> doesn't exists, then it returns <code>#f</code>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:headers-set!2305">
+    <span class="name" name="http:headers-set!">http:headers-set!</span>
+  </a> <span class="args">headers name value</span></div>
+<div class="desc">Sets the single value of <var>value</var> into the <var>headers</var> with
+header name of <var>name</var>.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:headers-add!2306">
+    <span class="name" name="http:headers-add!">http:headers-add!</span>
+  </a> <span class="args">headers name value</span></div>
+<div class="desc">Adds the <var>value</var> in the <var>headers</var> to the header value
+list of <var>name</var>.
+<p />If the <var>name</var> doesn't exist, then it works the same as
+<code>http:headers-set!</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:headers-names2307">
+    <span class="name" name="http:headers-names">http:headers-names</span>
+  </a> <span class="args">headers</span></div>
+<div class="desc">Returns a list of header names of the given <var>headers</var></div>
+<p />
+<div class="define"><span class="define-category">Function</span><a name="http:response?2308">
+    <span class="name" name="http:response?">http:response?</span>
+  </a> <span class="args">o</span></div>
+<div class="desc">Returns #t if the given <var>o</var> is an HTTP response object, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:response-status2309">
+    <span class="name" name="http:response-status">http:response-status</span>
+  </a> <span class="args">response</span></div>
+<div class="desc">Returns the response HTTP status code.
+<p />The code is a string.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:response-headers2310">
+    <span class="name" name="http:response-headers">http:response-headers</span>
+  </a> <span class="args">response</span></div>
+<div class="desc">Returns the response HTTP headers object.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:response-cookies2311">
+    <span class="name" name="http:response-cookies">http:response-cookies</span>
+  </a> <span class="args">response</span></div>
+<div class="desc">Returns a list of the response cookie, if exists.
+<p />The element of the list is a cookie object of <code>(rfc cookie)</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http:response-body2312">
+    <span class="name" name="http:response-body">http:response-body</span>
+  </a> <span class="args">response</span></div>
+<div class="desc">Returns the body of the response.
+The value is bytevector.
+</div>
+<p /></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2313"><span class="section-number">7.21.3</span>Connection Manager</a>
+  </h4>
+<p />A connection manager manages the connections of a HTTP client. By default,
+we support these three types of connection managers; ephemeral, pooling, and
+logging.
+<p />The ephemeral connection manager creates a connection per request and
+discards it. This connection manager should only be used in disposable
+scripts.
+<p />The pooling connection manager pools the created connection and try to
+reuse if possible.
+<p />
+<div class="define">
+    <span class="define-category">Function</span>
+    <a name="make-http-default-connection-manager2314">
+      <span class="name" name="make-http-default-connection-manager">make-http-default-connection-manager</span>
+    </a>
+  </div>
+<div class="desc">Creates a default connection manager. This is at this moment an
+ephemeral connection manager without any timeout or key configuration.
+</div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2315"><span class="section-number">7.21.3.1</span>Ephemeral Connection Manager</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-connection-config?2316">
+    <span class="name" name="http-connection-config?">http-connection-config?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is an instance of
+<code>http-connection-config</code>, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="http-connection-config-builder2317">
+    <span class="name" name="http-connection-config-builder">http-connection-config-builder</span>
+  </a> <span class="args">field ...</span></div>
+<div class="desc">A constructor macro to build a <code>http-connection-config</code> record.
+<p />The <var>field</var>s must be one or more of the following:
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>connection-timeout</code>
+      </dt>
+      <dd class="dl-item-desc">Specifies connection timeout in milli second.</dd>
+      <dt class="dl-item-title">
+        <code>read-timeout</code>
+      </dt>
+      <dd class="dl-item-desc">Specifies read timeout in milli second.</dd>
+      <dt class="dl-item-title">
+        <code>key-manager</code>
+      </dt>
+      <dd class="dl-item-desc">Specifies a key manager. See Key Manager section for more detail.</dd>
+    </dl>
+  </div>
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-ephemeral-connection-manager?2318">
+    <span class="name" name="http-ephemeral-connection-manager?">http-ephemeral-connection-manager?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is an ephemeral connection manager,
+otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-http-ephemeral-connection-manager2319">
+    <span class="name" name="make-http-ephemeral-connection-manager">make-http-ephemeral-connection-manager</span>
+  </a> <span class="args">config</span></div>
+<div class="desc"><var>Config</var> must be a <code>http-connection-config</code> record instance.
+<p />Creates an ephemeral connection manager.</div>
+<p /></section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2320"><span class="section-number">7.21.3.2</span>Pooling Connection Manager</a>
+  </h5>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-pooling-connection-config?2321">
+    <span class="name" name="http-pooling-connection-config?">http-pooling-connection-config?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is an instance of
+<code>http-pooling-connection-config</code>, otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Macro</span><a name="http-pooling-connection-config-builder2322">
+    <span class="name" name="http-pooling-connection-config-builder">http-pooling-connection-config-builder</span>
+  </a>
+ <span class="args">field ...</span></div>
+<div class="desc">A constructor macro to build a <code>http-pooling-connection-config</code>
+record.
+<p />The <var>field</var>s must be one or more of the following and the ones from
+<code>http-connection-config-builder</code>:
+<div class="dl-list-wrapper">
+    <dl class="dl-list">
+      <dt class="dl-item-title">
+        <code>connection-request-timeout</code>
+      </dt>
+      <dd class="dl-item-desc">  Specifies connection request timeout in milli second. The timeout is only
+  for the waiting time of the connection retrieval from the pool.</dd>
+      <dt class="dl-item-title">
+        <code>max-connection-per-route</code>
+      </dt>
+      <dd class="dl-item-desc">  Specifies pool size per route. A route is defined with the combination of
+  hostname and port. Default value is 5.</dd>
+      <dt class="dl-item-title">
+        <code>time-to-live</code>
+      </dt>
+      <dd class="dl-item-desc">  Specifies the life time of the pooled connection in seconds</dd>
+      <dt class="dl-item-title">
+        <code>delegate-provider</code>
+      </dt>
+      <dd class="dl-item-desc">  Specifies connection manager delegate provider. Default value is
+  <code>default-delegate-connection-manager-provider</code></dd>
+    </dl>
+  </div>
+<p />A delegate connection manager is an underlying connection manager of
+the pooling connection manager. The delegate creates and closes the
+actual connection.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="http-pooling-connection-manager?2323">
+    <span class="name" name="http-pooling-connection-manager?">http-pooling-connection-manager?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is a pooling connection manager,
+otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-http-pooling-connection-manager2324">
+    <span class="name" name="make-http-pooling-connection-manager">make-http-pooling-connection-manager</span>
+  </a> <span class="args">config</span></div>
+<div class="desc"><var>Config</var> must be a <code>http-pooling-connection-config</code>
+record instance.
+<p />Creates a pooling connection manager.</div>
+<p />
+</section><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2325"><span class="section-number">7.21.3.3</span>Delegate Connection Manager providers</a>
+  </h5>
+<p />A delegate connection provider is a procedure which accepts one
+argument <var>config</var> and returns a connection manager.
+<p /><div class="define"><span class="define-category">Function</span><a name="default-delegate-connection-manager-provider2326">
+    <span class="name" name="default-delegate-connection-manager-provider">default-delegate-connection-manager-provider</span>
+  </a>
+ <span class="args">config</span></div>
+<div class="desc">Synonym of <code>make-http-ephemeral-connection-manager</code>.</div>
+<p />
+<p /></section></section><section class="subsubsection"><h4 class="subsubsection">
+    <a class="section.anchor" name="G2327"><span class="section-number">7.21.4</span>Key Manager</a>
+  </h4>
+<p />Key manager manages client certificate of HTTP connections. A key manager
+may contain multiple of key providers. A key provider should provide a
+list whose the first element is a private key and the rest are certificate
+chain.
+<p />The following example shows how to make a key manager with multiple
+key providers.
+<p /><pre class="codeblock">(import (rnrs)
+        (net http-client)
+	(rfc base64)
+	(security keystore))
+(define (host-a p)
+  (define node (socket-parameter-socket-node p))
+  (cond ((string=? node "host-a.com") "host-a-key-alias")
+	(else #f)))
+(define (host-b p)
+  (define node (socket-parameter-socket-node p))
+  (and (string-suffix? ".host-b.com" node) "host-b-key-alias"))
+(define keystores
+  ;; keystore file (PKCS12 base64 encoded), store pass, key pass, alias selector
+  `(("host-a.b64" "password0" "password0a" ,host-a)
+    ("host-b.b64" "password1" "password1a" ,host-b)))
 
-;; Wait on port 9000
-(define broker (make-mqtt-broker "9000")))
+(define (-&gt;keystore-key-provider keystore-info)
+  (let ((file (car keystore-info))
+        (storepass (cadr keystore-info))
+        (keypass (caddr keystore-info))
+        (strategy (cadddr keystore-info)))
+    (make-keystore-key-provider
+     (call-with-input-file file
+       (lambda (in)
+         (let ((bin (open-base64-decode-input-port in)))
+           (load-keystore 'pkcs12 bin storepass)))
+       :transcoder #f)
+     keypass
+     strategy)))
 
-;; start the broker.
-(mqtt-broker-start! broker)
+(make-key-manager (map -&gt;keystore-key-provider keystores))
 </pre>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-mqtt-broker2290">
-    <span class="name" name="make-mqtt-broker">make-mqtt-broker</span>
+<p /><div class="define"><span class="define-category">Function</span><a name="key-manager?2328">
+    <span class="name" name="key-manager?">key-manager?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is a key manager,
+otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="make-key-manager2329">
+    <span class="name" name="make-key-manager">make-key-manager</span>
+  </a> <span class="args">key-providers</span></div>
+<div class="desc"><var>Key-providers</var> must be a list of key provider.
+<p />Creates a key manager.</div>
+<p /><section class="sub-section"><h5 class="sub-section">
+    <a class="section.anchor" name="G2330"><span class="section-number">7.21.4.1</span>Key Provider</a>
+  </h5>
+<p />Key provider provides keys. The key can be retrieved from anywhere but
+must be a format of a list of private key and certificate chain.
+<p />We provide keystore key provider by default. If you need other key
+provider, you need to create a custom one.
+<p /><div class="define">
+    <span class="define-category">Record Type</span>
+    <a name="<key-provider&gt;2331">
+      <span class="name" name="<key-provider&gt;">&lt;key-provider&gt;</span>
+    </a>
+  </div>
+<div class="desc">An abstruct record type of key provider. Users must inherit this
+record type to create a custom key provider.
+<p />This record type has a filed named <code>key-retrievers</code>.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="key-provider?2332">
+    <span class="name" name="key-provider?">key-provider?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is a key provider
+otherwise #f.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="key-provider-key-retrievers2333">
+    <span class="name" name="key-provider-key-retrievers">key-provider-key-retrievers</span>
+  </a> <span class="args">key-provider</span></div>
+<div class="desc">Returns the value of field <code>key-retrievers</code> of the key provider
+<var>key-provider</var>.
+<p />This procedure is not meant to be used by a user of HTTP client.
+</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="keystore-key-provider?2334">
+    <span class="name" name="keystore-key-provider?">keystore-key-provider?</span>
+  </a> <span class="args">obj</span></div>
+<div class="desc">Returns #t if the <var>obj</var> is a keystore key provider
+otherwise #f.</div>
+<p />
+<div class="define"><span class="define-category">Function</span><a name="make-keystore-key-provider2335">
+    <span class="name" name="make-keystore-key-provider">make-keystore-key-provider</span>
+  </a> 
+ <span class="args">keystore password alias-provider</span></div>
+<div class="desc"><var>Keystore</var> must be a keystore object of <code>(security keystore)</code>.
+<var>password</var> must be a string of valid key password.
+<var>alias-provider</var> must be a procedure which accepts one argument,
+socket parameter, and returns either string of key alias or #f.
+<p />Creates a key provider with one key retriever.</div>
+<p /><div class="define"><span class="define-category">Function</span><a name="keystore-key-provider-add-key-retriever!2336">
+    <span class="name" name="keystore-key-provider-add-key-retriever!">keystore-key-provider-add-key-retriever!</span>
   </a>
- <span class="args">:key config authentication-handler :allow-other-keys</span></div>
-<div class="desc">Creates MQTT broker. 
-<p />The returning broker is a sub type of <code>&lt;simple-server&gt;</code>.
-<p />If <var>config</var> keyword argument is specified, the value must be an
-configuration object created by <code>make-mqtt-broker-config</code>, then the
-specified configuration is used. Otherwise default configuration
-which can be created by <code>(make-mqtt-broker-config)</code> is used.
-<p />If <var>authentication-handler</var> keyword argument is specified, then
-the specified value which must be a procedure takes 2 arguments, username
-and password, handles authentication. If the procedure doesn't return
-true value then authentication error packet is sent to the client.
+ <span class="args">keystore-key-provider password alias-provider</span></div>
+<div class="desc">Add a key retriever to the <var>keystore-key-provider</var> and returns
+<var>keystore-key-provider</var>.
+<p />This procedure is convenient if you have multiple keys in one keystore.
 </div>
-<p /><div class="define"><span class="define-category">Function</span><a name="make-mqtt-broker-config2291">
-    <span class="name" name="make-mqtt-broker-config">make-mqtt-broker-config</span>
-  </a>
- <span class="args">:key (max-thread 10) :allow-other-keys</span></div>
-<div class="desc">Creates a MQTT broker configuration object.
-<p />The returning value is a sub type of <code>&lt;server-config&gt;</code> with
-<code>:non-blocking?</code> option.
-</div>
-<p /><div class="define"><span class="define-category">Function</span><a name="mqtt-broker-start!2292">
-    <span class="name" name="mqtt-broker-start!">mqtt-broker-start!</span>
-  </a> <span class="args">broker opt ...</span></div>
-<div class="define"><span class="define-category">Function</span><a name="mqtt-broker-stop!2293">
-    <span class="name" name="mqtt-broker-stop!">mqtt-broker-stop!</span>
-  </a> <span class="args">broker opt ...</span></div>
-<div class="desc">Start and stop procedure for MQTT broker. 
-<p />These procedures are mere redefinitions of <code>server-start!</code> and 
-<code>server-stop!</code>.
-</div>
-
-</section></section>
+<p />
+</section></section></section>
   <div class="prev-next">
     <a class="prev" href="section720.html">(net mq amqp) - AMQP library</a>
     <a class="top" href="../sagittarius-online-ref.html">Top</a>
-    <a class="next" href="section722.html">(net oauth) - OAuth library</a>
+    <a class="next" href="section722.html">(net mq mqtt) - MQTT library</a>
   </div>
   <hr>
   <div id="document-footer">
     <div id="footer-message">This document was generated by<i>Takashi Kato</i> with Sagittarius gendoc. </div>
-    <div id="footer-date">Generated date: <i>2020-08-07T14:46:26+0200</i></div>
+    <div id="footer-date">Generated date: <i>2021-09-10T21:24:49+0200</i></div>
   </div>
 </html>
