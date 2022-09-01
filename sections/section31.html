@@ -1,0 +1,205 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section3.html">R6RS Libraries</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section32.html">Top library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="Library-form">Library form</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Syntax</span>
+        <a name="library_24">
+          <span>library</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">export-clause</i>
+          </span>
+          <span>
+            <i node-type="i">import-clause</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Declare a library named <i node-type="i">name</i>.</p>
+      <p node-type="paragraph"><i node-type="i">name</i> uniquely identifies a library and is globally visible in the
+<code node-type="code">import</code> clauses of all other libraries. It must have the following form:
+<pre lang="" node-type="snipet"><code>(_identifier1 identifier2_ ... _version_)</code></pre></p>
+      <p node-type="paragraph">where <i node-type="i">version</i> is empty or has the following form:
+<code node-type="code">(_sub-version_ ...)</code>An <i node-type="i">export-clause</i> names a set of imported and locally defined bindings to
+be exported. It must have following form:
+<pre lang="" node-type="snipet"><code>(export _export-spec_ ...)</code></pre></p>
+      <p node-type="paragraph"><i node-type="i">export-spec</i> must have one of the following forms:</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">_identifier_</code>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">(rename (_identifier1 identifier2_) ...)</code>
+          </p>
+        </li>
+      </ul>
+      <p node-type="paragraph">In an <i node-type="i">export-spec</i>, an <i node-type="i">identifier</i> names a single binding defined
+within or imported into the library, where the external name for the export is
+the same as the name of the binding within the library. A <code node-type="code">rename</code> spec
+exports the binding named by <i node-type="i">identifier1</i> in each
+<code node-type="code">(_identifier1 identifier2_)</code> pairing, using <i node-type="i">identifier2</i> as
+the external name.</p>
+      <p node-type="paragraph"><i node-type="i">import-clause</i> specifies a set of bindings to be imported into the
+library. It must have the following form:
+<pre lang="" node-type="snipet"><code>(import _import-spec_ ...)</code></pre></p>
+      <p node-type="paragraph">Each <i node-type="i">import-spec</i> specifies a set of bindings to be imported into the
+library. An <i node-type="i">import-spec</i> must be one of the
+following:</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">import-set</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">(for _import-set_ _import-level_ ...)</code>
+          </p>
+        </li>
+      </ul>
+      <p node-type="paragraph">An <i node-type="i">import-level</i> is one of the following:</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">run</code>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">expand</code>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">(meta _level_)</code>
+          </p>
+        </li>
+      </ul>
+      <p node-type="paragraph">where <i node-type="i">level</i> represents an exact integer object.</p>
+      <p node-type="paragraph">Note: The levels will be ignored on Sagittarius. The macro expansion phase
+will be automatically resolved. For portable code, it is better to specify
+the proper level.</p>
+      <p node-type="paragraph">An <i node-type="i">import-set</i> names a set of bindings from another library and
+possibly specifies local names for the imported bindings. It must be one of the
+following:</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">reference</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">(library _reference_)</code>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">(only _import-set_ _identifier_ ...)</code>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">(except _import-set_ _identifier_ ...)</code>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">(prefix _import-set_ _identifier_)</code>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">(rename _import-set_ (_identifier1 identifier2_) ...)</code>
+          </p>
+        </li>
+      </ul>
+      <p node-type="paragraph">A <i node-type="i">reference</i> identifies a library by its name and optionally by its
+version. It must have one of the following forms:</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">(_identifier1 identifier2_ ...)</code>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <code node-type="code">(_identifier1 identifier2_ ... _version_)</code>
+          </p>
+        </li>
+      </ul>
+      <p node-type="paragraph">Note: Sagittarius ignores <i node-type="i">version</i>.</p>
+      <p node-type="paragraph">A <i node-type="i">reference</i> whose first <i node-type="i">identifier</i> is
+<code node-type="code">for, library, only, except, prefix</code> or <code node-type="code">rename</code> is permitted only
+within a <code node-type="code">library</code> <i node-type="i">import-set</i>. The <i node-type="i">import-set</i><code node-type="code">(library _reference_)</code> is otherwise equivalent to <i node-type="i">reference</i>.</p>
+      <p node-type="paragraph">By default, all of an imported library's exported bindings are made visible
+within an importing library using the names given to the bindings by the
+imported library. The precise set of bindings to be imported and the names of
+those bindings can be adjusted with the <code node-type="code">only, except, prefix</code> and
+<code node-type="code">rename</code> forms described below.</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">An <code node-type="code">only</code> form produces a subset of the bindings from another
+<i node-type="i">import-set</i>, including only the listed _identifier_s. The included
+_identifier_s should be in the original <i node-type="i">import-set</i>.</p>
+        </li>
+        <li>
+          <p node-type="paragraph">An <code node-type="code">except</code> form produces a subset of the bindings from another
+<i node-type="i">import-set</i>, including all but the listed _identifier_s. All of the
+excluded _identifier_s should be in the original <i node-type="i">import-set</i>.</p>
+        </li>
+        <li>
+          <p node-type="paragraph">A <code node-type="code">prefix</code> form adds the <i node-type="i">identifier</i> prefix to each name from
+another <i node-type="i">import-set</i>.</p>
+        </li>
+        <li>
+          <p node-type="paragraph">A <code node-type="code">rename</code> form <code node-type="code">(rename _identifier1 identifier2_ ...)</code>,
+removes the bindings for <i node-type="i">identifier1 ...</i> to form an intermediate
+<i node-type="i">import-set</i>, then adds the bindings back for the corresponding
+<i node-type="i">identifier2 ...</i> to form the final <i node-type="i">import-set</i>. Each
+<i node-type="i">identifier1</i> should be the original <i node-type="i">import-set</i>, each
+<i node-type="i">identifier2</i> should not be int the intermediate <i node-type="i">import-set</i>, and
+the <i node-type="i">identifier2</i>'s must be distinct.</p>
+        </li>
+      </ul>
+      <p node-type="paragraph">Note: Sagittarius does not check importing or exporting non-existing or
+duplicated bindings. So the following code is actually valid.</p>
+      <pre lang="scheme" node-type="block"><code>(library (foo)
+  (export bar)
+  (import (rename (rnrs) (define def) (not-exist define) (define def)))
+ (def bar)
+)
+</code></pre>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section3.html">R6RS Libraries</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section32.html">Top library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

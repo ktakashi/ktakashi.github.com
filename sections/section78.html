@@ -1,0 +1,1426 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section77.html">(util bytevector) - Bytevector utility library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section79.html">(crypto) - Cryptographic library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="concurrent">(util concurrent) - Concurrency utilities</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(util concurrent)_178">
+          <span>(util concurrent)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides high level concurrency APIs.</p>
+      <p node-type="paragraph">Using low level thread and mutex sometimes causes dead lock or incomprehensible
+code. This library provides frameworks of common use cases. This library is
+built on top of SRFI-18.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Future">Future</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(util concurrent future)_175">
+            <span>(util concurrent future)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A sub library of <code node-type="code">(util concurrent)</code>. This library provides
+future related APIs.</p>
+        <p node-type="paragraph">A future is an object that has a task which is a thunk and will be executed
+in future. In this implementation, future is an interface and its execution
+is depending on the sub class. The default implementation this library
+provides uses a thread per future. If users don't have to manage number
+of threads, then using this is sufficient.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(import (rnrs) (util concurrent))
+
+;; creates 5 futures
+(define futures
+  (map (lambda (i) (future (* i i))) '(1 2 3 4 5)))
+
+;; wait and retrieve the results
+(map future-get futures)
+</code></pre>
+          <span />
+          <span>(1 4 9 16 25)</span>
+        </div>
+        <p node-type="paragraph" />
+        <div node-type="define" class="define">
+          <span>Record</span>
+          <a name="<future&gt;_28">
+            <span>&lt;future&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">The interface of all futures.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="future?_124">
+            <span>future?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a future object, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="future_115">
+            <span>future</span>
+            <span>
+              <i node-type="i">expr</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="future_114">
+            <span>future</span>
+            <span>
+              <i node-type="i">(class</i>
+            </span>
+            <span>
+              <i node-type="i">record)expr</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a future which executes <i node-type="i">expr</i>. The type of the
+returning future is <i node-type="i">record</i>.</p>
+        <p node-type="paragraph">The first form is equivalent with the following:
+<code node-type="code">(future (class &lt;simple-future&gt;) _expr ..._)</code></p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="future-get_119">
+            <span>future-get</span>
+            <span>
+              <i node-type="i">future</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves the result of the given <i node-type="i">future</i>.</p>
+        <p node-type="paragraph">This procedure waits if the execution of the <i node-type="i">future</i> isn't finished yet.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="future-cancel_116">
+            <span>future-cancel</span>
+            <span>
+              <i node-type="i">future</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Cancels the execution of <i node-type="i">future</i>.</p>
+        <p node-type="paragraph">This procedure may or may not cancel the execution depending on the
+implementation of <i node-type="i">future</i>. The <code node-type="code">&lt;simple-future&gt;</code> provides by
+this library won't disturb the execution. Thus calling this procedure
+doesn't do anything but changing the future's state.</p>
+        <p node-type="paragraph">NOTE: once this procedure is called, then calling <code node-type="code">future-get</code>with <i node-type="i">future</i> raises a <code node-type="code">&amp;future-terminated</code>.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(import (rnrs) (util concurrent))
+
+(define f (future (display "cancelled") (newline)))
+(future-cancel f)
+(future-get f)
+</code></pre>
+          <span />
+          <span>&amp;future-terminated</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">The above example may or may not print <code node-type="code">"cancelled"</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="future-done?_118">
+            <span>future-done?</span>
+            <span>
+              <i node-type="i">future</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given execution of <i node-type="i">future</i> is finished, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="future-cancelled?_117">
+            <span>future-cancelled?</span>
+            <span>
+              <i node-type="i">future</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given execution of <i node-type="i">future</i> is terminated by
+<code node-type="code">future-cancel</code>, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="future-state_122">
+            <span>future-state</span>
+            <span>
+              <i node-type="i">future</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns current state of the given <i node-type="i">future</i>.</p>
+        <p node-type="paragraph">The returning state is depending on the implementation of <i node-type="i">future</i>.
+Only 2 states are defined in this library, <code node-type="code">done</code> and <code node-type="code">terminated</code>.</p>
+        <p node-type="paragraph"><code node-type="code">done</code> is set when <code node-type="code">future-get</code> is called.</p>
+        <p node-type="paragraph"><code node-type="code">terminated</code> is set when <code node-type="code">future-cancel</code> is called.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;future-terminated_11">
+            <span>&amp;future-terminated</span>
+          </a>
+        </div>
+        <p node-type="paragraph">This type describes when a future is terminated but users try to
+retrieve its result.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="future-terminated?_123">
+            <span>future-terminated?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is object of <code node-type="code">&amp;future-terminated</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="terminated-future_9">
+            <span>terminated-future</span>
+            <span>
+              <i node-type="i">condition</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">condition</i> must be a <code node-type="code">&amp;future-terminated</code> condition.</p>
+        <p node-type="paragraph">Retrieve terminated future from <i node-type="i">condition</i>.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Simple-future">Simple future</a>
+          </h4>
+          <p node-type="paragraph">Simple future is a future implementation which executes the task
+on a thread immediately.</p>
+          <div node-type="define" class="define">
+            <span>Record</span>
+            <a name="<simple-future&gt;_56">
+              <span>&lt;simple-future&gt;</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Default <code node-type="code">&lt;future&gt;</code> implementation of this library.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="simple-future?_99">
+              <span>simple-future?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a simple future, otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-simple-future_218">
+              <span>make-simple-future</span>
+              <span>
+                <i node-type="i">thunk</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates a simple future which executes <i node-type="i">thunk</i>.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Executor">Executor</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(util concurrent executor)_174">
+            <span>(util concurrent executor)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A sub library of <code node-type="code">(util concurrent)</code>. This library provides
+executor related APIs.</p>
+        <p node-type="paragraph">A executor is an object that executes submitted futures. The idea is taken
+from <code node-type="code">java.util.concurrent</code> package. The library provides 2 types
+of executors, thread pool executor and fork join executor. The first
+one uses thread pool, described below section, and the latter one
+just creates a thread per task. The following is an example how to use
+the executors:</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(import (rnrs) (util concurrent))
+
+;; creates executor which uses 5 threads and push all tasks
+(define executor 
+  (make-thread-pool-executor 5 push-future-handler))
+
+;; creates 10 futures
+(define futures 
+  (map (lambda (i) 
+         (future (class &lt;executor-future&gt;)
+           (* i i)))
+       '(1 2 3 4 5 6 7 8 9 10)))
+
+;; execute futures
+(for-each (lambda (future) (execute-future! executor future)) futures)
+
+;; wait/retrieve the results
+(map future-get futures)
+</code></pre>
+          <span />
+          <span>(1 4 9 16 25 36 49 64 81 100)</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">The thread pool executor with <code node-type="code">push-future-handler</code> waits until the
+previous taskes are finished.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Generic-Executor-APIs">Generic Executor APIs</a>
+          </h4>
+          <p node-type="paragraph">Executor provided by this library is an extensible. So the most commonly
+used procedures are generic.</p>
+          <div node-type="define" class="define">
+            <span>Record</span>
+            <a name="<executor&gt;_25">
+              <span>&lt;executor&gt;</span>
+            </a>
+          </div>
+          <p node-type="paragraph">The interface of executor.</p>
+          <p node-type="paragraph">This record only has one field, <code node-type="code">state</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="executor?_54">
+              <span>executor?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is an executor, otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="executor-state_52">
+              <span>executor-state</span>
+              <span>
+                <i node-type="i">executor</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">state</code> field of the <i node-type="i">executor</i>.</p>
+          <p node-type="paragraph">The behaviour of the folowing procedures depend on its implementation.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="executor-available?_50">
+              <span>executor-available?</span>
+              <span>
+                <i node-type="i">executor</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the given <i node-type="i">executor</i> is available, otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="execute-future!_49">
+              <span>execute-future!</span>
+              <span>
+                <i node-type="i">executor</i>
+              </span>
+              <span>
+                <i node-type="i">future</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Executes given <i node-type="i">future</i> on <i node-type="i">executor</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="shutdown-executor!_94">
+              <span>shutdown-executor!</span>
+              <span>
+                <i node-type="i">executor</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Shutdowns the given <i node-type="i">executor</i>.</p>
+          <p node-type="paragraph">This procedure may or may not affect the managed futures on the <i node-type="i">executor</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="executor-submit!_53">
+              <span>executor-submit!</span>
+              <span>
+                <i node-type="i">executor</i>
+              </span>
+              <span>
+                <i node-type="i">thunk</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Converts <i node-type="i">thunk</i> to a future and execute it on given <i node-type="i">executor</i>,
+then returns the future. This procedure is defined as follows:</p>
+          <pre lang="scheme" node-type="block"><code>(define (executor-submit! e thunk)
+  (let ((f (make-executor-future thunk)))
+    (execute-future! e f)
+    f))
+</code></pre>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Thread-pool-executor">Thread pool executor</a>
+          </h4>
+          <p node-type="paragraph">Thread pool executor uses <code node-type="code">(util concurrent thread-pool)</code> as its
+underlying thread managing. So once the threads are created then the
+thread holds its environment until the executor is shutdown. In other
+words, if a task changes the dynamic environment, then the next task
+uses the changed dynamic environment. The following example describes
+how dynamic environments works on this executor:</p>
+          <div node-type="block" class="codeblock">
+            <pre lang="scheme" node-type="block"><code>(import (rnrs) (util concurrent) (srfi :39))
+
+(define *one* (make-parameter 1))
+
+(define executor (make-thread-pool-executor 1))
+
+(let ((f1 (make-executor-future (lambda () (*one* 2) 1)))
+      (f2 (make-executor-future (lambda () (*one*)))))
+  (execute-future! executor f1)
+  (future-get f1)
+  (execute-future! executor f2)
+  (future-get f2))
+</code></pre>
+            <span />
+            <span>2</span>
+          </div>
+          <p node-type="paragraph" />
+          <p node-type="paragraph">NOTE: parameter objects are thread safe in general, thus if a thread is
+created per future, then the parameter <code node-type="code">*one*</code> is initialised with
+the initial value <code node-type="code">1</code> during thread creation.</p>
+          <div node-type="define" class="define">
+            <span>Record</span>
+            <a name="<thread-pool-executor&gt;_59">
+              <span>&lt;thread-pool-executor&gt;</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Record type of thread pool executor. This record type inherits
+<code node-type="code">&lt;executor&gt;</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="thread-pool-executor?_19">
+              <span>thread-pool-executor?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a thread pool executor, otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-thread-pool-executor_245">
+              <span>make-thread-pool-executor</span>
+              <span>
+                <i node-type="i">max-thread</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">reject-handler</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates a thread pool executor with thread count <i node-type="i">max-thread</i>.</p>
+          <p node-type="paragraph">If optional argument <i node-type="i">reject-handler</i> is specified, then the specified
+handler is used. Otherwise, <code node-type="code">abort-rejected-handler</code> is used.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="thread-pool-executor-pool-size_17">
+              <span>thread-pool-executor-pool-size</span>
+              <span>
+                <i node-type="i">thread-pool-executor</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns number of futures currently executing on the given thread pool
+executor.</p>
+          <p node-type="paragraph">This number would be greater than the thread count if <code node-type="code">push-future-handler</code>is specified during the executor creation.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="thread-pool-executor-max-pool-size_16">
+              <span>thread-pool-executor-max-pool-size</span>
+              <span>
+                <i node-type="i">thread-pool-executor</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns number of thread count of the given thread pool executor.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="thread-pool-executor-available?_14">
+              <span>thread-pool-executor-available?</span>
+              <span>
+                <i node-type="i">thread-pool-executor</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Return #t if the number of executing future is less than the number of
+thread count.</p>
+          <p node-type="paragraph">NOTE: this procedure may return #f even tasks can be pushed to the executor
+if <code node-type="code">push-future-handler</code> is specified.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="thread-pool-executor-execute-future!_15">
+              <span>thread-pool-executor-execute-future!</span>
+              <span>
+                <i node-type="i">thread-pool-executor</i>
+              </span>
+              <span>
+                <i node-type="i">future</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Executes the given <i node-type="i">future</i> on <i node-type="i">thread-pool-executor</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="thread-pool-executor-shutdown!_18">
+              <span>thread-pool-executor-shutdown!</span>
+              <span>
+                <i node-type="i">thread-pool-executor</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Shutdown the given <i node-type="i">thread-pool-executor</i>.</p>
+          <p node-type="paragraph">Builtin reject handlers.</p>
+          <p node-type="paragraph">Reject handler is a procedure called when thread pool executor is not
+available to decide how the executor should treat the given future.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="abort-rejected-handler_0">
+              <span>abort-rejected-handler</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Reject the future and raises <code node-type="code">&amp;rejected-execution-error</code>.</p>
+          <p node-type="paragraph">This is the default handler.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="terminate-oldest-handler_8">
+              <span>terminate-oldest-handler</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Terminates the oldest future.</p>
+          <p node-type="paragraph">When this handler is called, the thread which target future is running is
+also terminated. Thus the dynamic environment is also reset.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="wait-finishing-handler_0">
+              <span>wait-finishing-handler</span>
+              <span>
+                <i node-type="i">wait-retry</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creats a reject handler which waits until one of the thread
+is available.</p>
+          <p node-type="paragraph">The <i node-type="i">wait-retry</i> is a number of retry count. If none of future task
+is finished by this counter, then <code node-type="code">abort-rejected-handler</code> is called.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="push-future-handler_128">
+              <span>push-future-handler</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Pushes the task to the least used thread.</p>
+          <div node-type="define" class="define">
+            <span>Condition Type</span>
+            <a name="&amp;rejected-execution-error_38">
+              <span>&amp;rejected-execution-error</span>
+            </a>
+          </div>
+          <p node-type="paragraph">A condition describes when a future is rejected by an executor.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="rejected-execution-error?_90">
+              <span>rejected-execution-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is <code node-type="code">&amp;rejected-execution-error</code> object.
+Otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="rejected-future_92">
+              <span>rejected-future</span>
+              <span>
+                <i node-type="i">condition</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="rejected-executor_91">
+              <span>rejected-executor</span>
+              <span>
+                <i node-type="i">condition</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph"><i node-type="i">condition</i> must be a <code node-type="code">&amp;rejected-execution-error</code> object.</p>
+          <p node-type="paragraph">Retrieves the rejected future and executor, respectively.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Fork-join-executor">Fork join executor</a>
+          </h4>
+          <p node-type="paragraph">Fork join executor is an executor which simply creats a thread per future.
+It's almost the same as <code node-type="code">&lt;simple-future&gt;</code>.</p>
+          <div node-type="define" class="define">
+            <span>Record</span>
+            <a name="<fork-join-executor&gt;_27">
+              <span>&lt;fork-join-executor&gt;</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Record type of fork join executor. This record type inherits
+<code node-type="code">&lt;executor&gt;</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="fork-join-executor?_104">
+              <span>fork-join-executor?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a fork join executor, otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-fork-join-executor_129">
+              <span>make-fork-join-executor</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates a fork join executor.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="fork-join-executor-available?_101">
+              <span>fork-join-executor-available?</span>
+              <span>
+                <i node-type="i">fork-join-executor</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="fork-join-executor-execute-future!_102">
+              <span>fork-join-executor-execute-future!</span>
+              <span>
+                <i node-type="i">fork-join-executor</i>
+              </span>
+              <span>
+                <i node-type="i">future</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Executes the given <i node-type="i">future</i> on <i node-type="i">fork-join-executor</i>.</p>
+          <p node-type="paragraph">NOTE: the executor doesn't manage anything so the future is actually not
+related to the executor.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="fork-join-executor-shutdown!_103">
+              <span>fork-join-executor-shutdown!</span>
+              <span>
+                <i node-type="i">fork-join-executor</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sets executor's state <code node-type="code">shutdown</code>.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Executor-future">Executor future</a>
+          </h4>
+          <p node-type="paragraph">An executor future is an future object which can be used on executor.</p>
+          <div node-type="define" class="define">
+            <span>Record</span>
+            <a name="<executor-future&gt;_24">
+              <span>&lt;executor-future&gt;</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Record type of <code node-type="code">&lt;executor-future&gt;</code>. This type inherits
+<code node-type="code">&lt;future&gt;</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="executor-future?_51">
+              <span>executor-future?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an executor future, otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-executor-future_124">
+              <span>make-executor-future</span>
+              <span>
+                <i node-type="i">thunk</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates an executor future object.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Thread-pool">Thread pool</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(util concurrent thread-pool)_177">
+            <span>(util concurrent thread-pool)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A sub library of <code node-type="code">(util concurrent)</code>. This library provides
+thread pool APIs.</p>
+        <p node-type="paragraph">Creating a thread is not cheap on Sagittarius. If users want to reuse threads,
+then this library can be used.</p>
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (util concurrent))
+
+;; pooling 5 thread
+(define thread-pool (make-thread-pool 5))
+
+(for-each (lambda (i) (thread-pool-push-task! thread-pool (lambda () (* i i))))
+	  '(1 2 3 4 5 6 7 8 9 10))
+
+;; waits until all tasks are done
+(thread-pool-wait-all! thread-pool)
+
+;; release thread-pool
+(thread-pool-release! thread-pool)
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Record</span>
+          <a name="<thread-pool&gt;_60">
+            <span>&lt;thread-pool&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Record type of thread pool.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-pool?_28">
+            <span>thread-pool?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a thread-pool, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-thread-pool_244">
+            <span>make-thread-pool</span>
+            <span>
+              <i node-type="i">thread-count</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">error-handler</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a thread pool with <i node-type="i">thread-count</i> of threads.</p>
+        <p node-type="paragraph">If the optional argument <i node-type="i">error-handler</i> is given, it must be a
+procedure which accept one argument, then the procedure is called
+when the pushed task raised an error.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-pool-size_22">
+            <span>thread-pool-size</span>
+            <span>
+              <i node-type="i">thread-pool</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns number of threads on the given <i node-type="i">thread-pool</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-pool-push-task!_20">
+            <span>thread-pool-push-task!</span>
+            <span>
+              <i node-type="i">thread-pool</i>
+            </span>
+            <span>
+              <i node-type="i">thunk</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Push the given <i node-type="i">thunk</i> to least used <i node-type="i">thread-pool</i>'s thread.
+And returns the id of the pushed thread. This id can be used to retrive
+the actual thread calling <code node-type="code">thread-pool-thread</code> procedure.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-pool-wait-all!_27">
+            <span>thread-pool-wait-all!</span>
+            <span>
+              <i node-type="i">thread-pool</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Waits all the tasks pushed into the given <i node-type="i">thread-pool</i>.</p>
+        <p node-type="paragraph">The return value of the tasks are discarded.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-pool-release!_21">
+            <span>thread-pool-release!</span>
+            <span>
+              <i node-type="i">thread-pool</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">how</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Joins all the thread on the given <i node-type="i">thread-pool</i>.</p>
+        <p node-type="paragraph">If optional argument how is specified <code node-type="code">terminate</code>, then the procedure
+terminates the thread instead of joining.</p>
+        <p node-type="paragraph">NOTE: terminating a thread is very dangerous operation, so don't use casually.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-pool-thread_23">
+            <span>thread-pool-thread</span>
+            <span>
+              <i node-type="i">thread-pool</i>
+            </span>
+            <span>
+              <i node-type="i">id</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves the pooled thread associated with given <i node-type="i">id</i> from
+given <i node-type="i">thread-pool</i>.</p>
+        <p node-type="paragraph">It signals an error if the given <i node-type="i">id</i> is not a thread id.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-pool-thread-id_24">
+            <span>thread-pool-thread-id</span>
+            <span>
+              <i node-type="i">thread-pool</i>
+            </span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves the pooled thread id associated with given <i node-type="i">thread</i> from
+given <i node-type="i">thread-pool</i>. The procedure takes O(n) where n is number of threads
+managed by the <i node-type="i">thread-pool</i>. It might be better to use
+<code node-type="code">(thread-pool-current-thread-id)</code> procedure to retrieve thread id from
+managed threads.</p>
+        <p node-type="paragraph">It signals an error if the given <i node-type="i">thread</i> is not a managed thread.</p>
+        <p node-type="paragraph">NOTE: if the thread is terminated, then the procedure also signals an error.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="(thread-pool-current-thread-id)_167">
+            <span>(thread-pool-current-thread-id)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves thread id of current thread. If the current thread is not
+a managed thread, then #f is returned.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-pool-thread-terminate!_26">
+            <span>thread-pool-thread-terminate!</span>
+            <span>
+              <i node-type="i">thread-pool</i>
+            </span>
+            <span>
+              <i node-type="i">id</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Terminates the pooled thread associated with given <i node-type="i">id</i> and recreate
+a new thread into <i node-type="i">thread-pool</i>.</p>
+        <p node-type="paragraph">NTOE: this is a dangerous operation. Don't use it casually.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-pool-thread-task-running?_25">
+            <span>thread-pool-thread-task-running?</span>
+            <span>
+              <i node-type="i">thread-pool</i>
+            </span>
+            <span>
+              <i node-type="i">id</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">id</i> of thread in the <i node-type="i">thread-pool</i> is
+running. Otherwise #f.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Shared-queues">Shared queues</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(util concurrent shared-queue)_176">
+            <span>(util concurrent shared-queue)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A sub library of <code node-type="code">(util concurrent)</code>. This library provides
+shared queue APIs.</p>
+        <p node-type="paragraph">A shared queue is a queue whose operations are done atomically.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(import (rnrs) (util concurrent) (srfi :18))
+
+(define shared-queue (make-shared-queue))
+
+(define thread 
+  (thread-start!
+    (make-thread
+      (lambda ()
+        ;; waits until the queue has an element
+        (let ((value (shared-queue-get! shared-queue)))
+          (* value value))))))
+
+(shared-queue-put! share-queue 5)
+
+(thread-join! thread)
+</code></pre>
+          <span />
+          <span>25</span>
+        </div>
+        <p node-type="paragraph" />
+        <div node-type="define" class="define">
+          <span>Record</span>
+          <a name="<shared-queue&gt;_55">
+            <span>&lt;shared-queue&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Record type of shared queue.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue?_80">
+            <span>shared-queue?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is shared queue, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-shared-queue_215">
+            <span>make-shared-queue</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(max-length</i>
+            </span>
+            <span>
+              <i node-type="i">-1)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a shared queue.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">max-length</i> is 0, then the queue can be used as
+synchronised queue. If the value is positive number, then the queue can
+only have specified number of elements. If it overflows, then it waits
+until the number of elements is less than <i node-type="i">max-length</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue-empty?_71">
+            <span>shared-queue-empty?</span>
+            <span>
+              <i node-type="i">shared-queue</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the number of elements inside of <i node-type="i">shared-queue</i> is 0.
+Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue-size_79">
+            <span>shared-queue-size</span>
+            <span>
+              <i node-type="i">shared-queue</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the number of elements inside of <i node-type="i">shared-queue</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue-max-length_75">
+            <span>shared-queue-max-length</span>
+            <span>
+              <i node-type="i">shared-queue</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns max length of <i node-type="i">shared-queue</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue-overflows?_76">
+            <span>shared-queue-overflows?</span>
+            <span>
+              <i node-type="i">shared-queue</i>
+            </span>
+            <span>
+              <i node-type="i">count</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if putting <i node-type="i">count</i> of element into _shared-queue_overflows. Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue-get!_73">
+            <span>shared-queue-get!</span>
+            <span>
+              <i node-type="i">shared-queue</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(timeout</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(timeout-val</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves the first element from <i node-type="i">shared-queue</i>.</p>
+        <p node-type="paragraph">If the queue is empty and optional argument <i node-type="i">timeout</i> is #f, then
+this procedure waits until the queue gets something.</p>
+        <p node-type="paragraph">If the optional argument <i node-type="i">timeout</i> is specified, then the procedure
+only waits specified amount of time. <i node-type="i">timeout</i> can be either integer
+or time object defined in SRFI-19. If the queue didn't get any object within
+the <i node-type="i">timeout</i>, then <i node-type="i">timeout-val</i> is returned.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue-put!_77">
+            <span>shared-queue-put!</span>
+            <span>
+              <i node-type="i">shared-queue</i>
+            </span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(timeout</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(timeout-val</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Puts <i node-type="i">obj</i> into <i node-type="i">shared-queue</i> and returns <i node-type="i">obj</i>.</p>
+        <p node-type="paragraph">If the queue has <code node-type="code">max-length</code> and overflows, then it wait until
+it's available.</p>
+        <p node-type="paragraph">If the optional argument <i node-type="i">timeout</i> is specified, then the procedure
+only waits specified amount of time. <i node-type="i">timeout</i> can be either integer
+or time object defined in SRFI-19. If the queue didn't get any object within
+the <i node-type="i">timeout</i>, then <i node-type="i">timeout-val</i> is returned.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue-remove!_78">
+            <span>shared-queue-remove!</span>
+            <span>
+              <i node-type="i">shared-queue</i>
+            </span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(=</i>
+            </span>
+            <span>
+              <i node-type="i">equal?)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Removes the given <i node-type="i">obj</i> from the <i node-type="i">shared-queue</i>. The procedure
+returns #t if <i node-type="i">obj</i> is removed, otherwise #f.</p>
+        <p node-type="paragraph">Optional argument <i node-type="i">=</i>, must be a comparison procedure, specifies how to
+compare the element of the <i node-type="i">shared-queue</i> and given <i node-type="i">obj</i>. Default
+value is <code node-type="code">equal?</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue-clear!_70">
+            <span>shared-queue-clear!</span>
+            <span>
+              <i node-type="i">shared-queue</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Clears all element inside of <i node-type="i">shared-queue</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue-find_72">
+            <span>shared-queue-find</span>
+            <span>
+              <i node-type="i">shared-queue</i>
+            </span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Finds an elements which satisfies <i node-type="i">pred</i>. This operations locks the
+given <i node-type="i">shared-queue</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="shared-queue-locked?_74">
+            <span>shared-queue-locked?</span>
+            <span>
+              <i node-type="i">shared-queue</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(wait?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">shared-queue</i> is locked by other thread,
+otherwise #f.</p>
+        <p node-type="paragraph">If the optional argument <i node-type="i">wait?</i> is given, then the procedure waits
+until the queue is available and returns #f.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Actor">Actor</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(util concurrent actor)_172">
+            <span>(util concurrent actor)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A sub library of <code node-type="code">(util concurrent)</code>. This library provides
+actor model like APIs.</p>
+        <p node-type="paragraph">An actor is an object which contains thread, input receiver and output sender.
+This is based on the Actor model. Communication between an actor and outside of
+the actor can only be done via input receiver or output sender. From here, we
+call them channel. The following is a simple bank account example using actor.</p>
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (util concurrent actor) (match))
+
+(define (open-account initial-amount)
+  (define balance initial-amount)
+  (make-shared-queue-channel-actor
+   (lambda (input-receiver output-sender)
+     (let loop ()
+       (match (input-receiver)
+	 (('withdrow how-much)
+	  (if (&lt; balance how-much)
+	      (output-sender "invalid amount")
+	      (begin
+		(set! balance (- balance how-much))
+		(output-sender (cons how-much balance))))
+	  (loop))
+	 (('deposite a)
+	  (if (negative? a)
+	      (output-sender "invalid amount")
+	      (begin
+		(set! balance (+ balance a))
+		(output-sender (cons 0 balance))))
+	  (loop))
+	 (('close) #t)
+	 (else "invalid message"))))))
+
+(define client (open-account 1000))
+
+(actor-send-message! client '(withdrow 100))
+(actor-send-message! client '(deposite 100))
+(actor-send-message! client '(close))
+
+(actor-receive-message! client) ;; =&gt; (100 . 900)
+(actor-receive-message! client) ;; =&gt; (0 . 1000)
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="actor?_10">
+            <span>actor?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an actor, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-shared-queue-channel-actor_216">
+            <span>make-shared-queue-channel-actor</span>
+            <span>
+              <i node-type="i">task</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-shared-priority-queue-channel-actor_214">
+            <span>make-shared-priority-queue-channel-actor</span>
+            <span>
+              <i node-type="i">task</i>
+            </span>
+            <span>
+              <i node-type="i">compare</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates actors with shared-queue or shared-priority-queue as underlying
+channel implementation, respectively.</p>
+        <p node-type="paragraph">If the <code node-type="code">make-shared-priority-queue-channel-actor</code> is used, then the
+<i node-type="i">compare</i> must be a procedure which takes 2 arguments and returns the
+comparison result of given 2 arguments. The value should be, -1, 0 or 1.</p>
+        <p node-type="paragraph"><i node-type="i">task</i> must be an procedure accepts 2 argument, <i node-type="i">input-receiver</i> and
+<i node-type="i">output-sender</i>. The procedures' signatures are the followings:</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="input-receiver_36">
+            <span>input-receiver</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+            <span>
+              <i node-type="i">timeout-val</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="output-sender_51">
+            <span>output-sender</span>
+            <span>
+              <i node-type="i">messge</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+            <span>
+              <i node-type="i">timeout-val</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The <i node-type="i">input-receiver</i> receives a message from outside of the actor.</p>
+        <p node-type="paragraph">The <i node-type="i">output-sender</i> sends a message <i node-type="i">message</i> to outside of the actor.</p>
+        <p node-type="paragraph">Messages can be sent to an actor via <code node-type="code">actor-send-message!</code>, and be
+received from an actor via <code node-type="code">actor-receive-message!</code>.</p>
+        <p node-type="paragraph">The optional arguments <i node-type="i">timeout</i> and <i node-type="i">timeout-val</i> are given, it shall
+behave the same as <code node-type="code">shared-queue-get!</code> or <code node-type="code">shared-queue-put!</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="actor-send-message!_7">
+            <span>actor-send-message!</span>
+            <span>
+              <i node-type="i">actor</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+            <span>
+              <i node-type="i">timeout-val</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Sends the given <i node-type="i">message</i> to the <i node-type="i">actor</i>. The operation may block
+the caller thread depending on the underlying channel implementation.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">timeout</i> and <i node-type="i">timeout-val</i> are given, it shall
+behave the same as <code node-type="code">shared-queue-put!</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="actor-receive-message!_5">
+            <span>actor-receive-message!</span>
+            <span>
+              <i node-type="i">actor</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+            <span>
+              <i node-type="i">timeout-val</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Receives a message from given <i node-type="i">actor</i>. The operation may block the
+caller thread depending on the underlying channel implementation.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">timeout</i> and <i node-type="i">timeout-val</i> are given, it shall
+behave the same as <code node-type="code">shared-queue-get!</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="actor-running?_6">
+            <span>actor-running?</span>
+            <span>
+              <i node-type="i">actor</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Return #t if the given <i node-type="i">actor</i> is running, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="actor-wait!_9">
+            <span>actor-wait!</span>
+            <span>
+              <i node-type="i">actor</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+            <span>
+              <i node-type="i">timeout-val</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Waits until the given <i node-type="i">actor</i> is finished.</p>
+        <p node-type="paragraph">The optional arguments works the same as <code node-type="code">thread-join!</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="actor-terminate!_8">
+            <span>actor-terminate!</span>
+            <span>
+              <i node-type="i">actor</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Terminates the given <i node-type="i">actor</i>.</p>
+        <p node-type="paragraph">NOTE: This operation is not safe. It is users' responsibility to release
+resource if it's needed.</p>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(util concurrent completable-future)_173">
+            <span>(util concurrent completable-future)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A sub library of <code node-type="code">(util concurrent)</code>. This library provides
+Java's CompletableFuture like interface</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thunk-&gt;future_40">
+            <span>thunk-&gt;future</span>
+            <span>
+              <i node-type="i">thunk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thunk-&gt;future_39">
+            <span>thunk-&gt;future</span>
+            <span>
+              <i node-type="i">thunk</i>
+            </span>
+            <span>
+              <i node-type="i">executor</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Provide a future whose value supplier is the <i node-type="i">thunk</i>.</p>
+        <p node-type="paragraph">If the second form is used, then the execution will be done by the
+given <i node-type="i">executor</i> otherwise <code node-type="code">*completable-future:default-executor*</code>will be used.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="future-map_121">
+            <span>future-map</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">future</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Apply the procedure <i node-type="i">proc</i> to the result of the <i node-type="i">future</i>.
+And return the given <i node-type="i">future</i>.</p>
+        <p node-type="paragraph">These procedures return immediately and the computation of
+<i node-type="i">proc</i> will be done in some future.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="future-guard_120">
+            <span>future-guard</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">future</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Guards the <i node-type="i">future</i> and apply the raised condition to <i node-type="i">proc</i>.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(future-get (future-guard (lambda (e) 'ok)
+                          (thunk-&gt;future (lambda () (raise 'boo)))))
+</code></pre>
+          <span />
+          <span>'ok</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">These procedures return immediately and the computation of
+<i node-type="i">proc</i> will be done in some future.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section77.html">(util bytevector) - Bytevector utility library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section79.html">(crypto) - Cryptographic library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

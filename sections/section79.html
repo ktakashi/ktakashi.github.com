@@ -1,0 +1,1628 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section78.html">(util concurrent) - Concurrency utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section710.html">(dbi) - Database independent access layer</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="crypto">(crypto) - Cryptographic library</a>
+      </h2>
+      <p node-type="paragraph">This documentation does not describe cryptography itself. For example, it does
+not describe what initial vector is and how long it must be. So users must know
+about cryptography's this library supports.</p>
+      <p node-type="paragraph">This library uses <code node-type="code">libtomcrypt</code>'s functionalities. The library is public
+domain. Thank you for the great library.</p>
+      <p node-type="paragraph">Note: the <code node-type="code">libtomcrypt</code> is a huge cryptographic library and I am not so
+good with cryptographics, so the <code node-type="code">(crypto)</code> library is not totally tested.
+Just the functionalities which I usually use are tested. If you find a bug or
+wrong documentation, pleas report it.</p>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(crypto)_7">
+          <span>(crypto)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library is the top most library, it exports all the other libraries
+procedures. Users must import only this and not to use the others.</p>
+      <p node-type="paragraph"><code node-type="code">(crypto)</code> library supports both symmetric cryptography and public/private
+key mechanism. For public/private key, it only supports RSA for now.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="crypto-object?_157">
+          <span>crypto-object?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is <code node-type="code">crypto-object</code>.</p>
+      <p node-type="paragraph"><code node-type="code">crypto-object</code> can be either <code node-type="code">cipher</code> or <code node-type="code">key</code>.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Cipher-operations">Cipher operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-cipher_30">
+            <span>make-cipher</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">mode</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(mode-parameter</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">:allow-other-keys</i>
+            </span>
+            <span>
+              <i node-type="i">:rest</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a cipher object.</p>
+        <p node-type="paragraph"><i node-type="i">type</i> must be known cryptographic algorithm. Currently, <code node-type="code">(crypto)</code>library exports the algorithm below.</p>
+        <p node-type="paragraph">The symmetric key algorithms.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="Blowfish_66">
+            <span>Blowfish</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="X-Tea_0">
+            <span>X-Tea</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="RC2_13">
+            <span>RC2</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="RC5-32/12/b_15">
+            <span>RC5-32/12/b</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="RC6-32/20/b_16">
+            <span>RC6-32/20/b</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SAFER+_0">
+            <span>SAFER+</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SAFER-K64_2">
+            <span>SAFER-K64</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SAFER-SK64_4">
+            <span>SAFER-SK64</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SAFER-K128_1">
+            <span>SAFER-K128</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SAFER-SK128_3">
+            <span>SAFER-SK128</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="AES_22">
+            <span>AES</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="AES-128_23">
+            <span>AES-128</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="AES-192_24">
+            <span>AES-192</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="AES-256_25">
+            <span>AES-256</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="Twofish_115">
+            <span>Twofish</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="DES_131">
+            <span>DES</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="DES3_132">
+            <span>DES3</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="DESede_133">
+            <span>DESede</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="CAST5_37">
+            <span>CAST5</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="CAST-128_36">
+            <span>CAST-128</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="Noekeon_23">
+            <span>Noekeon</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="Skipjack_108">
+            <span>Skipjack</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="Khazad_24">
+            <span>Khazad</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SEED_10">
+            <span>SEED</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="KASUMI_0">
+            <span>KASUMI</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="Camellia_31">
+            <span>Camellia</span>
+          </a>
+        </div>
+        <p node-type="paragraph"><code node-type="code">AES-128</code>, <code node-type="code">AES-192</code> and <code node-type="code">AES-256</code> are fixed key size AES algorithms.
+<code node-type="code">AES</code> allows key size of 16, 24 or 32 bytes, however, fixed sized
+version only accepts 16 for <code node-type="code">AES-128</code>, 24 for <code node-type="code">AES-192</code> and 32 for
+<code node-type="code">AES-256</code>.</p>
+        <p node-type="paragraph">The public key algorithm</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="DSA_152">
+            <span>DSA</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="ECDSA_0">
+            <span>ECDSA</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="RSA_143">
+            <span>RSA</span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">key</i> must be a key object which will be created by key generate procedures
+described below.</p>
+        <p node-type="paragraph"><i node-type="i">mode</i> specifies the <strong node-type="strong">symmetric cipher</strong>'s encryption and description
+mode. If the cipher type is public key cipher, it will be ignored. Some modes
+require initial vector <i node-type="i">iv</i>. The possible mods are below.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="MODE_ECB_326">
+            <span>MODE_ECB</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="MODE_CBC_323">
+            <span>MODE_CBC</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="MODE_CFB_324">
+            <span>MODE_CFB</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="MODE_OFB_328">
+            <span>MODE_OFB</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="MODE_CTR_325">
+            <span>MODE_CTR</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="MODE_GCM_327">
+            <span>MODE_GCM</span>
+          </a>
+        </div>
+        <p node-type="paragraph">The keyword argument <i node-type="i">mode-parameter</i> is specified, it must be a mode
+parameter object, then the object will be parsed properly by the cipher.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-keysize_75">
+            <span>cipher-keysize</span>
+            <span>
+              <i node-type="i">cipher</i>
+            </span>
+            <span>
+              <i node-type="i">test</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns given cipher type's recommended keysize.</p>
+        <p node-type="paragraph"><i node-type="i">cipher</i> must cipher object created by <code node-type="code">cipher</code> procedure.</p>
+        <p node-type="paragraph"><i node-type="i">test</i> must be fixnum.</p>
+        <p node-type="paragraph">If <i node-type="i">test</i> is too small for the cipher, it will raise an error.</p>
+        <p node-type="paragraph">Note: this procedure is for helper. It is designed to use check keysize you want
+to use.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher?_83">
+            <span>cipher?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is cipher object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-encrypt_73">
+            <span>cipher-encrypt</span>
+            <span>
+              <i node-type="i">cipher</i>
+            </span>
+            <span>
+              <i node-type="i">pt</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">cipher</i> must be a cipher object.</p>
+        <p node-type="paragraph"><i node-type="i">pt</i> must be a bytevector.</p>
+        <p node-type="paragraph"><code node-type="code">encrypt</code> encrypts given plain text <i node-type="i">pt</i> according to the given
+<i node-type="i">cipher</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-encrypt/tag_74">
+            <span>cipher-encrypt/tag</span>
+            <span>
+              <i node-type="i">cipher</i>
+            </span>
+            <span>
+              <i node-type="i">pt</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">tag-size</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Similar with <code node-type="code">cipher-encrypt</code>. The difference is that this
+procedure returns 2 values, encrypted <i node-type="i">pt</i> and calculated tag if the
+given <i node-type="i">cipher</i> supports authentication.</p>
+        <p node-type="paragraph">If the keyword argument <i node-type="i">tag-size</i> is specified and must be an integer,
+then the returning tag has the specified size. If the <i node-type="i">cipher</i> supports
+less size than the specified size, then the remaining tag contains unspecified
+value. To retrieve the maximum length of tag, use <code node-type="code">cipher-max-tag-size</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-decrypt_70">
+            <span>cipher-decrypt</span>
+            <span>
+              <i node-type="i">cipher</i>
+            </span>
+            <span>
+              <i node-type="i">ct</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">cipher</i> must be a cipher object.</p>
+        <p node-type="paragraph"><i node-type="i">ct</i> must be a bytevector.</p>
+        <p node-type="paragraph"><code node-type="code">decrypt</code> decrypts given encrypted text <i node-type="i">ct</i> according to the given
+<i node-type="i">cipher</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-decrypt/tag_71">
+            <span>cipher-decrypt/tag</span>
+            <span>
+              <i node-type="i">cipher</i>
+            </span>
+            <span>
+              <i node-type="i">ct</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">tag-size</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Similar with <code node-type="code">cipher-decrypt</code>. The difference is that this
+procedure returns 2 values, decrypted <i node-type="i">ct</i> and calculated tag if the
+given <i node-type="i">cipher</i> supports authentication.</p>
+        <p node-type="paragraph">If the keyword argument <i node-type="i">tag-size</i> is specified and must be an integer,
+then the returning tag has the specified size. If the <i node-type="i">cipher</i> supports
+less size than the specified size, then the remaining tag contains unspecified
+value. To retrieve the maximum length of tag, use <code node-type="code">cipher-max-tag-size</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-decrypt/verify_72">
+            <span>cipher-decrypt/verify</span>
+            <span>
+              <i node-type="i">cipher</i>
+            </span>
+            <span>
+              <i node-type="i">ct</i>
+            </span>
+            <span>
+              <i node-type="i">tag</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Similar with <code node-type="code">cipher-decrypt</code>. The difference is that this
+procedure validates the calculated tag. If the given <i node-type="i">tag</i> and
+calculated tag are not the same, then <code node-type="code">&amp;decrypt</code> is raised.</p>
+        <p node-type="paragraph">NOTE: if the tag is *not* calculated by the cipher, then this procedure
+always raises an error.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-max-tag-size_76">
+            <span>cipher-max-tag-size</span>
+            <span>
+              <i node-type="i">cipher</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the maximum length of tag size.</p>
+        <p node-type="paragraph">If the given <i node-type="i">cipher</i> does not support authentication tag, then
+returning value is <code node-type="code">0</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-update-aad!_81">
+            <span>cipher-update-aad!</span>
+            <span>
+              <i node-type="i">cipher</i>
+            </span>
+            <span>
+              <i node-type="i">aad</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Updates the additional authentication data.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-tag!_80">
+            <span>cipher-tag!</span>
+            <span>
+              <i node-type="i">cipher</i>
+            </span>
+            <span>
+              <i node-type="i">dst</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">dst</i> must be a bytevector.</p>
+        <p node-type="paragraph">Retrieves the authentication tag from given <i node-type="i">cipher</i>.</p>
+        <p node-type="paragraph">NOTE: this procedure must be called after either <code node-type="code">cipher-encrypt</code> or
+<code node-type="code">cipher-decrypt</code>. Otherwise the filled value is unspecified.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-tag_79">
+            <span>cipher-tag</span>
+            <span>
+              <i node-type="i">cipher</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">size</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves the authentication tag from given <i node-type="i">cipher</i>.</p>
+        <p node-type="paragraph">If the keyword argument <i node-type="i">size</i> is specified, then the returning
+bytevector has the <i node-type="i">size</i> length, otherwise maximum tag length.</p>
+        <p node-type="paragraph">NOTE: this procedure must be called after either <code node-type="code">cipher-encrypt</code> or
+<code node-type="code">cipher-decrypt</code>. Otherwise the filled value is unspecified.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-signature_77">
+            <span>cipher-signature</span>
+            <span>
+              <i node-type="i">public-cipher</i>
+            </span>
+            <span>
+              <i node-type="i">data</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">public-cipher</i> must be a cipher object created with public/private
+key algorithm.</p>
+        <p node-type="paragraph"><i node-type="i">data</i> must be a bytevector.</p>
+        <p node-type="paragraph">Signs given <i node-type="i">data</i>. This procedure is just a wrapper for the real
+implementations. Currently Sagittarius supports only RSA sign.</p>
+        <p node-type="paragraph"><i node-type="i">opt</i> can specify the signer behaviour. Default supported RSA cipher can
+accept keyword argument <i node-type="i">encode</i>.</p>
+        <p node-type="paragraph"><i node-type="i">encode</i> specifies the encoder. The default encoder is
+<code node-type="code">pkcs1-emsa-pss-encode</code>. And the rest keyword arguments will be passed to
+the encoder. Supported encoders are described below.</p>
+        <p node-type="paragraph">The following shows how to implement <code node-type="code">SHA256WithRSA</code> signature</p>
+        <pre lang="scheme" node-type="block"><code>;; Importing a RSA private key.
+(define private-key (import-private-key RSA #vu8(...)))
+
+(define signer (make-cipher RSA private-key))
+(cipher-signature signer #vu8() :encode pkcs1-emsa-v1.5-encode :hash SHA-256)
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-verify_82">
+            <span>cipher-verify</span>
+            <span>
+              <i node-type="i">public-cipher</i>
+            </span>
+            <span>
+              <i node-type="i">M</i>
+            </span>
+            <span>
+              <i node-type="i">S</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">public-cipher</i> must be a cipher object created with public/private
+key algorithm.</p>
+        <p node-type="paragraph"><i node-type="i">M</i> and <i node-type="i">S</i> must be bytevectors.</p>
+        <p node-type="paragraph"><i node-type="i">M</i> is master message which will be compared with encoded message.</p>
+        <p node-type="paragraph"><i node-type="i">S</i> is signed message.</p>
+        <p node-type="paragraph">The <code node-type="code">verity</code> procedure verifies two messages.</p>
+        <p node-type="paragraph"><i node-type="i">opt</i> can specify the verifier behaviour. Default supported RSA cipher can
+accept keyword argument <i node-type="i">verify</i>.</p>
+        <p node-type="paragraph"><i node-type="i">verify</i> specifies the verifier. The defaule verifier is
+<code node-type="code">pkcs1-emsa-pss-verify</code>. And the rest keyword arguments will be passed to
+verifier. Supported verifiers are described below.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Mode-parameters">Mode parameters</a>
+        </h3>
+        <p node-type="paragraph">Mode parameters are pareters which can be used by specified mode. For example,
+<code node-type="code">iv-parameter</code> is a parameter contains an IV.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mode-parameter?_321">
+            <span>mode-parameter?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a mode parameter, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-composite-parameter_37">
+            <span>make-composite-parameter</span>
+            <span>
+              <i node-type="i">parameters</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a composite mode parameter.</p>
+        <p node-type="paragraph">A composite parameter can hold multiple parameters.</p>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<iv-paramater&gt;_30">
+            <span>&lt;iv-paramater&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Record type for initial vector (IV) parameter.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-iv-paramater_156">
+            <span>make-iv-paramater</span>
+            <span>
+              <i node-type="i">iv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">iv</i> must be a bytevector or #f.</p>
+        <p node-type="paragraph">Creates an IV mode parameter.</p>
+        <p node-type="paragraph">IV is required by some modes. e.g. <code node-type="code">MODE_CBC</code>.</p>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<ctr-paramater&gt;_12">
+            <span>&lt;ctr-paramater&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Record type for counter mode parameter.</p>
+        <p node-type="paragraph">This parameter is a subclass of <code node-type="code">&lt;iv-parameter&gt;</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-ctr-paramater_40">
+            <span>make-ctr-paramater</span>
+            <span>
+              <i node-type="i">iv</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(rounds</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+            <span>
+              <i node-type="i">(mode</i>
+            </span>
+            <span>
+              <i node-type="i">CTR_COUNTER_BIG_ENDIAN)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a counter mode parameter. This is used by <code node-type="code">MODE_CTR</code>.</p>
+        <p node-type="paragraph"><i node-type="i">iv</i> is passed to parent constructor.</p>
+        <p node-type="paragraph">The followings are description of keyword parameters.</p>
+        <p node-type="paragraph"><i node-type="i">rounds</i> specify how many times the cipher rounds the key.</p>
+        <p node-type="paragraph"><i node-type="i">ctr-mode</i> specifies counter mode. The possible mode is blow.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="CTR_COUNTER_LITTLE_ENDIAN_166">
+            <span>CTR_COUNTER_LITTLE_ENDIAN</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="CTR_COUNTER_BIG_ENDIAN_165">
+            <span>CTR_COUNTER_BIG_ENDIAN</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<rfc3686-paramater&gt;_52">
+            <span>&lt;rfc3686-paramater&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Record type for AES-CTR mode parameter defined in RFC 3686.</p>
+        <p node-type="paragraph">This parameter is a subclass of <code node-type="code">&lt;ctr-parameter&gt;</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-rfc3686-paramater_201">
+            <span>make-rfc3686-paramater</span>
+            <span>
+              <i node-type="i">iv</i>
+            </span>
+            <span>
+              <i node-type="i">nonce</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(rounds</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+            <span>
+              <i node-type="i">(mode</i>
+            </span>
+            <span>
+              <i node-type="i">CTR_COUNTER_BIG_ENDIAN)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates RFC3686 mode parameter.</p>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<padding-paramater&gt;_46">
+            <span>&lt;padding-paramater&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Record type for padding parameter.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-padding-paramater_184">
+            <span>make-padding-paramater</span>
+            <span>
+              <i node-type="i">padder</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a padding mode parameter.</p>
+        <p node-type="paragraph"><i node-type="i">padder</i> must be an procedure such as <code node-type="code">pkcs5-padder</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Key-operations">Key operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="generate-secret-key_16">
+            <span>generate-secret-key</span>
+            <span>
+              <i node-type="i">(type</i>
+            </span>
+            <span>
+              <i node-type="i"><string>)</i>
+            </span>
+            <span>
+              <i node-type="i">(key</i>
+            </span>
+            <span>
+              <i node-type="i"><bytevector>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">type</i> must be one of the supported symmetric algorithm.</p>
+        <p node-type="paragraph"><i node-type="i">key</i> must be a bytevector and its length must satisfy the keysize which
+the given algorithm requires.</p>
+        <p node-type="paragraph">Returns a sercret key object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="generate-key-pair_12">
+            <span>generate-key-pair</span>
+            <span>
+              <i node-type="i">(type</i>
+            </span>
+            <span>
+              <i node-type="i"><top>)</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">type</i> is for despatch. For default implementation, it must be
+<code node-type="code">RSA</code>.</p>
+        <p node-type="paragraph">Generates a key pair object.</p>
+        <p node-type="paragraph">Default implementation supports RSA key geneartion and <i node-type="i">options</i> can be
+keyword arguments described below.</p>
+        <p node-type="paragraph"><i node-type="i">size</i> keyword argument is decides key length. Default value is 1024.</p>
+        <p node-type="paragraph"><i node-type="i">prng</i> keyword argument is given, it will be passed to <code node-type="code">random-prime</code>.
+For more detail, see <a href="#math.random">(math random)</a> library. Default
+value is <code node-type="code">(secure-random RC4)</code>.</p>
+        <p node-type="paragraph"><i node-type="i">e</i> keyword argument is an exponent. Usually it does not have to be
+specified with other number. Default value is 65537.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="generate-private-key_13">
+            <span>generate-private-key</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">type</i> is for despatch. For default implementation, it must be
+<code node-type="code">RSA</code>.</p>
+        <p node-type="paragraph">Returns private key object.</p>
+        <p node-type="paragraph">Default RSA implementation <i node-type="i">options</i> can be these arguments.</p>
+        <dl node-type="dlist">
+          <dt>modulus</dt>
+          <dd>
+            <p node-type="paragraph">The private key's modulus</p>
+          </dd>
+          <dt>private-exponent</dt>
+          <dd>
+            <p node-type="paragraph">The private key's exponent</p>
+          </dd>
+          <dt>public-exponent</dt>
+          <dd>
+            <p node-type="paragraph">keyword argument. Used for CRT private key object.</p>
+          </dd>
+          <dt>p</dt>
+          <dd>
+            <p node-type="paragraph">keyword argument. Used for CRT private key object.</p>
+          </dd>
+          <dt>q</dt>
+          <dd>
+            <p node-type="paragraph">keyword argument. Used for CRT private key object.</p>
+          </dd>
+        </dl>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="generate-public-key_14">
+            <span>generate-public-key</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">type</i> is for despatch. For default implementation, it must be
+<code node-type="code">RSA</code>.</p>
+        <p node-type="paragraph">Returns public key object.</p>
+        <p node-type="paragraph">Default RSA implementation <i node-type="i">opt</i> can be these arguments.</p>
+        <dl node-type="dlist">
+          <dt>modulus</dt>
+          <dd>
+            <p node-type="paragraph">The public key's modulus</p>
+          </dd>
+          <dt>exponent</dt>
+          <dd>
+            <p node-type="paragraph">The public key's exponent</p>
+          </dd>
+        </dl>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="keypair?_9">
+            <span>keypair?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is keypair object, otherwise #f</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="keypair-private_7">
+            <span>keypair-private</span>
+            <span>
+              <i node-type="i">keypair</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns private key from <i node-type="i">keypair</i></p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="keypair-public_8">
+            <span>keypair-public</span>
+            <span>
+              <i node-type="i">keypair</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns public key from <i node-type="i">keypair</i></p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="key?_6">
+            <span>key?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is key object, otherwise #f</p>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<private-key&gt;_49">
+            <span>&lt;private-key&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">CLOS class of private key object.</p>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<public-key&gt;_50">
+            <span>&lt;public-key&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">CLOS class of public key object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="private-key?_110">
+            <span>private-key?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is private key object, otherwise #f</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="public-key?_126">
+            <span>public-key?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is public key object, otherwise #f</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="split-key_204">
+            <span>split-key</span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(count</i>
+            </span>
+            <span>
+              <i node-type="i">3)</i>
+            </span>
+            <span>
+              <i node-type="i">(prng</i>
+            </span>
+            <span>
+              <i node-type="i">(secure-random</i>
+            </span>
+            <span>
+              <i node-type="i">RC4))</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">key</i> must be a bytevector and plain key.</p>
+        <p node-type="paragraph">Splits the given <i node-type="i">key</i> to <i node-type="i">count</i> components and returns _count_values as key components.</p>
+        <p node-type="paragraph">The return values might be different each time.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="combine-key-components_99">
+            <span>combine-key-components</span>
+            <span>
+              <i node-type="i">component1</i>
+            </span>
+            <span>
+              <i node-type="i">components</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="combine-key-components!_100">
+            <span>combine-key-components!</span>
+            <span>
+              <i node-type="i">result</i>
+            </span>
+            <span>
+              <i node-type="i">component1</i>
+            </span>
+            <span>
+              <i node-type="i">components</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Renaming export of <code node-type="code">bytevector-xor</code> and <code node-type="code">bytevector-xor!</code>respectively.</p>
+        <p node-type="paragraph">For more detail, see <a href="section77.html#util.bytevector">(util bytevector)</a>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="PKCS-operations">PKCS operations</a>
+        </h3>
+        <p node-type="paragraph">The procedures described in this section is implemented according to PKCS#1. I
+don't have any intend to describe functionality. If you need to know what
+exactly these procedures do, please see the PKCS#1 document.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs5-padder_74">
+            <span>pkcs5-padder</span>
+            <span>
+              <i node-type="i">bv</i>
+            </span>
+            <span>
+              <i node-type="i">block-size</i>
+            </span>
+            <span>
+              <i node-type="i">padding?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">bv</i> must be a bytevector.</p>
+        <p node-type="paragraph"><i node-type="i">block-size</i> must be a non negative exact integer.</p>
+        <p node-type="paragraph"><i node-type="i">padding?</i> must be a boolean.</p>
+        <p node-type="paragraph">Pads or Unpads paddings from <i node-type="i">bv</i> according to PKCS#5.</p>
+        <p node-type="paragraph">If <i node-type="i">padding?</i> is #t, the procedure will pad. otherwise it will unpad.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs-v1.5-padding_60">
+            <span>pkcs-v1.5-padding</span>
+            <span>
+              <i node-type="i">prng</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">block-type</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">prng</i> must be prng object. See <a href="#math.random">(math random)</a>.</p>
+        <p node-type="paragraph"><i node-type="i">key</i> must be either private or public key object.</p>
+        <p node-type="paragraph"><i node-type="i">block-type</i> must be one of these.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="PKCS-1-EME_58">
+            <span>PKCS-1-EME</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="PKCS-1-EMSA_59">
+            <span>PKCS-1-EMSA</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a padding procedure. The procedure signature is the same as
+<i node-type="i">pkcs5-padder</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs1-emsa-pss-encode_61">
+            <span>pkcs1-emsa-pss-encode</span>
+            <span>
+              <i node-type="i">m</i>
+            </span>
+            <span>
+              <i node-type="i">em-bits</i>
+            </span>
+            <span> _</span>
+          </a>
+        </div>
+        <p node-type="paragraph">_ <i node-type="i">:key</i> <i node-type="i">(hash</i> <code node-type="code">(hash-algorithm SHA-1)</code> <i node-type="i">)</i> <i node-type="i">(mgf</i> <i node-type="i">mgf-1)</i> <i node-type="i">(salt-length</i> <i node-type="i">#f)</i> _
+_ <i node-type="i">(prng</i> <code node-type="code">(secure-random RC4)</code> <i node-type="i">)</i></p>
+        <p node-type="paragraph"><i node-type="i">m</i> must be a bytevector.</p>
+        <p node-type="paragraph"><i node-type="i">em-bits</i> must be non negative exact integer.</p>
+        <p node-type="paragraph">Encodes given message <i node-type="i">m</i> according to the PKCS#1 section 9.1.1.</p>
+        <p node-type="paragraph">The keyword arguments specified some behaviour.</p>
+        <p node-type="paragraph"><i node-type="i">hash</i> specifies the hash algorithm. For more detail, see
+<a href="section719.html#math.hash">(math hash)</a> library.</p>
+        <p node-type="paragraph"><i node-type="i">mgf</i> specifies mask generation procedure.</p>
+        <p node-type="paragraph">Note: PKCS#1 only specifies MGF-1.</p>
+        <p node-type="paragraph"><i node-type="i">salt-length</i> specifies salt's length. If it's #f encoder does not use salt.</p>
+        <p node-type="paragraph"><i node-type="i">prng</i> is a pseudo random see <a href="#math.random">(math random)</a>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs1-emsa-pss-verify_62">
+            <span>pkcs1-emsa-pss-verify</span>
+            <span>
+              <i node-type="i">m</i>
+            </span>
+            <span>
+              <i node-type="i">em-bits</i>
+            </span>
+            <span> _</span>
+          </a>
+        </div>
+        <p node-type="paragraph">_ <i node-type="i">:key</i> <i node-type="i">(hash</i> <code node-type="code">(hash-algorithm SHA-1)</code> <i node-type="i">)</i> <i node-type="i">(mgf</i> <i node-type="i">mgf-1)</i> _
+_ <i node-type="i">(prng</i> <code node-type="code">(secure-random RC4)</code> <i node-type="i">)</i></p>
+        <p node-type="paragraph"><i node-type="i">m</i> must be a bytevector.</p>
+        <p node-type="paragraph"><i node-type="i">em-bits</i> must be non negative exact integer.</p>
+        <p node-type="paragraph">Verify given message <i node-type="i">m</i> according to the PKCS#1 section 9.1.1.</p>
+        <p node-type="paragraph">Other keyword arguments are the same as <code node-type="code">pkcs1-emsa-pss-encode</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mgf-1_313">
+            <span>mgf-1</span>
+            <span>
+              <i node-type="i">mgf-seed</i>
+            </span>
+            <span>
+              <i node-type="i">mask-length</i>
+            </span>
+            <span>
+              <i node-type="i">hasher</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">mgf-seed</i> must be a bytevector.</p>
+        <p node-type="paragraph"><i node-type="i">mask-length</i> must be a non negative exact integer.</p>
+        <p node-type="paragraph"><i node-type="i">hasher</i> must be a hash algorithm. See
+<a href="#math.random">(math random)</a>.</p>
+        <p node-type="paragraph">Creates a mask bytevector, according to PKCS#1 MGF-1.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs1-emsa-v1.5-encode_63">
+            <span>pkcs1-emsa-v1.5-encode</span>
+            <span>
+              <i node-type="i">m</i>
+            </span>
+            <span>
+              <i node-type="i">em-bits</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(hash</i>
+            </span>
+            <span>
+              <code node-type="code">(hash-algorithm SHA-1)</code>
+            </span>
+            <span>
+              <i node-type="i">)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">m</i> must be a bytevector.</p>
+        <p node-type="paragraph"><i node-type="i">em-bits</i> must be non negative exact integer.</p>
+        <p node-type="paragraph">Encodes given message <i node-type="i">m</i> according to the PKCS#1 section 9.2.</p>
+        <p node-type="paragraph">Other keyword arguments are the same as <code node-type="code">pkcs1-emsa-pss-encode</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs1-emsa-v1.5-verify_64">
+            <span>pkcs1-emsa-v1.5-verify</span>
+            <span>
+              <i node-type="i">m</i>
+            </span>
+            <span>
+              <i node-type="i">em-bits</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(hash</i>
+            </span>
+            <span>
+              <code node-type="code">(hash-algorithm SHA-1)</code>
+            </span>
+            <span>
+              <i node-type="i">)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">m</i> must be a bytevector.</p>
+        <p node-type="paragraph"><i node-type="i">em-bits</i> must be non negative exact integer.</p>
+        <p node-type="paragraph">Verify given message <i node-type="i">m</i> according to the PKCS#1 section 9.2.
+Other keyword arguments are the same as <code node-type="code">pkcs1-emsa-pss-encode</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Key-wrapping">Key wrapping</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-aes-key-wrap_8">
+            <span>make-aes-key-wrap</span>
+            <span>
+              <i node-type="i">wrapping-key</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">iv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns AES key wrapping procedure which accepts one argument of
+bytevector to be wrapped.</p>
+        <p node-type="paragraph">The returning procedure wraps the given bytevector with AES Key Wrap algorithm
+specified by NIST or RFC 3394.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">iv</i> specifies initial value (IV) for data integrity.
+The default value is <code node-type="code">#vu8(#xa6 #xa6 #xa6 #xa6 #xa6 #xa6 #xa6 #xa6)</code>specified by the specification.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-aes-key-unwrap_7">
+            <span>make-aes-key-unwrap</span>
+            <span>
+              <i node-type="i">wrapping-key</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">iv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns AES key unwrapping procedure which accepts one argument of
+bytevector to be unwrapped.</p>
+        <p node-type="paragraph">The returning procedure wraps the given bytevector with AES Key Wrap algorithm
+specified by NIST or RFC 3394.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">iv</i> specifies initial value (IV) for data integrity.
+The default value is <code node-type="code">#vu8(#xa6 #xa6 #xa6 #xa6 #xa6 #xa6 #xa6 #xa6)</code>specified by the specification.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Cryptographic-conditions">Cryptographic conditions</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;crypto-error_1">
+            <span>&amp;crypto-error</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="crypto-error?_156">
+            <span>crypto-error?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Subcondition of <code node-type="code">&amp;error</code>.</p>
+        <p node-type="paragraph">Base condition type of all cryptographic conditions.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;encrypt-error_9">
+            <span>&amp;encrypt-error</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="encrypt-error?_5">
+            <span>encrypt-error?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-encrypt-mechanism_115">
+            <span>condition-encrypt-mechanism</span>
+            <span>
+              <i node-type="i">encrypt-error</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">This condition will be raised when encrypt operation is failed.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;decrypt-error_7">
+            <span>&amp;decrypt-error</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="decrypt-error?_58">
+            <span>decrypt-error?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-decrypt-mechanism_113">
+            <span>condition-decrypt-mechanism</span>
+            <span>
+              <i node-type="i">decrypt-error</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">This condition will be raised when decrypt operation is failed.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;encode-error_8">
+            <span>&amp;encode-error</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="encode-error?_4">
+            <span>encode-error?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">This condition will be raised when encoding operation is failed.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;decode-error_6">
+            <span>&amp;decode-error</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="decode-error?_56">
+            <span>decode-error?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">This condition will be raised when decoding operation is failed.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="raise-encrypt-error_5">
+            <span>raise-encrypt-error</span>
+            <span>
+              <i node-type="i">who</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">mechanism</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">irritants</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">who</i>, <i node-type="i">message</i> and <i node-type="i">irritants</i> are the same as
+<code node-type="code">assertion-violation</code>.</p>
+        <p node-type="paragraph"><i node-type="i">mechanism</i> should be a name of cryptographic algorithm.</p>
+        <p node-type="paragraph">Raises <code node-type="code">&amp;encrypt-error</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="raise-decrypt-error_3">
+            <span>raise-decrypt-error</span>
+            <span>
+              <i node-type="i">who</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">mechanism</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">irritants</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">who</i>, <i node-type="i">message</i> and <i node-type="i">irritants</i> are the same as
+<code node-type="code">assertion-violation</code>.</p>
+        <p node-type="paragraph"><i node-type="i">mechanism</i> should be a name of cryptographic algorithm.</p>
+        <p node-type="paragraph">Raises <code node-type="code">&amp;decrypt-error</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="raise-encode-error_4">
+            <span>raise-encode-error</span>
+            <span>
+              <i node-type="i">who</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">irritants</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">who</i>, <i node-type="i">message</i> and <i node-type="i">irritants</i> are the same as
+<code node-type="code">assertion-violation</code>.</p>
+        <p node-type="paragraph">Raises <code node-type="code">&amp;encode-error</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="raise-decode-error_2">
+            <span>raise-decode-error</span>
+            <span>
+              <i node-type="i">who</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">irritants</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">who</i>, <i node-type="i">message</i> and <i node-type="i">irritants</i> are the same as
+<code node-type="code">assertion-violation</code>.</p>
+        <p node-type="paragraph">Raises <code node-type="code">&amp;decode-error</code>.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;integrity-error_27">
+            <span>&amp;integrity-error</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="integrity-error?_42">
+            <span>integrity-error?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Subcondition of <code node-type="code">&amp;crypto-error</code>This condition will be raised when key unwrap failed due to the
+integrity check error.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="custom.cipher">Creating own cipher</a>
+        </h3>
+        <p node-type="paragraph">If Sagittarius does not support sufficient cipher algorithm for you, then you
+can write own cipher such as DSA. For this purpose, you might need to know how
+this library works. It will be described the bottom of this section. If you just
+want to create a new cipher, you just need to follow the example.</p>
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (crypto) (clos user) (sagittarius))
+
+(define (sample-encrypt pt key) pt)
+(define (sample-decrypt ct key) ct)
+
+(define-class &lt;sample-cipher-spi&gt; (&lt;cipher-spi&gt;) ())
+(define-method initialize ((o &lt;sample-cipher-spi&gt;) initargs)
+  (slot-set! o 'name 'sample)
+  (slot-set! o 'key #f)
+  (slot-set! o 'encrypt sample-encrypt)
+  (slot-set! o 'decrypt sample-decrypt)
+  (slot-set! o 'padder #f)
+  (slot-set! o 'signer (lambda _ #vu8()))
+  (slot-set! o 'verifier (lambda _ #t))
+  (slot-set! o 'keysize (lambda _ 0)))
+
+(define sample :sample)
+(register-spi sample &lt;sample-cipher-spi&gt;)
+;; test sample-cipher
+(define sample-cipher (cipher sample #f))
+(define message (string-&gt;utf8 "sample message"))
+(let ((encrypted-message (encrypt sample-cipher message)))
+  (decrypt sample-cipher encrypted-message))
+;; -&gt; #vu8(115 97 109 112 108 101 32 109 101 115 115 97 103 101)
+</code></pre>
+        <p node-type="paragraph">The sample code actually does nothing. If you want to see real working code,
+<code node-type="code">ext/crypto/crypto/key/rsa.scm</code> might be a good example for you.</p>
+        <p node-type="paragraph">The basic idea of creating a new cipher is that you need to define own subclass
+of <code node-type="code">&lt;cipher-spi&gt;</code> and register it.</p>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<cipher-spi&gt;_10">
+            <span>&lt;cipher-spi&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">The base class for all SPI (Service Provider Interface).</p>
+        <p node-type="paragraph">Subclass must set these slots.</p>
+        <dl node-type="dlist">
+          <dt>encrypt</dt>
+          <dd>
+            <p node-type="paragraph">The value must be a procedure which takes 2 arguments.</p>
+          </dd>
+          <dt>decrypt</dt>
+          <dd>
+            <p node-type="paragraph">The value must be a procedure which takes 2 arguments.</p>
+          </dd>
+        </dl>
+        <p node-type="paragraph">NOTE: Default symmetric key ciphers use <code node-type="code">pkcs5-padder</code> which takes 3
+arguments, bytevector, block-size and padding flag. This is because the
+procedure can be used by multi ciphers. And custom cipher must know its own
+block size.</p>
+        <p node-type="paragraph">These slots are optional.</p>
+        <dl node-type="dlist">
+          <dt>name</dt>
+          <dd>
+            <p node-type="paragraph">Describe the cipher.</p>
+          </dd>
+          <dt>key</dt>
+          <dd>
+            <p node-type="paragraph">The value will be passed to <code node-type="code">encrypt</code>, <code node-type="code">decrypt</code>,
+<code node-type="code">sign</code> and <code node-type="code">verify</code> to be used.</p>
+          </dd>
+          <dt>signer</dt>
+          <dd>
+            <p node-type="paragraph">A procedure for signing. The given procedure must accept at
+least 2 arguments.</p>
+          </dd>
+          <dt>verifier</dt>
+          <dd>
+            <p node-type="paragraph">A procedure for verifying. The given procedure must
+accept at least 3 arguments.</p>
+          </dd>
+          <dt>keysize</dt>
+          <dd>
+            <p node-type="paragraph">A procedure to get recommended keysize of this cipher. The
+given procedure must accept 1 argument.</p>
+          </dd>
+          <dt>padder</dt>
+          <dd>
+            <p node-type="paragraph">The value must be #f or a procedure which takes 2
+arguments.</p>
+          </dd>
+          <dt>update-aad</dt>
+          <dd>
+            <p node-type="paragraph">The value must be #f or a procedure which takes 1
+arguments. This is called when <code node-type="code">cipher-update-aad!</code> is called.</p>
+          </dd>
+          <dt>tag</dt>
+          <dd>
+            <p node-type="paragraph">The value must be #f or a procedure which takes 1
+arguments. This is called when <code node-type="code">cipher-tag!</code> is called.</p>
+          </dd>
+          <dt>tagsize</dt>
+          <dd>
+            <p node-type="paragraph">The value must be an integer. This represents the
+maximum length of authentication tag.</p>
+          </dd>
+        </dl>
+        <p node-type="paragraph">NOTE: Even required slots, Sagittarius does not check if it's set or not.</p>
+        <p node-type="paragraph">During its initialisation, the <i node-type="i">initargs</i> (the second argument of
+the <code node-type="code">initialize</code> method) takes at least 3 arguments, <i node-type="i">key</i>,
+<code node-type="code">:mode-parameter</code> keyword and <i node-type="i">parameter</i> passed to
+<code node-type="code">make-cipher</code>. The rest of other arguments are also passed if exist.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cipher-spi?_78">
+            <span>cipher-spi?</span>
+            <span>
+              <i node-type="i">o</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given object <i node-type="i">o</i> is a cipher SPI. Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="register-cipher-spi_88">
+            <span>register-cipher-spi</span>
+            <span>
+              <i node-type="i">mark</i>
+            </span>
+            <span>
+              <i node-type="i">spi</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Register custom cipher SPI.</p>
+        <p node-type="paragraph"><i node-type="i">mark</i> can be any thing which returns #t then compared by <code node-type="code">equal?</code><i node-type="i">spi</i> must be subclass of <code node-type="code">&lt;cipher-spi&gt;</code>NOTE: We recommend to make <i node-type="i">mark</i> the same as example code does and export
+the registered <i node-type="i">mark</i>. And the <i node-type="i">mark</i> must be unique enough not to
+overwrite existing SPI names.</p>
+        <p node-type="paragraph">e.g. <code node-type="code">:rsa</code>, <code node-type="code">:dsa</code> and <code node-type="code">:ecdsa</code> are already used for
+RSA, DSA and ECDSA</p>
+        <p node-type="paragraph">The concept of this SPI is influenced by Java's JCE. The toplevel of cipher is
+just a wrapper for real implementaion (SPI). When a cipher is created, the
+<code node-type="code">cipher</code> procedure actually creates an instance of SPI class and set it to
+the cipher object. So users need not to know about the implementation and if the
+implementation supply default parameter then users even can use it by default.</p>
+        <p node-type="paragraph">This is the class hierarchy of these crypto objects.</p>
+        <pre lang="scheme" node-type="block"><code>+ &lt;top&gt;
+  + &lt;crypto&gt;
+      + &lt;cipher&gt;
+      + &lt;cipher-spi&gt;
+          + &lt;builtin-cipher-spi&gt; &lt;- default implementations of symmetric keys.
+          + &lt;rsa-cipher-spi&gt;     &lt;- default RSA implementation
+      + &lt;key&gt;
+          + &lt;symmetric-key&gt;
+              + &lt;builtin-symmetric-key&gt; &lt;- default symmetric key. ex. DES
+          + &lt;asymmetric-key&gt;
+              + &lt;private-key&gt;
+                  + &lt;rsa-private-key&gt;
+                      + &lt;rsa-private-crt-key&gt;
+              + &lt;public-key&gt;
+                  + &lt;rsa-public-key&gt;
+</code></pre>
+        <p node-type="paragraph">The <code node-type="code">&lt;cipher&gt;</code> and <code node-type="code">builtin-</code> prefixed classes can not have any
+subclass.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Backward-compatibility">Backward compatibility</a>
+        </h3>
+        <p node-type="paragraph">The following procedures are kept for backward compatibility.</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph"><code node-type="code">cipher</code> - Use <code node-type="code">make-cipher</code> instead.</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">encrypt</code> - Use <code node-type="code">cipher-encrypt</code> instead.</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">decrypt</code> - Use <code node-type="code">cipher-decrypt</code> instead.</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">sign</code>  - Use <code node-type="code">cipher-signature</code> instead.</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">verity</code> - Use <code node-type="code">cipher-verify</code> instead.</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">register-spi</code> - Use <code node-type="code">register-cipher-spi</code> instead.</p>
+          </li>
+        </ul>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section78.html">(util concurrent) - Concurrency utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section710.html">(dbi) - Database independent access layer</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

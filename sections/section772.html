@@ -1,0 +1,725 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section771.html">(text sxml html-parser) - Flxible HTML parser</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section773.html">(text sxml object-builder) - SXML to Scheme object builder</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="text.markdown">(text markdown) -- Markdown parser and converter</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(text markdown)_159">
+          <span>(text markdown)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides markdown parser.</p>
+      <p node-type="paragraph">The library consists with 3 parts, first one is the parser, second one is the
+converter which converts markdown node to HTML. And the last one is the
+extensions and its APIs.</p>
+      <p node-type="paragraph">A simple example of how to generate HTML snippet from Markdown document</p>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (text markdown)
+        (text sxml serializer))
+
+(define markdown-doc "
+Hello markdown
+==============
+
+- list
+- list2
+")
+
+(srl:sxml-&gt;html-noindent
+  (convert-markdown
+    (parse-markdown markdown-parser (open-string-input-port markdown-doc))
+	default-markdown-converter 'html))
+</code></pre>
+        <span />
+        <span>"&lt;h1&gt;Hello markdown&lt;/h1&gt;\n&lt;ul&gt;\n&lt;li&gt;list&lt;/li&gt;\n&lt;li&gt;list2&lt;/li&gt;\n&lt;/ul&gt;\n"</span>
+      </div>
+      <p node-type="paragraph" />
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Markdown-parser-APIs">Markdown parser APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-parser?_288">
+            <span>markdown-parser?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a Markdown parser, otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-node?_278">
+            <span>markdown-node?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a Markdown node, otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="parse-markdown_19">
+            <span>parse-markdown</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="parse-markdown_18">
+            <span>parse-markdown</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">parser</i> must be a Markdown parser.<br>If the second form is used, then <i node-type="i">input-port</i> must be a textual input port.
+If the first form is used, then <code node-type="code">(current-input-port)</code> will be used.<br>Parse Markdown document retrieved from the given textual port and returns
+Markdown node.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-parser:parse_287">
+            <span>markdown-parser:parse</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-parser:parse_286">
+            <span>markdown-parser:parse</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Alias of the <code node-type="code">parse-markdown</code> for better naming matching.</p>
+        <div node-type="define" class="define">
+          <span>Variable</span>
+          <a name="markdown-parser_279">
+            <span>markdown-parser</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Sagittarius default Markdown parser, this parser supports the following
+Markdown syntax:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">
+              <a href="https://spec.commonmark.org/0.30/">Commonmark 0.30</a>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <a href="https://github.github.com/gfm/#tables-extension-">GFM table syntax</a>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <a href="https://github.github.com/gfm/#strikethrough-extension-">Strikethrough</a>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <a href="https://github.github.com/gfm/#task-list-items-extension-">Task list item</a>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">Definition lists: see <a href="#markdown.supported.syntax">Supported syntax</a></p>
+          </li>
+          <li>
+            <p node-type="paragraph">Footnote: see <a href="#markdown.supported.syntax">Supported syntax</a></p>
+          </li>
+        </ul>
+        <div node-type="define" class="define">
+          <span>Variable</span>
+          <a name="commonmark-parser_103">
+            <span>commonmark-parser</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Strictly complying commonmark specification parser. This parser only
+supports Commonmark syntax.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Supported-syntax">Supported syntax</a>
+          </h4>
+          <p node-type="paragraph">For those well-known syntax, please refer the appropriate links listed
+on the <code node-type="code">markdown-parser</code>.</p>
+          <h5 node-type="header-5">
+            <a name="Definition-lists">Definition lists</a>
+          </h5>
+          <p node-type="paragraph">Definition lists can be written like this:</p>
+          <pre lang="markdown" node-type="block"><code>definition
+: description
+  can also be multiple lines
+  
+definition2
+: description of definition2
+</code></pre>
+          <h5 node-type="header-5">
+            <a name="Footnotes">Footnotes</a>
+          </h5>
+          <p node-type="paragraph">Footnote can be written like this:</p>
+          <pre lang="markdown" node-type="block"><code>Lorem ipsum[^lorem]
+
+^[lorem]: dolor sit amet
+</code></pre>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Markdown-converter-APIs">Markdown converter APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-converter?_277">
+            <span>markdown-converter?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a Markdown converter, otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Variable</span>
+          <a name="default-markdown-converter_60">
+            <span>default-markdown-converter</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A default converter. This converter supports the below converters and
+most of the extensions.</p>
+        <div node-type="define" class="define">
+          <span>Variable</span>
+          <a name="markdown-&gt;html-converter_270">
+            <span>markdown-&gt;html-converter</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A markdown converter which converts Markdown node to HTML (SXML).<br>The result SXML can be converted to string by using <code node-type="code">srl:sxml-&gt;html-noindent</code><br>defined in <code node-type="code">(text sxml serializer)</code> library.</p>
+        <p node-type="paragraph">NOTE: this converter only supports commonmark nodes. So if you want to use
+GFM or other extensions, use <code node-type="code">default-markdown-converter</code> or create a custom
+converter.</p>
+        <div node-type="define" class="define">
+          <span>Variable</span>
+          <a name="markdown-&gt;sxml-converter_271">
+            <span>markdown-&gt;sxml-converter</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A markdown converter which converts Markdown node to XML (SXML).<br>The result XML is mostly complies the commonmark DTD.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="convert-markdown_133">
+            <span>convert-markdown</span>
+            <span>
+              <i node-type="i">node</i>
+            </span>
+            <span>
+              <i node-type="i">converter</i>
+            </span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="convert-markdown_132">
+            <span>convert-markdown</span>
+            <span>
+              <i node-type="i">node</i>
+            </span>
+            <span>
+              <i node-type="i">converter</i>
+            </span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Converts given <i node-type="i">node</i> to <i node-type="i">type</i> by using given <i node-type="i">converter</i>.<br>If the second form is used then <i node-type="i">options</i> must be a Markdown conversion
+options object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-converter:convert_275">
+            <span>markdown-converter:convert</span>
+            <span>
+              <i node-type="i">converter</i>
+            </span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">node</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-converter:convert_274">
+            <span>markdown-converter:convert</span>
+            <span>
+              <i node-type="i">converter</i>
+            </span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">node</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Alias of the <code node-type="code">convert-markdown</code> with different argument order for better
+name match.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-converter:merge_276">
+            <span>markdown-converter:merge</span>
+            <span>
+              <i node-type="i">converter0</i>
+            </span>
+            <span>
+              <i node-type="i">converter1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Merge given converters to one newly allocated converter.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-conversion-options?_273">
+            <span>markdown-conversion-options?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a Markdown conversion options,
+otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="markdown-conversion-options-builder_272">
+            <span>markdown-conversion-options-builder</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A record builder macro. The field can be specified on this macro is below</p>
+        <dl node-type="dlist">
+          <dt>
+            <code node-type="code">unknown-node-handler</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">A procedure must accept one argument, which is a markdown node.<br>This is called when the converter doesn't know how to handle the
+given node.</p>
+          </dd>
+          <dt>
+            <code node-type="code">context-date</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">A context data for the converter. The value depends on the type of converter.</p>
+          </dd>
+        </dl>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Markdown-extensions">Markdown extensions</a>
+        </h3>
+        <p node-type="paragraph">Markdown parser and converter can be extended by using extensions. The below
+example creates a parser which supports only Commonmark syntax and
+strikethrough.</p>
+        <pre lang="scheme" node-type="block"><code>(define (rnrs)
+        (text markdown parser)
+        (text markdown extensions gfm))
+(define strikethrough-parser
+  (markdown-parser-builder:build
+   (markdown-parser-builder (externsions (list gfm-strikethrough-extension)))))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(text markdown parser)_158">
+            <span>(text markdown parser)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Markdown parser library which provides parser builder and other utility
+procedures.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-parser-builder?_282">
+            <span>markdown-parser-builder?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a Markdown parser builder, otherwise <code node-type="code">#f</code>.<br>A Markdown parser builder has the following fields</p>
+        <dl node-type="dlist">
+          <dt>
+            <code node-type="code">block-parsers</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">A list of thunks to provide supporting block parsers.</p>
+          </dd>
+          <dt>
+            <code node-type="code">inline-parser-producer</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">A thunk to provide inline content parser.</p>
+          </dd>
+          <dt>
+            <code node-type="code">post-processors</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">A list of post processors</p>
+          </dd>
+          <dt>
+            <code node-type="code">extensions</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">A list of extensions</p>
+          </dd>
+        </dl>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="markdown-parser-builder_280">
+            <span>markdown-parser-builder</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A macro to build a Markdown parser builder generated by <code node-type="code">(record builder)</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-parser-builder:build_281">
+            <span>markdown-parser-builder:build</span>
+            <span>
+              <i node-type="i">builder</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Builder</i> must be a Markdown parser builder.<br>Creates a Markdown parser from the given <i node-type="i">builder</i>.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Supporting-extensions">Supporting extensions</a>
+          </h4>
+          <p node-type="paragraph">Here is the list of extension libraries and supporting extensions.</p>
+          <h5 node-type="header-5">
+            <a name="text-markdown-extensions-gfm">
+              <code node-type="code">(text markdown extensions gfm)</code>
+            </a>
+          </h5>
+          <p node-type="paragraph">Partial support of GFM extensions.</p>
+          <dl node-type="dlist">
+            <dt>
+              <code node-type="code">gfm-strikethrough-extension</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">GFM strikethough extension. GFM strikethrough can be written like this:</p>
+              <pre lang="markdown" node-type="block"><code>~~example~~
+</code></pre>
+            </dd>
+            <dt>
+              <code node-type="code">gfm-table-extension</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">GFM table extension. The below is an example of GFM table:</p>
+              <pre lang="markdown" node-type="block"><code>| head1 | head2 |
+| ----- | ----- |
+| col1  | col2  |
+</code></pre>
+            </dd>
+            <dt>
+              <code node-type="code">gfm-task-list-extension</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">GFM task list extension. The below is an example of GFM task list:</p>
+              <pre lang="markdown" node-type="block"><code>- [] to be done
+- [ ] the same as above
+- [X] done
+- [x] also done
+</code></pre>
+            </dd>
+            <dt>
+              <code node-type="code">gfm-extensions</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">This extension provides all the supporting GFM extensions described above.</p>
+            </dd>
+          </dl>
+          <h5 node-type="header-5">
+            <a name="text-markdown-extensions-footnotes">
+              <code node-type="code">(text markdown extensions footnotes)</code>
+            </a>
+          </h5>
+          <p node-type="paragraph">Footnotes extension. This extension is still an experimental state, as
+there's no HTML footnotes tag.</p>
+          <dl node-type="dlist">
+            <dt>
+              <code node-type="code">footnotes-extension</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">Footnotes extension. A footnote can be written like this:</p>
+              <pre lang="markdown" node-type="block"><code>This is a paragraph[^note]
+
+^[note]: this is a footnote
+</code></pre>
+            </dd>
+          </dl>
+          <h5 node-type="header-5">
+            <a name="text-markdown-extensions-definition-lists">
+              <code node-type="code">(text markdown extensions definition-lists)</code>
+            </a>
+          </h5>
+          <p node-type="paragraph">Definition lists extension. This extension provides definition lists
+syntax.</p>
+          <dl node-type="dlist">
+            <dt>
+              <code node-type="code">definition-lists-extension</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">Definition lists extension. A definition list can be written like this:</p>
+              <pre lang="markdown" node-type="block"><code>define
+: description
+</code></pre>
+            </dd>
+          </dl>
+          <h5 node-type="header-5">
+            <a name="text-markdown-extensions-heading-anchor">
+              <code node-type="code">(text markdown extensions heading-anchor)</code>
+            </a>
+          </h5>
+          <p node-type="paragraph">Heading anchor extension. This extension provides auto heading anchor and
+named heading anchor. The auto heading anchor will generates an anchor
+from the heading text. And named heading anchor reads the special syntax
+as a heading anchor.<br>This extension is not in the default parser, if you need this, you need
+to create a custom parser.</p>
+          <dl node-type="dlist">
+            <dt>
+              <code node-type="code">heading-anchor-extension</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">Heading anchor extension. A named heading anchor can be written like this:</p>
+              <pre lang="markdown" node-type="block"><code># Heading anchor example {#head1}
+</code></pre>
+            </dd>
+          </dl>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Deprecated-APIs">Deprecated APIs</a>
+        </h3>
+        <p node-type="paragraph">This section will be removed in the future release.</p>
+        <p node-type="paragraph">Below APIs are supported for backward compatibility. New application shouldn't
+use these APIs.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-read_289">
+            <span>markdown-read</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(as</i>
+            </span>
+            <span>
+              <i node-type="i">'sxml)</i>
+            </span>
+            <span>
+              <i node-type="i">:allow-other-keys</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Reads markdown from given input port <i node-type="i">in</i>.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">as</i> specifies the return value. Following 3 are
+supported:</p>
+        <dl node-type="dlist">
+          <dt>
+            <code node-type="code">sxml</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Returns SHTML. The procedure uses
+<code node-type="code">markdown-sexp-&gt;sxml</code> to convert raw markdown S-expression.</p>
+          </dd>
+          <dt>
+            <code node-type="code">html</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Returns HTML string.  The procedure uses
+<code node-type="code">markdown-sexp-&gt;string</code> to convert raw markdown S-expression.</p>
+          </dd>
+          <dt>
+            <code node-type="code">sexp</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Returns S-expression representation of markdown.</p>
+          </dd>
+        </dl>
+        <p node-type="paragraph">Parsing markdown is done by <code node-type="code">parse-markdown</code>. The rest argument _opt_is
+passed to both <code node-type="code">parse-markdown</code> and underlying conversion procedure.
+So if you want to read a markdown document as an HTML string without
+indentation, then the procedure should be called like the following:</p>
+        <pre lang="scheme" node-type="block"><code>(markdown-read in :as 'html :no-indent #t)
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-&gt;markdown_248">
+            <span>string-&gt;markdown</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:rest</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Reads markdown from given <i node-type="i">string</i>.</p>
+        <p node-type="paragraph">This procedure is thin wrapper of <code node-type="code">markdown-read</code>. It opens string
+input port of <i node-type="i">string</i> and call the <code node-type="code">markdown-read</code>.</p>
+        <p node-type="paragraph">The rest argument <i node-type="i">opt</i> is passed to <code node-type="code">markdown-read</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-sexp-&gt;sxml_291">
+            <span>markdown-sexp-&gt;sxml</span>
+            <span>
+              <i node-type="i">sexp</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(no-reference #t)</i>
+            </span>
+            <span>
+              <i node-type="i">(no-notes #f)</i>
+            </span>
+            <span>
+              <i node-type="i">:allow-other-keys</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Converts given markdown S-expression <i node-type="i">sexp</i> to SXML.</p>
+        <p node-type="paragraph">The keyword arguments <i node-type="i">no-reference</i> and <i node-type="i">no-notes</i> control the
+result SXML to have reference section and note section. If the values are
+true values, then returning SXML doesn't have reference or note section.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-sexp-&gt;string_290">
+            <span>markdown-sexp-&gt;string</span>
+            <span>
+              <i node-type="i">sexp</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(no-indent #f)</i>
+            </span>
+            <span>
+              <i node-type="i">:allow-other-keys</i>
+            </span>
+            <span>
+              <i node-type="i">opts</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Converts given markdown S-expression <i node-type="i">sexp</i> to HTML string.</p>
+        <p node-type="paragraph">The procedure first calls <code node-type="code">markdown-sexp-&gt;sxml</code> passing <i node-type="i">sexp</i> and
+<i node-type="i">opts</i> then converts the returned value to HTML string.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">no-indent</i> controls if the returning string
+has indentation or not. If the value is true value, then returning string
+doesn't have indentation.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-parser-error?_283">
+            <span>markdown-parser-error?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given object is a markdown parser error condition,
+otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-parser-position_285">
+            <span>markdown-parser-position</span>
+            <span>
+              <i node-type="i">condition</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="markdown-parser-expected_284">
+            <span>markdown-parser-expected</span>
+            <span>
+              <i node-type="i">condition</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">position</code> and <code node-type="code">expexted</code> slot of the given
+markdown parser error condition, respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="parse-markdown_17">
+            <span>parse-markdown</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">:allow-other-keys</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Parses given input port <i node-type="i">in</i> and returns markdown S-expression.</p>
+        <p node-type="paragraph">The returning value is S-expression represented AST of markdown. The
+structure is <strong node-type="strong">not</strong> specified in this document yet, thus it might be
+changed in future.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section771.html">(text sxml html-parser) - Flxible HTML parser</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section773.html">(text sxml object-builder) - SXML to Scheme object builder</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,330 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section750.html">(rfc tls) - TLS protocol library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section752.html">(rfc uri-template) - URI template</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rfc.uri">(rfc uri) - Parse and construct URIs</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rfc uri)_49">
+          <span>(rfc uri)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides RFC3986 'URI Generic Syntax' procedures.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="uri-parse_28">
+          <span>uri-parse</span>
+          <span>
+            <i node-type="i">uri</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">uri</i> must be string.</p>
+      <p node-type="paragraph">Parses given <i node-type="i">uri</i> and returns following 7 values;</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">scheme</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">user-info</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">host</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">port</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">path</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">query</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">fragment</i>
+          </p>
+        </li>
+      </ul>
+      <p node-type="paragraph">Following examples are from RFC3986 text;</p>
+      <pre lang="scheme" node-type="block"><code>   foo://example.com:8042/over/there?name=ferret#nose
+   \_/   \______________/\_________/ \_________/ \__/
+    |           |            |            |        |
+ scheme     authority       path        query   fragment
+    |   _____________________|__
+   / \ /                        \
+   urn:example:animal:ferret:nose
+</code></pre>
+      <p node-type="paragraph">authority = [ <i node-type="i">user-info</i> "@" ] <i node-type="i">host</i> [ ":" <i node-type="i">port</i> ]</p>
+      <p node-type="paragraph">If given <i node-type="i">uri</i> does not contain the part described above, it will be #f.
+ex)
+<div node-type="snipet" class="snipet">
+        <pre lang="" node-type="snipet"><code>(uri-parse "http://localhost")</code></pre>
+        <span />
+        <span>(values http #f localhost #f #f #f #f)</span>
+      </div></p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="uri-scheme&amp;specific_29">
+          <span>uri-scheme&amp;specific</span>
+          <span>
+            <i node-type="i">uri</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">uri</i> must be string.</p>
+      <p node-type="paragraph">Parse given <i node-type="i">uri</i> into scheme and rest. Returns the 2 values.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="uri-decompose-hierarchical_24">
+          <span>uri-decompose-hierarchical</span>
+          <span>
+            <i node-type="i">specific</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">specific</i> must be string.</p>
+      <p node-type="paragraph"><i node-type="i">specific</i> is a URI without scheme. For example, the specific of following
+URI 'http://localhost/foo.html' if '//localhost/foo.html'.</p>
+      <p node-type="paragraph">Parse given <i node-type="i">specific</i> into 4 values <i node-type="i">authority</i>, <i node-type="i">path</i>,
+<i node-type="i">query</i> and <i node-type="i">fragment</i>.</p>
+      <p node-type="paragraph">If the <i node-type="i">specific</i> does not contain the part, it will be #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="uri-decompose-authority_23">
+          <span>uri-decompose-authority</span>
+          <span>
+            <i node-type="i">authority</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">authority</i> must be string.</p>
+      <p node-type="paragraph">Parse given <i node-type="i">authority</i> into  3 values, <i node-type="i">user-info</i>, <i node-type="i">host</i> and
+<i node-type="i">post</i>.</p>
+      <p node-type="paragraph">If the <i node-type="i">authority</i> does not contain the part, it will be #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="uri-decode_21">
+          <span>uri-decode</span>
+          <span>
+            <i node-type="i">in</i>
+          </span>
+          <span>
+            <i node-type="i">out</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(cgi-decode</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">in</i> must be binary input port.</p>
+      <p node-type="paragraph"><i node-type="i">out</i> must binary output port.</p>
+      <p node-type="paragraph">Reads and decodes given <i node-type="i">in</i> and put the result into <i node-type="i">out</i>.</p>
+      <p node-type="paragraph">If the keyword argument <i node-type="i">cgi-decode</i> is #t, the procedure decodes
+<code node-type="code">#x2b</code>('+') to <code node-type="code">#x20</code>('#\space').</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="uri-decode-string_22">
+          <span>uri-decode-string</span>
+          <span>
+            <i node-type="i">string</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(encoding</i>
+          </span>
+          <span>
+            <i node-type="i">'utf-8)</i>
+          </span>
+          <span>
+            <i node-type="i">(cgi-decode</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Decodes given <i node-type="i">string</i> and returns decoded string.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="uri-encode_25">
+          <span>uri-encode</span>
+          <span>
+            <i node-type="i">in</i>
+          </span>
+          <span>
+            <i node-type="i">out</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(noescape</i>
+          </span>
+          <span>
+            <i node-type="i"><i node-type="i">rfc3986-unreserved-char-set</i>)</i>
+          </span>
+          <span>
+            <i node-type="i">(upper-case</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">in</i> must be binary input port.</p>
+      <p node-type="paragraph"><i node-type="i">out</i> must binary output port.</p>
+      <p node-type="paragraph">Reads and encodes given <i node-type="i">in</i> and put the result into <i node-type="i">out</i>.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">noescape</i> specifies which character must be escaped.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">upper-case</i> specifies the result case of encoded
+value. If the value is true value then it encodes to upper case (default),
+otherwise lower case.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="uri-encode-string_26">
+          <span>uri-encode-string</span>
+          <span>
+            <i node-type="i">string</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(encoding</i>
+          </span>
+          <span>
+            <i node-type="i">'utf-8)</i>
+          </span>
+          <span>
+            <i node-type="i">:allow-other-keys</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Encodes given <i node-type="i">string</i> and returns encoded string.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="uri-compose_20">
+          <span>uri-compose</span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(scheme</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+          <span>
+            <i node-type="i">(userinfo</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+          <span>
+            <i node-type="i">(host</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+          <span>
+            <i node-type="i">(port</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+          <span>
+            <i node-type="i">(authority</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+          <span> _</span>
+        </a>
+      </div>
+      <p node-type="paragraph">_ <i node-type="i">(path</i> <i node-type="i">#f)</i> <i node-type="i">(path*</i> <i node-type="i">#f)</i> <i node-type="i">(query</i> <i node-type="i">#f)</i> <i node-type="i">(fragment</i> <i node-type="i">#f)</i> <i node-type="i">(specific</i> <i node-type="i">#f)</i></p>
+      <p node-type="paragraph">Composes URI from given arguments.</p>
+      <p node-type="paragraph">If all keyword arguments are #f, the procedure returns empty string.</p>
+      <p node-type="paragraph">The procedure put priority on bigger chunk of URI part. For example, if keyword
+argument <i node-type="i">specific</i> is specified, the procedure uses only <i node-type="i">scheme</i> and
+<i node-type="i">specific</i>. Following describes the priority hierarchy;</p>
+      <pre lang="scheme" node-type="block"><code>_scheme__specific_  +- _authority_       +- _userinfo_       +- _host_       +- _port_  +- _path\*_       +- _path_       +- _query_       +- _fragment_
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="uri-merge_27">
+          <span>uri-merge</span>
+          <span>
+            <i node-type="i">base-uri</i>
+          </span>
+          <span>
+            <i node-type="i">relative-uri1</i>
+          </span>
+          <span>
+            <i node-type="i">relative-uri2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Merges given <i node-type="i">relative-uris</i> to <i node-type="i">base-uri</i> according to RFC 3986
+section 5.</p>
+      <div node-type="define" class="define">
+        <span>Variable</span>
+        <a name="*rfc3986-unreserved-char-set*_18">
+          <span>*rfc3986-unreserved-char-set*</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Variable</span>
+        <a name="*rfc2396-unreserved-char-set*_17">
+          <span>*rfc2396-unreserved-char-set*</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Charsets which contains no escape needed characters.</p>
+      <p node-type="paragraph">There is slight difference between RFC2396 and RFC3986. This library uses
+RFC3986 charset by default to encode.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section750.html">(rfc tls) - TLS protocol library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section752.html">(rfc uri-template) - URI template</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

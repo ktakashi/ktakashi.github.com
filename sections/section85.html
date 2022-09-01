@@ -1,0 +1,808 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section84.html">(text sxml sxpath) - Functional XML parser</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section86.html">(json) -- JSON parser library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="ported.packrat">(packrat) -- Packrat parser library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(packrat)_27">
+          <span>(packrat)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library is ported from Chicken Scheme
+<a href="http://wiki.call-cc.org/eggref/4/packrat">packrat</a>. The
+documentation is from the PDF file located on the website and formatted
+Sagittarius document format.</p>
+      <p node-type="paragraph">Packrat parsing is a memorizing, backtracking recursive-descent parsing
+technique that runs in time and space linear in the size of the input test. The
+technique was originally discovered by Alexander Birman in 1970 [1], and Bryan
+Ford took up the idea for his master's thesis in 2002 [4, 3, 2]. For detailed
+information on the technique, please see Bryan Ford's web pate at</p>
+      <p node-type="paragraph"><a href="http://pdos.csail.mit.edu/~baford/packrat/">"http://pdos.csail.mit.edu/~baford/packrat/"</a>This document describes an R5RS Scheme library of parsing combinators
+implemented using the packrat parsing algorithm. The main interfaces are the
+<code node-type="code">packrat-parse</code> macro and the combinators into into which it expands, the
+<code node-type="code">base-generator-&gt;results</code> function, and the accessors for
+<code node-type="code">parse-result</code> records.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Data-Structures">Data Structures</a>
+        </h3>
+        <p node-type="paragraph">This section describes the data structures that make up the core of the packrat
+parsing algorithm, and some of the low-level procedures that operate on them.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="parse-result">parse-result</a>
+          </h4>
+          <p node-type="paragraph">A parse-result record describes the results of an attempt at a parse at a
+particular position in the input stream. It can either record a successful
+parse, in which case it contains an associated semantic-value, or a failed
+parse, in which case it contains a parse-error structure.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-result?_33">
+              <span>parse-result?</span>
+              <span>
+                <i node-type="i">object</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This is a predicate which answers #t if and only if its argument is a
+parse-result record.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-result-successful?_32">
+              <span>parse-result-successful?</span>
+              <span>
+                <i node-type="i">parse-result</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This predicate returns #t if its argument represents a successful parse,
+or #f if it represents a failed parse.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-result-semantic-value_31">
+              <span>parse-result-semantic-value</span>
+              <span>
+                <i node-type="i">parse-result</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">If the argument represents a successful parse, this function returns the
+associated semantic-value; otherwise, it will return #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-result-next_30">
+              <span>parse-result-next</span>
+              <span>
+                <i node-type="i">parse-result</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">If the argument represents a successful parse, this function returns a
+parse-results record representing the parsed input stream starting immediately
+after the parse this parse-results represents. For instance, given an input
+stream [a, b, c, d, e], if the parse-result given to <code node-type="code">parse-result-next</code>had completed successfully, consuming the [a, b, c] prefix of the input stream
+and producing some semantic value, then the parse-result returned from
+<code node-type="code">parse-result-next</code> would represent all possible parses starting from the
+[d, e] suffix of the input stream.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-result-error_29">
+              <span>parse-result-error</span>
+              <span>
+                <i node-type="i">parse-result</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">If the argument represents a failed parse, this function returns a
+parse-error structure; otherwise, it may return a parse-error structure for
+internal implementation reasons (to do with propagating errors upwards for
+improved error-reporting), or it may return #f</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-result_200">
+              <span>make-result</span>
+              <span>
+                <i node-type="i">semantic-value</i>
+              </span>
+              <span>
+                <i node-type="i">next-parse-results</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function constructs an instance of parse-result representing a
+successful parse. The first argument is used as the semantic value to include
+with the new parse-result, and the second argument should be a parse-results
+structure representing the location in the input stream from which continue
+parsing.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-expected-result_125">
+              <span>make-expected-result</span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+              <span>
+                <i node-type="i">object</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function constructs an instance of parse-result representing a failed
+parse. The parse-position in the first argument and the value in the second
+argument are used to construct a variant of a parse-error record for inclusion
+in the parse-result that reports that a particular kind of value was expected at
+the given parse-position.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-message-result_173">
+              <span>make-message-result</span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+              <span>
+                <i node-type="i">string</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function constructs an instance of parse-result representing a failed
+parse. The parse-position in the first argument and the string in the second
+argument are used to construct a variant of a parse-error record for inclusion
+in the parse-result that reports a general error message at the given parse
+position.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="merge-result-errors_311">
+              <span>merge-result-errors</span>
+              <span>
+                <i node-type="i">parse-result</i>
+              </span>
+              <span>
+                <i node-type="i">parse-error</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function propagates error information through a particular parse
+result. The parse-error contained in the first argument is combined with the
+parse-error from the second argument, and the resulting parse-result structure
+is returned embedded in the error field of a copy of the first argument.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="parse-results">parse-results</a>
+          </h4>
+          <p node-type="paragraph">A parse-results record notionally describes all possible parses that can be
+attempted from a particular point in an input stream, and the results of those
+parses. It contains a parse-position record, which corresponds to the position
+in the input stream that this parse-results represents, and a map associating
+"key objects" with instance of parse-result.</p>
+          <p node-type="paragraph">Atomic input objects (known as "base values"; usually either characters or token
+/ semantic-value pairs) are represented specially in the parse-results data
+structure, as an optimisation: the two fields <code node-type="code">base</code> and code{next}
+represent the implicit successful parse of a base value at the current position.
+The <code node-type="code">base</code> field contains a pair of a toke-class-identifier and a semantic
+value unless the parse-results data structure as a whole is representing the of
+the input stream, in which case it will contain #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-results?_40">
+              <span>parse-results?</span>
+              <span>
+                <i node-type="i">object</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This is a predicate which answer #t if and only if its argument is a
+parse-results record.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-results-position_36">
+              <span>parse-results-position</span>
+              <span>
+                <i node-type="i">parse-results</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns the parse-position corresponding to the argument. An unknown
+position is represented by #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-results-base_34">
+              <span>parse-results-base</span>
+              <span>
+                <i node-type="i">parse-results</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">If the argument corresponds to the end of the input stream, this function
+returns #f; otherwise, it returns a pair, where the car is to be interpreted as
+a base lexical token class identifier (for instance, "symbol", "string",
+"number") and the cdr is to be interpreted as the semantic value of the data.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-results-token-kind_38">
+              <span>parse-results-token-kind</span>
+              <span>
+                <i node-type="i">parse-results</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function returns the car (the token class identifier) of the result
+of <code node-type="code">parse-results-base</code>, if that result is a pair; otherwise it returns
+#f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-results-token-kind_37">
+              <span>parse-results-token-kind</span>
+              <span>
+                <i node-type="i">parse-results</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function returns the car (the token class identifier) of the result
+of <code node-type="code">parse-results-base</code>, if that result is a pair; otherwise it returns
+#f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-results-token-value_39">
+              <span>parse-results-token-value</span>
+              <span>
+                <i node-type="i">parse-results</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function returns the cdr (the token value) of the result of
+<code node-type="code">parse-results-base</code>, if that result is a pair; otherwise it returns #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-results-next_35">
+              <span>parse-results-next</span>
+              <span>
+                <i node-type="i">parse-results</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function returns the parse-results record representing the position
+in the input stream immediately after the argument's base token. For instance,
+if the base tokens used represented characters, then this function would return
+the parse-results representing the next character position; or, if the base
+tokens represented lexemes, then this function would return a representation of
+the results obtainable starting from the next lexeme position. The value #f is
+returned if there is no next position (that is, if the argument represents the
+final possible position before the end-of-stream).</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="base-generator-&gt;results_0">
+              <span>base-generator-&gt;results</span>
+              <span>
+                <i node-type="i">generator-function</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function is used to set up an initial input stream of base tokens.
+The argument is to be nullary function returning multiple-values, the first of
+which is to be a parse-position record or #f, and the second of which is to be a
+base token, that is a pair of a token class identifier and a semantic value. The
+argument is called every time the parser needs to read a fresh base token from
+the input stream.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="prepend-base_107">
+              <span>prepend-base</span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+              <span>
+                <i node-type="i">base-value</i>
+              </span>
+              <span>
+                <i node-type="i">parse-results</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function effectively prepends a base token to particular
+parse-results. This can be useful when implementing extensible parsers: using
+this function in a suitable loop, it is possible to splice together two streams
+of input.</p>
+          <p node-type="paragraph">For instance, if <code node-type="code">r</code> is a parse-results representing parse over the input
+token stream <code node-type="code">'((b . 2) (c . 3))</code>, then the result of the call</p>
+          <p node-type="paragraph">
+            <pre lang="" node-type="snipet"><code>(prepend-base #f '(a . 1) r)</code></pre>
+          </p>
+          <p node-type="paragraph">is a new parse-results representing parse over the input stream
+<code node-type="code">'((a . 1) (b . 2) (c . 3))</code>.</p>
+          <p node-type="paragraph">The first argument to prepend-base, the parse-position, should be either a
+parse-position representing the location the base token being prepended, or #f
+if the input position of the base token is unknown.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="prepend-semantic-value_108">
+              <span>prepend-semantic-value</span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+              <span>
+                <i node-type="i">key-object</i>
+              </span>
+              <span>
+                <i node-type="i">semantic-value</i>
+              </span>
+              <span>
+                <i node-type="i">parse-results</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function is similar to prepend-base, but prepends an already-computed
+semantic value to a parse-results, again primarily for use in implementing
+extensible parsers. The resulting parse-results is assigned the given
+parse-position, and has an entry in its result map associating the given
+key-object with the given semantic-value and input parse-results.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="results-&gt;result_105">
+              <span>results-&gt;result</span>
+              <span>
+                <i node-type="i">parse-results</i>
+              </span>
+              <span>
+                <i node-type="i">key-object</i>
+              </span>
+              <span>
+                <i node-type="i">result-thunk</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This function is the central function that drives the parsing process. It
+examines the result in the parse-results given to it, searching for an entry
+matching the given key-object. If such an entry is found, the parse-result
+structure associated with the key is returned; otherwise, the nullary
+result-thunk is called, and the resulting parse-result is both stored into the
+result map and returned to the caller of <code node-type="code">results-&gt;result</code>.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="parse-error">parse-error</a>
+          </h4>
+          <p node-type="paragraph">Parse-error structure represent collected error information from attempted
+parses. They contain two kinds of error report, following [3]: a collection of
+"expected token" messages, and a collection of free-format message strings.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-error?_16">
+              <span>parse-error?</span>
+              <span>
+                <i node-type="i">object</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This is a predicate which answers #t if and only if its argument is a
+parse-error record.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-error-position_15">
+              <span>parse-error-position</span>
+              <span>
+                <i node-type="i">parse-error</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Retrieves the parse-position in the input stream that this parse-error is
+describing. A #f result indicates an unknown position.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-error-expected_13">
+              <span>parse-error-expected</span>
+              <span>
+                <i node-type="i">parse-error</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Retrieves the set (represented as a list) of token class identifiers that
+could have allowed the parse to continue from this point.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-error-message_14">
+              <span>parse-error-message</span>
+              <span>
+                <i node-type="i">parse-error</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Retrieves the list of error messages associated with this parser-error.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-error-expected_122">
+              <span>make-error-expected</span>
+              <span>
+                <i node-type="i">object</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Constructs an "expected token" parse-error record from its arguments.
+Called by <code node-type="code">make-expected-result</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-error-message_123">
+              <span>make-error-message</span>
+              <span>
+                <i node-type="i">string</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Constructs an "general error message" parse-error record from its
+arguments. Called by <code node-type="code">make-message-result</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-error-empty_12">
+              <span>parse-error-empty</span>
+              <span>
+                <i node-type="i">parse-error</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #f if its argument contains no expected tokens, and no general
+error messages; otherwise returns #f. Used internally by
+<code node-type="code">merge-result-errors</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="merge-result-errors_310">
+              <span>merge-result-errors</span>
+              <span>
+                <i node-type="i">parse-error</i>
+              </span>
+              <span>
+                <i node-type="i">parse-error</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Merges two parse-error records, following [3]. If one record represents a
+position earlier in the input stream than the other, then that record is
+returned; if they both represent the same position, the "expected token" sets
+are unioned and the general message lists are appended to form a new
+parse-error record at the same position. The standard parsing combinators call
+this function as appropriate to propagate error information through the parse.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="parse-position">parse-position</a>
+          </h4>
+          <p node-type="paragraph">A parse-position record represents a character location in an input stream.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-parse-position_186">
+              <span>make-parse-position</span>
+              <span>
+                <i node-type="i">filename</i>
+              </span>
+              <span>
+                <i node-type="i">linenumber</i>
+              </span>
+              <span>
+                <i node-type="i">columnnumber</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Constructs a parse-position record from its arguments. The given filename
+may be #f if the filename is unknown or not appropriate for the input stream
+the parse-position is indexing into.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-position?_28">
+              <span>parse-position?</span>
+              <span>
+                <i node-type="i">object</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This is a predicate which answer #t if any only if its argument is
+parse-position record.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-position-file_25">
+              <span>parse-position-file</span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Retrieves the file name associated with a parse-position record. Returns
+#f if the filename is absent or not appropriate for this input stream.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-position-line_26">
+              <span>parse-position-line</span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Retrieves the line number this parse-position represents. Line numbers
+begin at 1; that is all characters on the very first line in a file will have
+line number 1.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-position-column_24">
+              <span>parse-position-column</span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Retrieves the column number within a line that parse-position represents.
+Column numbers begin at 0; that is, the very first character of the very first
+line in a file will have line number 1 and column number 0.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="top-parse-position_83">
+              <span>top-parse-position</span>
+              <span>
+                <i node-type="i">string</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Constructs a parse-position representing the very beginning of an input
+stream. The argument is passed into <code node-type="code">make-parse-position</code> as the "filename"
+parameter, and so may be either a string or #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="update-parse-position_19">
+              <span>update-parse-position</span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+              <span>
+                <i node-type="i">character</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Given a position, and the character occurring at that position, returns
+the position of the next character in the input stream. Most characters simply
+increment the column number. Exceptions to this rule are: <code node-type="code">#\return</code>, which
+resets the column number to zero; <code node-type="code">#\newline</code>, which both resets the column
+number to zero and increments the line number; and <code node-type="code">#\tab</code>, which
+increments the column number to the nearest multiple of eight, just as terminal
+with an eight-column tab stop setting might do.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-position-&gt;string_23">
+              <span>parse-position-&gt;string</span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Converts a parse-position record into an emacs-compatible display format.
+If the filename in the parse-position is unknown, the string "&lt;??&gt;" is used in
+its place. The result is of the form</p>
+          <p node-type="paragraph">
+            <pre lang="" node-type="snipet"><code>filename:linenumber:columnnumber</code></pre>
+          </p>
+          <p node-type="paragraph">for example,</p>
+          <p node-type="paragraph">
+            <pre lang="" node-type="snipet"><code>main.c:33:7</code></pre>
+          </p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="parse-position&gt;?_27">
+              <span>parse-position&gt;?</span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+              <span>
+                <i node-type="i">parse-position</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the first parse-position is more than advanced in the input
+stream than the second parse-position. Either or both positions may be #f,
+representing unknown positions; an unknown position is considered to be less
+advanced in the input stream than any known position. Note that the filename
+associated with each parse-position is completely ignored. It is the caller's
+responsibility to ensure the two positions are associated with the same input
+stream.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Parsing-Combinators">Parsing Combinators</a>
+        </h3>
+        <p node-type="paragraph">Parsing combinators are functions taking a parse-results structure and retruning
+a parse-result structure. Each combinator attempts to parse the input stream in
+some manner, and the result of the combinator is either a successful parse with
+an associated semantic value, or a failed parse with an associated error record.</p>
+        <p node-type="paragraph">This section describes the procedures that produce the mid-level parsing
+combinators provided as part of the library.</p>
+        <p node-type="paragraph">The type of a parser combinator, written in ML-like notation, would be</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>parse-results -&gt; parse-result</code></pre>
+        </p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="packrat-check-base_3">
+            <span>packrat-check-base</span>
+            <span>
+              <i node-type="i">kind-object</i>
+            </span>
+            <span>
+              <i node-type="i">semantic-value-acceptor</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a combinator which, if the next base token has token class
+identifier equal to the first argument ("kind-object"), calls the second
+argument ("semantic-value-acceptor") with the semantic value of the next base
+token. The result of this cal should be another parser combinator, which is
+applied to the parse-results representing the remainder of the input stream.</p>
+        <p node-type="paragraph">The type of the semantic value acceptor, written in ML-like notation, would be</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>semanticValue -&gt; parserCombinator</code></pre>
+        </p>
+        <p node-type="paragraph">or more fully expanded,</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>semanticValue -&gt; parse-results -&gt; parse-result</code></pre>
+        </p>
+        <p node-type="paragraph">These types recall the types of functions that work with monads.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="packrat-check_2">
+            <span>packrat-check</span>
+            <span>
+              <i node-type="i">combinator</i>
+            </span>
+            <span>
+              <i node-type="i">semantic-value-acceptor</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a combinator which attempts to parse using the first argument, and
+if the parse is successful, hands the resulting semantic value to the
+semantic-value-acceptor (which has the same type as the semantic-value-acceptor
+passed to <code node-type="code">packrat-check-base</code> ) and continues parsing using the resulting
+combinator.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="packrat-or_4">
+            <span>packrat-or</span>
+            <span>
+              <i node-type="i">combinator</i>
+            </span>
+            <span>
+              <i node-type="i">combinator</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a combinator which attempts to parse using the first argument,
+only trying the second argument if the first argument fails to parse the input.
+This is the basic combinator used to implement a choice among several
+alternative means of parsing an input stream.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="packrat-unless_6">
+            <span>packrat-unless</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">combinator</i>
+            </span>
+            <span>
+              <i node-type="i">combinator</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The combinator returned from this function first tries the first
+combinator given. If it fails, the second is tried; otherwise, an error message
+containing the given string is returned as the result. This can be used to
+assert that a particular sequence of tokens does not occur at the current
+position before continuing on. (This is the "not-followed-by" matcher).</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="The-parckrat-parser-macro">The parckrat-parser macro</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="packrat-parser_5">
+            <span>packrat-parser</span>
+            <span>
+              <i node-type="i">result-expr</i>
+            </span>
+            <span>
+              <i node-type="i">nonterminal-definition</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The <code node-type="code">packrat-parse</code> macro provides syntactic sugar for building complex
+parser combinators from simpler combinators. The general form of the macro, in
+an EBNF-like language, is:</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(packrat-parser &lt;result-expr&gt; &lt;nonterminal-definition&gt;*)</code></pre>
+        </p>
+        <p node-type="paragraph">where</p>
+        <pre lang="scheme" node-type="block"><code>&lt;nonterminal-definition&gt; :==
+  (&lt;nonterminal-id&gt; (&lt;sequence&gt; &lt;body-expr&gt;+)*)
+&lt;sequence&gt; :== (&lt;part&gt;*)
+&lt;part&gt; :== (! &lt;part&gt;*)
+       |   (/ &lt;sequence&gt;*)
+       |   &lt;var&gt; &lt;- '&lt;kind-object&gt;
+       |   &lt;var&gt; &lt;- 
+
+       |   &lt;var&gt; &lt;- &lt;nonterminal-id&gt;
+       |   '&lt;kind-object&gt;
+       |   &lt;nonterminal-id&gt;
+</code></pre>
+        <p node-type="paragraph">Each nonterminal-definition expands into a parser-combinator. The collection of
+defined nonterminal parser-combinators expands to a <code node-type="code">(begin)</code> containing an
+internal definition for each nonterminal.</p>
+        <p node-type="paragraph">The result of the whole <code node-type="code">packrat-parser</code> form is the <code node-type="code">&lt;result-expr&gt;</code>immediately following the <code node-type="code">packrat-parser</code> keyword. Since <code node-type="code">(begin)</code>within <code node-type="code">(begin)</code> forms are flattened out in Scheme, the
+<code node-type="code">&lt;result-expr&gt;</code> can be used to introduce handwritten parser combinators
+which can call, and can be called by, the nonterminal definitions built in the
+rest of the parser definition.</p>
+        <p node-type="paragraph">Each nonterminal definition expands into:</p>
+        <pre lang="scheme" node-type="block"><code>(define (&lt;nonterminal-id&gt; results)
+  (results-&gt;result results 'nonterminal-id
+    (lambda ()
+      (&lt;...&gt; results))))
+</code></pre>
+        <p node-type="paragraph">where <code node-type="code">&lt;...&gt;</code> is the expanded definition-of-sequences combinator formed
+form the body of the nonterminal definition.</p>
+        <p node-type="paragraph">An alternation (either implicit in the main body of a nonterminal definition, or
+introduced via a <code node-type="code">&lt;part&gt;</code> of the form <code node-type="code">(/ &lt;sequence&gt; ...)</code>)
+expands to</p>
+        <p node-type="paragraph"><code node-type="code">(packrat-or &lt;expansion-of-first-alternative&gt; (packrat-or &lt;expansion-of-second-alternative&gt; ...))     </code>This causes each alternative to be tried in turn, in left-to-right order of
+occurrence.</p>
+        <p node-type="paragraph">Wherever a <code node-type="code">&lt;part&gt;</code> of the form <code node-type="code">"&lt;var&gt; &lt;- ..."</code> occurs, a
+variable binding for <code node-type="code">&lt;var&gt;</code> is made available in the <code node-type="code">&lt;body-expr&gt;</code>s
+that make up each arm of a nonterminal definition. The variable will be bound to
+the semantic value resulting form parsing according to the parser definition to
+the right of the arrow (the <code node-type="code">"..."</code> above).</p>
+        <p node-type="paragraph">The <code node-type="code">(! &lt;part&gt; ...)</code> syntax expands into an invocation of
+<code node-type="code">packrat-unless</code>.</p>
+        <p node-type="paragraph">The <code node-type="code">"@"</code> syntax in <code node-type="code">"&lt;var&gt; &lt;- @"</code> causes <code node-type="code">&lt;var&gt;</code>to be bound to the parse-position at that point in the input stream. This can be
+used for annotating abstract syntax trees with location information.</p>
+        <p node-type="paragraph"><code node-type="code">&lt;part&gt;</code>s of the form <code node-type="code">'&lt;kind-object&gt;</code> expand into invocations of
+<code node-type="code">packrat-check-base</code>; those of the form <code node-type="code">&lt;nonterminal-id&gt;</code> expand
+into invocations of <code node-type="code">packrat-check</code>, with the procedure associated with
+the named nonterminal passed in as the combinator argument.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="References">References</a>
+        </h3>
+        <p node-type="paragraph">[1] Alexander Birman and Jeffrey D. Ullman. Parsing algorithms with backtrack.
+<i node-type="i">Information and Control,</i> 23(1):1 34, August 1973</p>
+        <p node-type="paragraph">[2] Bryan Ford. Parsing expression grammars: A recognition-based syntactic
+foundation.</p>
+        <p node-type="paragraph">[3] Bryan Ford. Packrat parsing: a practical linear-time algorithm with
+backtracking. Master's thesis. Massachusetts Institute of Technology, Sep 2002.</p>
+        <p node-type="paragraph">[4] Bryan Ford. Packrat parsing: Simple, powerful, lazy, linear time. In
+<i node-type="i">Proceedings of the 2002 International Conference on Functional
+Programming</i>. Oct 2002.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section84.html">(text sxml sxpath) - Functional XML parser</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section86.html">(json) -- JSON parser library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

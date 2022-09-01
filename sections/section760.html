@@ -1,0 +1,298 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section759.html">(security keystore) - Generic Keystore Access</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section761.html">(text html-lite) - Simple HTML document builder library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="text.csv">(text csv) - Comma separated values parser library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(text csv)_148">
+          <span>(text csv)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides comma separated values parser and write procedures.
+The implementation conforms RFC 4180.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="High-level-APIs">High level APIs</a>
+        </h3>
+        <p node-type="paragraph">The high level APIs are implemented as object oriented style. So we have CSV
+object and its accessors.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="csv?_164">
+            <span>csv?</span>
+            <span>
+              <i node-type="i">object</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if <i node-type="i">object</i> is csv object, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="csv-header_159">
+            <span>csv-header</span>
+            <span>
+              <i node-type="i">(csv</i>
+            </span>
+            <span>
+              <i node-type="i"><csv>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves CSV header from given CSV object <i node-type="i">csv</i> if it has, otherwise
+'().</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="csv-records_162">
+            <span>csv-records</span>
+            <span>
+              <i node-type="i">(csv</i>
+            </span>
+            <span>
+              <i node-type="i"><csv>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves CSV records from given CSV object <i node-type="i">csv</i> if it has, otherwise
+'().</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="csv-read_161">
+            <span>csv-read</span>
+            <span>
+              <i node-type="i">(port</i>
+            </span>
+            <span>
+              <i node-type="i"><port>)</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">option</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="csv-read_160">
+            <span>csv-read</span>
+            <span>
+              <i node-type="i">(string</i>
+            </span>
+            <span>
+              <i node-type="i"><string>)</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">option</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Reads CSV data from given <i node-type="i">port</i> and returns csv object.</p>
+        <p node-type="paragraph">If the second form is called, the procedure opens string input port from given
+<i node-type="i">string</i> and passes it to the first form.</p>
+        <p node-type="paragraph">The <i node-type="i">option</i> will be passed to <code node-type="code">csv-&gt;list</code> described below.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="csv-write_163">
+            <span>csv-write</span>
+            <span>
+              <i node-type="i">(csv</i>
+            </span>
+            <span>
+              <i node-type="i"><csv>)</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(out</i>
+            </span>
+            <span>
+              <i node-type="i">(current-output-port))</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Writes given CSV object <i node-type="i">csv</i> to the output port <i node-type="i">port</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Middle-level-APIs">Middle level APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="csv-&gt;list_158">
+            <span>csv-&gt;list</span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(first-line-is-header?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Reads CSV data from given input port <i node-type="i">port</i> and returns alist
+representing CSV data.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">first-line-is-header?</i> is #t, then the procedure reads
+the first line as header line.</p>
+        <p node-type="paragraph">The returning alist is following format;</p>
+        <pre lang="scheme" node-type="block"><code>alist  := (header{0,1} record*)
+header := (:header value*)
+record := (:record value*)
+value  := string
+</code></pre>
+        <p node-type="paragraph">Note: the value returning from <code node-type="code">csv-records</code> or <code node-type="code">csv-header</code> do not
+have meta values <code node-type="code">:record</code> and <code node-type="code">:header</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Low-level-APIs">Low level APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<csv&gt;_11">
+            <span>&lt;csv&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">The class representing CSV. If you need to create empty CSV object, you
+can do like following code;</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(make &lt;csv&gt;)</code></pre>
+        </p>
+        <p node-type="paragraph">.</p>
+        <p node-type="paragraph">Make sure, you import <code node-type="code">(clos user)</code> library.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="add-record!_14">
+            <span>add-record!</span>
+            <span>
+              <i node-type="i">(csv</i>
+            </span>
+            <span>
+              <i node-type="i"><csv>)</i>
+            </span>
+            <span>
+              <i node-type="i">(list</i>
+            </span>
+            <span>
+              <i node-type="i"><list>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Adds a CSV representing record <i node-type="i">list</i> to given CSV object <i node-type="i">csv</i>.</p>
+        <p node-type="paragraph">The record must have <code node-type="code">:record</code> keyword in the first element of the list.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="set-header!_35">
+            <span>set-header!</span>
+            <span>
+              <i node-type="i">(csv</i>
+            </span>
+            <span>
+              <i node-type="i"><csv>)</i>
+            </span>
+            <span>
+              <i node-type="i">(list</i>
+            </span>
+            <span>
+              <i node-type="i"><list>)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="set-header!_34">
+            <span>set-header!</span>
+            <span>
+              <i node-type="i">(csv</i>
+            </span>
+            <span>
+              <i node-type="i"><csv>)</i>
+            </span>
+            <span>
+              <i node-type="i">(string</i>
+            </span>
+            <span>
+              <i node-type="i"><string>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Sets a CSV header <i node-type="i">list</i> to given CSV object <i node-type="i">csv</i>.</p>
+        <p node-type="paragraph">If the second form is called, then first parse the string to CSV header and
+calls the first form with parsed CSV header.</p>
+        <p node-type="paragraph">The <i node-type="i">list</i> must have <code node-type="code">:header</code> keyword in the first element of the
+list.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="add-records!_16">
+            <span>add-records!</span>
+            <span>
+              <i node-type="i">(csv</i>
+            </span>
+            <span>
+              <i node-type="i"><csv>)</i>
+            </span>
+            <span>
+              <i node-type="i">(list</i>
+            </span>
+            <span>
+              <i node-type="i"><list>)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="add-records!_15">
+            <span>add-records!</span>
+            <span>
+              <i node-type="i">(csv</i>
+            </span>
+            <span>
+              <i node-type="i"><csv>)</i>
+            </span>
+            <span>
+              <i node-type="i">(string</i>
+            </span>
+            <span>
+              <i node-type="i"><string>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Convenient procedures.</p>
+        <p node-type="paragraph">Adds given CSV records <i node-type="i">list</i> to given CSV object <i node-type="i">csv</i>.</p>
+        <p node-type="paragraph">If the second form is called, then first parse the given string to CSV
+representing list and call the first form.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section759.html">(security keystore) - Generic Keystore Access</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section761.html">(text html-lite) - Simple HTML document builder library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

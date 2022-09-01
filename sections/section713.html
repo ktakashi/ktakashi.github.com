@@ -1,0 +1,504 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section712.html">(util deque) - Deque</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section714.html">(getopt) - Parsing command-line options</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.file">(util file) - File operation utility library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(util file)_180">
+          <span>(util file)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides file operation utilities which is not exported from
+<code node-type="code">(sagittarius)</code> library.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="File-to-Scheme-object-operations">File to Scheme object operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="file-&gt;list_8">
+            <span>file-&gt;list</span>
+            <span>
+              <i node-type="i">reader</i>
+            </span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">(native-transcoder))</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">reader</i> must be a procedure accept one argument which is a port.
+<i node-type="i">path</i> must be a string indicating existing file.</p>
+        <p node-type="paragraph">Returns a list which elements are read by <i node-type="i">reader</i> from the given _path_file. <i node-type="i">reader</i> reads the file contents until it reads EOF object.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">transcoder</i> can specify which transcoder will be used
+to open a port. It must be either #f or transcoder. The default value is the
+value <code node-type="code">(native-transcoder)</code> returns.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="file-&gt;sexp-list_9">
+            <span>file-&gt;sexp-list</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="file-&gt;string-list_11">
+            <span>file-&gt;string-list</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Thin wrapper of <code node-type="code">file-&gt;list</code>. The procedures defined as following;</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(file-&gt;list `read/ss` _path_)</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(file-&gt;list `get-line` _path_)</code></pre>
+        </p>
+        <p node-type="paragraph">respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="file-&gt;string_10">
+            <span>file-&gt;string</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Reads all file contents indicated <i node-type="i">path</i> as a string and return it.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="file-&gt;bytevector_7">
+            <span>file-&gt;bytevector</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Reads all file contents indicated <i node-type="i">path</i> as a bytevector and return
+it.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Temporary-directory-operations">Temporary directory operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="temporary-directory_4">
+            <span>temporary-directory</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns operating system specific temporary directory path.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">path</i> is given, the procedure replace the temporary
+directory path.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-temporary-file_242">
+            <span>make-temporary-file</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">prefix</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates temporary file and returns 2 values. One is the port, the other
+one is created file path.</p>
+        <p node-type="paragraph">The created temporary file won't be deleted automatically so it is users
+responsibility to delete.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Path-operations">Path operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="decompose-path_57">
+            <span>decompose-path</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">path</i> must be a string.</p>
+        <p node-type="paragraph">Decompose the given <i node-type="i">path</i> to directory path, base name, and extension then
+returns these decomposed elements as 3 values.</p>
+        <p node-type="paragraph">The returning value can be #f if the path does not contains corresponding
+element.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="path-extension_44">
+            <span>path-extension</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the extension of given <i node-type="i">path</i>. If it does not contains
+extension then the procedure returns #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="path-sans-extension_47">
+            <span>path-sans-extension</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Removes extension from given <i node-type="i">path</i> and return it.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="path-basename_43">
+            <span>path-basename</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the basename of given <i node-type="i">path</i>. If it does not contains
+basename then the procedure returns #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="find-files_35">
+            <span>find-files</span>
+            <span>
+              <i node-type="i">target</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(pattern</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(all</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+            <span>
+              <i node-type="i">(sort</i>
+            </span>
+            <span>
+              <i node-type="i">string&lt;=?)</i>
+            </span>
+            <span>
+              <i node-type="i">(recursive</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">target</i> must be a string indicating existing file system path.</p>
+        <p node-type="paragraph">Find files from <i node-type="i">target</i> if it's a directory and return the found files as
+a list.</p>
+        <p node-type="paragraph">Keyword arguments:</p>
+        <dl node-type="dlist">
+          <dt>pattern</dt>
+          <dd>
+            <p node-type="paragraph">Specifies the file pattern to be returned. This can be
+either string or regular expression pattern object.</p>
+          </dd>
+          <dt>all</dt>
+          <dd>
+            <p node-type="paragraph">When this keyword argument is #t, then returns all files
+including hidden files which file name starting with <code node-type="code">.</code>. If this is #f,
+the procedure excludes hidden files.</p>
+          </dd>
+          <dt>physical</dt>
+          <dd>
+            <p node-type="paragraph">If this is #t, then the <i node-type="i">proc</i> is only given either
+<code node-type="code">directory</code> or <code node-type="code">file</code>. No symbolic likes are given.</p>
+          </dd>
+          <dt>sort</dt>
+          <dd>
+            <p node-type="paragraph">This specifies how to sort the result list. If the value is #f,
+then the result order is unspecified.</p>
+          </dd>
+          <dt>recursive</dt>
+          <dd>
+            <p node-type="paragraph">If this keyword argument is #t then the procedure finds
+files recursively, otherwise only the first <i node-type="i">target</i> directory.</p>
+          </dd>
+        </dl>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="path-for-each_45">
+            <span>path-for-each</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(physical</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+            <span>
+              <i node-type="i">(file-only</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(absolute-path</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+            <span> _</span>
+          </a>
+        </div>
+        <p node-type="paragraph">_ <i node-type="i">(stop-on-file</i> <i node-type="i">#f)</i> <i node-type="i">(all</i> <i node-type="i">#t)</i> <i node-type="i">(recursive</i> <i node-type="i">#t)</i></p>
+        <p node-type="paragraph"><i node-type="i">path</i> must be a string indicating existing file path. _proc_must be a procedure accepts 2 arguments, a path string and a symbol. The given
+symbol can be <code node-type="code">directory</code>, <code node-type="code">symbolic-link</code> or <code node-type="code">file</code>.</p>
+        <p node-type="paragraph">Apply given <i node-type="i">proc</i> to the found paths starting from <i node-type="i">path</i> and returns
+unspecified value. The second argument of <i node-type="i">proc</i> indicates the file type
+with following meaning;</p>
+        <dl node-type="dlist">
+          <dt>
+            <code node-type="code">directory</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">The path is a directory.</p>
+          </dd>
+          <dt>
+            <code node-type="code">symbolic-link</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">The path is a symbolic link.</p>
+          </dd>
+          <dt>
+            <code node-type="code">file</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">The path is a file</p>
+          </dd>
+        </dl>
+        <p node-type="paragraph">The keyword arguments:</p>
+        <dl node-type="dlist">
+          <dt>file-only</dt>
+          <dd>
+            <p node-type="paragraph">If this is #t, then the <i node-type="i">proc</i> is only given a file.
+Otherwise all file types.</p>
+          </dd>
+          <dt>absolute-path</dt>
+          <dd>
+            <p node-type="paragraph">If this is #t, then the <i node-type="i">proc</i> is given absolute
+path. Otherwise only the filename.</p>
+          </dd>
+          <dt>stop-on-false</dt>
+          <dd>
+            <p node-type="paragraph">If this is #t, then when <i node-type="i">proc</i> returns #f the
+process will stop. Otherwise it continues the process.</p>
+          </dd>
+        </dl>
+        <p node-type="paragraph">The rest of the keyword arguments are the same as <code node-type="code">find-files</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="path-map_46">
+            <span>path-map</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(physical</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+            <span>
+              <i node-type="i">(file-only</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(absolute-path</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+            <span>
+              <i node-type="i">(all</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+            <span> _</span>
+          </a>
+        </div>
+        <p node-type="paragraph">_ <i node-type="i">(recursive</i> <i node-type="i">#t)</i></p>
+        <p node-type="paragraph"><i node-type="i">path</i> must be a string indicating existing file path. _proc_must be a procedure accepts 2 arguments, a path string and a symbol. The given
+symbol can be <code node-type="code">directory</code>, <code node-type="code">symbolic-link</code> or <code node-type="code">file</code>.</p>
+        <p node-type="paragraph">Process the path string starting from <i node-type="i">path</i> with given <i node-type="i">proc</i> and
+returns a list which elements are the result value of <i node-type="i">proc</i>.</p>
+        <p node-type="paragraph">The keyword arguments are the same as <code node-type="code">path-for-each</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="build-path_74">
+            <span>build-path</span>
+            <span>
+              <i node-type="i">paths</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Re-exported procedure from <code node-type="code">(sagittarius)</code> for convenience. See
+<a href="sections/section6.html#ext.sagittarius">Sagittarius extensions</a>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="build-path*_76">
+            <span>build-path*</span>
+            <span>
+              <i node-type="i">paths</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">paths</i> must be list of strings.</p>
+        <p node-type="paragraph">Compose given list to platform specific path. This procedure doesn't put path
+separator at the end of composed string.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Directory-operations">Directory operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-directory_147">
+            <span>create-directory</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="delete-directory_101">
+            <span>delete-directory</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Re-exported procedures from <code node-type="code">(sagittarius)</code> for convenience. See
+<a href="sections/section6.html#ext.sagittarius">Sagittarius extensions</a>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-directory*_149">
+            <span>create-directory*</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="delete-directory*_103">
+            <span>delete-directory*</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Convenient procedures to create or delete directories.</p>
+        <p node-type="paragraph">These are the same as UNIX command <code node-type="code">mkdir -p</code> and <code node-type="code">rm -rf</code>,
+respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="copy-directory_135">
+            <span>copy-directory</span>
+            <span>
+              <i node-type="i">src</i>
+            </span>
+            <span>
+              <i node-type="i">dst</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(excludes</i>
+            </span>
+            <span>
+              <i node-type="i">'())</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">src</i> and <i node-type="i">dst</i> must be string and <i node-type="i">src</i> must indicates an
+existing path.</p>
+        <p node-type="paragraph">Copies <i node-type="i">src</i> directory to <i node-type="i">dst</i>. Keyword argument <i node-type="i">excludes</i> must be
+a list of string and the procedure won't copy files which contain the
+<i node-type="i">excludes</i> string(s).</p>
+        <p node-type="paragraph">The <i node-type="i">options</i> is passed to <code node-type="code">path-for-each</code>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section712.html">(util deque) - Deque</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section714.html">(getopt) - Parsing command-line options</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

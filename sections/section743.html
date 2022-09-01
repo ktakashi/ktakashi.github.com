@@ -1,0 +1,570 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section742.html">(rfc jws) - Json Web Signature</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section744.html">(rfc pem) - PEM format  library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rfc.jwt">(rfc jwt) - Json Web Token</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rfc jwt)_43">
+          <span>(rfc jwt)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides Json Web Token (JWT) APIs. JWT is defined
+in <a href="https://tools.ietf.org/html/rfc7519">RFC 7519</a>.</p>
+      <p node-type="paragraph">The following example shows how to consume JWT</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (rfc jwt)
+        (rfc jwk)
+        (rfc jwe)
+        (rfc jws)
+        (rfc uuid)
+        (crypto)
+        (srfi :19)
+        (sagittarius combinators))
+
+(define keypair (generate-key-pair Ed25519))
+(define alg 'EdDSA)
+;; (define keypair (generate-key-pair ECDSA :ec-parameter NIST-P-256))
+;; (define alg 'ES256)
+;; (define keypair (generate-key-pair RSA :size 2048))
+;; (define alg 'PS512)
+
+(define claims
+  (jwt-claims-builder
+   (iss "Sagittarius Scheme")
+   (aud "All saints")
+   (sub "Use Sagittarius")
+   (iat (current-time))
+   (nbf (add-duration (current-time) (make-time time-duration 0 -1)))
+   (exp (add-duration (current-time) (make-time time-duration 0 600)))
+   (jti (uuid-&gt;string (make-v4-uuid)))))
+
+(define jws-header
+  (jws-header-builder
+   (alg alg)))
+
+(define payload (string-&gt;utf8 (jwt-claims-&gt;json-string claims)))
+(define jws-object (make-jws-object jws-header payload))
+
+(define signer (private-key-&gt;jws-signer (keypair-private keypair)))
+
+(define jwk
+  (public-key-&gt;jwk (keypair-public keypair)
+                   (jwk-config-builder (kid "my key"))))
+(define jwks (make-jwk-set (list jwk)))
+
+(let ((jwt-object (jws:sign jws-object signer)))
+  ;; Share the JWT to 3rd party
+  ;; (jws:serialize jwt-object)
+  ;; (jwk-set-&gt;json-string jwks)
+
+  ;; Verify the JWT token with the public key
+  (let* ((kid-matcher (jwk-matcher:kid "my key"))
+         (verifier (public-key-&gt;jws-verifier
+                    (jwk-set:find-key jwks kid-matcher)))
+         (jwt-consumer (jwt-consumer-builder
+                        (verifier verifier)
+                        (claims-validator
+                         ;; Validate claims
+                         (compose jwt:iss-required-validator
+                                  jwt:sub-required-validator
+                                  jwt:aud-required-validator
+                                  jwt:exp-required-validator
+                                  jwt:nbf-required-validator
+                                  jwt:iat-required-validator
+                                  jwt:jti-required-validator
+                                  (jwt:iss-value-validator "Sagittarius Scheme"
+                                                           "Sagittarius")
+                                  (jwt:sub-value-validator "Use Sagittarius")
+                                  (jwt:aud-value-validator "All saints")
+                                  (jwt:nbf-validator)
+                                  (jwt:exp-validator)))))
+         (claims (jwt:consume jwt-consumer jwt-object)))
+    ;; use the user claim
+    (jwt-claims-aud claims))) ;; retrieve 'aud' field
+</code></pre>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="JWT">JWT</a>
+        </h3>
+        <p node-type="paragraph">By definition, JWT is either JWE or JWS. To create JWT, users need to
+use either <code node-type="code">(rfc jwe)</code> or  <code node-type="code">(rfc jws)</code> library. For more details,
+please refer the respective section of the document.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:consume_134">
+            <span>jwt:consume</span>
+            <span>
+              <i node-type="i">jwt-consumer</i>
+            </span>
+            <span>
+              <i node-type="i">jwt-string/object</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns JWT claims after decrypt and/or verify the given
+<i node-type="i">jwt-string/object</i>.</p>
+        <p node-type="paragraph"><i node-type="i">jwt-consumer</i> must be a JWT consumer object.</p>
+        <p node-type="paragraph"><i node-type="i">jwt-string/object</i> must be either a string of valid JWT format or
+JWE/JWS object.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="JWT-Consumer">JWT Consumer</a>
+        </h3>
+        <p node-type="paragraph">JWT consumer is an object decrypts and/or verifies the JWT and validates the
+claims. JWT consumer contains the below fields:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph"><code node-type="code">decryptor</code>: JWE decryptor</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">verifier</code>: JWS verifier</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">claims-validator</code>: Claims validator, see below section for more details</p>
+          </li>
+        </ul>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-consumer?_131">
+            <span>jwt-consumer?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a JWT consumer otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="jwt-consumer-builder_130">
+            <span>jwt-consumer-builder</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A builder macro of JWT consumer. The macro is generated by
+<code node-type="code">(record builder)</code>. see <a href="section731.html#record.builder">(record builder)</a>for more details.</p>
+        <p node-type="paragraph">JWT consumer execute validation if the <code node-type="code">claims-validator</code> field is
+set. The field must hold claims validator, which is a procedure takes
+one argument, <i node-type="i">claims</i>, and returns the given <i node-type="i">claims</i> or raises
+an error if the validation failed.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:iss-required-validator_142">
+            <span>jwt:iss-required-validator</span>
+            <span>
+              <i node-type="i">claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:sub-required-validator_148">
+            <span>jwt:sub-required-validator</span>
+            <span>
+              <i node-type="i">claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:aud-required-validator_132">
+            <span>jwt:aud-required-validator</span>
+            <span>
+              <i node-type="i">claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:exp-required-validator_135">
+            <span>jwt:exp-required-validator</span>
+            <span>
+              <i node-type="i">claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:nbf-required-validator_145">
+            <span>jwt:nbf-required-validator</span>
+            <span>
+              <i node-type="i">claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:iat-required-validator_139">
+            <span>jwt:iat-required-validator</span>
+            <span>
+              <i node-type="i">claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:jti-required-validator_144">
+            <span>jwt:jti-required-validator</span>
+            <span>
+              <i node-type="i">claims</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Claims validator to validate required field of the given <i node-type="i">claims</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:iss-validator_143">
+            <span>jwt:iss-validator</span>
+            <span>
+              <i node-type="i">iss</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:aud-validator_133">
+            <span>jwt:aud-validator</span>
+            <span>
+              <i node-type="i">aud</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:sub-validator_149">
+            <span>jwt:sub-validator</span>
+            <span>
+              <i node-type="i">sub</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates claims validator to validate <code node-type="code">iss</code>, <code node-type="code">aud</code> and
+<code node-type="code">sub</code>, respectively.</p>
+        <p node-type="paragraph">The first 2 procedures may take multiple argument and checks if one of the
+value matches or not.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:exp-validator_138">
+            <span>jwt:exp-validator</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:exp-validator_137">
+            <span>jwt:exp-validator</span>
+            <span>
+              <i node-type="i">clock-skew</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:exp-validator_136">
+            <span>jwt:exp-validator</span>
+            <span>
+              <i node-type="i">clock-skew</i>
+            </span>
+            <span>
+              <i node-type="i">future-bound-seconds</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates claims validator to validate <i node-type="i">exp</i> field is
+expired or nor.</p>
+        <p node-type="paragraph"><i node-type="i">clock-skew</i> must be an integer represents seconds of clock skew.</p>
+        <p node-type="paragraph"><i node-type="i">future-bound-seconds</i> must be an integer represents seconds of maximum
+boundary that <code node-type="code">exp</code> can be. (e.g. <code node-type="code">exp</code> can't be more than 10 mins
+of future)</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:nbf-validator_147">
+            <span>jwt:nbf-validator</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:nbf-validator_146">
+            <span>jwt:nbf-validator</span>
+            <span>
+              <i node-type="i">clock-skew</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates claims validator to validate if the current time
+is earlier than <i node-type="i">nbf</i> field.</p>
+        <p node-type="paragraph"><i node-type="i">clock-skew</i> must be an integer represents seconds of clock skew.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:iat-validator_141">
+            <span>jwt:iat-validator</span>
+            <span>
+              <i node-type="i">not-before</i>
+            </span>
+            <span>
+              <i node-type="i">not-after</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt:iat-validator_140">
+            <span>jwt:iat-validator</span>
+            <span>
+              <i node-type="i">not-before</i>
+            </span>
+            <span>
+              <i node-type="i">not-after</i>
+            </span>
+            <span>
+              <i node-type="i">clock-skew</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates claims validator to validate if the <code node-type="code">iat</code> is in between
+<i node-type="i">not-before</i> and <i node-type="i">not-after__not-before</i> and <i node-type="i">not-after</i> must be a time object.</p>
+        <p node-type="paragraph"><i node-type="i">clock-skew</i> must be an integer represents seconds of clock skew.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="JWT-Claims">JWT Claims</a>
+        </h3>
+        <p node-type="paragraph">JWT claims is an object which contains claims of the JWT.</p>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<jwt-claims&gt;_39">
+            <span>&lt;jwt-claims&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Record type of JWT claims object.</p>
+        <p node-type="paragraph">The object contains the following fields:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph"><code node-type="code">iss</code>: Issuer</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">sub</code>: Subject</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">aud</code>: Audience</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">exp</code>: Expiration time</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">nbf</code>: Not before</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">iat</code>: Issued at</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">jti</code>: JWT ID</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">custom-claims</code>: User defined claims, hashtable</p>
+          </li>
+        </ul>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims?_129">
+            <span>jwt-claims?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is JWT claims otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="jwt-claims-builder_121">
+            <span>jwt-claims-builder</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A builder macro of JWT claims. The macro is generated by
+<code node-type="code">(record builder)</code>. see <a href="section731.html#record.builder">(record builder)</a>for more details.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims-iss_125">
+            <span>jwt-claims-iss</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims-sub_128">
+            <span>jwt-claims-sub</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims-aud_120">
+            <span>jwt-claims-aud</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims-exp_123">
+            <span>jwt-claims-exp</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims-nbf_127">
+            <span>jwt-claims-nbf</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims-iat_124">
+            <span>jwt-claims-iat</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims-jti_126">
+            <span>jwt-claims-jti</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims-custom-claims_122">
+            <span>jwt-claims-custom-claims</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves the field value of <i node-type="i">jwt-claims</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-&gt;jwt-claims_12">
+            <span>json-&gt;jwt-claims</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-jwt-claims_36">
+            <span>read-jwt-claims</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-jwt-claims_35">
+            <span>read-jwt-claims</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-string-&gt;jwt-claims_44">
+            <span>json-string-&gt;jwt-claims</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Construct JWT claims from S-exp JSON representation of <i node-type="i">obj</i>,
+from input port <i node-type="i">port</i> or a string <i node-type="i">string</i>.</p>
+        <p node-type="paragraph">If the first form of <code node-type="code">read-jwt-claims</code> is used, then it reads from
+current input port.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims-&gt;json_118">
+            <span>jwt-claims-&gt;json</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="write-jwt-claims_74">
+            <span>write-jwt-claims</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="write-jwt-claims_73">
+            <span>write-jwt-claims</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwt-claims-&gt;json-string_119">
+            <span>jwt-claims-&gt;json-string</span>
+            <span>
+              <i node-type="i">jwt-claims</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Serialize the given <i node-type="i">jwt-claims</i> to a S-exp representaion,
+to <i node-type="i">port</i> or string.</p>
+        <p node-type="paragraph">If first form of <code node-type="code">write-jwt-claims</code> is used, then it writes the
+serialized JWT claims to current output port.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section742.html">(rfc jws) - Json Web Signature</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section744.html">(rfc pem) - PEM format  library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

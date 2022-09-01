@@ -1,0 +1,405 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section35.html">Bytevectors</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section37.html">Sorting</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rnrs.lists.6">List utilities</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rnrs lists (6))_70">
+          <span>(rnrs lists (6))</span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] The <code node-type="code">(rnrs lists (6))</code>library, which contains various useful
+procedures that operate on lists.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="find_34">
+          <span>find</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] <i node-type="i">Proc</i> should accept one argument and return a single value.
+<i node-type="i">Proc</i> should not mutate list. The <code node-type="code">find</code> procedure applies _proc_to the elements of <i node-type="i">list</i> in order. If <i node-type="i">proc</i> returns a true value for
+an element, find immediately returns that element. If <i node-type="i">proc</i> returns #f for
+all elements of the <i node-type="i">list</i>, find returns #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="for-all_97">
+          <span>for-all</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">list1</i>
+          </span>
+          <span>
+            <i node-type="i">list2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS+] Applies <i node-type="i">pred</i> across each element of <i node-type="i">lists</i>, and returns
+#f as soon as <i node-type="i">pred</i> returns #f. If all application of <i node-type="i">pred</i> return a
+non-false value, <code node-type="code">for-all</code> returns the last result of the applications.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="exists_55">
+          <span>exists</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">list1</i>
+          </span>
+          <span>
+            <i node-type="i">list2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS+] Applies <i node-type="i">pred</i> across each element of <i node-type="i">lists</i>, and returns
+as soon as <i node-type="i">pred</i> returns a non-false value. The return value of any is the
+non-false value <i node-type="i">pred</i> returned. If lists are exhausted before _pred_returns a non-false value, #f is returned.</p>
+      <p node-type="paragraph">Note: R6RS requires the same length list for <code node-type="code">for-all</code> and <code node-type="code">exists</code>.
+On Sagittarius, however, these can accept different length list and it will
+finish to process when the shortest list is finish to process.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="filter_33">
+          <span>filter</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="partition_42">
+          <span>partition</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] <i node-type="i">Proc</i> should accept one argument and return a single value.</p>
+      <p node-type="paragraph">The <code node-type="code">filter</code> procedure applies <i node-type="i">proc</i> to each element of <i node-type="i">list</i> and
+returns a list of the elements of <i node-type="i">list</i> for which <i node-type="i">proc</i> returned a true
+value. The <code node-type="code">partition</code> procedure also applies <i node-type="i">proc</i> to each element of
+<i node-type="i">list</i>, but returns two values, the first one a list of the elements of _list_for which <i node-type="i">proc</i> returned a true value, and the second a list of the elements
+of <i node-type="i">list</i> for which <i node-type="i">proc</i> returned #f. In both cases, the elements of the
+result list(s) are in the same order as they appear in the input list. If multiple
+returns occur from <code node-type="code">filter</code> or <code node-type="code">partitions</code>, the return values returned
+by earlier returns are not mutated.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="fold-left_94">
+          <span>fold-left</span>
+          <span>
+            <i node-type="i">combine</i>
+          </span>
+          <span>
+            <i node-type="i">nil</i>
+          </span>
+          <span>
+            <i node-type="i">list1</i>
+          </span>
+          <span>
+            <i node-type="i">list2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS+] <i node-type="i">Combine</i> must be a procedure. It should accept one more argument
+than there are <i node-type="i">lists</i> and return a single value. It should not mutate the
+<i node-type="i">list</i> arguments. The <code node-type="code">fold-left</code> procedure iterates the _combine_procedure over an accumulator value and the elements of the <i node-type="i">lists</i> from left
+to right, starting with an accumulator value of <i node-type="i">nil</i>. More specifically,
+<code node-type="code">fold-left</code> returns <i node-type="i">nil</i> if the <i node-type="i">lists</i> are empty. If they are not
+empty, <i node-type="i">combine</i> is first applied to <i node-type="i">nil</i> and the respective first
+elements of the <i node-type="i">lists</i> in order. The result becomes the new accumulator
+value, and <i node-type="i">combine</i> is applied to the new accumulator value and the respective
+next elements of the <i node-type="i">list</i>. This step is repeated until the end of the
+<i node-type="i">list</i> is reached; then the accumulator value is returned.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="fold-right_95">
+          <span>fold-right</span>
+          <span>
+            <i node-type="i">combine</i>
+          </span>
+          <span>
+            <i node-type="i">nil</i>
+          </span>
+          <span>
+            <i node-type="i">list1</i>
+          </span>
+          <span>
+            <i node-type="i">list2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS+] <i node-type="i">Combine</i> must be a procedure. It should accept one more argument
+than there are <i node-type="i">lists</i> and return a single value. <i node-type="i">Combine</i> should not
+mutate the <i node-type="i">list</i> arguments. The <code node-type="code">fold-right</code> procedure iterates the
+<i node-type="i">combine</i> procedure over the elements of the <i node-type="i">lists</i> from right to left
+and an accumulator value, starting with an accumulator value of <i node-type="i">nil</i>. More
+specifically, <code node-type="code">fold-right</code> returns <i node-type="i">nil</i> if the lists are empty. If they
+are not empty, <i node-type="i">combine</i> is first applied to the respective last elements of
+the <i node-type="i">lists</i> in order and <i node-type="i">nil</i>. The result becomes the new accumulator
+value, and <i node-type="i">combine</i> is applied to the respective previous elements of the
+<i node-type="i">lists</i> and the new accumulator value. This step is repeated until the beginning
+of the <i node-type="i">list</i> is reached; then the accumulator value is returned.</p>
+      <p node-type="paragraph">Note: R6RS requires the same length list for <code node-type="code">fold-left</code> and <code node-type="code">fold-right</code>.
+On Sagittarius, however, these can accept different length list and it will finish
+to process when the shortest list is finish to process.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="remp_100">
+          <span>remp</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="remove_96">
+          <span>remove</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="remv_102">
+          <span>remv</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="remq_101">
+          <span>remq</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] Proc should accept one argument and return a single value. _Proc_should not mutate <i node-type="i">list</i>.</p>
+      <p node-type="paragraph">Each of these procedures returns a list of the elements of <i node-type="i">list</i> that do not
+satisfy a given condition. The <code node-type="code">remp</code> procedure applies <i node-type="i">proc</i> to each
+element of <i node-type="i">list</i> and returns a list of the elements of <i node-type="i">list</i> for which
+<i node-type="i">proc</i> returned #f. The <code node-type="code">remove</code>, <code node-type="code">remv</code>, and <code node-type="code">remq</code> procedures
+return a list of the elements that are not <i node-type="i">obj</i>. The <code node-type="code">remq</code> procedure
+uses <code node-type="code">eq?</code> to compare <i node-type="i">obj</i> with the elements of <i node-type="i">list</i>, while
+<code node-type="code">remv</code> uses <code node-type="code">eqv?</code> and <code node-type="code">remove</code> uses <code node-type="code">equal?</code>. The elements
+of the result list are in the same order as they appear in the input list. If
+multiple returns occur from <code node-type="code">remp</code>, the return values returned by earlier
+returns are not mutated.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="memp_305">
+          <span>memp</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="member_304">
+          <span>member</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">=</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="memv_307">
+          <span>memv</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="memq_306">
+          <span>memq</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS+] <i node-type="i">Proc</i> should accept one argument and return a single value.
+<i node-type="i">Proc</i> should not mutate <i node-type="i">list</i>.</p>
+      <p node-type="paragraph">These procedures return the first sublist of <i node-type="i">list</i> whose car satisfies a
+given condition, where the sublists of <i node-type="i">lists</i> are the lists returned by
+<code node-type="code">(list-tail _list_ _k_)</code> for <i node-type="i">k</i> less than the length of <i node-type="i">list</i>.
+The <code node-type="code">memp</code> procedure applies <i node-type="i">proc</i> to the cars of the sublists of
+<i node-type="i">list</i> until it finds one for which <i node-type="i">proc</i> returns a true value. The
+<code node-type="code">member</code>, <code node-type="code">memv</code>, and <code node-type="code">memq</code> procedures look for the first
+occurrence of <i node-type="i">obj</i>. If list does not contain an element satisfying the
+condition, then #f (not the empty list) is returned. The <code node-type="code">member</code> procedure
+uses <code node-type="code">equal?</code> or if <i node-type="i">=</i> is given use it to compare <i node-type="i">obj</i> with the
+elements of <i node-type="i">list</i>, while <code node-type="code">memv</code> uses <code node-type="code">eqv?</code> and <code node-type="code">memq</code> uses
+<code node-type="code">eq?</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="assp_60">
+          <span>assp</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">alist</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="assc_56">
+          <span>assc</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">alist</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">=</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="assv_62">
+          <span>assv</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">alist</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="assq_61">
+          <span>assq</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">alist</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS+] <i node-type="i">Alist</i> (for "association list") should be a list of pairs.
+<i node-type="i">Proc</i> should accept one argument and return a single value. _Proc_should not mutate <i node-type="i">alist</i>.</p>
+      <p node-type="paragraph">These procedures find the first pair in <i node-type="i">alist</i> whose car field satisfies
+a given condition, and returns that pair without traversing <i node-type="i">alist</i> further.
+If no pair in <i node-type="i">alist</i> satisfies the condition, then #f is returned. The
+<code node-type="code">assp</code> procedure successively applies <i node-type="i">proc</i> to the car fields of
+<i node-type="i">alist</i> and looks for a pair for which it returns a true value. The
+<code node-type="code">assoc</code>, <code node-type="code">assv</code>, and <code node-type="code">assq</code> procedures look for a pair that has
+<i node-type="i">obj</i> as its car. The <code node-type="code">assoc</code> procedure uses <code node-type="code">equal?</code> or if _=_is given use it to compare <i node-type="i">obj</i> with the car fields of the pairs in <i node-type="i">alist</i>,
+while <code node-type="code">assv</code> uses <code node-type="code">eqv?</code> and <code node-type="code">assq</code> uses <code node-type="code">eq?</code>.</p>
+      <p node-type="paragraph">Note: <code node-type="code">member</code> and <code node-type="code">assoc</code> procedures are the same behaviour as SRFI-1.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="cons*_131">
+          <span>cons*</span>
+          <span>
+            <i node-type="i">obj1</i>
+          </span>
+          <span>
+            <i node-type="i">obj2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] Like <code node-type="code">list</code>, but the last argument provides the tail of the
+constructed list.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section35.html">Bytevectors</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section37.html">Sorting</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

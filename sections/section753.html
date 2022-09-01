@@ -1,0 +1,251 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section752.html">(rfc uri-template) - URI template</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section754.html">(rfc websocket) - WebSocket</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rfc.uuid">(rfc uuid) - UUID generate library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rfc uuid)_51">
+          <span>(rfc uuid)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides RFC 4122 a Universally Unique IDentifier (UUID)
+URN Namespace procedures.</p>
+      <div node-type="define" class="define">
+        <span>Class</span>
+        <a name="<uuid&gt;_61">
+          <span>&lt;uuid&gt;</span>
+        </a>
+      </div>
+      <p node-type="paragraph">The class representing UUID.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Predicates">Predicates</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="uuid?_40">
+            <span>uuid?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is an instance of <code node-type="code">&lt;uuid&gt;</code>, otherwise
+#f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="uuid=?_39">
+            <span>uuid=?</span>
+            <span>
+              <i node-type="i">uuid1</i>
+            </span>
+            <span>
+              <i node-type="i">uuid2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Compares given 2 uuids and return #t if both have the same values,
+otherwise #f.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Constructors">Constructors</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-null-uuid_182">
+            <span>make-null-uuid</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a null (empty) uuid.</p>
+        <p node-type="paragraph">The returning object will be represented like this UUID;</p>
+        <p node-type="paragraph"><code node-type="code">00000000-0000-0000-0000-000000000000</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-v1-uuid_249">
+            <span>make-v1-uuid</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-v3-uuid_250">
+            <span>make-v3-uuid</span>
+            <span>
+              <i node-type="i">namespace</i>
+            </span>
+            <span>
+              <i node-type="i">name</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-v4-uuid_251">
+            <span>make-v4-uuid</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">prng</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-v5-uuid_252">
+            <span>make-v5-uuid</span>
+            <span>
+              <i node-type="i">namespace</i>
+            </span>
+            <span>
+              <i node-type="i">name</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates version 1, 3, 4 and 5 UUIDs respectively.</p>
+        <p node-type="paragraph">For version 3 and 5, procedures need to take 2 arguments, _namespace_and <i node-type="i">name</i>. <i node-type="i">namespace</i> must be a UUID object, and <i node-type="i">name</i> must be a
+string.</p>
+        <p node-type="paragraph">For version 4, it can take an optional argument <i node-type="i">prng</i> which specifies
+pseudo random generator. The default value is <code node-type="code">(*uuid-random-state*)</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Predefined-namespaces-and-parameters">Predefined namespaces and parameters</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+namespace-dns+_9">
+            <span>+namespace-dns+</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+namespace-url+_11">
+            <span>+namespace-url+</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+namespace-oid+_10">
+            <span>+namespace-oid+</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+namespace-x500+_12">
+            <span>+namespace-x500+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Constant predefined namespace of UUIDs.</p>
+        <div node-type="define" class="define">
+          <span>Variable</span>
+          <a name="*uuid-random-state*_24">
+            <span>*uuid-random-state*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Pseudo random generator used by version 4 UUID.</p>
+        <div node-type="define" class="define">
+          <span>Variable</span>
+          <a name="*uuids-per-tick*_25">
+            <span>*uuids-per-tick*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">The number of allowed UUIDs in the same time. Used by version 1 UUID.</p>
+        <p node-type="paragraph">The default value is 1000.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Converters">Converters</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="uuid-&gt;bytevector_36">
+            <span>uuid-&gt;bytevector</span>
+            <span>
+              <i node-type="i">uuid</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns bytevector converted from given <i node-type="i">uuid</i>.</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(uuid-&gt;bytevector (make-null-uuid))</code></pre>
+            <span />
+            <span>#vu8(0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0)</span>
+          </div>
+        </p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="uuid-&gt;string_37">
+            <span>uuid-&gt;string</span>
+            <span>
+              <i node-type="i">uuid</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns string represented uuid converted from given <i node-type="i">uuid</i>.</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(uuid-&gt;string (make-null-uuid))</code></pre>
+            <span />
+            <span>00000000-0000-0000-0000-000000000000</span>
+          </div>
+        </p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bytevector-&gt;uuid_89">
+            <span>bytevector-&gt;uuid</span>
+            <span>
+              <i node-type="i">bv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns uuid object generated from <i node-type="i">bv</i>.</p>
+        <p node-type="paragraph">Given bytevector must have length at least 16.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-&gt;uuid_254">
+            <span>string-&gt;uuid</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns uuid object generated from <i node-type="i">string</i>.</p>
+        <p node-type="paragraph">Given <i node-type="i">string</i> must be proper format of UUID defined in RFC 4122.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="uuid-&gt;urn-format_38">
+            <span>uuid-&gt;urn-format</span>
+            <span>
+              <i node-type="i">uuid</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns URN formatted string of given <i node-type="i">uuid</i>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section752.html">(rfc uri-template) - URI template</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section754.html">(rfc websocket) - WebSocket</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

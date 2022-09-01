@@ -1,0 +1,350 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section716.html">(util heap) - Heap</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section718.html">(util logging) - Logging utilities</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.list">(util list) - Extra list utility library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(util list)_183">
+          <span>(util list)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides extra list utility procedures.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="for-each-with-index_99">
+          <span>for-each-with-index</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">list1</i>
+          </span>
+          <span>
+            <i node-type="i">list2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="map-with-index_269">
+          <span>map-with-index</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">list1</i>
+          </span>
+          <span>
+            <i node-type="i">list2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Like <code node-type="code">for-each</code> and <code node-type="code">map</code>, expect <i node-type="i">proc</i> receives the index
+as the first argument.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(map-with-index list '(a b c) '(e f g))</code></pre>
+          <span />
+          <span>((0 a e) (1 b f) (2 c g))</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="intersperse_44">
+          <span>intersperse</span>
+          <span>
+            <i node-type="i">item</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Inserts <i node-type="i">item</i> between elements in the <i node-type="i">list</i>.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(intersperse '+ '(1 2 3))</code></pre>
+          <span />
+          <span>(1 + 2 + 3)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(intersperse '+ '(1))</code></pre>
+          <span />
+          <span>(1)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(intersperse '+ '())</code></pre>
+          <span />
+          <span>()</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slices_109">
+          <span>slices</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">k</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fill?</i>
+          </span>
+          <span>
+            <i node-type="i">padding</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Splits <i node-type="i">list</i> into the sublists (slices) where the length of each
+slice is <i node-type="i">k</i>. If the length of <i node-type="i">list</i> is not multiple of <i node-type="i">k</i>, the
+last slice is dealt in the same way as <code node-type="code">take*</code>; this is, it is shorter than
+<i node-type="i">k</i> by default, or added <i node-type="i">padding</i> if <i node-type="i">fill?</i> is true.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(slices '(a b c d e f g) 3)</code></pre>
+          <span />
+          <span>((a b c) (d e f) (g))</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(slices '(a b c d e f g) 3 #t 'z)</code></pre>
+          <span />
+          <span>((a b c) (d e f) (g z z))</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="split-at*_203">
+          <span>split-at*</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">k</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(fill?</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+          <span>
+            <i node-type="i">(padding</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Splits the list <i node-type="i">list</i> at index <i node-type="i">k</i>. This is more tolerant version
+of <code node-type="code">split-at</code> defined in SRFI-1 library. Returns the results of
+<code node-type="code">take*</code> and <code node-type="code">drop*</code>.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(split-at* '(a b c d) 6 #t 'z)</code></pre>
+          <span />
+          <span>(a b c d z z) and ()</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="take*_0">
+          <span>take*</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">k</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(fill?</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+          <span>
+            <i node-type="i">(padding</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="drop*_151">
+          <span>drop*</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">k</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">More tolerant version of <code node-type="code">take</code> and <code node-type="code">drop</code> defined in SRFI-1
+library. These won't raise an error when <i node-type="i">k</i> is larger than the size of the
+given list.</p>
+      <p node-type="paragraph">If the list is shorter than <i node-type="i">k</i> elements, <code node-type="code">take*</code> returns a copy of
+<i node-type="i">list</i> by default. If <i node-type="i">fill?</i> is true, <i node-type="i">padding</i> is added to the
+result to make its length <i node-type="i">k</i>.</p>
+      <p node-type="paragraph">On the other hand, <code node-type="code">drop*</code> just returns as empty list when the input list
+is shorter than <i node-type="i">k</i> elements.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(take* '(a b c d) 3)</code></pre>
+          <span />
+          <span>(a b c)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(take* '(a b c d) 6)</code></pre>
+          <span />
+          <span>(a b c d)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(take* '(a b c d) 6 #t)</code></pre>
+          <span />
+          <span>(a b c d #f #f)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(take* '(a b c d) 6 #t 'z)</code></pre>
+          <span />
+          <span>(a b c d z z)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(drop* '(a b c d) 3)</code></pre>
+          <span />
+          <span>(d)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(drop* '(a b c d) 5)</code></pre>
+          <span />
+          <span>()</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="cond-list_110">
+          <span>cond-list</span>
+          <span>
+            <i node-type="i">clause</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Construct a list by conditionally adding entries. Each <i node-type="i">clause</i> must
+have a test and expressions. When its test yields true, then result of
+associated expression is used to construct the resulting list. When the test
+yields false, nothing is inserted.</p>
+      <p node-type="paragraph"><i node-type="i">Clause</i> must either one of the following form:</p>
+      <dl node-type="dlist">
+        <dt>
+          <i node-type="i">(test expr ...)</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph"><i node-type="i">Test</i> is evaluated, and when it is true, <i node-type="i">expr ...</i> are
+evaluated, and the return value becomes a part of the result. If no
+<i node-type="i">expr</i> is given, the result of test is used if it is not false.</p>
+        </dd>
+        <dt>
+          <i node-type="i">(test =&gt; proc)</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph"><i node-type="i">Test</i> is evaluated, and if it is true, <i node-type="i">proc</i> is called with
+the value, and the return value is used to construct the result</p>
+        </dd>
+        <dt>
+          <i node-type="i">(test   expr ...)</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Like <code node-type="code">(test expr ...)</code>, except that the result of the last
+<i node-type="i">expr</i> must be a list, and it is spliced into the resulting list,
+like unquote-splicing.</p>
+        </dd>
+        <dt>
+          <i node-type="i">(test =&gt;   proc)</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Like <code node-type="code">(test =&gt; proc)</code>, except that the result of the last
+<i node-type="i">proc</i> must be a list, and it is spliced into the resulting list,
+like unquote-splicing.</p>
+        </dd>
+      </dl>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(let ((alist '((x 3) (y -1) (z 6))))
+ (cond-list ((assoc 'x alist) 'have-x)
+            ((assoc 'w alist) 'have-w)
+            ((assoc 'z alist) =&gt; cadr)))
+</code></pre>
+        <span />
+        <span>(have-x 6)</span>
+      </div>
+      <p node-type="paragraph" />
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(let ((x 2) (y #f) (z 5))
+  (cond-list (x   `(:x ,x))
+             (y   `(:y ,y))
+             (z   `(:z ,z))))
+</code></pre>
+        <span />
+        <span>(:x 2 :z 5)</span>
+      </div>
+      <p node-type="paragraph" />
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section716.html">(util heap) - Heap</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section718.html">(util logging) - Logging utilities</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,325 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section724.html">(net server) - Simple server framework</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section726.html">(odbc) - ODBC binding</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="net.socket">(net socket) - Modern Socket library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(net socket)_25">
+          <span>(net socket)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Providing, probably, modern socket library.</p>
+      <p node-type="paragraph">Most of the bindings defined in this library is identical as
+<code node-type="code">(sagittarius socket)</code>, so this document will describe only the
+differences.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket-options?_179">
+          <span>socket-options?</span>
+          <span>
+            <i node-type="i">o</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-options?_69">
+          <span>tls-socket-options?</span>
+          <span>
+            <i node-type="i">o</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="server-tls-socket-options?_27">
+          <span>server-tls-socket-options?</span>
+          <span>
+            <i node-type="i">o</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is a <code node-type="code">socket-options</code>,
+<code node-type="code">tls-socket-options</code>, or <code node-type="code">server-tls-socket-options</code>, respectively.</p>
+      <p node-type="paragraph">The <code node-type="code">socket-options?</code> returns #t for all 3 types.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="socket-options-builder_178">
+          <span>socket-options-builder</span>
+          <span>
+            <i node-type="i">(fields</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Builds a socket-options object.
+The <code node-type="code">field</code> must be one or multiple of the followings:</p>
+      <dl node-type="dlist">
+        <dt>
+          <i node-type="i">ai-family</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">See <code node-type="code">ai-family</code> of <code node-type="code">(sagittarius socket)</code></p>
+        </dd>
+        <dt>
+          <i node-type="i">ai-socktype</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">See <code node-type="code">ai-socktype</code> of <code node-type="code">(sagittarius socket)</code></p>
+        </dd>
+        <dt>
+          <i node-type="i">ai-flags</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">See <code node-type="code">ai-flags</code> of <code node-type="code">(sagittarius socket)</code></p>
+        </dd>
+        <dt>
+          <i node-type="i">ai-protocol</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">See <code node-type="code">ai-protocl</code> of <code node-type="code">(sagittarius socket)</code></p>
+        </dd>
+        <dt>
+          <i node-type="i">non-blocking?</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Specifies if the socket is non blocking or not, default #t</p>
+        </dd>
+        <dt>
+          <i node-type="i">connection-timeout</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Specifies connection timeout in micro seconds, default #f (infinite)</p>
+        </dd>
+        <dt>
+          <i node-type="i">read-timeout</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Specifies read timeout, default #f (infinite) see <code node-type="code">socket-set-read-timeout!</code> for more details.</p>
+        </dd>
+      </dl>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="tls-socket-options-builder_68">
+          <span>tls-socket-options-builder</span>
+          <span>
+            <i node-type="i">(fields</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Builds a tls-socket-options object.
+The <code node-type="code">fields</code> must be the ones from <code node-type="code">socket-options-builder</code> or
+one or multiple of the followings:</p>
+      <dl node-type="dlist">
+        <dt>
+          <i node-type="i">handshake</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Specifes if handshake must be done or not. Default #t</p>
+        </dd>
+        <dt>
+          <i node-type="i">private-key</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">A client private key</p>
+        </dd>
+        <dt>
+          <i node-type="i">certificates</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">A list of client certificates, must be specified when <code node-type="code">private-key</code> is specified</p>
+        </dd>
+        <dt>
+          <i node-type="i">certificate-verifier</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">A certificate verifier procedure</p>
+        </dd>
+        <dt>
+          <i node-type="i">sni*</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">A list of server name indicators, a list of string</p>
+        </dd>
+        <dt>
+          <i node-type="i">alpn*</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">A list of application layer protocol negotiation names</p>
+        </dd>
+      </dl>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="server-tls-socket-options-builder_26">
+          <span>server-tls-socket-options-builder</span>
+          <span>
+            <i node-type="i">(fields</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Builds a server-tls-socket-options object.
+The <code node-type="code">fields</code> must be the ones from <code node-type="code">tls-socket-options-builder</code> or
+one or multiple of the followings:</p>
+      <dl node-type="dlist">
+        <dt>
+          <i node-type="i">client-certificate-required?</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Specifes if client certificate is required or not. Default #f</p>
+        </dd>
+        <dt>
+          <i node-type="i">trusted-certificates</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">A list of trusted certificates</p>
+        </dd>
+      </dl>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-client-socket_32">
+          <span>make-client-socket</span>
+          <span>
+            <i node-type="i">node</i>
+          </span>
+          <span>
+            <i node-type="i">service</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">options</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a client socket.
+This is almost the same as the one from <code node-type="code">(sagittarius socket)</code>, the only
+difference is it takes <i node-type="i">options</i> to specify extra options, such as
+read timeout or connection timeout.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-client-tls-socket_35">
+          <span>make-client-tls-socket</span>
+          <span>
+            <i node-type="i">node</i>
+          </span>
+          <span>
+            <i node-type="i">service</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">options</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a client socket.
+This is almost the same as the one from <code node-type="code">(rfc tls)</code>, the only
+difference is it takes <i node-type="i">options</i> to specify extra options, such as
+client certificate, alpn, etc.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-server-socket_210">
+          <span>make-server-socket</span>
+          <span>
+            <i node-type="i">node</i>
+          </span>
+          <span>
+            <i node-type="i">service</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">options</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a client socket.
+This is almost the same as the one from <code node-type="code">(sagittarius socket)</code>, the only
+difference is it takes <i node-type="i">options</i> to specify extra options, such as
+read timeout or connection timeout.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-server-tls-socket_213">
+          <span>make-server-tls-socket</span>
+          <span>
+            <i node-type="i">node</i>
+          </span>
+          <span>
+            <i node-type="i">service</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">options</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a client socket.
+This is almost the same as the one from <code node-type="code">(rfc tls)</code>, the only
+difference is it takes <i node-type="i">options</i> to specify extra options, such as
+private key, etc.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket-options-&gt;client-socket_177">
+          <span>socket-options-&gt;client-socket</span>
+          <span>
+            <i node-type="i">options</i>
+          </span>
+          <span>
+            <i node-type="i">node</i>
+          </span>
+          <span>
+            <i node-type="i">service</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a client socket from the given <i node-type="i">options</i>, <i node-type="i">node</i> and
+<i node-type="i">service</i>.</p>
+      <p node-type="paragraph">This is a convenient procedure to make a socket from the options instead
+of let user dispatch manually.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section724.html">(net server) - Simple server framework</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section726.html">(odbc) - ODBC binding</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

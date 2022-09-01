@@ -1,0 +1,200 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section760.html">(text csv) - Comma separated values parser library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section762.html">(text json) -- JSON parser</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="text.html-lite">(text html-lite) - Simple HTML document builder library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(text html-lite)_149">
+          <span>(text html-lite)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides simple HTML builder procedures based on HTML5.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="html-escape_63">
+          <span>html-escape</span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(in</i>
+          </span>
+          <span>
+            <i node-type="i">(current-input-port))</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="html-escape-string_64">
+          <span>html-escape-string</span>
+          <span>
+            <i node-type="i">string</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Escapes the unsafe characters in HTML and returns escaped string.</p>
+      <p node-type="paragraph">The <code node-type="code">html-escape</code> reads the string from optional argument <i node-type="i">in</i> which
+must be an textual input port and returns an escaped string.</p>
+      <p node-type="paragraph">The <code node-type="code">html-escape-string</code> takes a string and returns an escaped string.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="html-doctype_62">
+          <span>html-doctype</span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(type</i>
+          </span>
+          <span>
+            <i node-type="i">:html-4.01-strict)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a doctype declaration for an HTML document. <i node-type="i">type</i> can be one
+of the followings;</p>
+      <dl node-type="dlist">
+        <dt>
+          <code node-type="code">:html-5</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">HTML 5</p>
+        </dd>
+        <dt>
+          <code node-type="code">:html-4.01-strict :html-4.01, :strict, :html-strict</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">HTML 4.01 Strict DTD</p>
+        </dd>
+        <dt>
+          <code node-type="code">:html-4.01-transitional :html-transitional, :transitional</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">HTML 4.01 Transitional DTD</p>
+        </dd>
+        <dt>
+          <code node-type="code">:xhtml-1.0-strict :xhtml-1.0</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">XHTML 1.0 Strict DTD</p>
+        </dd>
+        <dt>
+          <code node-type="code">:xhtml-1.0-transitional</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">XHTML 1.0 Transitional DTD</p>
+        </dd>
+        <dt>
+          <code node-type="code">:xhtml-1.0-frameset</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">XHTML 1.0 Frameset DTD</p>
+        </dd>
+        <dt>
+          <code node-type="code">:xhtml-1.1</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">XHTML 1.1 DTD</p>
+        </dd>
+      </dl>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="html:_65">
+          <span>html:</span>
+          <span>
+            <i node-type="i">element</i>
+          </span>
+          <span>
+            <i node-type="i">args</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Construct an HTML element <i node-type="i">element</i>. Currently following elements are
+provided.</p>
+      <pre lang="scheme" node-type="block"><code>   a       abbr    address  area       article  aside
+   audio   b       base     bdi        bdo      blockquote
+   body    br      button   canvas     caption  cite
+   code    col     colgroup command    datalist dd
+   del     details dfn      div        dl       dt
+   em      embed   fieldset figcaption figure   footer
+   form
+   h1      h2      h3       h4         h5       h6
+   head    header  hgroup   hr         html
+   i       iframe  img      input      ins      kbd
+   keygen  label   legend   li         link     map
+   mark    menu    meta     meter      nav      noscript
+   object  ol      optgroup option     output   p
+   param   pre     progress q          rp       rt
+   ruby    s       samp     script     section  select
+   small   source  span     strong     style    sub
+   summary sup     table    tbody      td       textarea
+   tfoot   th      thead    time       title    tr
+   track   u       ul       var        video    wbr
+</code></pre>
+      <p node-type="paragraph">The result of these functions is a tree of text segments, which can be written
+out to a port by <code node-type="code">write-tree</code> or can be converted to a string by
+<code node-type="code">tree-&gt;string</code> <a href="section774.html#text.tree">(text tree) - Lightweight text generation</a>.</p>
+      <p node-type="paragraph">You can specify attributes of the element by using a keyword-value notation
+before the actual content.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(tree-&gt;string (html:a :href "http://example.com" "example")) </code></pre>
+          <span />
+          <span>\&lt;a href="http://example.com"&gt;example\&lt;/a&gt;</span>
+        </div>
+      </p>
+      <p node-type="paragraph">The boolean value given to the attribute has special meaning. If #t is given,
+the attribute is rendered without a value. If #f is given, the attribute is not
+rendered.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(tree-&gt;string (html:table :border #t))</code></pre>
+          <span />
+          <span>\&lt;table border&gt;\&lt;/table&gt;</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(tree-&gt;string (html:table :border #f))</code></pre>
+          <span />
+          <span>\&lt;table&gt;\&lt;/table&gt;</span>
+        </div>
+      </p>
+      <p node-type="paragraph">Special characters in attribute values are escaped by the function, but the
+ones in the content are not.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(tree-&gt;string (html:div :foo "&lt;&gt;&amp;\"" "&lt;not escaped&gt;")) </code></pre>
+          <span />
+          <span>\&lt;div foo="&amp;lt;&amp;gt;&amp;amp;&amp;quot;"&gt;\&lt;not escaped&gt;\&lt;/div&gt;</span>
+        </div>
+      </p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section760.html">(text csv) - Comma separated values parser library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section762.html">(text json) -- JSON parser</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

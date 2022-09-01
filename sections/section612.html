@@ -1,0 +1,1421 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section611.html">(sagittarius regex) - regular expression library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section613.html">(sagittarius threads) - Thread</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.socket">(sagittarius socket) - socket library</a>
+      </h2>
+      <p node-type="paragraph">This section describes low level socket API on Sagittarius. The APIs are mostly
+the same signature as Ypsilon and mosh. The following example is simple echo
+server, it receives input from a client and just returns it to the client.</p>
+      <p node-type="paragraph">The example program is from example/socket/echo.scm.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (sagittarius socket))
+;; creates echo server socket with port number 5000
+(define echo-server-socket (make-server-socket "5000"))
+;; addr is client socket
+(let loop ((addr (socket-accept echo-server-socket)))
+  (call-with-socket addr
+   (lambda (sock)
+     ;; socket-port creates binary input/output port
+     ;; make it transcoded port for convenience.
+     (let ((p (transcoded-port (socket-port sock)
+			       ;; on Sagittarius Scheme native-transcoder
+			       ;; uses utf8 codec for ASCII compatibility.
+			       ;; For socket programming it might be better
+			       ;; to specify eol-style with crlf.
+			       ;; But this sample just shows how it goes.
+			       (native-transcoder))))
+       (call-with-port p
+	(lambda (p)
+	  (put-string p "please type something\n\r")
+	  (put-string p "&gt; ")
+	  ;; gets line from client.
+	  (let lp2 ((r (get-line p)))
+	    (unless (eof-object? r)
+	      (print "received: " r)
+	      ;; just returns message from client.
+	      ;; NB: If client type nothing, it'll throw assertion-violation.
+	      (put-string p r)
+	      (put-string p "\r\n&gt; ")
+	      ;; waits for next input.
+	      (lp2 (get-line p)))))))))
+  ;; echo server waits next connection.
+  (loop (socket-accept echo-server-socket)))
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius socket)_99">
+          <span>(sagittarius socket)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides procedures for socket programming.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-client-socket_33">
+          <span>make-client-socket</span>
+          <span>
+            <i node-type="i">node</i>
+          </span>
+          <span>
+            <i node-type="i">srvice</i>
+          </span>
+          <span>
+            <i node-type="i">:opational</i>
+          </span>
+          <span>
+            <i node-type="i">(ai_family</i>
+          </span>
+          <span>
+            <code node-type="code">AF_INET</code>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+          <span> _</span>
+        </a>
+      </div>
+      <p node-type="paragraph">_ <i node-type="i">(ai_socktype</i> <code node-type="code">SOCK_STREAM</code> <i node-type="i">)</i> _
+_ <i node-type="i">(ai_flags</i> <i node-type="i">(+</i> <code node-type="code">AI_V4MAPPED</code> <code node-type="code">AI_ADDRCONFIG</code> <i node-type="i">))</i> <i node-type="i">(ai_protocol</i> <i node-type="i">0)</i></p>
+      <p node-type="paragraph"><i node-type="i">Node</i> and <i node-type="i">service</i> must be string or #f. Other optional arguments
+must be exact integer.</p>
+      <p node-type="paragraph">Returns a client socket connected to an Internet address. The Internet address
+is identified by <i node-type="i">node</i> and <i node-type="i">service</i>. The <code node-type="code">make-client-socket</code>uses <code node-type="code">getaddrinfo(3)</code> to look it up. The arguments <i node-type="i">node</i>, <i node-type="i">service</i>,
+<i node-type="i">ai-family</i>, <i node-type="i">ai-socktype</i>, <i node-type="i">ai-flags</i> and <i node-type="i">ai-protocol</i> are
+passed to <code node-type="code">getaddrinfo(3)</code> as corresponding parameters. For more detail,
+see reference of <code node-type="code">getaddrinfo(3)</code>.</p>
+      <p node-type="paragraph"><i node-type="i">Node</i> is a network address, ex) "www.w3.org", "localhost", "192.168.1.1".</p>
+      <p node-type="paragraph"><i node-type="i">Service</i> is a network service, ex) "http", "ssh", "80", "22".</p>
+      <p node-type="paragraph"><i node-type="i">Ai-family</i> is an address family specifier. Predefined specifiers are listed
+below.</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">AF_INET</p>
+        </li>
+        <li>
+          <p node-type="paragraph">AF_INET6</p>
+        </li>
+        <li>
+          <p node-type="paragraph">AF_UNSPEC</p>
+        </li>
+      </ul>
+      <p node-type="paragraph"><i node-type="i">Ai-sockettype</i> is a socket type specifier. Predefined specifiers are listed
+below.</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">SOCK_STREAM</p>
+        </li>
+        <li>
+          <p node-type="paragraph">SOCK_DGRAM</p>
+        </li>
+        <li>
+          <p node-type="paragraph">SOCK_RAW</p>
+        </li>
+      </ul>
+      <p node-type="paragraph"><i node-type="i">Ai-flags</i> is an additional options specifier. Predefined specifiers are listed
+below.</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">AI_ADDRCONFIG</p>
+        </li>
+        <li>
+          <p node-type="paragraph">AI_ALL</p>
+        </li>
+        <li>
+          <p node-type="paragraph">AI_CANONNAME</p>
+        </li>
+        <li>
+          <p node-type="paragraph">AI_NUMERICHOST</p>
+        </li>
+        <li>
+          <p node-type="paragraph">AI_NUMERICSERV</p>
+        </li>
+        <li>
+          <p node-type="paragraph">AI_PASSIVE</p>
+        </li>
+        <li>
+          <p node-type="paragraph">AI_V4MAPPED</p>
+        </li>
+      </ul>
+      <p node-type="paragraph"><i node-type="i">Ai-protocol</i> is a protocol specifier. Predefined specifiers are listed below.</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">IPPROTO_TCP</p>
+        </li>
+        <li>
+          <p node-type="paragraph">IPPROTO_UDP</p>
+        </li>
+        <li>
+          <p node-type="paragraph">IPPROTO_RAW</p>
+        </li>
+      </ul>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-server-socket_211">
+          <span>make-server-socket</span>
+          <span>
+            <i node-type="i">service</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(ai_family</i>
+          </span>
+          <span>
+            <code node-type="code">AF_INET</code>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+          <span> _</span>
+        </a>
+      </div>
+      <p node-type="paragraph">_ <i node-type="i">(ai_socktype</i> <code node-type="code">SOCK_STREAM</code> <i node-type="i">)</i> _
+_ <i node-type="i">(ai_protocol</i> <i node-type="i">0)</i></p>
+      <p node-type="paragraph"><i node-type="i">Service</i> must be string or #f. Other optional arguments must be exact
+integer. Returns a server socket waiting for connections. The argument details
+are the same as the <code node-type="code">make-client-socket</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket?_201">
+          <span>socket?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is socket object, otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket-port_185">
+          <span>socket-port</span>
+          <span>
+            <i node-type="i">socket</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(close?</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object. Returns a binary input/output port
+associated with <i node-type="i">socket</i>.</p>
+      <p node-type="paragraph">If optional argument <i node-type="i">close?</i> is #f then the port won't close socket
+when port is closing or being GCed.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket-input-port_171">
+          <span>socket-input-port</span>
+          <span>
+            <i node-type="i">socket</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket-output-port_181">
+          <span>socket-output-port</span>
+          <span>
+            <i node-type="i">socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[SRFI-106] <i node-type="i">Socket</i> must be a socket object. Returns a binary input
+and output port associated with <i node-type="i">socket</i>, respectively.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="call-with-socket_27">
+          <span>call-with-socket</span>
+          <span>
+            <i node-type="i">socket</i>
+          </span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object. <i node-type="i">Proc</i> must accept one argument.</p>
+      <p node-type="paragraph">The <code node-type="code">call-with-socket</code> calls a procedure with socket as an argument.</p>
+      <p node-type="paragraph">This procedure is analogy with <code node-type="code">call-with-port</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="shutdown-port_97">
+          <span>shutdown-port</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <i node-type="i">how</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Port</i> must be associated with a socket.</p>
+      <p node-type="paragraph">Shutdowns associated port according to <i node-type="i">how</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="shutdown-input-port_95">
+          <span>shutdown-input-port</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="shutdown-output-port_96">
+          <span>shutdown-output-port</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Port</i> must be associated with a socket.</p>
+      <p node-type="paragraph">The <code node-type="code">shutdown-output-port</code> and <code node-type="code">shutdown-input-port</code> shutdown
+output or input connection of a socket associated with <i node-type="i">port</i> respectively.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket-accept_152">
+          <span>socket-accept</span>
+          <span>
+            <i node-type="i">socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object created by
+<code node-type="code">make-server-socket</code>.</p>
+      <p node-type="paragraph">Wait for an incoming connection request and returns a fresh connected client
+socket.</p>
+      <p node-type="paragraph">This procedures is a thin wrapper of POSIX's <code node-type="code">accept(2)</code>.</p>
+      <p node-type="paragraph">If the calling thread is interrupted by <code node-type="code">thread-interrupt!</code>, then
+the procedure returns #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket-recv_189">
+          <span>socket-recv</span>
+          <span>
+            <i node-type="i">socket</i>
+          </span>
+          <span>
+            <i node-type="i">size</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(flags</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
+      <p node-type="paragraph">Receives a binary data block from given socket. If zero length bytevector is
+returned, it means the peer connection is closed.</p>
+      <p node-type="paragraph">This procedures is a thin wrapper of POSIX's <code node-type="code">recv(2)</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket-send_194">
+          <span>socket-send</span>
+          <span>
+            <i node-type="i">socket</i>
+          </span>
+          <span>
+            <i node-type="i">bytevector</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(flags</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
+      <p node-type="paragraph">Sends a binary data block to given socket and returns the sent data size.</p>
+      <p node-type="paragraph">This procedures is a thin wrapper of POSIX's <code node-type="code">send(2)</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket-shutdown_199">
+          <span>socket-shutdown</span>
+          <span>
+            <i node-type="i">socket</i>
+          </span>
+          <span>
+            <i node-type="i">how</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object. <i node-type="i">How</i> must be one of the
+<code node-type="code">SHUT_RD</code>, <code node-type="code">SHUT_WR</code> or <code node-type="code">SHUT_RDWR</code>.</p>
+      <p node-type="paragraph">The <code node-type="code">socket-shutdown</code> shutdowns socket.</p>
+      <dl node-type="dlist">
+        <dt>SHUT_RD</dt>
+        <dd>
+          <p node-type="paragraph">shutdowns input.</p>
+        </dd>
+        <dt>SHUT_WR</dt>
+        <dd>
+          <p node-type="paragraph">shutdowns output.</p>
+        </dd>
+        <dt>SHUT_RDWR</dt>
+        <dd>
+          <p node-type="paragraph">shutdowns input and output.</p>
+        </dd>
+      </dl>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="socket-close_156">
+          <span>socket-close</span>
+          <span>
+            <i node-type="i">socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object. Closes <i node-type="i">socket</i>.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Socket-information">Socket information</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<socket-info&gt;_58">
+            <span>&lt;socket-info&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">The socket information immutable class. This class has 3 slots</p>
+        <div node-type="define" class="define">
+          <span>Slot</span>
+          <a name="hostname_55">
+            <span>hostname</span>
+          </a>
+        </div>
+        <p node-type="paragraph">This slot has string value represents own or peer socket host.</p>
+        <div node-type="define" class="define">
+          <span>Slot</span>
+          <a name="ip-address_46">
+            <span>ip-address</span>
+          </a>
+        </div>
+        <p node-type="paragraph">This slot has ip-address object of own or peer socket.</p>
+        <div node-type="define" class="define">
+          <span>Slot</span>
+          <a name="port_85">
+            <span>port</span>
+          </a>
+        </div>
+        <p node-type="paragraph">This slot has integer value of own or peer socket port number.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="socket-peer_183">
+            <span>socket-peer</span>
+            <span>
+              <i node-type="i">socket</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
+        <p node-type="paragraph">Returns socket info object or #f. The socket info object contains hostname,
+IP address and port number. These information is retrieved from getpeername(2).</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="socket-name_174">
+            <span>socket-name</span>
+            <span>
+              <i node-type="i">socket</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
+        <p node-type="paragraph">Returns the name string of socket or #f if the socket doesn't have name.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="socket-node_175">
+            <span>socket-node</span>
+            <span>
+              <i node-type="i">socket</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
+        <p node-type="paragraph">Returns the node string of socket. Returns #f for server socket.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="socket-service_196">
+            <span>socket-service</span>
+            <span>
+              <i node-type="i">socket</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
+        <p node-type="paragraph">Returns the service string of socket.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="socket-info_167">
+            <span>socket-info</span>
+            <span>
+              <i node-type="i">socket</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
+        <p node-type="paragraph">Returns socket info object or #f. The socket info object contains hostname,
+IP address and port number. These information is retrieved from getsockname(2).</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="socket-info-values_169">
+            <span>socket-info-values</span>
+            <span>
+              <i node-type="i">socket</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(type</i>
+            </span>
+            <span>
+              <i node-type="i">'peer)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
+        <p node-type="paragraph">Returns 3 values; hostname, IP address and port number. This procedures is
+for convenience to handle socket info object.</p>
+        <p node-type="paragraph">The keyword argument specifies which socket info it should retrieve. If the
+type is <code node-type="code">peer</code> then it uses <code node-type="code">socket-peer</code>. If it is <code node-type="code">info</code>,
+then it uses <code node-type="code">socket-info</code></p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="IP-address-operations">IP address operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="ip-address-&gt;string_48">
+            <span>ip-address-&gt;string</span>
+            <span>
+              <i node-type="i">ip</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">ip</i> must be an IP address object returned from the second value
+of <code node-type="code">socket-info-values</code>.</p>
+        <p node-type="paragraph">Converts given IP address object to human readable string.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="ip-address-&gt;bytevector_47">
+            <span>ip-address-&gt;bytevector</span>
+            <span>
+              <i node-type="i">ip</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">ip</i> must be an IP address object returned from the second value
+of <code node-type="code">socket-info-values</code>.</p>
+        <p node-type="paragraph">Converts given IP address object to bytevector.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="socket.low.level">Low level APIs</a>
+        </h3>
+        <p node-type="paragraph">The low level socket APIs are almost compatible with BSD socket.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Socket">Socket</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-sendto_195">
+              <span>socket-sendto</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">bvtevector</i>
+              </span>
+              <span>
+                <i node-type="i">sockaddr</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(flags</i>
+              </span>
+              <span>
+                <i node-type="i">0)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sends a binary data block to given sockaddr and returns the
+sent data size.</p>
+          <p node-type="paragraph">This procedures is a thin wrapper of POSIX's <code node-type="code">sendto (2)</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-recvfrom_190">
+              <span>socket-recvfrom</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">sockaddr</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(flags</i>
+              </span>
+              <span>
+                <i node-type="i">0)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Receives a binary data block from given sockaddr. If zero length
+bytevector is returned, it means the peer connection is closed.</p>
+          <p node-type="paragraph">This procedures is a thin wrapper of POSIX's <code node-type="code">recvfrom (2)</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-socket_233">
+              <span>make-socket</span>
+              <span>
+                <i node-type="i">ai-family</i>
+              </span>
+              <span>
+                <i node-type="i">ai-socktype</i>
+              </span>
+              <span>
+                <i node-type="i">ai-protocol</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates socket object. The procedure returns #f if it couldn't create
+a socket. <code node-type="code">SO_NOSIGPIPE</code> socket option is set to the created socket.</p>
+          <p node-type="paragraph">This procedure is a thin wrapper of <code node-type="code">socket (2)</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-connect!_160">
+              <span>socket-connect!</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">addrinfo</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-connect!_159">
+              <span>socket-connect!</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">addrinfo</i>
+              </span>
+              <span>
+                <i node-type="i">timeout</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Initiate connection on the given <i node-type="i">socket</i> with given
+addrinfo <i node-type="i">addrinfo</i>.</p>
+          <p node-type="paragraph">If the second form is used, then argument <i node-type="i">timeout</i> represents a
+connection timeout. The value must be a timeout value of <code node-type="code">socket-select</code>.</p>
+          <p node-type="paragraph">This procedure is a thin wrapper of <code node-type="code">connect (2)</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-bind!_153">
+              <span>socket-bind!</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">addrinfo</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Binds a name to the given socket <i node-type="i">socket</i> with given addrinfo
+<i node-type="i">addrinfo</i>.</p>
+          <p node-type="paragraph">This procedure is a thin wrapper of <code node-type="code">bind (2)</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-listen!_172">
+              <span>socket-listen!</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">backlog</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Listen for connections on the given socket <i node-type="i">socket</i>.</p>
+          <p node-type="paragraph">This procedure is a thin wrapper of <code node-type="code">listen (2)</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-setsockopt!_198">
+              <span>socket-setsockopt!</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">level</i>
+              </span>
+              <span>
+                <i node-type="i">name</i>
+              </span>
+              <span>
+                <i node-type="i">value</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sets socket option on the given socket <i node-type="i">socket</i>.</p>
+          <p node-type="paragraph"><i node-type="i">level</i> must be an integer and should be one of the followings:</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">SOL_SOCKET</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SOL_TCP</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SOL_IP</p>
+            </li>
+          </ul>
+          <p node-type="paragraph"><i node-type="i">name</i> must be an integer and should be one of the followings:</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">SO_ACCEPTCONN</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_BINDTODEVICE</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_BROADCAST</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_DEBUG</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_DONTROUTE</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_ERROR</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_KEEPALIVE</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_LINGER</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_OOBINLINE</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_PASSCRED</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_PEERCRED</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_PRIORITY</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_RCVBUF</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_RCVLOWAT</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_RCVTIMEO</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_REUSEADDR</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_REUSEPORT</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_SNDBUF</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_SNDLOWAT</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_SNDTIMEO</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_TIMESTAMP</p>
+            </li>
+            <li>
+              <p node-type="paragraph">SO_TYPE</p>
+            </li>
+            <li>
+              <p node-type="paragraph">TCP_NODELAY</p>
+            </li>
+            <li>
+              <p node-type="paragraph">TCP_MAXSEG</p>
+            </li>
+            <li>
+              <p node-type="paragraph">TCP_CORK</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_OPTIONS</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_PKTINFO</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_RECVTOS</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_RECVTTL</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_RECVOPTS</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_TOS</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_TTL</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_HDRINCL</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_RECVERR</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_MTU_DISCOVER</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_MTU</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_ROUTER_ALERT</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_MULTICAST_TTL</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_MULTICAST_LOOP</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_ADD_MEMBERSHIP</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_DROP_MEMBERSHIP</p>
+            </li>
+            <li>
+              <p node-type="paragraph">IP_MULTICAST_IF</p>
+            </li>
+          </ul>
+          <p node-type="paragraph">The <i node-type="i">value</i> must be either bytevector or integer.</p>
+          <p node-type="paragraph">This procedure is a thin wrapper of <code node-type="code">setsockopt (2)</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-getsockopt_166">
+              <span>socket-getsockopt</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">level</i>
+              </span>
+              <span>
+                <i node-type="i">name</i>
+              </span>
+              <span>
+                <i node-type="i">size</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Gets socket option on the given socket <i node-type="i">socket</i>.</p>
+          <p node-type="paragraph">The <i node-type="i">level</i> and <i node-type="i">name</i> are the same as <code node-type="code">socket-setsockopt!</code>.</p>
+          <p node-type="paragraph"><i node-type="i">size</i> must be an integer. If the value is positive number, then the
+returning value is a bytevector whose element count is <i node-type="i">size</i> and
+contains the socket option converted to byte array. Otherwise it returns
+an integer value.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-nonblocking!_176">
+              <span>socket-nonblocking!</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-blocking!_154">
+              <span>socket-blocking!</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Converts given socket to nonblocking socket and blocking socket,
+respectively.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-set-read-timeout!_197">
+              <span>socket-set-read-timeout!</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">timeout</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sets read timeout of <i node-type="i">timeout</i> to the given <i node-type="i">socket</i>.</p>
+          <p node-type="paragraph">The <i node-type="i">timeout</i> must be either an exact integer represents milliseconds,
+or a time object.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-select_191">
+              <span>socket-select</span>
+              <span>
+                <i node-type="i">rfds</i>
+              </span>
+              <span>
+                <i node-type="i">wfds</i>
+              </span>
+              <span>
+                <i node-type="i">efds</i>
+              </span>
+              <span>
+                <i node-type="i">timeout</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-select!_192">
+              <span>socket-select!</span>
+              <span>
+                <i node-type="i">rfds</i>
+              </span>
+              <span>
+                <i node-type="i">wfds</i>
+              </span>
+              <span>
+                <i node-type="i">efds</i>
+              </span>
+              <span>
+                <i node-type="i">timeout</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Monitor given fdset.</p>
+          <p node-type="paragraph"><i node-type="i">rfds</i>, <i node-type="i">wfds</i> and <i node-type="i">efds</i> must be fdset object.</p>
+          <p node-type="paragraph"><i node-type="i">timeout</i> must be #f, integer, time object or pair of integers. If this
+value is not #f, then the procedure waits only specified amount of time or
+something interesting happens. Otherwise infinite time or something
+interesting happens.</p>
+          <p node-type="paragraph">This procedure blocks the calling thread, and it can be interrupted by
+<code node-type="code">thread-interrupt!</code>.</p>
+          <p node-type="paragraph">This procedure is a thin wrapper of <code node-type="code">select (2)</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-read-select_187">
+              <span>socket-read-select</span>
+              <span>
+                <i node-type="i">timeout</i>
+              </span>
+              <span>
+                <i node-type="i">sockets</i>
+              </span>
+              <span>
+                <i node-type="i">...</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-write-select_200">
+              <span>socket-write-select</span>
+              <span>
+                <i node-type="i">timeout</i>
+              </span>
+              <span>
+                <i node-type="i">sockets</i>
+              </span>
+              <span>
+                <i node-type="i">...</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-error-select_163">
+              <span>socket-error-select</span>
+              <span>
+                <i node-type="i">timeout</i>
+              </span>
+              <span>
+                <i node-type="i">sockets</i>
+              </span>
+              <span>
+                <i node-type="i">...</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Waits until the given sockets <i node-type="i">sockets</i> have something interesting.
+This is the convenient procedure for <code node-type="code">socket-select</code>.</p>
+          <p node-type="paragraph"><i node-type="i">timeout</i> is the same as <code node-type="code">socket-select</code>.</p>
+          <p node-type="paragraph"><code node-type="code">socket-read-select</code> can be used to detect if the given sockets have
+readable data.</p>
+          <p node-type="paragraph"><code node-type="code">socket-write-select</code> can be used to detect if the given sockets are
+still active.</p>
+          <p node-type="paragraph"><code node-type="code">socket-error-select</code> can be used to detect if the given sockets are
+readable data. This procedure might not be so interesting since it can be
+done by <code node-type="code">socket-read-select</code>.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Addrinfo">Addrinfo</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="addrinfo?_20">
+              <span>addrinfo?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is an addrinfo, otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-addrinfo_6">
+              <span>make-addrinfo</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates empty addrinfo object.</p>
+          <p node-type="paragraph">The object has the following slots:</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">
+                <code node-type="code">family</code>
+              </p>
+            </li>
+            <li>
+              <p node-type="paragraph">
+                <code node-type="code">socktype</code>
+              </p>
+            </li>
+            <li>
+              <p node-type="paragraph">
+                <code node-type="code">flags</code>
+              </p>
+            </li>
+            <li>
+              <p node-type="paragraph">
+                <code node-type="code">protocol</code>
+              </p>
+            </li>
+            <li>
+              <p node-type="paragraph">
+                <code node-type="code">sockaddr</code>
+              </p>
+            </li>
+            <li>
+              <p node-type="paragraph">
+                <code node-type="code">next</code>
+              </p>
+            </li>
+          </ul>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-hint-addrinfo_133">
+              <span>make-hint-addrinfo</span>
+              <span>
+                <i node-type="i">family</i>
+              </span>
+              <span>
+                <i node-type="i">socktype</i>
+              </span>
+              <span>
+                <i node-type="i">flags</i>
+              </span>
+              <span>
+                <i node-type="i">protocol</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates an addrinfo with given flags. This can be used as hint for
+<code node-type="code">get-addrinfo</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-addrinfo_19">
+              <span>get-addrinfo</span>
+              <span>
+                <i node-type="i">addrinfo</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Gets addrinfo of given hint addrinfo.</p>
+          <p node-type="paragraph">When the procedure fails, then <code node-type="code">&amp;i/o</code> is raised.</p>
+          <p node-type="paragraph">This procedure is a thin wrapper of <code node-type="code">getaddrinfo (3)</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="next-addrinfo_7">
+              <span>next-addrinfo</span>
+              <span>
+                <i node-type="i">addrinfo</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Retrieves next addrinfo of given <i node-type="i">addrinfo</i> if availalbe, otherwise
+returns #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="addrinfo-sockaddr_19">
+              <span>addrinfo-sockaddr</span>
+              <span>
+                <i node-type="i">addrinfo</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Retrieves <code node-type="code">sockaddr</code> slot of given <i node-type="i">addrinfo</i>.</p>
+          <p node-type="paragraph">The returning value can be used <code node-type="code">socket-recvfrom</code> and <code node-type="code">socket-sendto</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="sockaddr?_149">
+              <span>sockaddr?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is an sockaddr object, otherwise #f.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="FD-sets">FD sets</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="fdset?_3">
+              <span>fdset?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a fdset object, otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-fdset_126">
+              <span>make-fdset</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates a empty fdset object.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="sockets-&gt;fdset_202">
+              <span>sockets-&gt;fdset</span>
+              <span>
+                <i node-type="i">sockets</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates a fdset from given socket list <i node-type="i">sockets</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="fdset-ref_1">
+              <span>fdset-ref</span>
+              <span>
+                <i node-type="i">fdset</i>
+              </span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the given <i node-type="i">socket</i> is set to <i node-type="i">fdset</i>, otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="fdset-set!_2">
+              <span>fdset-set!</span>
+              <span>
+                <i node-type="i">fdset</i>
+              </span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">flag</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sets/unsets the given socket <i node-type="i">socket</i> on <i node-type="i">fdset</i>.</p>
+          <p node-type="paragraph">If the <i node-type="i">flags</i> is #f, then the procedure unsets the <i node-type="i">socket</i>.</p>
+          <p node-type="paragraph">If the <i node-type="i">flags</i> is #t, then the procedure sets the <i node-type="i">socket</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="collect-sockets_97">
+              <span>collect-sockets</span>
+              <span>
+                <i node-type="i">fdset</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns a list of socket which are set on <i node-type="i">fdset</i>.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Socket-conditions">Socket conditions</a>
+          </h4>
+          <p node-type="paragraph">Above APIs may raise either <code node-type="code">&amp;socket</code> or <code node-type="code">&amp;host-not-found</code>. The first
+condition is raised when socket related operation failed, for example
+<code node-type="code">socket-send</code>. The latter condition is raised when <code node-type="code">get-addrinfo</code> is
+failed.</p>
+          <p node-type="paragraph">NOTE: <code node-type="code">make-client-socket</code> and <code node-type="code">make-server-socket</code> may raise
+<code node-type="code">&amp;host-not-found</code> when the given <i node-type="i">node</i> or <i node-type="i">service</i> is not a
+valid value.</p>
+          <p node-type="paragraph">The condition hierarchy is the following:</p>
+          <pre lang="scheme" node-type="block"><code>&amp;i/o
+ + &amp;host-not-found (node service)
+ + &amp;socket (socket)
+    + &amp;socket-connection
+    + &amp;socket-closed
+    + &amp;socket-read-timeout
+    + &amp;socket-port (port)
+</code></pre>
+          <div node-type="define" class="define">
+            <span>Condition Type</span>
+            <a name="&amp;host-not-found_12">
+              <span>&amp;host-not-found</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="host-not-found-error?_54">
+              <span>host-not-found-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-host-not-found-error_134">
+              <span>make-host-not-found-error</span>
+              <span>
+                <i node-type="i">node</i>
+              </span>
+              <span>
+                <i node-type="i">service</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="host-not-found-error-node_52">
+              <span>host-not-found-error-node</span>
+              <span>
+                <i node-type="i">host-not-found</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="host-not-found-error-service_53">
+              <span>host-not-found-error-service</span>
+              <span>
+                <i node-type="i">host-not-found</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This condition describes the combination of <i node-type="i">node</i> and _service_does not exist.</p>
+          <div node-type="define" class="define">
+            <span>Condition Type</span>
+            <a name="&amp;socket_40">
+              <span>&amp;socket</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-error?_165">
+              <span>socket-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-socket-error_237">
+              <span>make-socket-error</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-error-socket_164">
+              <span>socket-error-socket</span>
+              <span>
+                <i node-type="i">socket-error</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This condition describes general socket operation error.</p>
+          <div node-type="define" class="define">
+            <span>Condition Type</span>
+            <a name="&amp;socket-connection_42">
+              <span>&amp;socket-connection</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-connection-error?_161">
+              <span>socket-connection-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-socket-connection-error_236">
+              <span>make-socket-connection-error</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This condition describes socket connection error.</p>
+          <div node-type="define" class="define">
+            <span>Condition Type</span>
+            <a name="&amp;socket-closed_41">
+              <span>&amp;socket-closed</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-closed-error?_158">
+              <span>socket-closed-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-socket-closed-error_235">
+              <span>make-socket-closed-error</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This condition describes socket closed error.</p>
+          <div node-type="define" class="define">
+            <span>Condition Type</span>
+            <a name="&amp;socket-read-timeout_44">
+              <span>&amp;socket-read-timeout</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-closed-error?_157">
+              <span>socket-closed-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-socket-closed-error_234">
+              <span>make-socket-closed-error</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This condition describes socket read timeout error.</p>
+          <div node-type="define" class="define">
+            <span>Condition Type</span>
+            <a name="&amp;socket-port_43">
+              <span>&amp;socket-port</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-port-error?_186">
+              <span>socket-port-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-socket-port-error_238">
+              <span>make-socket-port-error</span>
+              <span>
+                <i node-type="i">socket</i>
+              </span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-error-port_162">
+              <span>socket-error-port</span>
+              <span>
+                <i node-type="i">socket-port-error</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This condition describes error of socket port operation. Particularly,
+when <code node-type="code">port-ready</code> procedure is called on socket port and
+<code node-type="code">select (2)</code> failed.</p>
+          <p node-type="paragraph">NOTE: Read or write failure of socket port raises <code node-type="code">&amp;i/o-read</code> or
+<code node-type="code">&amp;i/o-write</code> the same as other ports for compatibility.</p>
+          <p node-type="paragraph">NOTE2: This condition may be signalled when <code node-type="code">get-bytevector-all</code> is
+called on socket port since it checks whether or not the given port is ready.</p>
+        </section>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section611.html">(sagittarius regex) - regular expression library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section613.html">(sagittarius threads) - Thread</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

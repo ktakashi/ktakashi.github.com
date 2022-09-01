@@ -1,0 +1,422 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section710.html">(dbi) - Database independent access layer</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section712.html">(util deque) - Deque</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="dbm">(dbm) - Generic DBM interface</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(dbm)_10">
+          <span>(dbm)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">The library provides the generic interface to access DBM.</p>
+      <p node-type="paragraph">Sagittarius currently supports following DBM implementation;</p>
+      <dl node-type="dlist">
+        <dt>(dbm dumb)</dt>
+        <dd>
+          <p node-type="paragraph">DBM-like library. Inspired by Python's dbm.dumb. This library must be used
+as the last resort. It has poor performance and memory usage.</p>
+        </dd>
+      </dl>
+      <p node-type="paragraph">The following code shows a typical usage;</p>
+      <pre lang="scheme" node-type="block"><code>(import (dbm))
+
+;; Open the database
+(define *db* (dbm-open (dbm-type-&gt;class 'dumb) :path "dumb.db"))
+
+;; Put the value to the database
+(dbm-put! *db* "key1" "value1")
+
+;; Get the value from the database
+(dbm-get *db* "key1")
+
+;; Iterate over the database
+(dbm-for-each *db* (lambda (key val) #| do something useful |#))
+
+;; Close the database
+(dbm-close *db*)
+</code></pre>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Opening-and-closing-a-dbm-database">Opening and closing a dbm database</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<dbm&gt;_21">
+            <span>&lt;dbm&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">An abstract class for DBM-like database. The class has the following
+slots. It must be filled by <code node-type="code">dbm-open</code>.</p>
+        <dl node-type="dlist">
+          <dt>path</dt>
+          <dd>
+            <p node-type="paragraph">Pathname of the dbm database.</p>
+          </dd>
+          <dt>rw-mode</dt>
+          <dd>
+            <p node-type="paragraph">Specifies read/write mode. Can be one of the following keywords:</p>
+            <p node-type="paragraph">read</p>
+            <p node-type="paragraph">The database will be opened in read-only mode.</p>
+            <p node-type="paragraph">write</p>
+            <p node-type="paragraph">The database will be opened in read-write mode. If the database file
+does not exist, <code node-type="code">dbm-open</code> creates one.</p>
+            <p node-type="paragraph">write</p>
+            <p node-type="paragraph">The database will be opened in read-write mode. If the database file
+exists, <code node-type="code">dbm-open</code> truncates it.
+The keywords are indication so actual implementation may not behave as it
+described.</p>
+          </dd>
+          <dt>key-convert</dt>
+          <dt>value-convert</dt>
+          <dd>
+            <p node-type="paragraph">By default, you can use only strings for both key and values. With
+this option, however, you can specify how to convert other Scheme
+values to/from string to be stored in the database. The possible values
+are the followings:
+#f</p>
+            <p node-type="paragraph">The default value. Keys (values) are not converted.
+They must be a string.
+#t</p>
+            <p node-type="paragraph">Keys (values) are converted to its string representation, using
+<code node-type="code">write/ss</code>, to store in the database and convert back Scheme
+values, using <code node-type="code">read/ss</code>, to retrieve from the database.
+a list of two procedures</p>
+            <p node-type="paragraph">Both procedure must take a single argument. The first procedure must
+receive a Scheme object and returns a string. It is used to convert
+the keys (values) to store in the database. The second procedure must
+receive a string and returns a Scheme object. It is used to convert
+the stored data in the database to a Scheme object.</p>
+          </dd>
+        </dl>
+        <div node-type="define" class="define">
+          <span>Metaclass</span>
+          <a name="<dbm-meta&gt;_20">
+            <span>&lt;dbm-meta&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A metaclass of <code node-type="code">&lt;dbm&gt;</code> and its subclasses.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-open_52">
+            <span>dbm-open</span>
+            <span>
+              <i node-type="i">(dbm</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Opens a dbm database. <i node-type="i">dbm</i> must be an instance of one of the
+concrete classes derived from the <code node-type="code">&lt;dbm&gt;</code>.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-open_51">
+            <span>dbm-open</span>
+            <span>
+              <i node-type="i">(dbm-class</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm-meta>)</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A convenient method that creates dbm instance and opens it.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-close_39">
+            <span>dbm-close</span>
+            <span>
+              <i node-type="i">(dbm</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Closes a dbm database <i node-type="i">dbm</i>. If the database is not closed, then
+the database file may not be synchronised properly. So it is user's
+responsibility to close it.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-closed?_40">
+            <span>dbm-closed?</span>
+            <span>
+              <i node-type="i">(dbm</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns true if the dbm database <i node-type="i">dbm</i> is closed, otherwise #f.</p>
+        <p node-type="paragraph">The returned value may be non boolean value.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="dbm-type-&gt;class_54">
+            <span>dbm-type-&gt;class</span>
+            <span>
+              <i node-type="i">dbmtype</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns DBM class if DBM implementation <i node-type="i">dbmtype</i> exists, otherwise
+#f.</p>
+        <p node-type="paragraph">The <i node-type="i">dbmtype</i> must be a symbol that names the type of dbm implementation,
+and the implementation library name must be <code node-type="code">(dbm _dbmtype_)</code>. For
+example, to get the <i node-type="i">foo</i> DBM then the library name must be
+<code node-type="code">(dbm foo)</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Accessing-a-dbm-database">Accessing a dbm database</a>
+        </h3>
+        <p node-type="paragraph">Once a database is opened, you can use the following methods to access
+individual key/value pairs.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-put!_53">
+            <span>dbm-put!</span>
+            <span>
+              <i node-type="i">(dbm</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm>)</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">value</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Put a <i node-type="i">value</i> with <i node-type="i">key</i></p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-get_49">
+            <span>dbm-get</span>
+            <span>
+              <i node-type="i">(dbm</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm>)</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">default</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Get a value associated with <i node-type="i">key</i>. If no value exists for _key_and <i node-type="i">default</i> is specified, it will be returned. If no value exists for
+<i node-type="i">key</i> and <i node-type="i">default</i> is not specified, then an error will be raised.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-exists?_46">
+            <span>dbm-exists?</span>
+            <span>
+              <i node-type="i">(dbm</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm>)</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Return true value if a value exists for <i node-type="i">key</i>, #f otherwise.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-delete!_45">
+            <span>dbm-delete!</span>
+            <span>
+              <i node-type="i">(dbm</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm>)</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Delete a value associated with <i node-type="i">key</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Iterating-on-a-dbm-database">Iterating on a dbm database</a>
+        </h3>
+        <p node-type="paragraph">To walk over the entire database, following methods are provided.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-fold_47">
+            <span>dbm-fold</span>
+            <span>
+              <i node-type="i">(dbm</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm>)</i>
+            </span>
+            <span>
+              <i node-type="i">procedure</i>
+            </span>
+            <span>
+              <i node-type="i">knil</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The basic iterator. For each key/value pair, <i node-type="i">procedure</i> is called
+as <code node-type="code">_procedure_ key value r</code>, where <i node-type="i">r</i> is <i node-type="i">knil</i> for the
+first call of <i node-type="i">procedure</i>, and the return value of the previous call for
+subsequent calls. Returns the result of the last call of <i node-type="i">procedure</i>.
+If no data is in the database, <i node-type="i">knil</i> is returned.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-for-each_48">
+            <span>dbm-for-each</span>
+            <span>
+              <i node-type="i">(dbm</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm>)</i>
+            </span>
+            <span>
+              <i node-type="i">procedure</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">For each key/value pair in the database <i node-type="i">dbm</i>, <i node-type="i">procedure</i> is
+called. The <i node-type="i">procedure</i> must accept 2 arguments, a key and a value
+respectively. The result of <i node-type="i">procedure</i> is discarded.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-map_50">
+            <span>dbm-map</span>
+            <span>
+              <i node-type="i">(dbm</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm>)</i>
+            </span>
+            <span>
+              <i node-type="i">procedure</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">For each key/value pair in the database <i node-type="i">dbm</i>, <i node-type="i">procedure</i> is
+called. The <i node-type="i">procedure</i> must accept 2 arguments, a key and a value
+respectively. The result of <i node-type="i">procedure</i> is accumulated to a list which
+is returned as a result of <code node-type="code">dbm-map</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Managing-dbm-database-instance">Managing dbm database instance</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-db-exists?_42">
+            <span>dbm-db-exists?</span>
+            <span>
+              <i node-type="i">(class</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm-meta>)</i>
+            </span>
+            <span>
+              <i node-type="i">name</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if a database of class <i node-type="i">class</i> specified by _name_exists.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-db-remove_44">
+            <span>dbm-db-remove</span>
+            <span>
+              <i node-type="i">(class</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm-meta>)</i>
+            </span>
+            <span>
+              <i node-type="i">name</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Removes an entire database of class <i node-type="i">class</i> specified by <i node-type="i">name</i>.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-db-copy_41">
+            <span>dbm-db-copy</span>
+            <span>
+              <i node-type="i">(class</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm-meta>)</i>
+            </span>
+            <span>
+              <i node-type="i">from</i>
+            </span>
+            <span>
+              <i node-type="i">to</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Copy a database of <i node-type="i">class</i> specified by <i node-type="i">from</i> to <i node-type="i">to</i>.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="dbm-db-move_43">
+            <span>dbm-db-move</span>
+            <span>
+              <i node-type="i">(class</i>
+            </span>
+            <span>
+              <i node-type="i"><dbm-meta>)</i>
+            </span>
+            <span>
+              <i node-type="i">from</i>
+            </span>
+            <span>
+              <i node-type="i">to</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Moves or renames a database of <i node-type="i">class</i> specified by _from_to <i node-type="i">to</i>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section710.html">(dbi) - Database independent access layer</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section712.html">(util deque) - Deque</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

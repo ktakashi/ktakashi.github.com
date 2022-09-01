@@ -1,0 +1,1148 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section76.html">(util buffer) - Buffer utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section78.html">(util concurrent) - Concurrency utilities</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.bytevector">(util bytevector) - Bytevector utility library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(util bytevector)_171">
+          <span>(util bytevector)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides bytevector utilities which are not provided as
+builtin procedures such as <code node-type="code">bytevector-&gt;integer</code>.</p>
+      <p node-type="paragraph">All procedures take bytevector as its arguments.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-xor_170">
+          <span>bytevector-xor</span>
+          <span>
+            <i node-type="i">bv1</i>
+          </span>
+          <span>
+            <i node-type="i">bv2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-xor!_171">
+          <span>bytevector-xor!</span>
+          <span>
+            <i node-type="i">out</i>
+          </span>
+          <span>
+            <i node-type="i">bv1</i>
+          </span>
+          <span>
+            <i node-type="i">bv2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-ior_116">
+          <span>bytevector-ior</span>
+          <span>
+            <i node-type="i">bv1</i>
+          </span>
+          <span>
+            <i node-type="i">bv2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-ior!_117">
+          <span>bytevector-ior!</span>
+          <span>
+            <i node-type="i">out</i>
+          </span>
+          <span>
+            <i node-type="i">bv1</i>
+          </span>
+          <span>
+            <i node-type="i">bv2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-and_90">
+          <span>bytevector-and</span>
+          <span>
+            <i node-type="i">bv1</i>
+          </span>
+          <span>
+            <i node-type="i">bv2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-and!_91">
+          <span>bytevector-and!</span>
+          <span>
+            <i node-type="i">out</i>
+          </span>
+          <span>
+            <i node-type="i">bv1</i>
+          </span>
+          <span>
+            <i node-type="i">bv2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Compute exclusive or, logical or and logical and for each given
+bytevectors, respectively.</p>
+      <p node-type="paragraph">The procedures without <code node-type="code">!</code> freshly allocate a new bytevector as it's return
+value. If the given bytevectors are not the same sized, then the smallest
+size will be allocated.</p>
+      <p node-type="paragraph">The procedures with <code node-type="code">!</code> takes first argument as the storage of the result
+and return it.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-slices_144">
+          <span>bytevector-slices</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">k</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(padding</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Slices the given bytevector <i node-type="i">bv</i> into <i node-type="i">k</i> size and returns
+a list of bytevectors.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">padding</i> is given and it must be a procedure accept
+one argument, then it will be called when the last chunk of bytevector is not
+size of <i node-type="i">k</i>. The procedure should return padded bytevector and it doesn't
+check the returned value nor it's size so it is caller's responsibility to
+make sure the returned value is a bytevector and the size is <i node-type="i">k</i>.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(bytevector-slices #vu8(1 2 3 4 5 6) 3)</code></pre>
+          <span />
+          <span>(#vu8(1 2 3) #vu8(4 5 6))</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(bytevector-slices #vu8(1 2 3 4) 3)</code></pre>
+          <span />
+          <span>(#vu8(1 2 3) #vu8(4))</span>
+        </div>
+      </p>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>;; the given bytevector bv is #vu8(4)
+(bytevector-slices #vu8(1 2 3 4) 3 :padding (lambda (bv) #vu8(4 5 6)))
+</code></pre>
+        <span />
+        <span>(#vu8(1 2 3) #vu8(4 5 6))</span>
+      </div>
+      <p node-type="paragraph" />
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>;; this is valid as well so that bytevector-slices doesn't check the 
+;; return value
+(bytevector-slices #vu8(1 2 3 4) 3 :padding (lambda (bv) #f))
+</code></pre>
+        <span />
+        <span>(#vu8(1 2 3) #f)</span>
+      </div>
+      <p node-type="paragraph" />
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-split-at*_145">
+          <span>bytevector-split-at*</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">k</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(padding</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Splits bytevector into 2 bytevectors and returns 2 values of bytevectors.</p>
+      <p node-type="paragraph">The first returned bytevector size will be <i node-type="i">k</i> and its content is given
+bytevector's value starting from 0 to <i node-type="i">k</i> - 1. The second returned value
+is the rest of values of <i node-type="i">bv</i>.</p>
+      <p node-type="paragraph">If size of the given bytevector <i node-type="i">bv</i> is less than <i node-type="i">k</i> then the second
+value of returned bytevector will be empty bytevector.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">padding</i> is given and it must be a procedure accept
+one argument, then it will be called when given bytevector's size is less than
+<i node-type="i">k</i> and first returned value will the result of <i node-type="i">padding</i>.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(bytevector-split-at* #vu8(1 2 3 4 5) 3)</code></pre>
+          <span />
+          <span>#vu8(1 2 3) and #vu8(4 5)</span>
+        </div>
+      </p>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(bytevector-split-at* #vu8(1 2) 3 :padding (lambda (bv) #vu8(1 2 3)))
+</code></pre>
+        <span />
+        <span>#vu8(1 2 3) and #vu8()</span>
+      </div>
+      <p node-type="paragraph" />
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(bytevector-split-at* #vu8(1 2) 3 :padding (lambda (bv) #f))
+</code></pre>
+        <span />
+        <span>#f and #vu8()</span>
+      </div>
+      <p node-type="paragraph" />
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="-&gt;odd-parity_10">
+          <span>-&gt;odd-parity</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(start</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+          <span>
+            <i node-type="i">(end</i>
+          </span>
+          <span>
+            <i node-type="i">(bytevector-length</i>
+          </span>
+          <span>
+            <i node-type="i">bv))</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="-&gt;odd-parity!_11">
+          <span>-&gt;odd-parity!</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(start</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+          <span>
+            <i node-type="i">(end</i>
+          </span>
+          <span>
+            <i node-type="i">(bytevector-length</i>
+          </span>
+          <span>
+            <i node-type="i">bv))</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Compute odd parity of the given bytevector <i node-type="i">bv</i> and return the
+result of bytevector.</p>
+      <p node-type="paragraph">If the second procedure is used, then <i node-type="i">bv</i> will be modified.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector<?_173">
+          <span>bytevector&lt;?</span>
+          <span>
+            <i node-type="i">bv1</i>
+          </span>
+          <span>
+            <i node-type="i">bv2</i>
+          </span>
+          <span>
+            <i node-type="i">rest</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector&gt;?_176">
+          <span>bytevector&gt;?</span>
+          <span>
+            <i node-type="i">bv1</i>
+          </span>
+          <span>
+            <i node-type="i">bv2</i>
+          </span>
+          <span>
+            <i node-type="i">rest</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector<=?_172">
+          <span>bytevector&lt;=?</span>
+          <span>
+            <i node-type="i">bv1</i>
+          </span>
+          <span>
+            <i node-type="i">bv2</i>
+          </span>
+          <span>
+            <i node-type="i">rest</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector&gt;=?_175">
+          <span>bytevector&gt;=?</span>
+          <span>
+            <i node-type="i">bv1</i>
+          </span>
+          <span>
+            <i node-type="i">bv2</i>
+          </span>
+          <span>
+            <i node-type="i">rest</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Comparing given bytevectors.</p>
+      <p node-type="paragraph">The comparison is done by comparing the elements of bytevectors from
+index <code node-type="code">0</code>. The comparison procedures are <code node-type="code">&lt;</code>, <code node-type="code">&gt;</code>, <code node-type="code">&lt;=</code>and <code node-type="code">&gt;=</code>, respectively.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-&gt;hex-string_80">
+          <span>bytevector-&gt;hex-string</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(upper?</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Converts given bytevector <i node-type="i">bv</i> to hex string.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">upper?</i> is specified with true value, then the
+procedures converts to upper case hex values, otherwise lower case.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="hex-string-&gt;bytevector_50">
+          <span>hex-string-&gt;bytevector</span>
+          <span>
+            <i node-type="i">string</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Converts given hex string <i node-type="i">string</i> to bytevector.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-&gt;escaped-string_78">
+          <span>bytevector-&gt;escaped-string</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Converts given bytevector to string without transcoder.</p>
+      <p node-type="paragraph">The conversion is the same as the following code:
+<pre lang="" node-type="snipet"><code>(list-&gt;string (map integer-&gt;char (bytevector-&gt;u8-list bv)))</code></pre></p>
+      <p node-type="paragraph">This procedure is implemented in a memory efficient way.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-reverse!_125">
+          <span>bytevector-reverse!</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(start</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+          <span>
+            <i node-type="i">(end</i>
+          </span>
+          <span>
+            <i node-type="i">(bytevector-length</i>
+          </span>
+          <span>
+            <i node-type="i">bv))</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bytevector-reverse_124">
+          <span>bytevector-reverse</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(start</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+          <span>
+            <i node-type="i">(end</i>
+          </span>
+          <span>
+            <i node-type="i">(bytevector-length</i>
+          </span>
+          <span>
+            <i node-type="i">bv))</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Reverse the given bytevector <i node-type="i">bv</i>.</p>
+      <p node-type="paragraph">Optional arguments <i node-type="i">start</i> and <i node-type="i">end</i> controls from and until where
+the procedure reverses the bytevector. <i node-type="i">end</i> is exclusive.</p>
+      <p node-type="paragraph">The <code node-type="code">bytevector-reverse!</code> reverses destructively.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="SRFI-13-convension-APIs">SRFI-13 convension APIs</a>
+        </h3>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="U8-sets">U8 sets</a>
+          </h4>
+          <p node-type="paragraph">U8 set is a list of integers which range is in between <code node-type="code">0 &lt;= n &lt;= 255</code>.
+This is useful to handle bytevectors as if they are ASCII strings.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="u8?_4">
+              <span>u8?</span>
+              <span>
+                <i node-type="i">o</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">o</i> is an integer in range of
+<code node-type="code">0 &lt;= _o_ &lt;= 255</code>, otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="u8-set?_3">
+              <span>u8-set?</span>
+              <span>
+                <i node-type="i">o</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">o</i> is a list and its all elements satisfy
+<code node-type="code">u8?</code>. Otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="u8-set-contains?_2">
+              <span>u8-set-contains?</span>
+              <span>
+                <i node-type="i">u8-set</i>
+              </span>
+              <span>
+                <i node-type="i">u8</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph"><i node-type="i">u8-set</i> must satisfy <code node-type="code">u8-set?</code>. <i node-type="i">u8</i> should satisfy
+<code node-type="code">u8</code>. The procedure doesn't check if arguments satify this.</p>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">u8-set</i> contains <i node-type="i">u8</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="string-&gt;u8-set_250">
+              <span>string-&gt;u8-set</span>
+              <span>
+                <i node-type="i">string</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Converts given <i node-type="i">string</i> to list of integers. Given <i node-type="i">string</i> should
+only contains in range of ASCII characters but the procedure doesn't check.
+Thus the procedure may return a list doesn't satify <code node-type="code">u8-set?</code>.
+It is users' responsibility to pass ASCII string.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="char-set-&gt;u8-set_56">
+              <span>char-set-&gt;u8-set</span>
+              <span>
+                <i node-type="i">cset</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Converts given char-set <i node-type="i">cset</i> to u8 set. This procedure returns
+a list that satify <code node-type="code">u8-set?</code> by dropping outside of ASCII characters.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Bytevectors-as-ASCII-strings">Bytevectors as ASCII strings</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-fold_104">
+              <span>bytevector-fold</span>
+              <span>
+                <i node-type="i">kons</i>
+              </span>
+              <span>
+                <i node-type="i">knil</i>
+              </span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-fold-right_105">
+              <span>bytevector-fold-right</span>
+              <span>
+                <i node-type="i">kons</i>
+              </span>
+              <span>
+                <i node-type="i">knil</i>
+              </span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Iterate given <i node-type="i">bv</i> from <i node-type="i">start</i> until <i node-type="i">end</i>. <i node-type="i">kons</i> is
+called by each element with result of the <i node-type="i">kons</i>. The inital value is
+<i node-type="i">knil</i>.</p>
+          <p node-type="paragraph">This is analogy of <i node-type="i">fold-left</i> and <i node-type="i">fold-right</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-take_148">
+              <span>bytevector-take</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">n</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-take-right_149">
+              <span>bytevector-take-right</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">n</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Subtract bytevector <i node-type="i">bv</i> until index <i node-type="i">n</i> (exclusive).</p>
+          <p node-type="paragraph">The <code node-type="code">bytevector-take</code> takes from left and the <code node-type="code">bytevector-take-right</code>takes from right.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-drop_100">
+              <span>bytevector-drop</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">n</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-drop-right_101">
+              <span>bytevector-drop-right</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">n</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Drops given <i node-type="i">bv</i> until index <i node-type="i">n</i> (exclusive).</p>
+          <p node-type="paragraph">The <code node-type="code">bytevector-drop</code> drops from left and the <code node-type="code">bytevector-drop-right</code>drops from right.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-trim_151">
+              <span>bytevector-trim</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">criterion</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-trim-right_153">
+              <span>bytevector-trim-right</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">criterion</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-trim-both_152">
+              <span>bytevector-trim-both</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">criterion</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Trims given bytevector <i node-type="i">bv</i> from left, right and both, respectively.</p>
+          <p node-type="paragraph">The optional argument <i node-type="i">criterion</i> specifies how to trim. By default, it
+uses whitespaces. <code node-type="code">" \r\f\v\n\t"</code>.</p>
+          <p node-type="paragraph">The optional arguments <i node-type="i">start</i> and <i node-type="i">end</i> specify from and until where
+the procedure trims. The default value is 0 for <i node-type="i">start</i> and the length
+of given bytevector for <i node-type="i">end</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-pad_119">
+              <span>bytevector-pad</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">n</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(u8</i>
+              </span>
+              <span>
+                <i node-type="i">0)</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-pad-right_120">
+              <span>bytevector-pad-right</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">n</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(u8</i>
+              </span>
+              <span>
+                <i node-type="i">0)</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Pads given bytevector <i node-type="i">bv</i> with <i node-type="i">n</i> elements of <i node-type="i">u8</i>.
+The <code node-type="code">bytevector-pad</code> pads left side of given <i node-type="i">bv</i>. The
+<code node-type="code">bytevector-pad-right</code> pads right side of given <i node-type="i">bv</i>.</p>
+          <p node-type="paragraph">The optional arguments <i node-type="i">start</i> and <i node-type="i">end</i> specify from and until where
+the procedure pads. The default value is 0 for <i node-type="i">start</i> and the length
+of given bytevector for <i node-type="i">end</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-prefix-length_121">
+              <span>bytevector-prefix-length</span>
+              <span>
+                <i node-type="i">bv1</i>
+              </span>
+              <span>
+                <i node-type="i">bv2</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start1</i>
+              </span>
+              <span>
+                <i node-type="i">end1</i>
+              </span>
+              <span>
+                <i node-type="i">start2</i>
+              </span>
+              <span>
+                <i node-type="i">end2</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-suffix-length_146">
+              <span>bytevector-suffix-length</span>
+              <span>
+                <i node-type="i">bv1</i>
+              </span>
+              <span>
+                <i node-type="i">bv2</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start1</i>
+              </span>
+              <span>
+                <i node-type="i">end1</i>
+              </span>
+              <span>
+                <i node-type="i">start2</i>
+              </span>
+              <span>
+                <i node-type="i">end2</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Return the length of the longest common prefix/suffix of the two
+bytevectors.</p>
+          <p node-type="paragraph">The optional start/end indices restrict the comparison to the indicated
+sub bytevectors of <i node-type="i">bv1</i> and <i node-type="i">bv2</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-prefix?_122">
+              <span>bytevector-prefix?</span>
+              <span>
+                <i node-type="i">bv1</i>
+              </span>
+              <span>
+                <i node-type="i">bv2</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start1</i>
+              </span>
+              <span>
+                <i node-type="i">end1</i>
+              </span>
+              <span>
+                <i node-type="i">start2</i>
+              </span>
+              <span>
+                <i node-type="i">end2</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-suffix?_147">
+              <span>bytevector-suffix?</span>
+              <span>
+                <i node-type="i">bv1</i>
+              </span>
+              <span>
+                <i node-type="i">bv2</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start1</i>
+              </span>
+              <span>
+                <i node-type="i">end1</i>
+              </span>
+              <span>
+                <i node-type="i">start2</i>
+              </span>
+              <span>
+                <i node-type="i">end2</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if <i node-type="i">bv1</i> is a prefix/suffix of <i node-type="i">bv2</i>. Otherwise #f.</p>
+          <p node-type="paragraph">The optional start/end indices restrict the comparison to the indicated
+sub bytevectors of <i node-type="i">bv1</i> and <i node-type="i">bv2</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-index_114">
+              <span>bytevector-index</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">criterion</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-index-right_115">
+              <span>bytevector-index-right</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">criterion</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Searches through the given bytevector <i node-type="i">bv</i> from the left (right),
+returning the index of the first occurrence of an element which satisfies
+the <i node-type="i">criterion</i>.</p>
+          <p node-type="paragraph"><i node-type="i">criterion</i> can be a u8 value, a u8 set or a procedure.</p>
+          <p node-type="paragraph">If the procedure doesn't find any element satisfies <i node-type="i">criterion</i>, then
+returns #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-skip_142">
+              <span>bytevector-skip</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">criterion</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-skip-right_143">
+              <span>bytevector-skip-right</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">criterion</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Search through the given bytevector <i node-type="i">bv</i> from the left (right),
+returning the index of the first occurrence of an element which does not
+satisfy the <i node-type="i">criterion</i>.</p>
+          <p node-type="paragraph"><i node-type="i">criterion</i> can be a u8 value, a u8 set or a procedure.</p>
+          <p node-type="paragraph">If the procedure doesn't find any element which does not satisfy
+<i node-type="i">criterion</i>, then returns #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-contains_95">
+              <span>bytevector-contains</span>
+              <span>
+                <i node-type="i">bv1</i>
+              </span>
+              <span>
+                <i node-type="i">bv2</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start1</i>
+              </span>
+              <span>
+                <i node-type="i">end1</i>
+              </span>
+              <span>
+                <i node-type="i">start2</i>
+              </span>
+              <span>
+                <i node-type="i">end2</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns index of <i node-type="i">bv1</i> where <i node-type="i">bv2</i> is found. If <i node-type="i">bv1</i> doesn't
+contain <i node-type="i">bv2</i> then returns #f.</p>
+          <p node-type="paragraph">The optional start/end indices restrict the comparison to the indicated
+sub bytevectors of <i node-type="i">bv1</i> and <i node-type="i">bv2</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-replace_123">
+              <span>bytevector-replace</span>
+              <span>
+                <i node-type="i">bv1</i>
+              </span>
+              <span>
+                <i node-type="i">bv2</i>
+              </span>
+              <span>
+                <i node-type="i">start1</i>
+              </span>
+              <span>
+                <i node-type="i">end2</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start2</i>
+              </span>
+              <span>
+                <i node-type="i">end2</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns</p>
+          <pre lang="scheme" node-type="block"><code>(bytevector-append (bytevector-copy s1 0 start1)
+                   (bytevector-copy s2 start2 end2)
+                   (bytevector-copy s1 end1 (string-length s1)))
+</code></pre>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-tokenize_150">
+              <span>bytevector-tokenize</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">token-set</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Split the given bytevector <i node-type="i">bv</i> into a list of sub bytevectors,
+where each sub bytevector is a maximal non-empty contigunous sequence of
+elements from the u8 set <i node-type="i">token-set</i>.</p>
+          <p node-type="paragraph">Optional argument <i node-type="i">token-set</i> must be a u8 set. By default, it's a
+list of bytes of ASCII graphical characters.</p>
+          <p node-type="paragraph">The optional start/end indices restrict the comparison to the indicated
+sub bytevectors of <i node-type="i">bv</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-filter_103">
+              <span>bytevector-filter</span>
+              <span>
+                <i node-type="i">criterion</i>
+              </span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-delete_99">
+              <span>bytevector-delete</span>
+              <span>
+                <i node-type="i">criterion</i>
+              </span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Filter the bytevector <i node-type="i">bv</i>, retaining only those elements that
+satisfy / do not satisfy the <i node-type="i">criterion</i> argument.</p>
+          <p node-type="paragraph"><i node-type="i">criterion</i> can be a u8 value, a u8 set or a procedure.</p>
+          <p node-type="paragraph">The optional start/end indices restrict the comparison to the indicated
+sub bytevectors of <i node-type="i">bv</i>.</p>
+        </section>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section76.html">(util buffer) - Buffer utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section78.html">(util concurrent) - Concurrency utilities</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

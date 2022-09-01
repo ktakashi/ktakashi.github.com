@@ -1,0 +1,219 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section81.html">(match) -- Pattern matching</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section83.html">(text sxml ssax) - Functional XML parser</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="ported.text.parse">(text parse) - Parsing input stream</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(text parse)_160">
+          <span>(text parse)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">The <code node-type="code">(text parse)</code> library is inspired and compatible with Oleg
+Kiselyov's input parsing library. You can use this library in place of his
+<code node-type="code">'input-parse.scm'</code> and <code node-type="code">'look-for-str.scm'</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="find-string-from-port?_38">
+          <span>find-string-from-port?</span>
+          <span>
+            <i node-type="i">str</i>
+          </span>
+          <span>
+            <i node-type="i">in-port</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">max-no-char</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Looks for a string <i node-type="i">str</i> from the input port <i node-type="i">in-port</i>. The
+optional argument <i node-type="i">max-no-char</i> limits the maxmum number of characters to be
+read from the port; the search span is until EOF.</p>
+      <p node-type="paragraph">If <i node-type="i">str</i> is found, the function returns the number of characters it has read
+from the port, and the port is set to read the first char after that (that is,
+after the <i node-type="i">str</i>). If <i node-type="i">str</i> is not found, the function returns #f.</p>
+      <p node-type="paragraph">Note: Although this procedure has ``?'` in its name, it may return
+non-boolean value, contrary to the Scheme convention.</p>
+      <p node-type="paragraph">In the following functions, <i node-type="i">char-list</i> refers to one of the following.</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">A character set which defined in SRFI-14.</p>
+        </li>
+        <li>
+          <p node-type="paragraph">A list of characters, character sets and/or symbol <code node-type="code">*eof*</code>.</p>
+        </li>
+      </ul>
+      <p node-type="paragraph">That denotes a set of characters. If a symbol <code node-type="code">*eof*</code> is included, the EOF
+condition is also included.  Without <code node-type="code">*eof*</code>, the EOF condition is regarded
+as an error.</p>
+      <div node-type="define" class="define">
+        <span>Functions</span>
+        <a name="assert-curr-char_57">
+          <span>assert-curr-char</span>
+          <span>
+            <i node-type="i">char-list</i>
+          </span>
+          <span>
+            <i node-type="i">string</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Reads a character from the <i node-type="i">port</i> and looks it up in the
+<i node-type="i">char-list</i> of expected characters. If the read character was found among
+the expected, it is returned. Otherwise, the procedure writes a nasty message
+using <i node-type="i">string</i> as a comment, and quits.</p>
+      <div node-type="define" class="define">
+        <span>Functions</span>
+        <a name="skip-until_106">
+          <span>skip-until</span>
+          <span>
+            <i node-type="i">char-list/number</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Char-list/number</i> must be either char-list or number.</p>
+      <p node-type="paragraph">If it is a number; skips the specified number of characters from the port and
+returns #f.</p>
+      <p node-type="paragraph">If it is a char-list; reads and skips characters from the port until one of the
+break characters is encountered. This break character is returned. The break
+characters are specified as the char-list. This list may include EOF, which is
+to be coded as a symbol <code node-type="code">*eof*</code>.</p>
+      <div node-type="define" class="define">
+        <span>Functions</span>
+        <a name="skip-while_107">
+          <span>skip-while</span>
+          <span>
+            <i node-type="i">char-list</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Advances the <i node-type="i">port</i> to the first character that is not a member of the
+<i node-type="i">char-list</i> -- or till the EOF, whichever occurs sooner. This character or
+the EOF object is returned. This character is left on the stream.</p>
+      <div node-type="define" class="define">
+        <span>Functions</span>
+        <a name="peek-next-char_55">
+          <span>peek-next-char</span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Advances to the next character in the port and peeks at it. This function
+is useful when parsing LR(1)-type languages.</p>
+      <div node-type="define" class="define">
+        <span>Functions</span>
+        <a name="next-token_9">
+          <span>next-token</span>
+          <span>
+            <i node-type="i">prefix-char-list</i>
+          </span>
+          <span>
+            <i node-type="i">break-char-list</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">comment</i>
+          </span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Skips any number of characters in <i node-type="i">prefix-char-list</i>, then collects the
+characters until it sees <i node-type="i">break-char-list</i>. The collected characters are
+returned as a string. The break character remains in the <i node-type="i">port</i>.</p>
+      <p node-type="paragraph">If the function encounters EOF and <code node-type="code">*eof*</code> is not included in
+<i node-type="i">break-char-list</i>, an error is signalled with <i node-type="i">comment</i> is included in the
+message.</p>
+      <div node-type="define" class="define">
+        <span>Functions</span>
+        <a name="next-token-of_10">
+          <span>next-token-of</span>
+          <span>
+            <i node-type="i">char-list/pred</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Reads and collects the characters as far as it belongs to <i node-type="i">char-list/pred</i>,
+then returns them as a string. The first character that doesn't belong to
+<i node-type="i">char-list/pred</i> remains on the <i node-type="i">port</i>.</p>
+      <p node-type="paragraph"><i node-type="i">Char-list/pred</i> may be a char-list or a predicate that takes a character.
+If it is a predicate, each character is passed to it, and the character is
+regarded to ``belong to'' <i node-type="i">char-list/pred</i> when it returns a true value.</p>
+      <div node-type="define" class="define">
+        <span>Functions</span>
+        <a name="read-string_41">
+          <span>read-string</span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Reads up to <i node-type="i">n</i> characters, collects them into a string, and returns
+it. If the input stream contains less characters, the returns string contains
+as many characters available.</p>
+      <p node-type="paragraph">This function is similar with <code node-type="code">get-string-n</code>.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section81.html">(match) -- Pattern matching</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section83.html">(text sxml ssax) - Functional XML parser</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

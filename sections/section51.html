@@ -1,0 +1,356 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section5.html">CLOS</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section52.html">(clos core) - CLOS core library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.clos.user">(clos user) -CLOS user APIs</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(clos user)_6">
+          <span>(clos user)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">User level CLOS API collection library.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-class_69">
+          <span>define-class</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">supers</i>
+          </span>
+          <span>
+            <i node-type="i">slots</i>
+          </span>
+          <span>
+            <i node-type="i">.</i>
+          </span>
+          <span>
+            <i node-type="i">options</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Name</i> must be symbol or identifier.</p>
+      <p node-type="paragraph"><i node-type="i">Supers</i> must be list of class.</p>
+      <p node-type="paragraph"><i node-type="i">Slots</i> must be following structure:</p>
+      <pre lang="scheme" node-type="block"><code>_slots_ ::= (_slot_ ...)
+_slot_  ::= (_slot-name_ _specifiers_*)
+_specifiers_ ::= `:init-keyword` _keyword_ 
+		 | `:init-value` _value_                 | `:init-form` _form_                 | `:reader` _reader-function_                 | `:writer` _writer-function_
+</code></pre>
+      <p node-type="paragraph">Defines a new class.</p>
+      <p node-type="paragraph">Slot specifiers:</p>
+      <dl node-type="dlist">
+        <dt>
+          <code node-type="code">:init-keyword</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">This keyword specifies initialisation keyword argument used by the
+<code node-type="code">make</code> procedure. Following code describes how to use:
+<pre lang="" node-type="snipet"><code>(make &lt;a-class&gt; :slot-a 'slot-a-value)</code></pre>
+<code node-type="code">&lt;a-class&gt;</code> has a slot which slot definition contains the keyword
+<code node-type="code">:init-keyword</code> with the keyword <i node-type="i">:slot-a</i>. The code initialises
+an instance of the slot with given value <i node-type="i">slot-a-value</i>.</p>
+        </dd>
+        <dt>
+          <code node-type="code">:init-value</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">This keyword specifies an initial value of target slot.</p>
+        </dd>
+        <dt>
+          <code node-type="code">:init-form</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Similar with <code node-type="code">:init-keyword</code> but this keyword takes expression which
+will be evaluated at initialiation time.</p>
+        </dd>
+        <dt>
+          <code node-type="code">:reader</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">This keyword creates a procedure takes 1 argument an instance of the class
+to access the slot, so users can read the slot without using <code node-type="code">slot-ref</code>    procedure.</p>
+        </dd>
+        <dt>
+          <code node-type="code">:writer</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">This keyword creates a procedure takes 2 argument an instance of the class
+and object to set the slot value with given object, so users can set the
+slot without using <code node-type="code">slot-set!</code> procedure.</p>
+        </dd>
+      </dl>
+      <p node-type="paragraph"><i node-type="i">opttions</i> can specify the metaclass of this class with keyword
+<code node-type="code">:metaclass</code>.</p>
+      <p node-type="paragraph">NOTE: Current implementation does not support <code node-type="code">:allocation</code> keyword
+by default. If you need it, see
+<a href="section66.html#sagittarius.mop.allocation">(sagittarius mop allocation)</a>.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-generic_76">
+          <span>define-generic</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Name</i> must be symbol.</p>
+      <p node-type="paragraph">Creates a new generic function.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-method_82">
+          <span>define-method</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">specifiers</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Name</i> must be symbol.</p>
+      <p node-type="paragraph"><i node-type="i">Specifiers</i> must be following structure:</p>
+      <pre lang="scheme" node-type="block"><code>_specifiers_ ::= (_spec_ ... _rest_)
+_spec_ ::= (_argument-name_ _class_) | (_argument-name_)
+_rest_ ::= '() | symbol
+</code></pre>
+      <p node-type="paragraph">Adds defined method to <i node-type="i">name</i> generic. If the generic does not exist, this
+will create a new generic function implicitly.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slot-ref_115">
+          <span>slot-ref</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">slot-name</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the slot value specified <i node-type="i">slot-name</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slot-set!_118">
+          <span>slot-set!</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">slot-name</i>
+          </span>
+          <span>
+            <i node-type="i">value</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Sets the slot value <i node-type="i">value</i> with specified <i node-type="i">slot-name</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slot-bound?_111">
+          <span>slot-bound?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">slot-name</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if the slot value specified <i node-type="i">slot-name</i> is bounded,
+otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Generic</span>
+        <a name="make_4">
+          <span>make</span>
+          <span>
+            <i node-type="i">class</i>
+          </span>
+          <span>
+            <i node-type="i">args</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a new instance of <i node-type="i">class</i></p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="is-a?_50">
+          <span>is-a?</span>
+          <span>
+            <i node-type="i">object</i>
+          </span>
+          <span>
+            <i node-type="i">class</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">object</i> is an instance of <i node-type="i">class</i>, otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="subtype?_290">
+          <span>subtype?</span>
+          <span>
+            <i node-type="i">class1</i>
+          </span>
+          <span>
+            <i node-type="i">class2</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">class1</i> is a subclass of <i node-type="i">class2</i>, otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slot-ref-using-accessor_116">
+          <span>slot-ref-using-accessor</span>
+          <span>
+            <i node-type="i">object</i>
+          </span>
+          <span>
+            <i node-type="i">accessor</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This procedure is for MOP.</p>
+      <p node-type="paragraph">Returns the slot value got by <i node-type="i">accessor</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slot-set-using-accessor!_120">
+          <span>slot-set-using-accessor!</span>
+          <span>
+            <i node-type="i">object</i>
+          </span>
+          <span>
+            <i node-type="i">accessor</i>
+          </span>
+          <span>
+            <i node-type="i">value</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This procedure is for MOP.</p>
+      <p node-type="paragraph">Sets the slot value <i node-type="i">value</i> to <i node-type="i">object</i> using <i node-type="i">accessor</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slot-ref-using-class_117">
+          <span>slot-ref-using-class</span>
+          <span>
+            <i node-type="i">class</i>
+          </span>
+          <span>
+            <i node-type="i">object</i>
+          </span>
+          <span>
+            <i node-type="i">slot-name</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This procedure is for MOP.</p>
+      <p node-type="paragraph">Returns the slot value according to the given <i node-type="i">class</i>.</p>
+      <p node-type="paragraph">It is an error if the given <i node-type="i">slot-name</i> doesn't exist in the <i node-type="i">class</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slot-set-using-accessor!_119">
+          <span>slot-set-using-accessor!</span>
+          <span>
+            <i node-type="i">class</i>
+          </span>
+          <span>
+            <i node-type="i">object</i>
+          </span>
+          <span>
+            <i node-type="i">slot-name</i>
+          </span>
+          <span>
+            <i node-type="i">value</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This procedure is for MOP.</p>
+      <p node-type="paragraph">Sets the slot value <i node-type="i">value</i> to <i node-type="i">object</i> accoring to the given
+<i node-type="i">class</i>.</p>
+      <p node-type="paragraph">It is an error if the given <i node-type="i">slot-name</i> doesn't exist in the <i node-type="i">class</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slot-bound-using-class?_110">
+          <span>slot-bound-using-class?</span>
+          <span>
+            <i node-type="i">class</i>
+          </span>
+          <span>
+            <i node-type="i">object</i>
+          </span>
+          <span>
+            <i node-type="i">slot-name</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This procedure is for MOP.</p>
+      <p node-type="paragraph">Returns #t if the slot is bounded according to the given <i node-type="i">class</i>,
+otherwise #f.</p>
+      <p node-type="paragraph">It is an error if the given <i node-type="i">slot-name</i> doesn't exist in the <i node-type="i">class</i>.</p>
+      <div node-type="define" class="define">
+        <span>Generic</span>
+        <a name="write-object_75">
+          <span>write-object</span>
+          <span>
+            <i node-type="i">object</i>
+          </span>
+          <span>
+            <i node-type="i">(out</i>
+          </span>
+          <span>
+            <i node-type="i"><port>)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This method will be called when writing the given <i node-type="i">object</i>.</p>
+      <p node-type="paragraph">Defines how user defined class should be written.</p>
+      <div node-type="define" class="define">
+        <span>Generic</span>
+        <a name="object-equal?_5">
+          <span>object-equal?</span>
+          <span>
+            <i node-type="i">object1</i>
+          </span>
+          <span>
+            <i node-type="i">object2</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This method will be called when <code node-type="code">equal?</code> is called.</p>
+      <p node-type="paragraph">Defines how user defined class should be compared.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section5.html">CLOS</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section52.html">(clos core) - CLOS core library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

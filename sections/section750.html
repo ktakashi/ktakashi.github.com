@@ -1,0 +1,585 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section749.html">(rfc smtp) - SMTP client</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section751.html">(rfc uri) - Parse and construct URIs</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rfc.tls">(rfc tls) - TLS protocol library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rfc tls)_47">
+          <span>(rfc tls)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides TLS protocol socket APIs.</p>
+      <p node-type="paragraph">CAUTION: This library is not well tested. So it may have security hole or
+incompatible behaviour. If you find such bugs, please let me know.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-client-tls-socket_34">
+          <span>make-client-tls-socket</span>
+          <span>
+            <i node-type="i">node</i>
+          </span>
+          <span>
+            <i node-type="i">service</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(prng</i>
+          </span>
+          <span>
+            <i node-type="i">(secure-randome</i>
+          </span>
+          <span>
+            <i node-type="i">RC4))</i>
+          </span>
+          <span> _</span>
+        </a>
+      </div>
+      <p node-type="paragraph">_ <i node-type="i">(version</i> <i node-type="i"><i node-type="i">tls-version-1.2</i>)</i> <i node-type="i">(session</i> <i node-type="i">#f)</i> <i node-type="i">(handshake</i> <i node-type="i">#t)</i> _
+_ <i node-type="i">(certificates</i> <i node-type="i">'())</i> <i node-type="i">(private-key</i> <i node-type="i">#f)</i> _
+_ <i node-type="i">:allow-other-keys</i> <i node-type="i">opt</i></p>
+      <p node-type="paragraph"><i node-type="i">node</i> and <i node-type="i">service</i> must be string.</p>
+      <p node-type="paragraph">Creates a client TLS socket. <i node-type="i">node</i>, <i node-type="i">service</i> and <i node-type="i">opt</i> will be
+passed to <code node-type="code">make-client-socket</code> described in
+<a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">prng</i> specifies which pseudo random algorithm will
+be used for generating security parameters.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">version</i> specifies which TLS protocol version will be
+used for negotiation. However the real version will be decided by target server.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">session</i> is for future extension, so do not specify.</p>
+      <p node-type="paragraph">If the keyword argument <i node-type="i">handshake</i> #f then the procedure won't do
+TLS handshake after the socket creation so users must do it manually with
+<code node-type="code">tls-client-handshake</code> procedure described below.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">certificates</i> is for certificate request message.
+The value must be a list of x509 certificates. If the certificates argument
+is null, then the procedures send empty certificate list to the server as
+a response of certificate request message.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">private-key</i> specifies which private key is used.
+The value must be private key object described in <a href="section79.html#crypto">"(crypto)"</a>.
+This is needed if the target server only supports RSA key exchange protocol.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-client-handshake_60">
+          <span>tls-client-handshake</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Do client side handshake and return a TLS socket. The procedure must
+*NOT* be called if the socket is created with <i node-type="i">handshake</i> keyword argument
+#t.</p>
+      <p node-type="paragraph">CAUTION: This procedure needs to be called only once and calling more than once
+might cause infinite loop or raise an error.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-server-tls-socket_212">
+          <span>make-server-tls-socket</span>
+          <span>
+            <i node-type="i">service</i>
+          </span>
+          <span>
+            <i node-type="i">certificates</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(prng</i>
+          </span>
+          <span>
+            <i node-type="i">(secure-randome</i>
+          </span>
+          <span>
+            <i node-type="i">RC4))</i>
+          </span>
+          <span> _</span>
+        </a>
+      </div>
+      <p node-type="paragraph">_ <i node-type="i">(version</i> <i node-type="i"><i node-type="i">tls-version-1.2</i>)</i> _
+_ <i node-type="i">(private-key</i> <i node-type="i">#f)</i> <i node-type="i">(authorities</i> <i node-type="i">'())</i> _
+_ <i node-type="i">:allow-other-keys</i> <i node-type="i">opt</i></p>
+      <p node-type="paragraph"><i node-type="i">service</i> must be string. <i node-type="i">certificates</i> must be a
+list of x509 certificate.</p>
+      <p node-type="paragraph">Creates a server TLS socket. <i node-type="i">service</i> and <i node-type="i">opt</i> will be passed to
+<code node-type="code">make-server-socket</code> described in
+<a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
+      <p node-type="paragraph">The keyword arguments <i node-type="i">prng</i> and <i node-type="i">version</i> are the same meaning as
+<code node-type="code">make-client-tls-socket</code>.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">private-key</i> is used the same as client socket.
+The difference is that it is used also for Deffie-Hellman key exchange.
+If this is not specified, then key exhange is done anonymously.
+It is strongly recomended to specify this keyword argument.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">authorities</i> must be a list of x509 certificate and
+if this is not empty list then the server socket will send certificate request
+message to the client.</p>
+      <p node-type="paragraph">CAUTION: the <i node-type="i">authorities</i> keyword argument currently doesn't check
+the certificate signature but only issuer DN.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-send_75">
+          <span>tls-socket-send</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+          <span>
+            <i node-type="i">bytevector</i>
+          </span>
+          <span>
+            <i node-type="i">flags</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be the socket created by the procedure
+<code node-type="code">make-client-tls-socket</code>.</p>
+      <p node-type="paragraph"><i node-type="i">flags</i> must be non negative exact integer.</p>
+      <p node-type="paragraph">Sends given bytevector to <i node-type="i">tls-socket</i>. <i node-type="i">flags</i> are described in
+the section <a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>. The packet
+will be encrypted by <i node-type="i">tls-socket</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-recv_74">
+          <span>tls-socket-recv</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+          <span>
+            <i node-type="i">size</i>
+          </span>
+          <span>
+            <i node-type="i">flags</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be the socket created by the procedure
+<code node-type="code">make-client-tls-socket</code>.</p>
+      <p node-type="paragraph"><i node-type="i">size</i> and <i node-type="i">flags</i> must be non negative exact integer.</p>
+      <p node-type="paragraph">Receives decrypted packet from <i node-type="i">tls-socket</i>. <i node-type="i">size</i> indicates how many
+octets the procedure should receive, however it might return less octet.
+<i node-type="i">flags</i> will be passed to <code node-type="code">socket-recv</code>.</p>
+      <p node-type="paragraph">NOTE: <i node-type="i">tls-socket</i> have its own buffer to return the value, so that the
+procedure can take <i node-type="i">size</i> argument.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-close_63">
+          <span>tls-socket-close</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be the socket created by the procedure
+<code node-type="code">make-client-tls-socket</code>.</p>
+      <p node-type="paragraph">Sends close notify alert to the socket and close it.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-closed?_64">
+          <span>tls-socket-closed?</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be the socket created by the procedure
+<code node-type="code">make-client-tls-socket</code>.</p>
+      <p node-type="paragraph">Returns #t if the given socket is closed, otherwise #f.</p>
+      <p node-type="paragraph">NOTE: this procedure checks if session is closed. So the real socket might not
+be closed yet.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-accept_62">
+          <span>tls-socket-accept</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(handshake</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+          <span>
+            <i node-type="i">(raise-error</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be a server TLS socket created by
+<code node-type="code">make-server-tls-socket</code>.</p>
+      <p node-type="paragraph">Wait for an incoming connection request and returns a fresh connected client
+socket.</p>
+      <p node-type="paragraph">If the keyword argument <i node-type="i">handshake</i> is #f then the handshake must be done
+by manually with <code node-type="code">tls-server-handshake</code> described blow.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">raise-error</i> will be passed to
+<code node-type="code">tls-server-handshake</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-server-handshake_61">
+          <span>tls-server-handshake</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(raise-error</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Do server side TLS handshake and returns a TLS socket. The procedure must
+*NOT* be called if the socket is created with <i node-type="i">handshake</i> keyword argument
+#t.</p>
+      <p node-type="paragraph">If the keyword argument <i node-type="i">raise-error</i> is #f then it won't raise an error
+when something happens.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-peer_72">
+          <span>tls-socket-peer</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return peer of given <i node-type="i">tls-socket</i> or #f.</p>
+      <p node-type="paragraph">For more details, see <a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-peer_71">
+          <span>tls-socket-peer</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return peer of given <i node-type="i">tls-socket</i> or #f. This procedure is TLS
+version of <code node-type="code">socket-peer</code>.</p>
+      <p node-type="paragraph">For more details, see <a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-name_67">
+          <span>tls-socket-name</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return peer of given <i node-type="i">tls-socket</i> or #f. This procedure is TLS
+version of <code node-type="code">socket-name</code>.</p>
+      <p node-type="paragraph">For more details, see <a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-info-values_65">
+          <span>tls-socket-info-values</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return peer of given <i node-type="i">tls-socket</i> or #f. This procedure is TLS
+version of <code node-type="code">socket-info-values</code>.</p>
+      <p node-type="paragraph">For more details, see <a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="*tls-version-1.2*_23">
+          <span>*tls-version-1.2*</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Constant value of <code node-type="code">#x0303</code> for TLS 1.2</p>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="*tls-version-1.1*_22">
+          <span>*tls-version-1.1*</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Constant value of <code node-type="code">#x0302</code> for TLS 1.1</p>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="*tls-version-1.0*_21">
+          <span>*tls-version-1.0*</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Constant value of <code node-type="code">#x0301</code> for TLS 1.0</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-port_73">
+          <span>tls-socket-port</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(close?</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be the socket created by the procedure
+<code node-type="code">make-client-tls-socket</code>.</p>
+      <p node-type="paragraph">Returns input/output-port of given <i node-type="i">tls-socket</i>.</p>
+      <p node-type="paragraph">If optional argument <i node-type="i">close?</i> is #f then it won't close the socket when the
+port is closed or GCed.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-input-port_66">
+          <span>tls-socket-input-port</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="tls-socket-output-port_70">
+          <span>tls-socket-output-port</span>
+          <span>
+            <i node-type="i">tls-socket</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Convert the given TLS socket to input and output port, respectively.</p>
+      <p node-type="paragraph">The given socket won't be closed when the port is closed or GCed. So it is the
+users responsibility to close.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Integration-methods">Integration methods</a>
+        </h3>
+        <p node-type="paragraph">The methods listed below are convenience methods to use TLS socket and
+usual socket without changing code.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-close_155">
+            <span>socket-close</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-send_193">
+            <span>socket-send</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+            <span>
+              <i node-type="i">data</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(flags</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-recv_188">
+            <span>socket-recv</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+            <span>
+              <i node-type="i">size</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(flags</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-accept_151">
+            <span>socket-accept</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-accept_150">
+            <span>socket-accept</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+            <span>
+              <i node-type="i">(key</i>
+            </span>
+            <span>
+              <i node-type="i"><keyword>)</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">dummy</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="call-with-socket_26">
+            <span>call-with-socket</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-peer_182">
+            <span>socket-peer</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-name_173">
+            <span>socket-name</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-info-values_168">
+            <span>socket-info-values</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-port_184">
+            <span>socket-port</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(close?</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-input-port_170">
+            <span>socket-input-port</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="socket-output-port_180">
+            <span>socket-output-port</span>
+            <span>
+              <i node-type="i">(socket</i>
+            </span>
+            <span>
+              <i node-type="i"><tls-socket>)</i>
+            </span>
+          </a>
+        </div>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section749.html">(rfc smtp) - SMTP client</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section751.html">(rfc uri) - Parse and construct URIs</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

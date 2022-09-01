@@ -1,0 +1,537 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section7.html">Utility libraries</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section72.html">(asn.1) - Abstract Syntas Notation One library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="archive">(archive) - Generic archive interface</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="archive_49">
+          <span>archive</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides generic interface to access archive libraries.
+Sagittarius supports <code node-type="code">tar</code> and <code node-type="code">zip</code>.</p>
+      <p node-type="paragraph">Following code describes a typical use of the library;</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (archive))
+
+;; extract file "bar.txt" from "foo.zip"
+(call-with-input-archive-file 'zip "foo.zip"
+  (lambda (zip-in)
+    (do-entry (e zip-in)
+      (when (string=? (archive-entry-name e) "bar.txt")
+        (call-with-output-file "bar.txt"
+          (lambda (out) (extract-entry e out))
+           :transcoder #f)))))
+
+;; archive "bar.txt" into foo.tar
+(call-with-output-archive-file 'tar "foo.tar"
+  (lambda (tar-out)
+    (append-entry! tar-out (create-entry tar-out "bar.txt"))))
+
+</code></pre>
+      <p node-type="paragraph">Following sections use <i node-type="i">type</i> as a supported archive type. More precisely,
+if it's a supported archive type then there must be a library named
+<code node-type="code">(archive _type_)</code>.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Archive-input">Archive input</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-input-archive_154">
+            <span>make-input-archive</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">type</i> must be a symbol and supported archive type.
+<i node-type="i">input-port</i> must be a binary input port.</p>
+        <p node-type="paragraph">Creates an archive input which represents the specified type of archive.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="next-entry!_8">
+            <span>next-entry!</span>
+            <span>
+              <i node-type="i">archive-input</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves next entry of the given archive input. If there is no entry,
+then it returns #f.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="do-entry_146">
+            <span>do-entry</span>
+            <span>
+              <i node-type="i">(entry</i>
+            </span>
+            <span>
+              <i node-type="i">archive-input)</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="do-entry_145">
+            <span>do-entry</span>
+            <span>
+              <i node-type="i">(entry</i>
+            </span>
+            <span>
+              <i node-type="i">archive-input</i>
+            </span>
+            <span>
+              <i node-type="i">result)</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Convenient macro. Iterates the given <i node-type="i">archive-input</i>'s entries.</p>
+        <p node-type="paragraph">The macro is expanded like this;</p>
+        <pre lang="scheme" node-type="block"><code>(do ((_entry_ (next-entry! _archive-input_) (next-entry! _archive-input_)))
+    ((not _entry_) _result_)
+  _body_ ...)
+</code></pre>
+        <p node-type="paragraph">If the first form is used, then <i node-type="i">result</i> is #t.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="extract-entry_61">
+            <span>extract-entry</span>
+            <span>
+              <i node-type="i">entry</i>
+            </span>
+            <span>
+              <i node-type="i">output-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Extract the given archive entry <i node-type="i">entry</i> to binary output port
+<i node-type="i">output-port</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="extract-all-entries_60">
+            <span>extract-all-entries</span>
+            <span>
+              <i node-type="i">archive-input</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(destinator</i>
+            </span>
+            <span>
+              <i node-type="i">archive-entry-name)</i>
+            </span>
+            <span>
+              <i node-type="i">(overwrite</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Convenient function. Extracts all entries in the given
+<i node-type="i">archive-input</i> to the file specified by <i node-type="i">destinator</i>.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">destinator</i> must be a procedure which accepts
+one argument, archive entry, and return a string represents the
+file/directory path.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">overwrite</i> is #t, then it overwrites the file.
+If it is #f and there is a file, then it raises an error.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="finish!_41">
+            <span>finish!</span>
+            <span>
+              <i node-type="i">archive-input</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Finalize the given archive input.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-input-archive_14">
+            <span>call-with-input-archive</span>
+            <span>
+              <i node-type="i">archive-input</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">archive-input</i> must be an archive input.
+<i node-type="i">proc</i> must be a procedure which accepts one argument.</p>
+        <p node-type="paragraph">Call the <i node-type="i">proc</i> with archive input and returns the result of the
+<i node-type="i">proc</i>.</p>
+        <p node-type="paragraph">The <i node-type="i">archive-input</i> is finalized by <code node-type="code">finish!</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-input-archive-port_16">
+            <span>call-with-input-archive-port</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an archive input with <i node-type="i">type</i> and <i node-type="i">input-port</i>, then
+call <code node-type="code">call-with-input-archive</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-input-archive-file_15">
+            <span>call-with-input-archive-file</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">file</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Open file binary input port with given <i node-type="i">file</i> and call
+<code node-type="code">call-with-input-archive-port</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Archive-output">Archive output</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-output-archive_183">
+            <span>make-output-archive</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">output-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">type</i> must be a symbol.
+<i node-type="i">output-port</i> must be a output port.</p>
+        <p node-type="paragraph">Creates an archive output which represents the specified type of archive.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="create-entry_151">
+            <span>create-entry</span>
+            <span>
+              <i node-type="i">archive-output</i>
+            </span>
+            <span>
+              <i node-type="i">file</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an archive entry from the given <i node-type="i">file</i>.</p>
+        <p node-type="paragraph">For implementing user defined archive;</p>
+        <p node-type="paragraph">This method is defined like following on the interface library:</p>
+        <pre lang="scheme" node-type="block"><code>(define-method create-entry ((out &lt;archive-output&gt;) file)
+  (create-entry out file file))
+</code></pre>
+        <p node-type="paragraph">So as long as it doesn't have to be distinguished, users don't have to
+implement this method.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="create-entry_150">
+            <span>create-entry</span>
+            <span>
+              <i node-type="i">archive-output</i>
+            </span>
+            <span>
+              <i node-type="i">entry-name</i>
+            </span>
+            <span>
+              <i node-type="i">file</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an archive entry from the given <i node-type="i">file</i>. The entry's name
+is <i node-type="i">entry-name</i>. This is useful when users want to append entry with
+different name from file name.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="append-entry!_43">
+            <span>append-entry!</span>
+            <span>
+              <i node-type="i">archive-output</i>
+            </span>
+            <span>
+              <i node-type="i">entry</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Appends the given <i node-type="i">entry</i> to <i node-type="i">archive-output</i>.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="finish!_40">
+            <span>finish!</span>
+            <span>
+              <i node-type="i">archive-output</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Finalize the given archive output.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-output-archive_19">
+            <span>call-with-output-archive</span>
+            <span>
+              <i node-type="i">archive-output</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">archive-output</i> must be an archive output.
+<i node-type="i">proc</i> must be a procedure which accepts one argument.</p>
+        <p node-type="paragraph">Call the <i node-type="i">proc</i> with archive input and returns the result of the
+<i node-type="i">proc</i>.</p>
+        <p node-type="paragraph">The <i node-type="i">archive-output</i> is finalized by <code node-type="code">finish!</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-output-archive-port_21">
+            <span>call-with-output-archive-port</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">output-port</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an archive output with <i node-type="i">type</i> and <i node-type="i">output-port</i>, then
+call <code node-type="code">call-with-output-archive</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-output-archive-file_20">
+            <span>call-with-output-archive-file</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">file</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Open file binary output port with given <i node-type="i">file</i> and call
+<code node-type="code">call-with-output-archive-port</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Entry-accessor">Entry accessor</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="archive-entry-name_50">
+            <span>archive-entry-name</span>
+            <span>
+              <i node-type="i">entry</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the name of <i node-type="i">entry</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="archive-entry-type_51">
+            <span>archive-entry-type</span>
+            <span>
+              <i node-type="i">entry</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the type of <i node-type="i">entry</i>. It is either <code node-type="code">file</code> or
+<code node-type="code">directory</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Implementing-archive-implementation-library">Implementing archive implementation library</a>
+        </h3>
+        <p node-type="paragraph">To support other archive such as RAR, then you need to create a implementation
+library.</p>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(archive interface)_0">
+            <span>(archive interface)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">The library defines all abstract class and method for the generic
+archive access.</p>
+        <p node-type="paragraph">To support <i node-type="i">foo</i> archive, then the library name must be
+code{(archive <i node-type="i">foo</i>)} and it must import <code node-type="code">(archive interface)</code>.
+So the library code should look like this;</p>
+        <pre lang="scheme" node-type="block"><code>(library (archive foo)
+  (export) ;; no export procedure is needed
+  (import (rnrs)
+          (close user)
+          (archive interface)
+          ;; so on
+          ...)
+  ;; class and method definitions
+  ...)
+</code></pre>
+        <p node-type="paragraph">For archiving, the implementation needs to implement following methods and
+extends following classes;</p>
+        <pre lang="scheme" node-type="block"><code>make-archive-input, next-entry, extract-entry
+</code></pre>
+        <pre lang="scheme" node-type="block"><code>&lt;archive-input&gt; &lt;archive-entry&gt;
+</code></pre>
+        <p node-type="paragraph">For extracting, the implementation needs to implement following methods and
+extends following classes;</p>
+        <pre lang="scheme" node-type="block"><code>make-archive-output, create-entry, append-entry!, finish!
+</code></pre>
+        <pre lang="scheme" node-type="block"><code>&lt;archive-output&gt; &lt;archive-entry&gt;
+</code></pre>
+        <p node-type="paragraph">NOTE: <code node-type="code">&lt;archive-entry&gt;</code> may be shared between archiving and extracting.</p>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<archive-input&gt;_7">
+            <span>&lt;archive-input&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Abstract class of the archive input. This class has the following
+slot;</p>
+        <dl node-type="dlist">
+          <dt>source</dt>
+          <dd>
+            <p node-type="paragraph">Source of the archive. For compatibility of other archive, this should be
+a binary input port.</p>
+          </dd>
+        </dl>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<archive-output&gt;_8">
+            <span>&lt;archive-output&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Abstract class of the archive output. This class has the following
+slot;</p>
+        <dl node-type="dlist">
+          <dt>sink</dt>
+          <dd>
+            <p node-type="paragraph">Destination of the archive. For compatibility of other archive, this
+should be a binary output port.</p>
+          </dd>
+        </dl>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<archive-entry&gt;_6">
+            <span>&lt;archive-entry&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Abstract class of the archive entry. This class has the following
+slots;</p>
+        <dl node-type="dlist">
+          <dt>name</dt>
+          <dd>
+            <p node-type="paragraph">Entry name.</p>
+          </dd>
+          <dt>type</dt>
+          <dd>
+            <p node-type="paragraph">Entry type. For compatibility of other archive, this must be <code node-type="code">file</code> or
+<code node-type="code">directory</code>.</p>
+          </dd>
+        </dl>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="make-archive-input_12">
+            <span>make-archive-input</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">(source</i>
+            </span>
+            <span>
+              <i node-type="i"><port>)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="make-archive-output_13">
+            <span>make-archive-output</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">(sink</i>
+            </span>
+            <span>
+              <i node-type="i"><port>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an archive input or output. <i node-type="i">type</i> specifies the
+archive type. It is recommended to use <code node-type="code">eql</code> specializer to specify.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="finish!_39">
+            <span>finish!</span>
+            <span>
+              <i node-type="i">(in</i>
+            </span>
+            <span>
+              <i node-type="i"><archive-input>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The <code node-type="code">finish!</code> method for archive input has a default
+implementation and it does nothing.</p>
+        <p node-type="paragraph">Users can specialize the method for own archive input.</p>
+        <p node-type="paragraph">The other methods must be implemented as it's described in above section.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section7.html">Utility libraries</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section72.html">(asn.1) - Abstract Syntas Notation One library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

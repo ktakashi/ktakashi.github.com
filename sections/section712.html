@@ -1,0 +1,540 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section711.html">(dbm) - Generic DBM interface</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section713.html">(util file) - File operation utility library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.deque">(util deque) - Deque</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(util deque)_179">
+          <span>(util deque)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides deque (double-ended queue) data structure and
+its operations.</p>
+      <p node-type="paragraph">You can create a simple deque, which is not thread-safe, or an MT deque, a
+thread-safe deque. Basic deque operations work on both type of deques. When
+a mtdeque is passed to the procedures listed in this section, each operation
+is done in atomic way, unless otherwise noted.</p>
+      <p node-type="paragraph">There are also a set of procedures for mtdeques that can be used for thread
+synchronisation; for example, you can let the consumer thread block if an
+mtdeque is empty, and/or the producer thread block if the number of items in
+the mtdeque reaches a specified limit. Using these procedures allows the
+program to use an mtdeque as a <i node-type="i">channel</i>.</p>
+      <p node-type="paragraph">NOTE: <a href="section730.html#util.queue">(util queue)</a> is implemented using this library.</p>
+      <div node-type="define" class="define">
+        <span>Class</span>
+        <a name="<deque&gt;_22">
+          <span>&lt;deque&gt;</span>
+        </a>
+      </div>
+      <p node-type="paragraph">A class of simple deque.</p>
+      <div node-type="define" class="define">
+        <span>Class</span>
+        <a name="<mtdeque&gt;_44">
+          <span>&lt;mtdeque&gt;</span>
+        </a>
+      </div>
+      <p node-type="paragraph">A class of mtdeque. Inherits <code node-type="code">&lt;deque&gt;</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-deque_51">
+          <span>make-deque</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates and return an empty simple deque.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-mtdeque_176">
+          <span>make-mtdeque</span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">max-length</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates and return an empty mtdeque.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">max-length</i> specifies the maximum entry count of
+the deque. Negative number indicates unlimited number of entry. If the given
+number is zero then the deque cannot hold any item.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque?_124">
+          <span>deque?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is a deque (either a simple deque or an mtdeque).</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque?_123">
+          <span>deque?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is an mtdeque.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-empty?_107">
+          <span>deque-empty?</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">deque</i> is an empty deque.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-length_109">
+          <span>deque-length</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the number of the items in the deque.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mtdeque-max-length_338">
+          <span>mtdeque-max-length</span>
+          <span>
+            <i node-type="i">mtdeque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the maximum number of items <i node-type="i">mtdeque</i> can hold.
+#f indicates unlimited.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mtdeque-room_339">
+          <span>mtdeque-room</span>
+          <span>
+            <i node-type="i">mtdeque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the number of elements <i node-type="i">mtdeque</i> can accept at this moment
+before it hits its maximum length. If the deque has unlimited capacity then
+the procedure returns <code node-type="code">+inf.0</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="copy-deque_134">
+          <span>copy-deque</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a copy of <i node-type="i">deque</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-push!_113">
+          <span>deque-push!</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Adds <i node-type="i">obj</i> to the end of  <i node-type="i">deque</i>. You may give more than
+one object, and each of them are pushed in order.</p>
+      <p node-type="paragraph">If <i node-type="i">deque</i> is an mtdeque, all the objects are pushed atomically; no
+other objects from other threads can be inserted between the objects given
+to a single <code node-type="code">deque-push!</code> call. Besides, if the value of the result of
+<code node-type="code">mtdeque-max-length</code> is positive, and adding <i node-type="i">objs</i> makes the
+number of element in <i node-type="i">deque</i> exceeds it, an error is raised and
+<i node-type="i">deque</i> won't be modified. (If the maximum length is zero, this procedure
+always fail. Use <code node-type="code">deque-push/wait!</code> below.)</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-unshift!_120">
+          <span>deque-unshift!</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Adds <i node-type="i">obj</i> to in front of <i node-type="i">deque</i>. You may give more than
+one object, and each of them are pushed in order.</p>
+      <p node-type="paragraph">Like <code node-type="code">deque-push!</code>, when <i node-type="i">deque</i> is an mtdeque, all objects are added
+atomically, and the value of max length is checked. See <code node-type="code">deque-push!</code> above
+for more detail.</p>
+      <p node-type="paragraph">The name unshift is taken from Perl.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-push-unique!_114">
+          <span>deque-push-unique!</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+          <span>
+            <i node-type="i">eq-proc</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-unshift-unique!_121">
+          <span>deque-unshift-unique!</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+          <span>
+            <i node-type="i">eq-proc</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Like <code node-type="code">deque-push!</code> and <code node-type="code">deque-unshift!</code>, respectively, except
+that these don't modify <i node-type="i">deque</i> if it already contains <i node-type="i">objs</i> (elements
+are compared by two-argument procedure <i node-type="i">eq-proc</i>).</p>
+      <p node-type="paragraph">When <i node-type="i">deque</i> is an mtdeque, all objects are added atomically, and the max
+length is checked. See <code node-type="code">deque-push!</code> above for the detail.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-pop!_110">
+          <span>deque-pop!</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-shift!_117">
+          <span>deque-shift!</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Take one object from the end or the front of <i node-type="i">deque</i>, respectively,
+and return it.</p>
+      <p node-type="paragraph">If <i node-type="i">deque</i> is empty, <i node-type="i">fallback</i> is returned if give, otherwise an
+error is raised.</p>
+      <p node-type="paragraph">If <i node-type="i">deque</i> is mtdeque and its max length is zero, then the deque is
+always empty. Use <code node-type="code">deque-pop/wait!</code> or <code node-type="code">deque-shift/wait!</code> to use
+such a deque as a synchronisation device.</p>
+      <p node-type="paragraph">The name shift is take from Perl.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-pop-all!_111">
+          <span>deque-pop-all!</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-shift-all!_118">
+          <span>deque-shift-all!</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the whole content of <i node-type="i">deque</i> by a list, with emptying
+<i node-type="i">deque</i>. If <i node-type="i">deque</i> is empty, returns an empty list.</p>
+      <p node-type="paragraph">The the returning list of <code node-type="code">deque-pop-all!</code> is constructed from the end
+of <i node-type="i">queue</i> and <code node-type="code">deque-shift-all!</code>'s one is constructed from the front
+of <i node-type="i">queue</i>.</p>
+      <p node-type="paragraph">See also <code node-type="code">deque-&gt;list</code> below.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-front_108">
+          <span>deque-front</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-rear_116">
+          <span>deque-rear</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Peek the head or the tail of <i node-type="i">deque</i> and return the object,
+respectively.</p>
+      <p node-type="paragraph">If <i node-type="i">deque</i> is empty, <i node-type="i">fallback</i> is returned if give, otherwise an
+error is raised.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="list-&gt;deque_26">
+          <span>list-&gt;deque</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">class</i>
+          </span>
+          <span>
+            <i node-type="i">:rest</i>
+          </span>
+          <span>
+            <i node-type="i">initargs</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a new deque which content is the elements in <i node-type="i">list</i>, in
+the given order.</p>
+      <p node-type="paragraph">By default the created deque is a simple deque, but you can create mtdeque
+or instance of other subclass <code node-type="code">&lt;deque&gt;</code> by giving the class to the
+optional <i node-type="i">class</i> arguments. The optional <i node-type="i">initargs</i> arguments are
+passed to the constructor of <i node-type="i">class</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-&gt;list_106">
+          <span>deque-&gt;list</span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a list whose content is the items in <i node-type="i">deque</i> in order.
+Unlike <code node-type="code">deque-shift-all!</code>, the content of <i node-type="i">deque</i> remains intact.
+The returning list is a copy of the content. So modifying the list won't
+affect <i node-type="i">deque</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="find-in-deque_36">
+          <span>find-in-deque</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the first item in <i node-type="i">deque</i> that satisfies a predicate
+<i node-type="i">pred</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="any-in-deque_39">
+          <span>any-in-deque</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Apply <i node-type="i">pred</i> on each item in <i node-type="i">deque</i> until it evaluates true,
+and returns that true value. If no item satisfies <i node-type="i">pred</i>, #f is returned.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="every-in-deque_42">
+          <span>every-in-deque</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Apply <i node-type="i">pred</i> on each item in <i node-type="i">deque</i>. If <i node-type="i">pred</i> returns #f,
+stops iteration and returns #f immediately. Otherwise, returns the result of
+<i node-type="i">pred</i> on the last item of <i node-type="i">deque</i>. If the deque is empty, #t is
+returned.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="remove-from-deque!_97">
+          <span>remove-from-deque!</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">deque</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Removes all items in <i node-type="i">deque</i> that satisfies <i node-type="i">pred</i>. Returns
+#t if any item is removed. Otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-unshift/wait!_122">
+          <span>deque-unshift/wait!</span>
+          <span>
+            <i node-type="i">mtdeque</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-push/wait!_115">
+          <span>deque-push/wait!</span>
+          <span>
+            <i node-type="i">mtdeque</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-shift/wait!_119">
+          <span>deque-shift/wait!</span>
+          <span>
+            <i node-type="i">mtdeque</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deque-pop/wait!_112">
+          <span>deque-pop/wait!</span>
+          <span>
+            <i node-type="i">mtdeque</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">These synchronising variants work on an mtdeque and make the caller
+thread block when the mtdeque has reached its maximum length (for
+<code node-type="code">deque-unshift/wait!</code> and <code node-type="code">deque-push/wait!</code>), or the mtdeque is empty
+(for <code node-type="code">deque-shift/wait!</code> and <code node-type="code">deque-pop/wait!</code>). The blocked caller
+thread is unblocked either the blocking condition is resolved, or the
+timeout condition is met.</p>
+      <p node-type="paragraph">The optional <i node-type="i">timeout</i> argument specifies the timeout condition. If it
+is #f, those procedure wait indefinitely. If it is a real number, they wait
+at least the given number of seconds.</p>
+      <p node-type="paragraph">In case the call is blocked then timed out, the value of <i node-type="i">timeout-val</i> is
+returned, which default value is #t.</p>
+      <p node-type="paragraph">When <code node-type="code">deque-unshift/wait!</code> and <code node-type="code">deque-push/wait!</code> succeeds without
+hitting timeout, they return #t.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section711.html">(dbm) - Generic DBM interface</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section713.html">(util file) - File operation utility library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

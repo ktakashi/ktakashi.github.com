@@ -1,0 +1,356 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section721.html">(net http-client) - Modern HTTP client</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section723.html">(net oauth) - OAuth library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="net.mqtt">(net mq mqtt) - MQTT library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(net mq mqtt)_22">
+          <span>(net mq mqtt)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Providing MQTT v3.1.1 and partially v3.1 client APIs.</p>
+      <p node-type="paragraph">Reference <a href="http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html">OASIS MQTT</a>.</p>
+      <p node-type="paragraph">Following examples describe how to receive and publish messages.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (net mq mqtt))
+
+(let ((conn (open-mqtt-connection "localhost" "1883")))
+  ;; subscribes to "topic" topic with accepting QoS exactly once
+  (mqtt-subscribe conn "topic" +qos-exactly-once+
+                  (lambda (topic payload)
+                    (let ((msg (get-bytevector-all payload)))
+                      (cond ((not (eof-object? msg))
+                             (print (utf8-&gt;string msg))
+                             (string=? (utf8-&gt;string msg) "END"))
+                            (else #f)))))
+  (let loop ()
+    ;; receives until "END" message was sent
+    (unless (mqtt-receive-message conn)
+      (loop)))
+  ;; unsubscribe from "topic"
+  (mqtt-unsubscribe conn "topic")
+  (close-mqtt-connection! conn))
+</code></pre>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (net mq mqtt))
+
+(let ((conn (open-mqtt-connection "localhost" "1883")))
+  ;; publish message to "topic" topic.
+  (mqtt-publish conn "topic" (string-&gt;utf8 "Hello MQTT"))
+  (close-mqtt-connection! conn))
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mqtt-connection?_332">
+          <span>mqtt-connection?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is MQTT connection. Otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="open-mqtt-connection_38">
+          <span>open-mqtt-connection</span>
+          <span>
+            <i node-type="i">host</i>
+          </span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <i node-type="i">opts</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a socket connected to <i node-type="i">host</i>:<i node-type="i">port</i> and
+pass it to <i node-type="i">port-&gt;mqtt-connection</i> with <i node-type="i">opts</i>.</p>
+      <p node-type="paragraph">The returning value is an MQTT connection object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="port-&gt;mqtt-connection_88">
+          <span>port-&gt;mqtt-connection</span>
+          <span>
+            <i node-type="i">in/out</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">client-id</i>
+          </span>
+          <span>
+            <i node-type="i">username</i>
+          </span>
+          <span>
+            <i node-type="i">password</i>
+          </span>
+          <span>
+            <i node-type="i">keep-alive</i>
+          </span>
+          <span>
+            <i node-type="i">version</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">in/out</i> must be a binary input/outport port.</p>
+      <p node-type="paragraph">Creates an MQTT connection object using <i node-type="i">in/out</i>.</p>
+      <p node-type="paragraph"><i node-type="i">client-id</i>, <i node-type="i">username</i>, <i node-type="i">password</i> and _keep-alive_keyword arguments are for optional payload of CONNECT packet. If they are
+given, then first 3 must be strings and <i node-type="i">keep-alive</i> must be an integer.</p>
+      <p node-type="paragraph"><i node-type="i">version</i> keyword argument is switches which version it should use.
+The value must be one of the followings;</p>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="+mqtt-3.1+_7">
+          <span>+mqtt-3.1+</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="+mqtt-3.1.1+_8">
+          <span>+mqtt-3.1.1+</span>
+        </a>
+      </div>
+      <p node-type="paragraph">By default it uses <code node-type="code">+mqtt-3.1.1+</code>.</p>
+      <p node-type="paragraph">This procedure is for future extension such as supporting websocket.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="close-mqtt-connection!_91">
+          <span>close-mqtt-connection!</span>
+          <span>
+            <i node-type="i">conn</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Closes given MQTT connection.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mqtt-subscribe_336">
+          <span>mqtt-subscribe</span>
+          <span>
+            <i node-type="i">conn</i>
+          </span>
+          <span>
+            <i node-type="i">topic</i>
+          </span>
+          <span>
+            <i node-type="i">qos</i>
+          </span>
+          <span>
+            <i node-type="i">callback</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Subscribes to given <i node-type="i">topic</i> with QoS <i node-type="i">qos</i>.</p>
+      <p node-type="paragraph"><i node-type="i">callback</i> must be a procedure and accept 2 arguments. <i node-type="i">topic</i> and
+<i node-type="i">payload</i>. <i node-type="i">payload</i> is an binary input port.</p>
+      <p node-type="paragraph">To receive messages, use <code node-type="code">mqtt-receive-message</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mqtt-receive-message_335">
+          <span>mqtt-receive-message</span>
+          <span>
+            <i node-type="i">conn</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Receives one message from one of subscribed topics and call registered
+callback.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mqtt-unsubscribe_337">
+          <span>mqtt-unsubscribe</span>
+          <span>
+            <i node-type="i">conn</i>
+          </span>
+          <span>
+            <i node-type="i">topic</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Unsubscribes <i node-type="i">conn</i> from <i node-type="i">topic</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mqtt-publish_334">
+          <span>mqtt-publish</span>
+          <span>
+            <i node-type="i">conn</i>
+          </span>
+          <span>
+            <i node-type="i">topic</i>
+          </span>
+          <span>
+            <i node-type="i">message</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">qos</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Publishes application message <i node-type="i">message</i> to <i node-type="i">topic</i>.</p>
+      <p node-type="paragraph">The <i node-type="i">topic</i> must be a string. The <i node-type="i">message</i> must be a bytevector.</p>
+      <p node-type="paragraph">If keyword argument <i node-type="i">qos</i> is specified, it must be one of the followings.</p>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="+qos-at-most-once+_14">
+          <span>+qos-at-most-once+</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="+qos-at-least-once+_13">
+          <span>+qos-at-least-once+</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="+qos-exactly-once+_15">
+          <span>+qos-exactly-once+</span>
+        </a>
+      </div>
+      <p node-type="paragraph">By default, it uses <code node-type="code">+qos-at-most-once+</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mqtt-ping_333">
+          <span>mqtt-ping</span>
+          <span>
+            <i node-type="i">conn</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Sends PINGREQ packet to the server.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="MQTT-broker">MQTT broker</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(net mq mqtt broker)_21">
+            <span>(net mq mqtt broker)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">This library provides simple MQTT broker implementation.</p>
+        <p node-type="paragraph">The broker only does what broker suppose to do, thus there is no user
+customised behaviour.</p>
+        <p node-type="paragraph">The simplest broker script would look like this:</p>
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (net mq mqtt broker))
+
+;; Wait on port 9000
+(define broker (make-mqtt-broker "9000")))
+
+;; start the broker.
+(mqtt-broker-start! broker)
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-mqtt-broker_174">
+            <span>make-mqtt-broker</span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">config</i>
+            </span>
+            <span>
+              <i node-type="i">authentication-handler</i>
+            </span>
+            <span>
+              <i node-type="i">:allow-other-keys</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates MQTT broker.</p>
+        <p node-type="paragraph">The returning broker is a sub type of <code node-type="code">&lt;simple-server&gt;</code>.</p>
+        <p node-type="paragraph">If <i node-type="i">config</i> keyword argument is specified, the value must be an
+configuration object created by <code node-type="code">make-mqtt-broker-config</code>, then the
+specified configuration is used. Otherwise default configuration
+which can be created by <code node-type="code">(make-mqtt-broker-config)</code> is used.</p>
+        <p node-type="paragraph">If <i node-type="i">authentication-handler</i> keyword argument is specified, then
+the specified value which must be a procedure takes 2 arguments, username
+and password, handles authentication. If the procedure doesn't return
+true value then authentication error packet is sent to the client.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-mqtt-broker-config_175">
+            <span>make-mqtt-broker-config</span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(max-thread</i>
+            </span>
+            <span>
+              <i node-type="i">10)</i>
+            </span>
+            <span>
+              <i node-type="i">:allow-other-keys</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a MQTT broker configuration object.</p>
+        <p node-type="paragraph">The returning value is a sub type of <code node-type="code">&lt;server-config&gt;</code> with
+<code node-type="code">:non-blocking?</code> option.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mqtt-broker-start!_330">
+            <span>mqtt-broker-start!</span>
+            <span>
+              <i node-type="i">broker</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mqtt-broker-stop!_331">
+            <span>mqtt-broker-stop!</span>
+            <span>
+              <i node-type="i">broker</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Start and stop procedure for MQTT broker.</p>
+        <p node-type="paragraph">These procedures are mere redefinitions of <code node-type="code">server-start!</code> and
+<code node-type="code">server-stop!</code>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section721.html">(net http-client) - Modern HTTP client</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section723.html">(net oauth) - OAuth library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

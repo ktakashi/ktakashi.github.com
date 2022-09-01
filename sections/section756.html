@@ -1,0 +1,348 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section755.html">(rfc x.509) - X.509 certificate utility library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section757.html">RPC support framework</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rfc.zlib">(rfc zlib) - zlib compression library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rfc zlib)_54">
+          <span>(rfc zlib)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides the binding for zlib compression library. For now,
+it only provides the highest level APIs.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;zlib-error_50">
+          <span>&amp;zlib-error</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="zlib-error?_11">
+          <span>zlib-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="condition-zlib-stream_126">
+          <span>condition-zlib-stream</span>
+          <span>
+            <i node-type="i">zlib-error</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Subcondition of <code node-type="code">&amp;error</code>.</p>
+      <p node-type="paragraph">This condition is raised when zlib process is finished unsuccessfully. You can
+obtain the cause z-stream with the <code node-type="code">condition-zlib-stream</code> procedure and
+get the detail message with the <code node-type="code">zlib-error-message</code> procedure. When error
+occurred, however, it is raised with <code node-type="code">message-condition</code> and it has the
+error message with. So you can simply get it with <code node-type="code">condition-message</code>procedure.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="zlib-error-message_10">
+          <span>zlib-error-message</span>
+          <span>
+            <i node-type="i">z-stream</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Z-stream</i> must be z-stream object.</p>
+      <p node-type="paragraph">Retrieve error message from <i node-type="i">z-stream</i>. If <i node-type="i">z-stream</i> does not have any
+error message and this procedure is called, the behaviour is unspecified.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="open-deflating-output-port_29">
+          <span>open-deflating-output-port</span>
+          <span>
+            <i node-type="i">sink</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">compression-level</i>
+          </span>
+          <span>
+            <i node-type="i">buffer-size</i>
+          </span>
+          <span>
+            <i node-type="i">window-bits</i>
+          </span>
+          <span>
+            <i node-type="i">memory-level</i>
+          </span>
+          <span> _</span>
+        </a>
+      </div>
+      <p node-type="paragraph">_ <i node-type="i">strategy</i> <i node-type="i">dictionary</i> <i node-type="i">owner?</i></p>
+      <p node-type="paragraph"><i node-type="i">Sink</i> must be binary output port. Creates a custom binary output
+port. The port deflates its input and put the result to <i node-type="i">sink</i>. With the
+optional keys, you can specify the following conditions:</p>
+      <dl node-type="dlist">
+        <dt>
+          <i node-type="i">compression-level</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">You can specify an exact integer between 1 and 9 (inclusive) to
+<i node-type="i">compression-level</i>. When it is omitted, a default compression level is
+used, which is usually 6.
+The following constants are defined to specify _compression-level_conveniently:</p>
+          <div node-type="define" class="define">
+            <span>Constant</span>
+            <a name="Z_NO_COMPRESSION_7">
+              <span>Z_NO_COMPRESSION</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Constant</span>
+            <a name="Z_BEST_SPEED_1">
+              <span>Z_BEST_SPEED</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Constant</span>
+            <a name="Z_BEST_COMPRESSION_0">
+              <span>Z_BEST_COMPRESSION</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Constant</span>
+            <a name="Z_DEFAULT_COMPRESSION_2">
+              <span>Z_DEFAULT_COMPRESSION</span>
+            </a>
+          </div>
+        </dd>
+        <dt>
+          <i node-type="i">buffer-size</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">It specifies the buffer size of the port in bytes.
+The default is 4096.</p>
+        </dd>
+        <dt>
+          <i node-type="i">window-bits</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">It specifies the size of the window in exact
+integer. Typically the value should be between 8 and 15, inclusive, and it
+specifies the base two logarithm of the window size used in compression. Larger
+number yields better compression ratio, but more memory usage. The default value
+is 15.</p>
+        </dd>
+        <dt>
+          <i node-type="i">memory-level</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">It specifies how much memory should be allocated to
+keep the internal state during compression. 1 means smallest memory which causes
+slow and less compression. 9 means fastest and best compression with the largest
+amount of memory. The default value is 8.</p>
+        </dd>
+        <dt>
+          <i node-type="i">strategy</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">To fine tune compression algorithm, you can use the
+<i node-type="i">strategy</i> argument. The following constants are defined as the valid value
+as <i node-type="i">strategy</i>.</p>
+          <div node-type="define" class="define">
+            <span>Constant</span>
+            <a name="Z_DEFAULT_STRATEGY_3">
+              <span>Z_DEFAULT_STRATEGY</span>
+            </a>
+          </div>
+          <p node-type="paragraph">The default strategy, suitable for most ordinary data.</p>
+          <div node-type="define" class="define">
+            <span>Constant</span>
+            <a name="Z_FILTERED_4">
+              <span>Z_FILTERED</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Suitable for data generated by filters (or predictors). Filtered data
+consists mostly of small values with a somewhat compress them better. The
+effect of this is to force more huffman coding and less string matching.</p>
+          <div node-type="define" class="define">
+            <span>Constant</span>
+            <a name="Z_HUFFMAN_ONLY_6">
+              <span>Z_HUFFMAN_ONLY</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Force to use huffman encoding only.</p>
+          <div node-type="define" class="define">
+            <span>Constant</span>
+            <a name="Z_RLE_8">
+              <span>Z_RLE</span>
+            </a>
+          </div>
+          <p node-type="paragraph">This is designed to be almost as fast as Z_HUFFMAN_ONLY, but gives better
+compression for PNG image data.</p>
+          <div node-type="define" class="define">
+            <span>Constant</span>
+            <a name="Z_FIXED_5">
+              <span>Z_FIXED</span>
+            </a>
+          </div>
+          <p node-type="paragraph">This prevents the use of dynamic huffman codes, allowing for a simpler
+decoder for special applications.
+The choice of <i node-type="i">strategy</i> only affects compression ratio and speed. Any
+choice produces correct and decompressable data.</p>
+        </dd>
+        <dt>
+          <i node-type="i">dictionary</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">You can give an initial dictionary to the
+<i node-type="i">dictionary</i> argument to be used in compression. The compressor and
+decompressor must use exactly the same dictionary.</p>
+        </dd>
+        <dt>
+          <i node-type="i">owner?</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">If this argument is specified true value, the created
+port automatically closes the given output port <i node-type="i">sink</i> when it is closed.</p>
+        </dd>
+      </dl>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="open-inflating-input-port_34">
+          <span>open-inflating-input-port</span>
+          <span>
+            <i node-type="i">source</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">buffer-size</i>
+          </span>
+          <span>
+            <i node-type="i">window-bits</i>
+          </span>
+          <span>
+            <i node-type="i">dictionary</i>
+          </span>
+          <span>
+            <i node-type="i">owner?</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Source</i> must be a binary input port.</p>
+      <p node-type="paragraph">The <code node-type="code">open-inflating-input-port</code> creates a custom binary input port, which
+reads compressed binary data from the given port <i node-type="i">source</i> and decompresses
+the read data. When <i node-type="i">source</i> port supports both <code node-type="code">port-position</code> and
+<code node-type="code">set-port-position!</code> then the procedure will set <i node-type="i">source</i> position
+to offset of used bytes length when the created custom port is being closed.
+Thus if the <i node-type="i">source</i> port contains mixture of deflated data and non
+deflated data then the custom port will only read deflated data and won't
+forward the original port position beyond it no matter how big the
+<i node-type="i">buffer-size</i> is specified.</p>
+      <p node-type="paragraph">The meaning of <i node-type="i">buffer-size</i> is the same as
+<code node-type="code">open-deflating-output-port</code>.</p>
+      <p node-type="paragraph">The meaning of <i node-type="i">window-bits</i> is almost the same, except if a value increased
+by 32 is given, the inflating port automatically detecs whether the source
+stream is zlib or gzip by its header.</p>
+      <p node-type="paragraph">If the input data is compressed with specified dictionary, the same dictionary
+must be given to <i node-type="i">dictionary</i> argument. Otherwise &amp;zlib-error condition is
+raised.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="inflate-bytevector_31">
+          <span>inflate-bytevector</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">opts</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="deflate-bytevector_98">
+          <span>deflate-bytevector</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">opts</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Inflate/deflate given bytevector <i node-type="i">bv</i> respectively.</p>
+      <p node-type="paragraph">These are convenient procedures. It uses <code node-type="code">open-inflating-input-port</code> or
+<code node-type="code">open-deflating-output-port</code> to inflate/deflate.</p>
+      <p node-type="paragraph">The <i node-type="i">opts</i> will be passed to underlying procedures.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="crc32_141">
+          <span>crc32</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(checksum</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="adler32_21">
+          <span>adler32</span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(checksum</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns CSC32/Adler32 checksum of bytevector <i node-type="i">bv</i>, respectively.</p>
+      <p node-type="paragraph">If optional <i node-type="i">checksum</i> is given, then returned checksum is an update of
+<i node-type="i">checksum</i> by <i node-type="i">bv</i>.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section755.html">(rfc x.509) - X.509 certificate utility library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section757.html">RPC support framework</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

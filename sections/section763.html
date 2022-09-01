@@ -1,0 +1,540 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section762.html">(text json) -- JSON parser</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section764.html">(text json jmespath) - JMESPath</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="text.json.object-builder">(text json object-builder) -- JSON object builder/serializer</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(text json object-builder)_152">
+          <span>(text json object-builder)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides Scheme object -&gt; JSON string and vice versa
+utilities.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="JSON-object-builder">JSON object builder</a>
+        </h3>
+        <p node-type="paragraph">JSON object builder is a Schem object which contains information to
+construct a Scheme object from JSON representation. Currently this can be
+created only via <code node-type="code">json-object-builder</code> macro.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json:builder?_50">
+            <span>json:builder?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a JSON object builder.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="json-object-builder_15">
+            <span>json-object-builder</span>
+            <span>
+              <i node-type="i">ctr</i>
+            </span>
+            <span>
+              <i node-type="i">spec</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary syntax</span>
+          <a name="?_2">
+            <span>?</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary syntax</span>
+          <a name="@_1">
+            <span>@</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A DSL which constructs JSON object builder.</p>
+        <p node-type="paragraph">The <i node-type="i">spec</i> must be one of the followings:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(@ -&gt;array spec)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(@ -&gt;array)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(ctr mapping ...)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">ctr/builder</code>
+            </p>
+          </li>
+        </ul>
+        <p node-type="paragraph"><i node-type="i">-&gt;array</i> must be a procedure which accepts variable length of
+arguments, such as <code node-type="code">list</code> or <code node-type="code">vector</code>.</p>
+        <p node-type="paragraph"><i node-type="i">ctr</i> must be a procedure which accepts the same number of the
+specified keys in the <i node-type="i">mapping</i> and constucts object.</p>
+        <p node-type="paragraph"><i node-type="i">ctr/builder</i> must be either object constructor described above
+or JSON object builder created by the <code node-type="code">json-object-builder</code>.</p>
+        <p node-type="paragraph">If the first 2 form is used, then the created builder handles JSON
+array.</p>
+        <p node-type="paragraph">If the 3rd form is used, then the created builder handles JSON object
+(a.k.a map).</p>
+        <p node-type="paragraph">If the lsst form is used, then the created builder handles simple
+JSON values, such as JSON string and number.</p>
+        <p node-type="paragraph">The <i node-type="i">mapping</i> must be one of the followings:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(? key default spec)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(? key default)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(key spec)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">key</code>
+            </p>
+          </li>
+        </ul>
+        <p node-type="paragraph"><i node-type="i">key</i> must be a string represents the JSON object's key.</p>
+        <p node-type="paragraph"><i node-type="i">default</i> must be a Scheme object which is used when the <i node-type="i">key</i> is
+absent.</p>
+        <p node-type="paragraph">The first 2 forms represetns optional values. If the JSON object key
+<i node-type="i">key</i> is not present, then <i node-type="i">default</i> is mapped to the result
+Scheme object.</p>
+        <p node-type="paragraph">Here are some of examples:</p>
+        <pre lang="scheme" node-type="block"><code>(json-object-builder
+ (make-image-holder
+  ("Image"
+  (make-image
+   "Width"
+   "Height"
+   "Title"
+   ("Thumbnail"
+    (make-thumbnail
+     "Url"
+     "Height"
+     "Width"))
+   "Animated"
+   ("IDs" (  list))))))
+#|
+Above construct Scheme object from JSON like the following:
+{
+  "Image": {
+    "Width":  800,
+    "Height": 600,
+    "Title":  "View from 15th Floor",
+    "Thumbnail": {
+      "Url":    "http://www.example.com/image/481989943",
+      "Height": 125,
+      "Width":  100
+  },
+    "Animated" : false,
+    "IDs": [116, 943, 234, 38793]
+  }
+}
+|#
+</code></pre>
+        <pre lang="scheme" node-type="block"><code>(json-object-builder
+ (  list
+    (make-location
+     "precision"
+     "Latitude"
+     "Longitude"
+     (? "Address" #f)
+     "City"
+     "State"
+     "Zip"
+     "Country")))
+#|
+Above construct Scheme object from JSON like the following:
+[
+  {
+    "precision": "zip",
+    "Latitude":  37.7668,
+    "Longitude": -122.3959,
+    "Address":   "",
+    "City":      "SAN FRANCISCO",
+    "State":     "CA",
+    "Zip":       "94107",
+    "Country":   "US"
+  },
+  {
+    "precision": "zip",
+    "Latitude":  37.371991,
+    "Longitude": -122.026020,
+    "City":      "SUNNYVALE",
+    "State":     "CA",
+    "Zip":       "94085",
+    "Country":   "US"
+  }
+]
+|#
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-&gt;object_14">
+            <span>json-&gt;object</span>
+            <span>
+              <i node-type="i">json</i>
+            </span>
+            <span>
+              <i node-type="i">builder</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">missing-key-handler</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-string-&gt;object_45">
+            <span>json-string-&gt;object</span>
+            <span>
+              <i node-type="i">json-string</i>
+            </span>
+            <span>
+              <i node-type="i">builder</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">missing-key-handler</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-object-from-json_38">
+            <span>read-object-from-json</span>
+            <span>
+              <i node-type="i">builder</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(in-port</i>
+            </span>
+            <span>
+              <i node-type="i">(current-input-port))</i>
+            </span>
+            <span>
+              <i node-type="i">missing-key-handler</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Constructs Scheme object from given <i node-type="i">json</i>, _json-string_or <i node-type="i">in-port</i>, according to the given <i node-type="i">builder</i>.</p>
+        <p node-type="paragraph">If the first form is used, then <i node-type="i">json</i> must be a vector type JSON
+representation specified by the <code node-type="code">*json-map-type*</code> parameter.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(let ((json-string "{\"bar\": {\"buz\": 1}}"))
+  (define-record-type foo
+    (fields bar))
+  (define-record-type bar
+    (fields buz))
+  (define bar-builder (json-object-builder (make-bar "buz")))
+  (define builder (json-object-builder (make-foo ("bar" bar-builder))))
+
+  (json-string-&gt;object json-string builder))
+</code></pre>
+          <span />
+          <span>foo</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">If <i node-type="i">missing-key-handler</i> is given, then it must be a procedure accepts 2
+arguments. This procedure is called when the conversion procedure met keys
+which is not defined in <i node-type="i">builder</i>. The default behaviour is raising an
+error.</p>
+        <div node-type="define" class="define">
+          <span>Parameter</span>
+          <a name="*post-json-object-build*_16">
+            <span>*post-json-object-build*</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Parameter</span>
+          <a name="*post-json-array-build*_15">
+            <span>*post-json-array-build*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">These parameters hold a procedure which is called when an object is
+constructed from JSON object (map) or JSON array, respectively.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="JSON-object-serializer">JSON object serializer</a>
+        </h3>
+        <p node-type="paragraph">JSON object serializer is a Schem object which contains information to
+construct a JSON representaion from Scheme object. Currently this can be
+created only via <code node-type="code">json-object-serializer</code> macro.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json:serializer?_51">
+            <span>json:serializer?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a JSON object serializer.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="json-object-serializer_16">
+            <span>json-object-serializer</span>
+            <span>
+              <i node-type="i">ctr</i>
+            </span>
+            <span>
+              <i node-type="i">spec</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary syntax</span>
+          <a name="?_1">
+            <span>?</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary syntax</span>
+          <a name="@_0">
+            <span>@</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary syntax</span>
+          <a name="-&gt;_4">
+            <span>-&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A DSL which constructs JSON object serializer.</p>
+        <p node-type="paragraph">The <i node-type="i">spec</i> must be one of the followings:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(-&gt; car cdr null? spec)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(-&gt; car cdr null?)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(-&gt; spec)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(-&gt;)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(@ ref length spec)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(@ ref length)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(@ spec)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(@)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(mapping mapping* ...)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">converter/serializer</code>
+            </p>
+          </li>
+        </ul>
+        <p node-type="paragraph"><code node-type="code">-&gt;</code> indicates that the given object is a listlike object which can
+be accessed sequentially. <i node-type="i">car</i>, <i node-type="i">cdr</i> and <i node-type="i">null?</i> specifies
+how to retrieve the car part and cdr part, and how to check if the object
+is empty or not, respectively. If these are not given then the macro
+uses <code node-type="code">car</code>, <code node-type="code">cdr</code> and <code node-type="code">null?</code>.</p>
+        <p node-type="paragraph"><code node-type="code">@</code> indicates that the given object is a vectorlike object which
+can be accessed randomly. <i node-type="i">ref</i> and <i node-type="i">length</i> specifies how to access
+the element of the object, and how to retrieve the length of the object,
+respectively. If these are not given then the macro uses <code node-type="code">vector-ref</code>,
+and <code node-type="code">vector-length</code>.</p>
+        <p node-type="paragraph">If both of the form don't have <code node-type="code">spec</code>, then the macro uses the given
+value.</p>
+        <p node-type="paragraph"><code node-type="code">mapping</code> must be one of the followings:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(? name absent ref spec)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(? name absent ref)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(name ref spec)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(name ref)</code>
+            </p>
+          </li>
+        </ul>
+        <p node-type="paragraph"><code node-type="code">?</code> indicates that referencing object might be absent.</p>
+        <p node-type="paragraph"><i node-type="i">name</i> must be a string which represents JSON object's key.</p>
+        <p node-type="paragraph"><i node-type="i">absent</i> must be an object indicating absent value. If the converting
+object is equal to this value in sense of <code node-type="code">equal?</code>, then the constructed
+JSON representaion don't have <i node-type="i">name</i>.</p>
+        <p node-type="paragraph"><i node-type="i">ref</i> must be a accessor which is a procedure accepts one argument.</p>
+        <p node-type="paragraph"><i node-type="i">converter/serializer</i> must be either a JSON object serializer or
+a procedure which accepts one argument and returns JSON representaion.</p>
+        <pre lang="scheme" node-type="block"><code>(json-object-serializer
+  (-&gt; (("precision" location-precision)
+       ("Latitude" location-latitude)
+       ("Longitude" location-longitude)
+       (? "Address" #f location-address)
+       ("City" location-city)
+       ("State" location-state)
+       ("Zip" location-zip)
+       ("Country" location-country))))
+
+;; Above constructs JSON representaion from the following record type.
+(define-record-type location
+  (fields precision latitude longitude address city state zip country))
+</code></pre>
+        <pre lang="scheme" node-type="block"><code>(json-object-serializer
+ (("Image" image-holder-image
+   (("Width" image-width)
+    ("Height" image-height)
+    ("Title" image-title)
+    ("Thumbnail" image-thumbnail
+	(("Url" thumbnail-url)
+	 ("Height" thumbnail-height)
+	 ("Width" thumbnail-width)))
+    ("Animated" image-animated)
+    ("IDs" image-ids (-&gt;))))))
+
+;; Above constructs JSON representaion from the following record type.
+(define-record-type image-holder
+  (fields image))
+(define-record-type image
+  (fields width height title thumbnail animated ids))
+(define-record-type thumbnail
+  (fields url height width))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="object-&gt;json_2">
+            <span>object-&gt;json</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">serializer</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Converts Scheme object to JSON representaion.</p>
+        <p node-type="paragraph">The converted JSON representaion is the same as <code node-type="code">'vector</code> representaion.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="object-&gt;json-string_3">
+            <span>object-&gt;json-string</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">serializer</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Converts Scheme object to JSON string.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="write-object-as-json_76">
+            <span>write-object-as-json</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">serializer</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(out-port</i>
+            </span>
+            <span>
+              <i node-type="i">(current-output-port))</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Writes JSON string converted from <i node-type="i">obj</i> to <i node-type="i">out-port</i>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section762.html">(text json) -- JSON parser</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section764.html">(text json jmespath) - JMESPath</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

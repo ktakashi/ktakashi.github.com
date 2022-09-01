@@ -1,0 +1,345 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section74.html">(binary io) - Binary I/O utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section76.html">(util buffer) - Buffer utilities</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.binary.pack">(binary pack) - Packing binary data</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(binary pack)_4">
+          <span>(binary pack)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides an interface for packing and unpacking (writing
+and reading) binary data with template. The functionality is inspired by
+<a href="https://weinholt.se/industria/">Industria</a>'s
+<code node-type="code">(weinholt struct pack)</code> library.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="pack_0">
+          <span>pack</span>
+          <span>
+            <i node-type="i">template</i>
+          </span>
+          <span>
+            <i node-type="i">args</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">template</i> must be a string.</p>
+      <p node-type="paragraph">Construct a bytevector with given <i node-type="i">args</i> according to the given
+<i node-type="i">template</i>. Template characters are described below.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="pack!_1">
+          <span>pack!</span>
+          <span>
+            <i node-type="i">template</i>
+          </span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">offset</i>
+          </span>
+          <span>
+            <i node-type="i">args</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">template</i> must be a string.</p>
+      <p node-type="paragraph"><i node-type="i">bv</i> must be a bytevector.</p>
+      <p node-type="paragraph"><i node-type="i">offset</i> must a non-negative exact integer.</p>
+      <p node-type="paragraph">Converts given <i node-type="i">args</i> and put it into <i node-type="i">bv</i> starting from <i node-type="i">offset</i>.
+The conversion is done according to the <i node-type="i">template</i> string.</p>
+      <p node-type="paragraph">The template characters are extensible so following description can only cover
+predefined characters.</p>
+      <p node-type="paragraph">x: padding; c: s8; C: u8; s: s16; S: u16; l: s32; L: u32; q: s64; Q: u64;
+f: ieee-single; d: ieee-double; ! or &gt;: big-endian; &lt;: little-endian;
+=: native-endian; u: disable natural alignment; a: enable natural alignment.
+Whitespace is ignored.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(pack "!c" 128)</code></pre>
+          <span />
+          <span>#vu8(128)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(pack "s" 100)</code></pre>
+          <span />
+          <span>#vu8(100 0)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(pack "!s" 100)</code></pre>
+          <span />
+          <span>#vu8(0 100)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(pack "!d" 3.14)</code></pre>
+          <span />
+          <span>#vu8(64 9 30 184 81 235 133 31)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">Fields are by default aligned to their natural alignment and NUL bytes are
+inserted as necessary to have a field's index to be aligned to its size.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(pack "!xd" 3.14)</code></pre>
+          <span />
+          <span>#vu8(0 0 0 0 0 0 0 0 64 9 30 184 81 235 133 31)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(pack "!uxd" 3.14)</code></pre>
+          <span />
+          <span>#vu8(0 64 9 30 184 81 235 133 31)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">Digits in front of the syntax characters means repetition. And <code node-type="code">#\*</code> means
+indefinite length repetition.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(pack "3c" 1 2 3)</code></pre>
+          <span />
+          <span>#vu8(1 2 3)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(pack "*c" 1 2 3 4)</code></pre>
+          <span />
+          <span>#vu8(1 2 3 4)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">When the macro detects the given template is string, then it tries to expand
+as much as possible. So it might raises the different condition even if the
+template strings are the same.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(pack "3c" 1 2 3 4)</code></pre>
+          <span />
+          <span>&amp;syntax</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(pack (car '("3c")) 1 2 3 4)</code></pre>
+          <span />
+          <span>&amp;error</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="unpack_12">
+          <span>unpack</span>
+          <span>
+            <i node-type="i">template</i>
+          </span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="unpack_11">
+          <span>unpack</span>
+          <span>
+            <i node-type="i">template</i>
+          </span>
+          <span>
+            <i node-type="i">bv</i>
+          </span>
+          <span>
+            <i node-type="i">offset</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">template</i> must be a string.</p>
+      <p node-type="paragraph">Unpack the given bytevector according to the given <i node-type="i">template</i> and returns
+the values. The template syntax are the same as <code node-type="code">pack!</code>.</p>
+      <p node-type="paragraph">If the second form is used, then unpacking is done from the given <i node-type="i">offset</i>.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(unpack "!SS" #vu8(0 1 0 2))</code></pre>
+          <span />
+          <span>1 2</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(unpack "!SS" #vu8(0 1 0 2 0 3) 1)</code></pre>
+          <span />
+          <span>2 3</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(unpack "!uSS" #vu8(0 1 0 2 0 3) 1)</code></pre>
+          <span />
+          <span>256 512</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="get-unpack_57">
+          <span>get-unpack</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <i node-type="i">template</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">template</i> must be a string.</p>
+      <p node-type="paragraph">Utility unpacking macro for binary port.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="format-size_109">
+          <span>format-size</span>
+          <span>
+            <i node-type="i">template</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="format-size_108">
+          <span>format-size</span>
+          <span>
+            <i node-type="i">template</i>
+          </span>
+          <span>
+            <i node-type="i">args</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">template</i> must be a string.</p>
+      <p node-type="paragraph">Calculate the size of the result bytevector. If the second form is used, then
+macro can calculate even if the template contains indefinite length syntax
+<code node-type="code">#\*</code>, otherwise #f is returned.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(format-size "!xd")</code></pre>
+          <span />
+          <span>16</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(format-size "!uxd")</code></pre>
+          <span />
+          <span>9</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(format-size "*c")</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(format-size "*c" 1 2 3 4)</code></pre>
+          <span />
+          <span>4</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-_65">
+          <span>define-</span>
+          <span>
+            <i node-type="i">**</i>
+          </span>
+          <span>
+            <i node-type="i">-packer</i>
+          </span>
+          <span>
+            <i node-type="i">(char</i>
+          </span>
+          <span>
+            <i node-type="i">arg)</i>
+          </span>
+          <span>
+            <i node-type="i">(</i>
+          </span>
+          <span>
+            <code node-type="code">pack</code>
+          </span>
+          <span>
+            <i node-type="i">expr1</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+          <span>
+            <i node-type="i">(</i>
+          </span>
+          <span>
+            <code node-type="code">unpack</code>
+          </span>
+          <span>
+            <i node-type="i">expr2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">char</i> must character.</p>
+      <p node-type="paragraph"><code node-type="code">pack</code> and <code node-type="code">unpack</code> are syntactic keywords.</p>
+      <p node-type="paragraph">Defines packing extension to given <i node-type="i">char</i>. This macro can not overwrite
+the predefined characters. <i node-type="i">**</i> can be followings;</p>
+      <p node-type="paragraph"><code node-type="code">s8</code>, <code node-type="code">u8</code>, <code node-type="code">s16</code>, <code node-type="code">u16</code>, <code node-type="code">s32</code>, <code node-type="code">u32</code>,
+<code node-type="code">s64</code>, <code node-type="code">u64</code>, <code node-type="code">f32</code>, and <code node-type="code">f64</code>.</p>
+      <pre lang="scheme" node-type="block"><code>;; defining char to u8 converter
+(define-u8-packer (#\A v)
+  (pack (char-&gt;integer v))
+  (unpack (integer-&gt;char v)))
+(pack "AA" #\a #\b)       ;; =&gt; #vu8(97 98)
+(unpack "AA" #vu8(97 98)) ;; =&gt; #\a #\b
+</code></pre>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section74.html">(binary io) - Binary I/O utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section76.html">(util buffer) - Buffer utilities</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

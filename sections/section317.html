@@ -1,0 +1,1748 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section316.html">Command-line access and exit values</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section318.html">Syntax-case</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="Arithmetic-libraries">Arithmetic libraries</a>
+      </h2>
+      <p node-type="paragraph">This section describes Scheme's libraries for more specialized numerical
+operations: fixnum and flonum arithmetic, as well as bitwise operations on exact
+integer objects.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Bitwise-operations">Bitwise operations</a>
+        </h3>
+        <p node-type="paragraph">A number of procedures operate on the binary two's-complement representations of
+exact integer objects: Bit positions within an exact integer object are counted
+from the right, i.e. bit 0 is the least significant bit. Some procedures allow
+extracting bit fields, i.e., number objects representing subsequences of the
+binary representation of an exact integer object. Bit fields are always positive,
+and always defined using a finite number of bits.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="rnrs.arithmetic.fixnums.6">Fixnums</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(rnrs arithmetic fixnums (6))_57">
+            <span>(rnrs arithmetic fixnums (6))</span>
+          </a>
+        </div>
+        <p node-type="paragraph">On Sagittarius Scheme, fixnum is 30 bits or 62 bits depending on platform.
+On 32 bits platform it fixnum is 30 bits, and 64 bits platform it is 62 bits.
+However, non 32 bits platform is not well tested so if you find a bug please send
+a report.</p>
+        <p node-type="paragraph">This section uses <i node-type="i">fx</i>, <i node-type="i">fx1</i> <i node-type="i">fx2</i>, etc., as parameter names for
+arguments that must be fixnums.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fixnum?_45">
+            <span>fixnum?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is an exact integer object within the fixnum
+range, #f otherwise.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fixnum-width_44">
+            <span>fixnum-width</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="least-fixnum_3">
+            <span>least-fixnum</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="greatest-fixnum_68">
+            <span>greatest-fixnum</span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures returns bit size of fixnum, minimum and maximum
+value of the fixnum range, respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx=?_133">
+            <span>fx=?</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx&gt;?_135">
+            <span>fx&gt;?</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx<?_132">
+            <span>fx&lt;?</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx&gt;=?_134">
+            <span>fx&gt;=?</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx<=?_131">
+            <span>fx&lt;=?</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return #t if their arguments are: equal,
+monotonically increasing, monotonically decreasing, monotonically nondecreasing,
+or monotonically nonincreasing, #f otherwise.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxzero?_165">
+            <span>fxzero?</span>
+            <span>
+              <i node-type="i">fx</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxpositive?_161">
+            <span>fxpositive?</span>
+            <span>
+              <i node-type="i">fx</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxnegative?_158">
+            <span>fxnegative?</span>
+            <span>
+              <i node-type="i">fx</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxodd?_160">
+            <span>fxodd?</span>
+            <span>
+              <i node-type="i">fx</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxeven?_149">
+            <span>fxeven?</span>
+            <span>
+              <i node-type="i">fx</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These numerical predicates test a fixnum for a particular property,
+returning #t or #f. The five properties tested by these procedures are: whether
+the number object is zero, greater than zero, less than zero, odd, or even.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxmax_154">
+            <span>fxmax</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxmin_155">
+            <span>fxmin</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the maximum or minimum of their arguments.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx+_127">
+            <span>fx+</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx*_125">
+            <span>fx*</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the sum or product of their arguments,
+provided that sum or product is a fixnum. An exception with condition type
+<code node-type="code">&amp;implementation-restriction</code> is raised if that sum or product is not a
+fixnum.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx-_129">
+            <span>fx-</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] With two arguments, this procedure returns the difference <i node-type="i">fx1</i>- <i node-type="i">fx2</i>, provided that difference is a fixnum.</p>
+        <p node-type="paragraph">With one argument, this procedure returns the additive inverse of its argument,
+provided that integer object is a fixnum.</p>
+        <p node-type="paragraph">An exception with condition type <code node-type="code">&amp;implementation-restriction</code> is raised if
+the mathematically correct result of this procedure is not a fixnum.</p>
+        <p node-type="paragraph">NOTE: R6RS says it raises <code node-type="code">&amp;assertion</code> if the result is not fixnum, however
+Sagittarius raises <code node-type="code">&amp;implementation-restriction</code> for consistency with
+<code node-type="code">fx+</code> and <code node-type="code">fx*</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxdiv-and-mod_146">
+            <span>fxdiv-and-mod</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxdiv_145">
+            <span>fxdiv</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxmod_156">
+            <span>fxmod</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxdiv0-and-mod0_148">
+            <span>fxdiv0-and-mod0</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxdiv0_147">
+            <span>fxdiv0</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxmod0_157">
+            <span>fxmod0</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Fx2</i> must be nonzero. These procedures implement number-theoretic
+integer division and return the results of the corresponding mathematical operations
+specified in <a href="section33.html#rnrs.base.6">
+          <code node-type="code">(rnrs base (6))</code>
+        </a> section.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx+/carry_128">
+            <span>fx+/carry</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the two fixnum results of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let* ((s (+ _fx1_ _fx2_ _fx3_))
+       (s0 (mod0 s (expt 2 (fixnum-width))))
+       (s1 (div0 s (expt 2 (fixnum-width)))))
+  (values s0 s1))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx-/carry_130">
+            <span>fx-/carry</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the two fixnum results of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let* ((d (- _fx1_ _fx2_ _fx3_))
+       (d0 (mod0 d (expt 2 (fixnum-width))))
+       (d1 (div0 d (expt 2 (fixnum-width)))))
+  (values d0 d1))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fx*/carry_126">
+            <span>fx*/carry</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the two fixnum results of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let* ((s (+ (* _fx1_ _fx2_) _fx3_))
+       (s0 (mod0 s (expt 2 (fixnum-width))))
+       (s1 (div0 s (expt 2 (fixnum-width)))))
+  (values s0 s1))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxnot_159">
+            <span>fxnot</span>
+            <span>
+              <i node-type="i">fx</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns bitwise not of fixnum <i node-type="i">fx</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxand_136">
+            <span>fxand</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxior_152">
+            <span>fxior</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxxor_164">
+            <span>fxxor</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the fixnum that is the bit-wise "and",
+"inclusive or", or "exclusive or" of the two's complement representations of
+their arguments. If they are passed only one argument, they return that
+argument. If they are passed no arguments, they return the fixnum
+(either - 1 or 0) that acts as identity for the operation.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxif_151">
+            <span>fxif</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the fixnum that is the bit-wise "if" of the two's
+complement representations of its arguments, i.e. for each bit, if it is 1 in
+<i node-type="i">fx1</i>, the corresponding bit in <i node-type="i">fx2</i> becomes the value of the
+corresponding bit in the result, and if it is 0, the corresponding bit in
+<i node-type="i">fx3</i> becomes the corresponding bit in the value of the result. This is the
+fixnum result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(fxior (fxand _fx1_ _fx2_)
+       (fxand (fxnot _fx1_) _fx3_))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxbit-count_140">
+            <span>fxbit-count</span>
+            <span>
+              <i node-type="i">fx</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] If <i node-type="i">fx</i> is non-negative, this procedure returns the number of 1
+bits in the two's complement representation of <i node-type="i">fx</i>. Otherwise it returns the
+result of the following computation:</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(fxnot (fxbit-count (fxnot _ei_)))</code></pre>
+        </p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxlength_153">
+            <span>fxlength</span>
+            <span>
+              <i node-type="i">fx</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the number of bits needed to represent <i node-type="i">fx</i> if it is
+positive, and the number of bits needed to represent <code node-type="code">(fxnot _fx_)</code> if
+it is negative, which is the fixnum result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(do ((result 0 (+ result 1))
+     (bits (if (fxnegative? _fx_)
+               (fxnot _fx_)
+               _fx_)
+           (fxarithmetic-shift-right bits 1)))
+    ((fxzero? bits)
+     result))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxfirst-bit-set_150">
+            <span>fxfirst-bit-set</span>
+            <span>
+              <i node-type="i">fx</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the index of the least significant 1 bit in the two's
+complement representation of <i node-type="i">fx</i>. If fx is 0, then - 1 is returned.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxbit-set?_142">
+            <span>fxbit-set?</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Fx2</i> must be non-negative and less than <code node-type="code">(fixnum-width)</code>.
+The <code node-type="code">fxbit-set?</code> procedure returns #t if the _fx2_th bit is 1 in the
+two's complement representation of <i node-type="i">fx1</i>, and #f otherwise. This is the
+fixnum result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(not
+  (fxzero?
+    (fxand _fx1_           (fxarithmetic-shift-left 1 _fx2_))))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxcopy-bit_143">
+            <span>fxcopy-bit</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Fx2</i> must be non-negative and less than <code node-type="code">(fixnum-width)</code>.
+<i node-type="i">Fx3</i> must be 0 or 1. The <code node-type="code">fxcopy-bit</code> procedure returns the result of
+replacing the _fx2_th bit of <i node-type="i">fx1</i> by <i node-type="i">fx3</i>, which is the result of
+the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let* ((mask (fxarithmetic-shift-left 1 _fx2_)))
+  (fxif mask
+        (fxarithmetic-shift-left _fx3_ _fx2_)
+        _fx1_))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxbit-field_141">
+            <span>fxbit-field</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Fx2</i> and <i node-type="i">fx3</i> must be non-negative and less than
+<code node-type="code">(fixnum-width)</code>. Moreover, <i node-type="i">fx2</i> must be less than or equal to
+<i node-type="i">fx3</i>. The <code node-type="code">fxbit-field</code> procedure returns the number represented by
+the bits at the positions from <i node-type="i">fx2</i> (inclusive) to <i node-type="i">fx3</i> (exclusive),
+which is the fixnum result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let* ((mask (fxnot
+              (fxarithmetic-shift-left -1 _fx3_))))
+  (fxarithmetic-shift-right (fxand _fx1_ mask)
+                            _fx2_))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxcopy-bit-field_144">
+            <span>fxcopy-bit-field</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+            <span>
+              <i node-type="i">fx4</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Fx2</i> and <i node-type="i">fx3</i> must be non-negative and less than
+<code node-type="code">(fixnum-width)</code>. Moreover, <i node-type="i">fx2</i> must be less than or equal to
+<i node-type="i">fx3</i>. The <code node-type="code">fxcopy-bit-field</code> procedure returns the result of replacing
+in <i node-type="i">fx1</i> the bits at positions from <i node-type="i">fx2</i> (inclusive) to <i node-type="i">fx3</i>(exclusive) by the corresponding bits in <i node-type="i">fx4</i>, which is the fixnum result
+of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let* ((to    _fx1_)
+       (start _fx2_)
+       (end   _fx3_)
+       (from  _fx4_)
+       (mask1 (fxarithmetic-shift-left -1 start))
+       (mask2 (fxnot
+               (fxarithmetic-shift-left -1 end)))
+       (mask (fxand mask1 mask2)))
+  (fxif mask
+        (fxarithmetic-shift-left from start)
+        to))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxarithmetic-shift_137">
+            <span>fxarithmetic-shift</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] The absolute value of <i node-type="i">fx2</i> must be less than
+<code node-type="code">(fixnum-width)</code>. If</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(floor (* _fx1_ (expt 2 _fx2_)))</code></pre>
+        </p>
+        <p node-type="paragraph">is a fixnum, then that fixnum is returned. Otherwise an exception with condition
+type <code node-type="code">&amp;implementation-restriction</code> is raised.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxarithmetic-shift-left_138">
+            <span>fxarithmetic-shift-left</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxarithmetic-shift-right_139">
+            <span>fxarithmetic-shift-right</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Fx2</i> must be non-negative, and less than <code node-type="code">(fixnum-width)</code>.
+The <code node-type="code">fxarithmetic-shift-left</code> procedure behaves the same as
+<code node-type="code">fxarithmetic-shift</code>, and <code node-type="code">(fxarithmetic-shift-right _fx1_ _fx2_)</code>behaves the same as <code node-type="code">(fxarithmetic-shift _fx1_ (fx- _fx2_))</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxrotate-bit-field_163">
+            <span>fxrotate-bit-field</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+            <span>
+              <i node-type="i">fx4</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Fx2</i>, <i node-type="i">fx3</i>, and <i node-type="i">fx4</i> must be non-negative and less
+than <code node-type="code">(fixnum-width)</code>. <i node-type="i">Fx2</i> must be less than or equal to <i node-type="i">fx3</i>.
+<i node-type="i">Fx4</i> must be less than the difference between <i node-type="i">fx3</i> and <i node-type="i">fx2</i>. The
+<code node-type="code">fxrotate-bit-field</code> procedure returns the result of cyclically permuting
+in <i node-type="i">fx1</i> the bits at positions from <i node-type="i">fx2</i> (inclusive) to <i node-type="i">fx3</i>(exclusive) by <i node-type="i">fx4</i> bits towards the more significant bits, which is the
+result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let* ((n     _fx1_)
+       (start _fx2_)
+       (end   _fx3_)
+       (count _fx4_)
+       (width (fx- end start)))
+  (if (fxpositive? width)
+      (let* ((count (fxmod count width))
+             (field0
+               (fxbit-field n start end))
+             (field1
+               (fxarithmetic-shift-left
+                 field0 count))
+             (field2
+               (fxarithmetic-shift-right
+                 field0 (fx- width count)))
+             (field (fxior field1 field2)))
+        (fxcopy-bit-field n start end field))
+      n))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fxreverse-bit-field_162">
+            <span>fxreverse-bit-field</span>
+            <span>
+              <i node-type="i">fx1</i>
+            </span>
+            <span>
+              <i node-type="i">fx2</i>
+            </span>
+            <span>
+              <i node-type="i">fx3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Fx2</i> and <i node-type="i">fx3</i> must be non-negative and less than
+<code node-type="code">(fixnum-width)</code>. Moreover, <i node-type="i">fx2</i> must be less than or equal to <i node-type="i">fx3</i>.
+The <code node-type="code">fxreverse-bit-field</code> procedure returns the fixnum obtained from
+<i node-type="i">fx1</i> by reversing the order of the bits at positions from <i node-type="i">fx2</i>(inclusive) to <i node-type="i">fx3</i> (exclusive).</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="rnrs.arithmetic.flonums.6">Flonums</a>
+        </h3>
+        <p node-type="paragraph">This section describes the <code node-type="code">(rnrs arithmetic flonums (6))</code>library.</p>
+        <p node-type="paragraph">This section uses <i node-type="i">fl</i>, <i node-type="i">fl1</i>, <i node-type="i">fl2</i>, etc., as parameter names for
+arguments that must be flonums, and <i node-type="i">ifl</i> as a name for arguments that must
+be integer-valued flonums, i.e., flonums for which the <code node-type="code">integer-valued?</code>predicate returns true.</p>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(rnrs arithmetic flonums (6))_58">
+            <span>(rnrs arithmetic flonums (6))</span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This library exports procedures for flonum operations.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flonum?_80">
+            <span>flonum?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is a flonum, #f otherwise.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fl=?_50">
+            <span>fl=?</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+            <span>
+              <i node-type="i">fl3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fl&gt;?_52">
+            <span>fl&gt;?</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+            <span>
+              <i node-type="i">fl3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fl<?_49">
+            <span>fl&lt;?</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+            <span>
+              <i node-type="i">fl3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fl&gt;=?_51">
+            <span>fl&gt;=?</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+            <span>
+              <i node-type="i">fl3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fl<=?_48">
+            <span>fl&lt;=?</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+            <span>
+              <i node-type="i">fl3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return #t if their arguments are (respectively):
+equal, monotonically increasing, monotonically decreasing, monotonically
+nondecreasing, or monotonically nonincreasing, #f otherwise.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flinteger?_70">
+            <span>flinteger?</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flzero?_93">
+            <span>flzero?</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flpositive?_85">
+            <span>flpositive?</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flnegative?_77">
+            <span>flnegative?</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flodd?_79">
+            <span>flodd?</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fleven?_64">
+            <span>fleven?</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flfinite?_67">
+            <span>flfinite?</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flinfinite?_69">
+            <span>flinfinite?</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flnan?_76">
+            <span>flnan?</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These numerical predicates test a flonum for a particular property,
+returning #t or #f. The <code node-type="code">flinteger?</code> procedure tests whether the number
+object is an integer, <code node-type="code">flzero?</code> tests whether it is <code node-type="code">fl=?</code> to zero,
+<code node-type="code">flpositive?</code> tests whether it is greater than zero, <code node-type="code">flnegative?</code>tests whether it is less than <code node-type="code">zero</code>, <code node-type="code">flodd?</code> tests whether it is
+odd, <code node-type="code">fleven?</code> tests whether it is even, <code node-type="code">flfinite?</code> tests whether
+it is not an infinity and not a NaN, <code node-type="code">flinfinite?</code> tests whether it is
+an infinity, and <code node-type="code">flnan?</code> tests whether it is a NaN.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flmax_72">
+            <span>flmax</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flmin_73">
+            <span>flmin</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the maximum or minimum of their arguments.
+They always return a NaN when one or more of the arguments is a NaN.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fl+_47">
+            <span>fl+</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fl*_46">
+            <span>fl*</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the flonum sum or product of their flonum
+arguments. In general, they should return the flonum that best approximates the
+mathematical sum or product.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flabs_53">
+            <span>flabs</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the absolute value of <i node-type="i">fl.</i></p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fldiv-and-mod_61">
+            <span>fldiv-and-mod</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fldiv_60">
+            <span>fldiv</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flmod_74">
+            <span>flmod</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fldiv0-and-mod0_63">
+            <span>fldiv0-and-mod0</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fldiv0_62">
+            <span>fldiv0</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flmod0_75">
+            <span>flmod0</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures implement number-theoretic integer division and
+return the results of the corresponding mathematical operations (see
+<a href="section33.html#rnrs.base.6">
+          <code node-type="code">(rnrs base (6))</code>
+        </a>. For zero divisors, these
+procedures may return a NaN or some unspecified flonum.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flnumerator_78">
+            <span>flnumerator</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fldenominator_59">
+            <span>fldenominator</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the numerator or denominator of <i node-type="i">fl</i> as
+a flonum; the result is computed as if <i node-type="i">fl</i> was represented as a fraction in
+lowest terms. The denominator is always positive. The denominator of 0.0 is
+defined to be 1.0.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flfloor_68">
+            <span>flfloor</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flceiling_57">
+            <span>flceiling</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fltruncate_90">
+            <span>fltruncate</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flround_86">
+            <span>flround</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return integral flonums for flonum arguments that
+are not infinities or NaNs. For such arguments, <code node-type="code">flfloor</code> returns the largest
+integral flonum not larger than <i node-type="i">fl</i>. The <code node-type="code">flceiling</code> procedure returns
+the smallest integral flonum not smaller than <i node-type="i">fl</i>. The <code node-type="code">fltruncate</code>procedure returns the integral flonum closest to <i node-type="i">fl</i> whose absolute value
+is not larger than the absolute value of <i node-type="i">fl</i>. The <code node-type="code">flround</code> procedure
+returns the closest integral flonum to <i node-type="i">fl</i>, rounding to even when _fl_represents a number halfway between two integers.</p>
+        <p node-type="paragraph">Although infinities and NaNs are not integer objects, these procedures return an
+infinity when given an infinity as an argument, and a NaN when given a NaN.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flexp_65">
+            <span>flexp</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fllog_71">
+            <span>fllog</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flsin_87">
+            <span>flsin</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flcos_58">
+            <span>flcos</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fltan_89">
+            <span>fltan</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flasin_55">
+            <span>flasin</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flacos_54">
+            <span>flacos</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flatan_56">
+            <span>flatan</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures compute the usual transcendental functions. The <code node-type="code">flexp</code>procedure computes the base-e exponential of <i node-type="i">fl</i>. The <code node-type="code">fllog</code> procedure
+with a single argument computes the natural logarithm of <code node-type="code">fl1</code> (not the base
+ten logarithm); <code node-type="code">(fllog _fl1_ _fl2_)</code> computes the base-_fl2_logarithm of <i node-type="i">fl1</i>. The <code node-type="code">flasin</code>, <code node-type="code">flacos</code>, and <code node-type="code">flatan</code>procedures compute arcsine, arccosine, and arctangent, respectively.
+<code node-type="code">(flatan _fl1_ _fl2_)</code> computes the arc tangent of <i node-type="i">fl1</i>/<i node-type="i">fl2</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flsqrt_88">
+            <span>flsqrt</span>
+            <span>
+              <i node-type="i">fl</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the principal square root of <i node-type="i">fl</i>. For - 0.0, <code node-type="code">flsqrt</code>returns 0.0; for other negative arguments, the result unspecified flonum.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="flexpt_66">
+            <span>flexpt</span>
+            <span>
+              <i node-type="i">fl1</i>
+            </span>
+            <span>
+              <i node-type="i">fl2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Either <i node-type="i">fl1</i> should be non-negative, or, if <i node-type="i">fl1</i> is negative,
+<i node-type="i">fl2</i> should be an integer object. The <code node-type="code">flexpt</code> procedure returns _fl1_raised to the power <i node-type="i">fl2</i>. If <i node-type="i">fl1</i> is negative and <i node-type="i">fl2</i> is not an
+integer object, the result is a NaN. If <i node-type="i">fl1</i> is zero, then the result is zero.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;no-infinities_32">
+            <span>&amp;no-infinities</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-no-infinities-violation_179">
+            <span>make-no-infinities-violation</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="no-invinities-violation?_11">
+            <span>no-invinities-violation?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;no-nans_33">
+            <span>&amp;no-nans</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-no-nans-violation_180">
+            <span>make-no-nans-violation</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="no-nans-violation?_12">
+            <span>no-nans-violation?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These types describe that a program has executed an arithmetic operations
+that is specified to return an infinity or a NaN, respectively.</p>
+        <p node-type="paragraph">Here is the hierarchy of these conditions.</p>
+        <pre lang="scheme" node-type="block"><code>+ &amp;implementation-restriction (see ["Conditions"](#rnrs.conditions.6))
+    + &amp;no-infinities
+    + &amp;no-nans
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fixnum-&gt;flonum_43">
+            <span>fixnum-&gt;flonum</span>
+            <span>
+              <i node-type="i">fx</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a flonum that is numerically closest to <i node-type="i">fx</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="rnrs.arithmetic.bitwise.6">Exact bitwise arithmetic</a>
+        </h3>
+        <p node-type="paragraph">This section describes the <code node-type="code">(rnrs arithmetic bitwise (6))</code>library.
+The exact bitwise arithmetic provides generic operations on exact integer
+objects. This section uses <i node-type="i">ei</i>, <i node-type="i">ei1</i>, <i node-type="i">ei2</i>, etc., as parameter
+names that must be exact integer objects.</p>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(rnrs arithmetic bitwise (6))_56">
+            <span>(rnrs arithmetic bitwise (6))</span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This library exports procedures for exact bitwise arithmetic
+operations.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-not_54">
+            <span>bitwise-not</span>
+            <span>
+              <i node-type="i">ei</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the exact integer object whose two's complement
+representation is the one's complement of the two's complement representation
+of <i node-type="i">ei</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-and_41">
+            <span>bitwise-and</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-ior_52">
+            <span>bitwise-ior</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-xor_57">
+            <span>bitwise-xor</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the exact integer object that is the
+bit-wise "and", "inclusive or", or "exclusive or" of the two's complement
+representations of their arguments. If they are passed only one argument,
+they return that argument. If they are passed no arguments, they return the
+integer object (either - 1 or 0) that acts as identity for the operation.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-if_51">
+            <span>bitwise-if</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">ei2</i>
+            </span>
+            <span>
+              <i node-type="i">ei3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the exact integer object that is the bit-wise "if" of the
+two's complement representations of its arguments, i.e. for each bit, if it is 1
+in <i node-type="i">ei1</i>, the corresponding bit in <i node-type="i">ei2</i> becomes the value of the
+corresponding bit in the result, and if it is 0, the corresponding bit in
+<i node-type="i">ei3</i> becomes the corresponding bit in the value of the result. This is
+the result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(bitwise-ior (bitwise-and _ei1_ _ei2_)
+             (bitwise-and (bitwise-not _ei1_) _ei3_))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-bit-count_45">
+            <span>bitwise-bit-count</span>
+            <span>
+              <i node-type="i">ei</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] If <i node-type="i">ei</i> is non-negative, this procedure returns the number of 1
+bits in the two's complement representation of <i node-type="i">ei</i>. Otherwise it returns
+the result of the following computation:</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(bitwise-not (bitwise-bit-count (bitwise-not _ei_)))</code></pre>
+        </p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-length_53">
+            <span>bitwise-length</span>
+            <span>
+              <i node-type="i">ei</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the number of bits needed to represent <i node-type="i">ei</i> if it is
+positive, and the number of bits needed to represent
+<code node-type="code">(bitwise-not _ei_)</code> if it is negative, which is the exact integer
+object that is the result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(do ((result 0 (+ result 1))
+     (bits (if (negative? _ei_)
+               (bitwise-not _ei_)
+               _ei_)
+           (bitwise-arithmetic-shift bits -1)))
+    ((zero? bits)
+     result))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-first-bit-set_50">
+            <span>bitwise-first-bit-set</span>
+            <span>
+              <i node-type="i">ei</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the index of the least significant 1 bit in the two's
+complement representation of <i node-type="i">ei</i>. If ei is 0, then - 1 is returned.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-bit-set?_47">
+            <span>bitwise-bit-set?</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">ei2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Ei2</i> must be non-negative. The <code node-type="code">bitwise-bit-set?</code>procedure returns #t if the _ei2_th bit is 1 in the two's complement
+representation of <i node-type="i">ei1</i>, and #f otherwise. This is the result of the
+following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(not (zero?
+       (bitwise-and
+         (bitwise-arithmetic-shift-left 1 _ei2_)
+         _ei1_)))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-copy-bit_48">
+            <span>bitwise-copy-bit</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">ei2</i>
+            </span>
+            <span>
+              <i node-type="i">ei3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Ei2</i> must be non-negative, and <i node-type="i">ei3</i> must be either 0
+or 1. The <code node-type="code">bitwise-copy-bit</code> procedure returns the result of replacing the
+_ei2_th bit of <i node-type="i">ei1</i> by the _ei2_th bit of <i node-type="i">ei3</i>, which is the
+result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let* ((mask (bitwise-arithmetic-shift-left 1 _ei2_)))
+  (bitwise-if mask
+            (bitwise-arithmetic-shift-left _ei3_ _ei2_)
+            _ei1_))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-bit-field_46">
+            <span>bitwise-bit-field</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">ei2</i>
+            </span>
+            <span>
+              <i node-type="i">ei3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Ei2</i> and <i node-type="i">ei3</i> must be non-negative, and <i node-type="i">ei2</i> must be
+less than or equal to <i node-type="i">ei3</i>. The <code node-type="code">bitwise-bit-field</code> procedure returns
+he number represented by the bits at the positions from <i node-type="i">ei2</i> (inclusive) to
+<i node-type="i">ei3</i> (exclusive), which is the result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let ((mask
+       (bitwise-not
+        (bitwise-arithmetic-shift-left -1 _ei3_))))
+  (bitwise-arithmetic-shift-right
+    (bitwise-and _ei1_ mask)
+    _ei2_))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-copy-bit-field_49">
+            <span>bitwise-copy-bit-field</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">ei2</i>
+            </span>
+            <span>
+              <i node-type="i">ei3</i>
+            </span>
+            <span>
+              <i node-type="i">ei4</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Ei2</i> and <i node-type="i">ei3</i> must be non-negative, and <i node-type="i">ei2</i> must
+be less than or equal to <i node-type="i">ei3</i>. The <code node-type="code">bitwise-copy-bit-field</code> procedure
+returns the result of replacing in <i node-type="i">ei1</i> the bits at positions from
+var{ei2} (inclusive) to <i node-type="i">ei3</i> (exclusive) by the corresponding bits in
+<i node-type="i">ei4</i>, which is the fixnum result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let* ((to    _ei1_)
+       (start _ei2_)
+       (end   _ei3_)
+       (from  _ei4_)
+       (mask1
+         (bitwise-arithmetic-shift-left -1 start))
+       (mask2
+         (bitwise-not
+           (bitwise-arithmetic-shift-left -1 end)))
+       (mask (bitwise-and mask1 mask2)))
+  (bitwise-if mask
+              (bitwise-arithmetic-shift-left from
+                                             start)
+              to))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-arithmetic-shift_42">
+            <span>bitwise-arithmetic-shift</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">ei2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the result of the following computation:</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(floor (* _ei1_ (expt 2 _ei2_)))</code></pre>
+        </p>
+        <p node-type="paragraph"><i node-type="i">ei2</i> must be a fixnum. This is implementation restriction.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-arithmetic-shift-left_43">
+            <span>bitwise-arithmetic-shift-left</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">ei2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-arithmetic-shift-right_44">
+            <span>bitwise-arithmetic-shift-right</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">ei2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Ei2</i> must be non-negative. The
+<code node-type="code">bitwise-arithmetic-shift-left</code> procedure returns the same result as
+<code node-type="code">bitwise-arithmetic-shift</code>, and</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(bitwise-arithmetic-shift-right _ei1_ _ei2_)</code></pre>
+        </p>
+        <p node-type="paragraph">returns the same result as</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(bitwise-arithmetic-shift _ei1_ (- _ei2_))</code></pre>
+        </p>
+        <p node-type="paragraph">.</p>
+        <p node-type="paragraph"><i node-type="i">ei2</i> must be a fixnum. This is implementation restriction.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-rotate-bit-field_56">
+            <span>bitwise-rotate-bit-field</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">ei2</i>
+            </span>
+            <span>
+              <i node-type="i">ei3</i>
+            </span>
+            <span>
+              <i node-type="i">ei4</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Ei2</i>, <i node-type="i">ei3</i>, <i node-type="i">ei4</i> must be non-negative, _ei2_must be less than or equal to <i node-type="i">ei3</i>, and <i node-type="i">ei4</i> must be non-negative.
+The <code node-type="code">bitwise-rotate-bit-field</code> procedure returns the result of cyclically
+permuting in <i node-type="i">ei1</i> the bits at positions from <i node-type="i">ei2</i> (inclusive) to
+<i node-type="i">ei3</i> (exclusive) by <i node-type="i">ei4</i> bits towards the more significant bits,
+which is the result of the following computation:</p>
+        <pre lang="scheme" node-type="block"><code>(let* ((n     _ei1_)
+       (start _ei2_)
+       (end   _ei3_)
+       (count _ei4_)
+       (width (- end start)))
+  (if (positive? width)
+      (let* ((count (mod count width))
+             (field0
+               (bitwise-bit-field n start end))
+             (field1 (bitwise-arithmetic-shift-left
+                       field0 count))
+             (field2 (bitwise-arithmetic-shift-right
+                       field0
+                       (- width count)))
+             (field (bitwise-ior field1 field2)))
+        (bitwise-copy-bit-field n start end field))
+      n))
+</code></pre>
+        <p node-type="paragraph"><i node-type="i">ei4</i> must be a fixnum. This is implementation restriction.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bitwise-reverse-bit-field_55">
+            <span>bitwise-reverse-bit-field</span>
+            <span>
+              <i node-type="i">ei1</i>
+            </span>
+            <span>
+              <i node-type="i">ei2</i>
+            </span>
+            <span>
+              <i node-type="i">ei3</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Ei2</i> and <i node-type="i">ei3</i> must be non-negative, and <i node-type="i">ei2</i> must be
+less than or equal to <i node-type="i">ei3</i>. The <code node-type="code">bitwise-reverse-bit-field</code> procedure
+returns the result obtained from <i node-type="i">ei1</i> by reversing the order of the bits at
+positions from <i node-type="i">ei2</i> (inclusive) to <i node-type="i">ei3</i> (exclusive).</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section316.html">Command-line access and exit values</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section318.html">Syntax-case</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

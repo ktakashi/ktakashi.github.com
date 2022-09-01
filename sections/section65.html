@@ -1,0 +1,309 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section64.html">(sagittarius filewatch) - Monitoring filesystem</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section66.html">Sagittarius MOP</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="sagittarius.io">(sagittarius io) - Extra IO library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius io)_90">
+          <span>(sagittarius io)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provided extra IO related procedures.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="with-input-from-port_52">
+          <span>with-input-from-port</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <i node-type="i">thunk</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="with-output-to-port_56">
+          <span>with-output-to-port</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <i node-type="i">thunk</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="with-error-to-port_49">
+          <span>with-error-to-port</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <i node-type="i">thunk</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Calls <i node-type="i">thunk</i>. During evaluation of <i node-type="i">thunk</i>, the current input
+port, current output port, current error port are set to <i node-type="i">port</i>,
+respectively.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="call-with-input-string_18">
+          <span>call-with-input-string</span>
+          <span>
+            <i node-type="i">str</i>
+          </span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="call-with-output-string_23">
+          <span>call-with-output-string</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="with-input-from-string_53">
+          <span>with-input-from-string</span>
+          <span>
+            <i node-type="i">str</i>
+          </span>
+          <span>
+            <i node-type="i">thunk</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="with-output-to-string_57">
+          <span>with-output-to-string</span>
+          <span>
+            <i node-type="i">thunk</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">These utility functions are trivially defined as follows;</p>
+      <pre lang="scheme" node-type="block"><code>(define (call-with-input-string str proc)
+  (proc (open-input-string str)))
+
+(define (call-with-output-string proc)
+  (let ((port (open-output-string)))
+    (proc port)
+    (get-output-string port)))
+
+(define (with-input-from-string str thunk)
+  (with-input-from-port (open-input-string str) thunk))
+
+(define (with-output-to-string thunk)
+  (let ((port (open-output-string)))
+    (with-output-to-port port thunk)
+    (get-output-string port)))
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="buffered-port_72">
+          <span>buffered-port</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <i node-type="i">buffer-mode</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">buffer</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="transcoded-port_86">
+          <span>transcoded-port</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <i node-type="i">transcoder</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Re-export of <code node-type="code">buffered-port</code> and <code node-type="code">transcoded-port</code>.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Custom-ports">Custom ports</a>
+        </h3>
+        <p node-type="paragraph">Sagittarius provides means to create user defined ports. One of the ways
+is using R6RS custom port procedures. The other one is extending custom
+port class. The followings show how to extend it.</p>
+        <pre lang="scheme" node-type="block"><code>;; example for input port
+(import (rnrs) (sagittarius io) (clos user))
+
+;; make a custom binary input port with 'read slot
+(get-u8 (make &lt;custom-binary-input-port&gt;
+          :read (lambda (bv start count)
+                  (bytevector-u8-set! bv start 1)
+                1)))
+</code></pre>
+        <pre lang="scheme" node-type="block"><code>;; example for output port
+(import (rnrs) (sagittarius io) (clos user))
+
+;; user defined custom binary output port
+(define-class &lt;my-port&gt; (&lt;custom-binary-output-port&gt;) 
+  ;; this port has own buffer 
+  ((buffer :init-form (make-bytevector 5 0))))
+
+;; create the port
+(let ((out (make &lt;my-port&gt;)))
+  ;; set 'write slot
+  (slot-set! out 'write
+    (lambda (bv start count)
+       ;; just get the first element of given bytevector
+       ;; and set it to own buffer
+       (bytevector-copy! bv start (slot-ref out 'buffer) 0 count)
+       count))
+  ;; 
+  (put-bytevector out #vu8(1 2 3 4 5))
+  (slot-ref out 'buffer))
+;; -&gt; #vu8(1 0 0 0 0)
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<custom-binary-input-port&gt;_13">
+            <span>&lt;custom-binary-input-port&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<custom-binary-output-port&gt;_15">
+            <span>&lt;custom-binary-output-port&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<custom-binary-input/output-port&gt;_14">
+            <span>&lt;custom-binary-input/output-port&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<custom-textual-input-port&gt;_16">
+            <span>&lt;custom-textual-input-port&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<custom-textual-output-port&gt;_18">
+            <span>&lt;custom-textual-output-port&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<custom-textual-input/output-port&gt;_17">
+            <span>&lt;custom-textual-input/output-port&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Custom port classes. All of these classes have the following slots:</p>
+        <div node-type="define" class="define">
+          <span>Slot</span>
+          <a name="id_15">
+            <span>id</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Identifier of the port. Must be string is specified.</p>
+        <div node-type="define" class="define">
+          <span>Slot</span>
+          <a name="position_97">
+            <span>position</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Slot</span>
+          <a name="set-position_39">
+            <span>set-position</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Slot</span>
+          <a name="read_17">
+            <span>read</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Slot</span>
+          <a name="write_60">
+            <span>write</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Slot</span>
+          <a name="flush_91">
+            <span>flush</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Slot</span>
+          <a name="close_86">
+            <span>close</span>
+          </a>
+        </div>
+        <p node-type="paragraph">All of them must be either procedure or #f.</p>
+        <p node-type="paragraph"><code node-type="code">position</code> procedure must accept 0 argument. The procedure should
+return the position of the port.</p>
+        <p node-type="paragraph"><code node-type="code">set-position</code> procedure must accept 2 argument, <i node-type="i">position_and_whence</i>. <i node-type="i">Whence</i> shall be a symbol of <code node-type="code">begin</code>,
+<code node-type="code">current</code> or <code node-type="code">end</code>. The procedure should set the position
+of the port according to the given <i node-type="i">whence</i> and <i node-type="i">position</i>.</p>
+        <p node-type="paragraph"><code node-type="code">read</code> procedure must accept 3 argument. <i node-type="i">bv</i> or <i node-type="i">string</i>,
+<i node-type="i">start</i> and <i node-type="i">count</i>. The first argument is decided by the port
+type. If the port is binary port, then bytevector <i node-type="i">bv</i> is passed.
+If the port is textual port, then string <i node-type="i">string</i> is passed.
+The procedure should fill given <i node-type="i">bv</i> or <i node-type="i">string</i> in _count_data elements starting <i node-type="i">start</i>. And return number of data filled.</p>
+        <p node-type="paragraph"><code node-type="code">write</code> procedure must accept 3 argument. <i node-type="i">bv</i> or <i node-type="i">string</i>,
+<i node-type="i">start</i> and <i node-type="i">count</i>. The first argument is decided by the port
+type. If the port is binary port, then bytevector <i node-type="i">bv</i> is passed.
+If the port is textual port, then string <i node-type="i">string</i> is passed.
+The procedure should retrieve data from  given <i node-type="i">bv</i> or _string_upto <i node-type="i">count</i> data elements starting <i node-type="i">start</i>. And return number
+of data read.</p>
+        <p node-type="paragraph"><code node-type="code">ready</code> procedure must accept 0 argument. The procedure should
+return true value if the port is ready to read. Otherwise #f.</p>
+        <p node-type="paragraph"><code node-type="code">flush</code> procedure must accept 0 argument. The procedure should
+flush the port.</p>
+        <p node-type="paragraph"><code node-type="code">close</code> procedure must accept 0 argument. The procedure should
+close the port.</p>
+        <p node-type="paragraph">If the creating port is input port, then <code node-type="code">read</code> must be set before
+any port operation. If the creating port is output port, then <code node-type="code">write</code>must be set before any port operation. Other slots are optional.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section64.html">(sagittarius filewatch) - Monitoring filesystem</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section66.html">Sagittarius MOP</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,294 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section725.html">(net socket) - Modern Socket library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section727.html">(peg) - PEG library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="odbc">(odbc) - ODBC binding</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(odbc)_26">
+          <span>(odbc)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides ODBC access procedures.</p>
+      <p node-type="paragraph">ODBC is a common database access interface so that it doesn't depend on specific
+APIs. This library is for implementing ODBC DBD for <a href="section710.html#dbi">DBI</a>, using
+this library directly is not recommended.</p>
+      <p node-type="paragraph">NOTE: the library is supported only your platform is supporting ODBC.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="create-odbc-env_152">
+          <span>create-odbc-env</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates and returns ODBC environment object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="odbc-env?_9">
+          <span>odbc-env?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is ODBC environment object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="free-handle_112">
+          <span>free-handle</span>
+          <span>
+            <i node-type="i">odbc-ctx</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Releases given ODBC resource.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="connect!_128">
+          <span>connect!</span>
+          <span>
+            <i node-type="i">ocbc-env</i>
+          </span>
+          <span>
+            <i node-type="i">server</i>
+          </span>
+          <span>
+            <i node-type="i">username</i>
+          </span>
+          <span>
+            <i node-type="i">password</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(auto-commit</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">odbc-env</i> must be an ODBC environment object created by
+<code node-type="code">create-odbc-env</code>.</p>
+      <p node-type="paragraph"><i node-type="i">server</i> must be a string indicating ODBC database name.</p>
+      <p node-type="paragraph"><i node-type="i">username</i> and <i node-type="i">password</i> must be string.</p>
+      <p node-type="paragraph">Connects to <i node-type="i">server</i> with authentication of <i node-type="i">username</i> and
+<i node-type="i">password</i> and returns ODBC database connection object. If optional
+argument <i node-type="i">auto-commit</i> is #f then the connection won't commit transaction
+automatically.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="odbc-connection?_8">
+          <span>odbc-connection?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is ODBC connection object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="disconnect!_138">
+          <span>disconnect!</span>
+          <span>
+            <i node-type="i">odbc-dbc</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Disconnect from the database.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="connection-open?_129">
+          <span>connection-open?</span>
+          <span>
+            <i node-type="i">odbc-dbc</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if the given ODBC connection is available, otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="prepare_106">
+          <span>prepare</span>
+          <span>
+            <i node-type="i">odbc-dbc</i>
+          </span>
+          <span>
+            <i node-type="i">sql</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates and returns a ODBC statement object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="odbc-statement?_10">
+          <span>odbc-statement?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is ODBC statement object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="statement-open?_237">
+          <span>statement-open?</span>
+          <span>
+            <i node-type="i">odbc-stmt</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if the given ODBC statement is available, otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="num-prams_35">
+          <span>num-prams</span>
+          <span>
+            <i node-type="i">odbc-stmt</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns number of parameters in an SQL statement.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="bind-parameter!_40">
+          <span>bind-parameter!</span>
+          <span>
+            <i node-type="i">odbc-stmt</i>
+          </span>
+          <span>
+            <i node-type="i">index</i>
+          </span>
+          <span>
+            <i node-type="i">value</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Binds the given <i node-type="i">value</i> at position <i node-type="i">index</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="execute!_48">
+          <span>execute!</span>
+          <span>
+            <i node-type="i">odbc-stmt</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Execute given ODBC statement.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="fetch!_5">
+          <span>fetch!</span>
+          <span>
+            <i node-type="i">odbc-stmt</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Forwarding current cursor to next and returns #t if there is data
+otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="get-data!_25">
+          <span>get-data!</span>
+          <span>
+            <i node-type="i">odbc-stmt</i>
+          </span>
+          <span>
+            <i node-type="i">index</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Retrieve data from statement at position <i node-type="i">index</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="row-count_129">
+          <span>row-count</span>
+          <span>
+            <i node-type="i">odbc-stmt</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the number of rows affected by UPDATE, INSERT or DELETE
+statement.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="column-count_98">
+          <span>column-count</span>
+          <span>
+            <i node-type="i">odbc-stmt</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the number of columns in a result statement.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="result-columns_104">
+          <span>result-columns</span>
+          <span>
+            <i node-type="i">odbc-stmt</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the column names in a result statement.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="commit!_102">
+          <span>commit!</span>
+          <span>
+            <i node-type="i">odbc-ctx</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="rollback!_126">
+          <span>rollback!</span>
+          <span>
+            <i node-type="i">odbc-ctx</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Commits/rollbacks given ODBC context.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="dbd.odbc">(dbd odbc) - DBD for ODBC</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(dbd odbc)_8">
+            <span>(dbd odbc)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">This library provides database driver (DBD) for ODBC .</p>
+        <p node-type="paragraph">Importing this library is done by DBI automatically so users should not
+use this directly.</p>
+        <p node-type="paragraph">The DSN should specify the connecting database name with <code node-type="code">server</code> keyword.
+Following DSN is connecting <i node-type="i">foo</i> database configured in ODBC.</p>
+        <p node-type="paragraph"><code node-type="code">"dbi:odbc:server=_foo_"</code>The <code node-type="code">dbi-connect</code> supports <code node-type="code">:username</code>, <code node-type="code">:password</code> and
+<code node-type="code">:auto-commit</code> keyword arguments. The detail about DBI see
+<a href="section710.html#dbi">(dbi) - Database independent access layer</a>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section725.html">(net socket) - Modern Socket library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section727.html">(peg) - PEG library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

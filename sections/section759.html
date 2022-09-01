@@ -1,0 +1,301 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section758.html">(rpc json) - JSON RPC library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section760.html">(text csv) - Comma separated values parser library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="security.keystore">(security keystore) - Generic Keystore Access</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(security keystore)_146">
+          <span>(security keystore)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides generic access for variety of keystores.</p>
+      <p node-type="paragraph">The following example shows how to use this library:</p>
+      <pre lang="scheme" node-type="block"><code>(import (security keystore))
+
+(define keystore (load-keystore 'jks "keystore.jks" "storepass"))
+
+(keystore-get-key keystore "key-name" "key-pass")
+;; -&gt; &lt;private-key&gt;
+
+(keystore-get-certificate keystore "cert-name")
+;; -&gt; &lt;x509-certificate&gt;
+
+;; certs must be a list of certificates
+(keystore-set-key! keystore "key-name2" private-key "key-pass2" certs)
+
+(keystore-set-certificate! keystore "cert-name2" cert)
+
+(store-keystore-to-file keystore "keystore2.jks" "storepass2")
+</code></pre>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Generic-APIs">Generic APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<keystore&gt;_41">
+            <span>&lt;keystore&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Base class of keystores.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="keystore?_20">
+            <span>keystore?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a keystore object. Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="load-keystore_38">
+            <span>load-keystore</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+            <span>
+              <i node-type="i">storepass</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="load-keystore-file_39">
+            <span>load-keystore-file</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">file</i>
+            </span>
+            <span>
+              <i node-type="i">storepass</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Loads <i node-type="i">type</i> keystore from <i node-type="i">input-port</i> or <i node-type="i">file</i>.</p>
+        <p node-type="paragraph"><i node-type="i">storepass</i> must be a string and may or may not be used to decrypt
+keystore content.</p>
+        <p node-type="paragraph"><code node-type="code">load-keystore</code> loads from given binary input port <i node-type="i">input-port</i>.</p>
+        <p node-type="paragraph"><code node-type="code">load-keystore-file</code> loads from given file <i node-type="i">file</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-keystore_163">
+            <span>make-keystore</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns newly created <i node-type="i">type</i> keystore object.</p>
+        <p node-type="paragraph">Currently <code node-type="code">pkcs12</code>, <code node-type="code">jks</code> and <code node-type="code">jceks</code> are supported.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="keystore-get-key_15">
+            <span>keystore-get-key</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+            <span>
+              <i node-type="i">keypass</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The method shall return a private key associated with _alias_from <i node-type="i">keystore</i>. If there is no key entry associated with <i node-type="i">alias</i>
+then #f shall be returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
+        <p node-type="paragraph"><i node-type="i">keypass</i> shall be a string. It may or may not be used to decrypt
+the private key.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="keystore-get-certificate_12">
+            <span>keystore-get-certificate</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The method shall return an X509 certificate associated with _alias_from <i node-type="i">keystore</i>. If there is no certificate entry associated with
+<i node-type="i">alias</i> then #f shall be returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="keystore-get-certificate-chain_13">
+            <span>keystore-get-certificate-chain</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The method shall return a list of key certificates associated
+with <i node-type="i">alias</i> from <i node-type="i">keystore</i>. If there is no certificate entries
+associated with <i node-type="i">alias</i> then #f shall be returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="keystore-get-creation-date_14">
+            <span>keystore-get-creation-date</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The method shall return a date object of <i node-type="i">alias</i> associated entry.
+If there is no entry associated with <i node-type="i">alias</i> then #f shall be returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="keystore-contains-alias?_10">
+            <span>keystore-contains-alias?</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The method shall return #t if <i node-type="i">keystore</i> contains an entry associated
+with <i node-type="i">alias</i>. Otherwise #f shall be returend.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="store-keystore_238">
+            <span>store-keystore</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">output-port</i>
+            </span>
+            <span>
+              <i node-type="i">storepass</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="store-keystore-to-file_239">
+            <span>store-keystore-to-file</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">file</i>
+            </span>
+            <span>
+              <i node-type="i">storepass</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The methods shall write <i node-type="i">keystore</i> to <i node-type="i">output-port</i> or
+<i node-type="i">file</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">store-keystore</code> shall write to given binary output port
+<i node-type="i">output-port</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">store-keystore-to-file</code> shall write to given file <i node-type="i">file</i>.</p>
+        <p node-type="paragraph"><i node-type="i">storepass</i> shall be a string and may or may not be used to encrypt
+whole contents.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="keystore-set-key!_19">
+            <span>keystore-set-key!</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+            <span>
+              <i node-type="i">private-key</i>
+            </span>
+            <span>
+              <i node-type="i">keypass</i>
+            </span>
+            <span>
+              <i node-type="i">certs</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string represents the name of <i node-type="i">private-key</i> in
+the <i node-type="i">keystore</i>.</p>
+        <p node-type="paragraph"><i node-type="i">private-key</i> shall be an RSA private key.</p>
+        <p node-type="paragraph"><i node-type="i">key-pass</i> shall be a string and may or may not be used to encrypt
+given <i node-type="i">private-key</i>.</p>
+        <p node-type="paragraph"><i node-type="i">certs</i> shall be a list of X509 certificates which associated with
+<i node-type="i">private-key</i>.</p>
+        <p node-type="paragraph">The method shall store given <i node-type="i">private-key</i> to <i node-type="i">keystore</i>.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="keystore-set-certificate!_18">
+            <span>keystore-set-certificate!</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+            <span>
+              <i node-type="i">cert</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string represents the name of <i node-type="i">cert</i> in
+the <i node-type="i">keystore</i>.</p>
+        <p node-type="paragraph"><i node-type="i">cert</i> shall be an X509 certificate.</p>
+        <p node-type="paragraph">The method shall store given <i node-type="i">cert</i> to <i node-type="i">keystore</i>.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="keystore-delete-entry!_11">
+            <span>keystore-delete-entry!</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The method shall remove the entry associated with <i node-type="i">alias</i> from
+<i node-type="i">keystore</i>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section758.html">(rpc json) - JSON RPC library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section760.html">(text csv) - Comma separated values parser library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>

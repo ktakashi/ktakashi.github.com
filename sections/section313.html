@@ -1,0 +1,546 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section312.html">Exceptions</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section314.html">I/O condition types</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rnrs.conditions.6">Conditions</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rnrs conditions (6))_61">
+          <span>(rnrs conditions (6))</span>
+        </a>
+      </div>
+      <p node-type="paragraph">The section describes <code node-type="code">(rnrs conditions (6))</code>library for creating and
+inspecting condition types and values. A condition value encapsulates information
+about an exceptional situation.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="condition_111">
+          <span>condition</span>
+          <span>
+            <i node-type="i">condition</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] The <code node-type="code">condition</code> procedure returns a condition object with the
+components of the <i node-type="i">conditions</i> as its components, in the same order. The
+returned condition is compound if the total number of components is zero or
+greater than one. Otherwise, it may be compound or simple.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="simple-condition_98">
+          <span>simple-condition</span>
+          <span>
+            <i node-type="i">condition</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] The <code node-type="code">simple-conditions</code> procedure returns a list of the
+components of <i node-type="i">condition</i>, in the same order as they appeared in the
+construction of condition.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="condition?_127">
+          <span>condition?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is a (simple or compound) condition,
+otherwise returns #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="condition-predicate_118">
+          <span>condition-predicate</span>
+          <span>
+            <i node-type="i">rtd</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] <i node-type="i">Rtd</i> must be a record-type descriptor of a subtype of
+<code node-type="code">&amp;condition</code>. The <code node-type="code">condition-predicate</code> procedure returns a procedure
+that takes one argument. This procedure returns #t if its argument is a condition
+of the condition type represented by <i node-type="i">rtd</i>, i.e., if it is either a simple
+condition of that record type (or one of its subtypes) or a compound conditition
+with such a simple condition as one of its components, and #f otherwise.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="condition-accessor_112">
+          <span>condition-accessor</span>
+          <span>
+            <i node-type="i">rtd</i>
+          </span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] <i node-type="i">Rtd</i> must be a record-type descriptor of a subtype of
+<code node-type="code">&amp;condition</code>. <i node-type="i">Proc</i> should accept one argument, a record of the
+record type of <i node-type="i">rtd</i>. The <code node-type="code">condition-accessor</code> procedure returns a
+procedure that accepts a single argument, which must be a condition of the type
+represented by <i node-type="i">rtd</i>. This procedure extracts the first component of the
+condition of the type represented by <i node-type="i">rtd</i>, and returns the result of
+applying proc to that component.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-condition-type_71">
+          <span>define-condition-type</span>
+          <span>
+            <i node-type="i">condition-type</i>
+          </span>
+          <span>
+            <i node-type="i">supertypes</i>
+          </span>
+          <span>
+            <i node-type="i">constructor</i>
+          </span>
+          <span>
+            <i node-type="i">predicate</i>
+          </span>
+          <span>
+            <i node-type="i">field-spec</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] <i node-type="i">Condition-type</i>, <i node-type="i">supertypes</i>, <i node-type="i">constructor</i>, and
+<i node-type="i">predicate</i> must all be identifiers. Each <i node-type="i">field-spec</i> must be of the form</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(_field_ _accessor_)</code></pre>
+      </p>
+      <p node-type="paragraph">where both <i node-type="i">field</i> and <i node-type="i">accessor</i> must be identifiers.</p>
+      <p node-type="paragraph">The <code node-type="code">define-condition-type</code> form expands into a record-type definition for
+a record type <i node-type="i">condition-type</i>. The record type will be non-opaque, non-sealed,
+and its fields will be immutable. It will have supertype has its parent type.
+The remaining identifiers will be bound as follows:</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph"><i node-type="i">Constructor</i> is bound to a default constructor for the type : It accepts
+one argument for each of the record type's complete set of fields (including parent
+types, with the fields of the parent coming before those of the extension in the
+arguments) and returns a condition object initialized to those arguments.</p>
+        </li>
+        <li>
+          <p node-type="paragraph"><i node-type="i">Predicate</i> is bound to a predicate that identifies conditions of type
+<i node-type="i">condition-type</i> or any of its subtypes.</p>
+        </li>
+        <li>
+          <p node-type="paragraph">Each <i node-type="i">accessor</i> is bound to a procedure that extracts the corresponding
+field from a condition of type <i node-type="i">condition-type</i>.</p>
+        </li>
+      </ul>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Standard-condition-types">Standard condition types</a>
+        </h3>
+        <p node-type="paragraph">Hierarchy of standard condition types:</p>
+        <pre lang="scheme" node-type="block"><code>+ &amp;condition
+    + &amp;warning
+    + &amp;serious
+          + &amp;error
+          + &amp;violation
+                + &amp;assertion
+                + &amp;non-continuable
+                + &amp;implementation-restriction
+                + &amp;lexical
+                + &amp;syntax
+                + &amp;undefined
+    + &amp;message
+    + &amp;irritants
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;message_31">
+            <span>&amp;message</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-message-condition_172">
+            <span>make-message-condition</span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="message-condition?_312">
+            <span>message-condition?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-message_117">
+            <span>condition-message</span>
+            <span>
+              <i node-type="i">condition</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] It carries a message further describing the nature of the condition
+to humans.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;warning_48">
+            <span>&amp;warning</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-warning_255">
+            <span>make-warning</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="warning?_3">
+            <span>warning?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This type describes conditions that do not, in principle, prohibit
+immediate continued execution of the program, but may interfere with the program's
+execution later.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;serious_39">
+            <span>&amp;serious</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-serious-condition_208">
+            <span>make-serious-condition</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="serious-condition?_19">
+            <span>serious-condition?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This type describes conditions serious enough that they cannot safely
+be ignored. This condition type is primarily intended as a supertype of other
+condition types.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;error_10">
+            <span>&amp;error</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-error_121">
+            <span>make-error</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="error?_39">
+            <span>error?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This type describes errors, typically caused by something that has
+gone wrong in the interaction of the program with the external world or the user.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;violation_47">
+            <span>&amp;violation</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-violation_254">
+            <span>make-violation</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="violation?_27">
+            <span>violation?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This type describes violations of the language standard or a library
+standard, typically caused by a programming error.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;assertion_0">
+            <span>&amp;assertion</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-assertion-violation_14">
+            <span>make-assertion-violation</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="assertion-violation?_59">
+            <span>assertion-violation?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This type describes an invalid call to a procedure, either passing
+an invalid number of arguments, or passing an argument of the wrong type.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;irritants_29">
+            <span>&amp;irritants</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-irritants-condition_155">
+            <span>make-irritants-condition</span>
+            <span>
+              <i node-type="i">irritants</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="irritants-condition?_49">
+            <span>irritants-condition?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-irritants_116">
+            <span>condition-irritants</span>
+            <span>
+              <i node-type="i">condition</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Irritants</i> should be a list of objects. This condition provides
+additional information about a condition, typically the argument list of a
+procedure that detected an exception. Conditions of this type are created by the
+<code node-type="code">error</code> and <code node-type="code">assertion-violation</code> procedures.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;who_49">
+            <span>&amp;who</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-who-condition_262">
+            <span>make-who-condition</span>
+            <span>
+              <i node-type="i">who</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="who-condition?_47">
+            <span>who-condition?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-who_125">
+            <span>condition-who</span>
+            <span>
+              <i node-type="i">condition</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Who</i> should be a symbol or string identifying the entity
+reporting the exception. Conditions of this type are created by the <code node-type="code">error</code>and <code node-type="code">assertion-violation</code> procedures, and the <code node-type="code">syntax-violation</code>procedure.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;non-continuable_34">
+            <span>&amp;non-continuable</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-non-continuable-violation_181">
+            <span>make-non-continuable-violation</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="non-continuable-violation?_24">
+            <span>non-continuable-violation?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This type indicates that an exception handler invoked via raise has
+returned.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;implementation-restriction_26">
+            <span>&amp;implementation-restriction</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-implementation-restriction-violation_153">
+            <span>make-implementation-restriction-violation</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="implementation-restriction-violation?_24">
+            <span>implementation-restriction-violation?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This type describes a violation of an implementation restriction
+allowed by the specification, such as the absence of representations for NaNs
+and infinities.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;lexical_30">
+            <span>&amp;lexical</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-lexical-violation_166">
+            <span>make-lexical-violation</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="lexical-violation?_23">
+            <span>lexical-violation?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This type describes syntax violations at the level of the datum syntax.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;syntax_45">
+            <span>&amp;syntax</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-syntax-violation_241">
+            <span>make-syntax-violation</span>
+            <span>
+              <i node-type="i">form</i>
+            </span>
+            <span>
+              <i node-type="i">subform</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="syntax-violation?_342">
+            <span>syntax-violation?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="syntax-violation-form_340">
+            <span>syntax-violation-form</span>
+            <span>
+              <i node-type="i">condition</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="syntax-violation-subform_341">
+            <span>syntax-violation-subform</span>
+            <span>
+              <i node-type="i">condition</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This type describes syntax violations. <i node-type="i">Form</i> should be the
+erroneous syntax object or a datum representing the code of the erroneous form.
+<i node-type="i">Subform</i> should be an optional syntax object or datum within the erroneous
+form that more precisely locates the violation. It can be #f to indicate the
+absence of more precise information.</p>
+        <div node-type="define" class="define">
+          <span>Condition Type</span>
+          <a name="&amp;undefined_46">
+            <span>&amp;undefined</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-undefined-violation_248">
+            <span>make-undefined-violation</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="undefined-violation?_8">
+            <span>undefined-violation?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This type describes unbound identifiers in the program.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section312.html">Exceptions</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./section314.html">I/O condition types</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+    </div>
+  </body>
+</html>
