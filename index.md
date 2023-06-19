@@ -8,7 +8,9 @@ with a lot of practical libraries, especially cryptographic libraries.
 [^r7rs]: [The Revised^7 Report on the Algorithmic Language Scheme](https://small.r7rs.org/)
 
 You can find the source archive and/or Windows binary from the main 
-repository.
+repository. The main repository contains instructions how to install
+from source archive.
+
 
 Repositories
 ------------
