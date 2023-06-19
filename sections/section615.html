@@ -17,7 +17,7 @@
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(sagittarius debug)_86">
+        <a name="(sagittarius debug)_94">
           <span>(sagittarius debug)</span>
         </a>
       </div>
@@ -51,7 +51,7 @@ read expression and its result.</p>
       <p node-type="paragraph"><code node-type="code">#!debug</code> enables the debug print.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="macroexpand_0">
+        <a name="macroexpand_7">
           <span>macroexpand</span>
           <span>
             <i node-type="i">expr</i>
@@ -62,7 +62,7 @@ read expression and its result.</p>
 as proper Scheme expression.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="macroexpand-1_1">
+        <a name="macroexpand-1_8">
           <span>macroexpand-1</span>
           <span>
             <i node-type="i">expr</i>
@@ -71,7 +71,7 @@ as proper Scheme expression.</p>
       </div>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="macroexpand-n_2">
+        <a name="macroexpand-n_9">
           <span>macroexpand-n</span>
           <span>
             <i node-type="i">expr</i>
@@ -88,6 +88,372 @@ locally bound macros.</p>
       <p node-type="paragraph">The returning value may or may not be used as proper Scheme expression.</p>
       <p node-type="paragraph">Above 2 procedures are no more than debug aid. Depending on the result of
 expansion is not guaranteed to work.</p>
+      <h4 node-type="header-4">
+        <a name="Remote-debugger-experimental-feature">Remote debugger (experimental feature)</a>
+      </h4>
+      <p node-type="paragraph"><i node-type="i">CAVEAT</i> This functionality and interface is subjected to be changed in the
+future.</p>
+      <p node-type="paragraph">When you want to debug a running script, you can use a remote debugger
+provided this library. Below example shows how to use it.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (sagittarius debug))
+
+;; Using random port
+(define remote-debugger (make-remote-debugger "0"))
+(print "Debugger port: " (remote-debugger-port remote-debugger))
+
+;; Do heavy process or multi threading program which hangs :)
+</code></pre>
+      <p node-type="paragraph">To connect the remote debugger, you can use simpley use
+<code node-type="code">(sagittarius remote-repl)</code> towards the debugger node and port.</p>
+      <pre lang="" node-type="block"><code>(import (rnrs)
+        (sagittarius remote-repl))
+(connect-remote-repl "localhost" "${port number shown on the console}")
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="remote-debugger?_108">
+          <span>remote-debugger?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a remote debugger object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-remote-debugger_227">
+          <span>make-remote-debugger</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <code node-type="code">string?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a remote debugger. The <i node-type="i">port</i> must be an available port number,
+or <code node-type="code">"0"</code> for random port.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="remote-debugger-terminate!_107">
+          <span>remote-debugger-terminate!</span>
+          <span> (remote-debugger </span>
+          <span>
+            <code node-type="code">remote-debugger?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Terminates the given <i node-type="i">remote-debugger</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="remote-debugger-port_106">
+          <span>remote-debugger-port</span>
+          <span> (remote-debugger </span>
+          <span>
+            <code node-type="code">remote-debugger?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the port number of the given <i node-type="i">remote-debugger</i>.</p>
+      <hr>
+      <p node-type="paragraph">The bindings listed below are only available on the remote debugger's
+REPL.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="all-threads_31">
+          <span>all-threads</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Get a list of threads created on Scheme world.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="sleeping-threads_120">
+          <span>sleeping-threads</span>
+          <span> :optional (</span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span> 0.01)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Get a list of sleeping threads created on Scheme world.</p>
+      <p node-type="paragraph">Ssleeping thread is a thread which can't suspend within the given <i node-type="i">timeout</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread?_51">
+          <span>thread?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[SRFI-18] Returns if the given <i node-type="i">obj</i> is a thread.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-name_24">
+          <span>thread-name</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">thread</i>
+          </span>
+          <span>
+            <code node-type="code">thread?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">[SRFI-18] Returns the name of the given <i node-type="i">thread</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-specific_43">
+          <span>thread-specific</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">thread</i>
+          </span>
+          <span>
+            <code node-type="code">thread?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">[SRFI-18] Returns the specific value of the given <i node-type="i">thread</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-&gt;pretty-backtrace-string_12">
+          <span>thread-&gt;pretty-backtrace-string</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">thread</i>
+          </span>
+          <span>
+            <code node-type="code">thread?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a human readable string representation of the given <i node-type="i">thread</i>'s
+backtrace.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-current-procedure_21">
+          <span>thread-current-procedure</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">thread</i>
+          </span>
+          <span>
+            <code node-type="code">thread?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the current procedure of the <i node-type="i">thread</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-backtrace_13">
+          <span>thread-backtrace</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">thread</i>
+          </span>
+          <span>
+            <code node-type="code">thread?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the backtrace of the given <i node-type="i">thread</i>.</p>
+      <p node-type="paragraph">Currently, a backtrace is a list, however it may change in the future,
+to access the value of backtrace, use the  procedures listed below.</p>
+      <p node-type="paragraph">NOTE: A backtrace starts with <code node-type="code">1</code>, not zero base.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-backtrace-type_20">
+          <span>thread-backtrace-type</span>
+          <span>
+            <i node-type="i">backtrace</i>
+          </span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the type of <i node-type="i">n</i>th <i node-type="i">backtrace</i>. The value is</p>
+      <dl node-type="dlist">
+        <dt>
+          <code node-type="code">*cproc</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">For C procedure.</p>
+        </dd>
+        <dt>
+          <code node-type="code">*proc</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">For Scheme procedure.</p>
+        </dd>
+      </dl>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-backtrace-procedure_18">
+          <span>thread-backtrace-procedure</span>
+          <span>
+            <i node-type="i">backtrace</i>
+          </span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the procedure of the <i node-type="i">n</i>th <i node-type="i">backtrace</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-backtrace-source_19">
+          <span>thread-backtrace-source</span>
+          <span>
+            <i node-type="i">backtrace</i>
+          </span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the source, list of file and line number` of the <i node-type="i">n</i>th <i node-type="i">backtrace</i>,
+if available.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-backtrace-arguments_15">
+          <span>thread-backtrace-arguments</span>
+          <span>
+            <i node-type="i">backtrace</i>
+          </span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns alist of the arguments of the <i node-type="i">n</i>th <i node-type="i">backtrace</i>'s procedure.</p>
+      <p node-type="paragraph">For local variable, the key is <code node-type="code">local</code>. For free variable, the key is <code node-type="code">free</code>.</p>
+      <p node-type="paragraph">NOTE: <code node-type="code">local</code> variable may contain more than the argument of the current
+procedure. This is bacause it also retrieves the available local variable
+of the current call frame.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-backtrace-local-variables_17">
+          <span>thread-backtrace-local-variables</span>
+          <span>
+            <i node-type="i">backtrace</i>
+          </span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">local</code> part of the <i node-type="i">n</i>th <i node-type="i">backtrace</i> arguments.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-backtrace-free-variables_16">
+          <span>thread-backtrace-free-variables</span>
+          <span>
+            <i node-type="i">backtrace</i>
+          </span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">free</code> part of the <i node-type="i">n</i>th <i node-type="i">backtrace</i> arguments.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="thread-backtrace-&gt;pretty-string_14">
+          <span>thread-backtrace-&gt;pretty-string</span>
+          <span>
+            <i node-type="i">backtrace</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a human readable string representation of the given <i node-type="i">backtrace</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slot-ref_127">
+          <span>slot-ref</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">slot</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the <i node-type="i">slot</i> value of given <i node-type="i">obj</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="inspect-object_65">
+          <span>inspect-object</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the available slots of the given <i node-type="i">obj</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="print_124">
+          <span>print</span>
+          <span>
+            <i node-type="i">arg</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="print/ss_125">
+          <span>print/ss</span>
+          <span>
+            <i node-type="i">arg</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Prints the given <i node-type="i">arg</i>s and newline at the end.
+The first form uses <code node-type="code">display</code> to print, the latter form uses <code node-type="code">write/ss</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="string-prefix?_290">
+          <span>string-prefix?</span>
+          <span>
+            <i node-type="i">s1</i>
+          </span>
+          <span>
+            <i node-type="i">s2</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[SRFI-13] Returns <code node-type="code">#t</code> if the given <i node-type="i">s1</i> is the prefix of <i node-type="i">s2</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="string-suffix?_295">
+          <span>string-suffix?</span>
+          <span>
+            <i node-type="i">s1</i>
+          </span>
+          <span>
+            <i node-type="i">s2</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[SRFI-13] Returns <code node-type="code">#t</code> if the given <i node-type="i">s1</i> is the suffix of <i node-type="i">s2</i>.</p>
     </section>
     <p node-type="paragraph" class="navigation-container">
       <a href="./section614.html">(sagittarius timezone) - Timezone</a>
@@ -96,7 +462,7 @@ expansion is not guaranteed to work.</p>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
     </div>
   </body>
 </html>

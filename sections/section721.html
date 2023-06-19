@@ -363,9 +363,23 @@ discards it. This connection manager should only be used in disposable
 scripts.</p>
         <p node-type="paragraph">The pooling connection manager pools the created connection and try to
 reuse if possible.</p>
+        <p node-type="paragraph">Below example shows how to create a HTTP client with pooling connection
+manager.</p>
+        <pre lang="scheme" node-type="block"><code>(define pool-config
+  (http-pooling-connection-config-builder
+    (connection-timeout 1000)     ;; 1 sec, connection timeout
+    (max-connection-per-route 20) ;; pooling connection number per route
+    (read-timeout 3000)           ;; 3 sec, read timeout
+    (dns-timeout 1000)            ;; 1 sec, DNS lookup timeout
+    (time-to-live 120)            ;; 120 sec, expiration time of a connection
+	))
+(define http-client
+  (http:client-builder
+    (connection-manager (make-http-pooling-connection-manager pool-config))))
+</code></pre>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-http-default-connection-manager_135">
+          <a name="make-http-default-connection-manager_156">
             <span>make-http-default-connection-manager</span>
           </a>
         </div>
@@ -433,7 +447,7 @@ ephemeral connection manager without any timeout or key configuration.</p>
 otherwise #f.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-http-ephemeral-connection-manager_136">
+            <a name="make-http-ephemeral-connection-manager_157">
               <span>make-http-ephemeral-connection-manager</span>
               <span>
                 <i node-type="i">config</i>
@@ -458,6 +472,8 @@ otherwise #f.</p>
           </div>
           <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is an instance of
 <code node-type="code">http-pooling-connection-config</code>, otherwise #f.</p>
+          <p node-type="paragraph">The <code node-type="code">http-pooling-connection-config</code> record is a child record of
+<code node-type="code">http-connection-config</code>.</p>
           <div node-type="define" class="define">
             <span>Macro</span>
             <a name="http-pooling-connection-config-builder_99">
@@ -518,7 +534,7 @@ actual connection.</p>
 otherwise #f.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-http-pooling-connection-manager_137">
+            <a name="make-http-pooling-connection-manager_158">
               <span>make-http-pooling-connection-manager</span>
               <span>
                 <i node-type="i">config</i>
@@ -558,12 +574,12 @@ chain.</p>
 key providers.</p>
         <pre lang="scheme" node-type="block"><code>(import (rnrs)
         (net http-client)
-	(rfc base64)
-	(security keystore))
+        (rfc base64)
+        (security keystore))
 (define (host-a p)
   (define node (socket-parameter-socket-node p))
   (cond ((string=? node "host-a.com") "host-a-key-alias")
-	(else #f)))
+        (else #f)))
 (define (host-b p)
   (define node (socket-parameter-socket-node p))
   (and (string-suffix? ".host-b.com" node) "host-b-key-alias"))
@@ -590,7 +606,7 @@ key providers.</p>
 </code></pre>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="key-manager?_3">
+          <a name="key-manager?_4">
             <span>key-manager?</span>
             <span>
               <i node-type="i">obj</i>
@@ -601,7 +617,7 @@ key providers.</p>
 otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-key-manager_162">
+          <a name="make-key-manager_184">
             <span>make-key-manager</span>
             <span>
               <i node-type="i">key-providers</i>
@@ -620,7 +636,7 @@ must be a format of a list of private key and certificate chain.</p>
 provider, you need to create a custom one.</p>
           <div node-type="define" class="define">
             <span>Record Type</span>
-            <a name="<key-provider&gt;_40">
+            <a name="<key-provider&gt;_42">
               <span>&lt;key-provider&gt;</span>
             </a>
           </div>
@@ -629,7 +645,7 @@ record type to create a custom key provider.</p>
           <p node-type="paragraph">This record type has a filed named <code node-type="code">key-retrievers</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="key-provider?_5">
+            <a name="key-provider?_9">
               <span>key-provider?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -640,7 +656,7 @@ record type to create a custom key provider.</p>
 otherwise #f.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="key-provider-key-retrievers_4">
+            <a name="key-provider-key-retrievers_8">
               <span>key-provider-key-retrievers</span>
               <span>
                 <i node-type="i">key-provider</i>
@@ -652,7 +668,7 @@ otherwise #f.</p>
           <p node-type="paragraph">This procedure is not meant to be used by a user of HTTP client.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="keystore-key-provider?_17">
+            <a name="keystore-key-provider?_21">
               <span>keystore-key-provider?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -663,7 +679,7 @@ otherwise #f.</p>
 otherwise #f.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-keystore-key-provider_164">
+            <a name="make-keystore-key-provider_186">
               <span>make-keystore-key-provider</span>
               <span>
                 <i node-type="i">keystore</i>
@@ -683,7 +699,7 @@ socket parameter, and returns either string of key alias or #f.</p>
           <p node-type="paragraph">Creates a key provider with one key retriever.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="keystore-key-provider-add-key-retriever!_16">
+            <a name="keystore-key-provider-add-key-retriever!_20">
               <span>keystore-key-provider-add-key-retriever!</span>
               <span>
                 <i node-type="i">keystore-key-provider</i>
@@ -709,7 +725,7 @@ socket parameter, and returns either string of key alias or #f.</p>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2022-09-01T15:20:01+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
     </div>
   </body>
 </html>
