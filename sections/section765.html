@@ -7,274 +7,128 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section764.html">(text json jmespath) - JMESPath</a>
+      <a href="./section764.html">(text html-lite) - Simple HTML document builder library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section766.html">(text json pointer) - JSON Pointer</a>
+      <a href="./section766.html">(text json object-builder) -- JSON object builder/serializer</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="text.json.mutable">(text json mutable) - Mutable JSON</a>
+        <a name="text.json">(text json) -- JSON parser</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(text json mutable)_159">
-          <span>(text json mutable)</span>
+        <a name="(text json)_168">
+          <span>(text json)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides an mutable JSON representation.</p>
-      <p node-type="paragraph">The following example shows how to use:</p>
-      <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (text json mutable))
-
-(define json '#(("key" . "value")))
-(define mutable-json (json-&gt;mutable-json json))
-
-(mutable-json-object-set! mutable-json "key" '#(("value" . "as object")))
-
-(mutable-json-&gt;json mutable-json)
-;; -&gt; #(("key" . #(("value" . "as object"))))
+      <p node-type="paragraph">This library provides JSON parser and writer.</p>
+      <div node-type="define" class="define">
+        <span>Parameter</span>
+        <a name="*json-map-type*_121">
+          <span>*json-map-type*</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Controls mapping of JSON map and array. The value must be either
+<code node-type="code">'vector</code> or <code node-type="code">'alist</code>. The first one is compatible with Chicken
+Scheme's json module, the latter one is compatible with Gauche's
+<code node-type="code">rfc.json</code> module. By default, it's set to <code node-type="code">vector</code> for backward
+compatibility.</p>
+      <p node-type="paragraph">Conversion rules for <code node-type="code">vector</code>:</p>
+      <pre lang="scheme" node-type="block"><code>JSON array   &lt;-&gt; list
+JSON map     &lt;-&gt; vector
+JSON boolean &lt;-&gt; boolean
+JSON null    &lt;-&gt; symbol `null`
 </code></pre>
+      <p node-type="paragraph">Conversion rules for <code node-type="code">alist</code>:</p>
+      <pre lang="scheme" node-type="block"><code>JSON array   &lt;-&gt; vector
+JSON map     &lt;-&gt; alist
+JSON boolean &lt;-&gt; boolean
+JSON null    &lt;-&gt; symbol `null`
+</code></pre>
+      <p node-type="paragraph">This parameter affects the read and write procedures.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="json-&gt;mutable-json_13">
-          <span>json-&gt;mutable-json</span>
+        <a name="json-read_29">
+          <span>json-read</span>
+          <span>  :optional (</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <code node-type="code">(current-input-port)</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Reads JSON from given <i node-type="i">port</i> and returns representing S-expression.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="json-write_53">
+          <span>json-write</span>
           <span>
             <i node-type="i">json</i>
           </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Converts the given <i node-type="i">json</i> to a mutable JSON.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="mutable-json-&gt;json_396">
-          <span>mutable-json-&gt;json</span>
+          <span> :optional (</span>
           <span>
-            <i node-type="i">mutable-json</i>
+            <i node-type="i">port</i>
           </span>
+          <span>
+            <code node-type="code">(current-output-port)</code>
+          </span>
+          <span>)</span>
         </a>
       </div>
-      <p node-type="paragraph">Converts the given <i node-type="i">mutable-json</i> to a JSON.</p>
+      <p node-type="paragraph">Writes the given S-expression JSON representing object to given
+<i node-type="i">port</i>.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="mutable-json?_410">
-          <span>mutable-json?</span>
+        <a name="json-write/normalized_55">
+          <span>json-write/normalized</span>
+          <span>
+            <i node-type="i">json</i>
+          </span>
+          <span> :optional (</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+          <span>
+            <code node-type="code">(current-output-port)</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Writes the given S-expression JSON representing object to given
+<i node-type="i">port</i>.</p>
+      <p node-type="paragraph">The written JSON doesn't have excess space.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="json-read-error?_30">
+          <span>json-read-error?</span>
           <span>
             <i node-type="i">obj</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a mutable JSON,
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="json-write-error?_54">
+          <span>json-write-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is <code node-type="code">&amp;json-read</code> or <code node-type="code">&amp;json-write</code> respectively,
 otherwise <code node-type="code">#f</code>.</p>
-      <p node-type="paragraph">Mutable JSON object consists with 2 containers</p>
-      <ul node-type="bullet-list">
-        <li>
-          <p node-type="paragraph">Mutable JSON object</p>
-        </li>
-        <li>
-          <p node-type="paragraph">Mutable JSON array</p>
-        </li>
-      </ul>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Mutable-JSON-object">Mutable JSON object</a>
-        </h3>
-        <p node-type="paragraph">Mutable JSON object is a JSON object. The difference is a mutable JSON object
-doesn't allow to have multiple identical keys while JSON object allows it.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object?_409">
-            <span>mutable-json-object?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a mutable JSON object,
-otherwise <code node-type="code">#f</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object-set!_408">
-            <span>mutable-json-object-set!</span>
-            <span>
-              <i node-type="i">mutable-json-object</i>
-            </span>
-            <span>
-              <i node-type="i">key</i>
-            </span>
-            <span>
-              <i node-type="i">value</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Associates the given <i node-type="i">key</i> and <i node-type="i">value</i> to the <i node-type="i">mutable-json</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object-merge!_406">
-            <span>mutable-json-object-merge!</span>
-            <span>
-              <i node-type="i">mutable-json-object</i>
-            </span>
-            <span>
-              <i node-type="i">mutable-json-object1</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
-            <span>
-              <i node-type="i">mutable-json-object*</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Merges the <i node-type="i">mutable-json-object1</i> and <i node-type="i">mutable-json-object*</i> into
-<i node-type="i">mutable-json-object</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object-delete!_405">
-            <span>mutable-json-object-delete!</span>
-            <span>
-              <i node-type="i">mutable-json-object</i>
-            </span>
-            <span>
-              <i node-type="i">key</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Remves the given <i node-type="i">key</i> from the <i node-type="i">mutable-json-object</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object-contains?_404">
-            <span>mutable-json-object-contains?</span>
-            <span>
-              <i node-type="i">mutable-json-object</i>
-            </span>
-            <span>
-              <i node-type="i">key</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">key</i> exists in the
-<i node-type="i">mutable-json-object</i>, otherwise <code node-type="code">#f</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object-ref_407">
-            <span>mutable-json-object-ref</span>
-            <span>
-              <i node-type="i">mutable-json-object</i>
-            </span>
-            <span>
-              <i node-type="i">key</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns the value associated with the given <i node-type="i">key</i> in the
-<i node-type="i">mutable-json-object</i>, otherwise returns <code node-type="code">mutable JSON not found</code>object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-not-found?_403">
-            <span>mutable-json-not-found?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a mutable JSON not found,
-otherwise <code node-type="code">#f</code>.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Mutable-JSON-array">Mutable JSON array</a>
-        </h3>
-        <p node-type="paragraph">Mutable JSON array is a JSON array with capability of expansion or shrinking.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array?_402">
-            <span>mutable-json-array?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a mutable JSON array
-otherwise <code node-type="code">#f</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array-set!_400">
-            <span>mutable-json-array-set!</span>
-            <span>
-              <i node-type="i">mutable-json-array</i>
-            </span>
-            <span>
-              <i node-type="i">index</i>
-            </span>
-            <span>
-              <i node-type="i">value</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Sets the given value <i node-type="i">value</i> to the _mutable-json-array_on position of <i node-type="i">index</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array-insert!_398">
-            <span>mutable-json-array-insert!</span>
-            <span>
-              <i node-type="i">mutable-json-array</i>
-            </span>
-            <span>
-              <i node-type="i">index</i>
-            </span>
-            <span>
-              <i node-type="i">value</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Insets the given value <i node-type="i">value</i> to the _mutable-json-array_on position of <i node-type="i">index</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array-delete!_397">
-            <span>mutable-json-array-delete!</span>
-            <span>
-              <i node-type="i">mutable-json-array</i>
-            </span>
-            <span>
-              <i node-type="i">index</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Deletes the value of given _mutable-json-array_on position of <i node-type="i">index</i> and shrink it.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array-ref_399">
-            <span>mutable-json-array-ref</span>
-            <span>
-              <i node-type="i">mutable-json-array</i>
-            </span>
-            <span>
-              <i node-type="i">index</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Retrieves the value of <i node-type="i">mutable-json-array</i> on position of
-<i node-type="i">index</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array-size_401">
-            <span>mutable-json-array-size</span>
-            <span>
-              <i node-type="i">mutable-json-array</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns the size of the given <i node-type="i">mutable-json-array</i>.</p>
-      </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section764.html">(text json jmespath) - JMESPath</a>
+      <a href="./section764.html">(text html-lite) - Simple HTML document builder library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section766.html">(text json pointer) - JSON Pointer</a>
+      <a href="./section766.html">(text json object-builder) -- JSON object builder/serializer</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

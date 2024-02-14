@@ -7,579 +7,496 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section749.html">(rfc smtp) - SMTP client</a>
+      <a href="./section749.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section751.html">(rfc uri) - Parse and construct URIs</a>
+      <a href="./section751.html">(rfc smtp) - SMTP client</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="rfc.tls">(rfc tls) - TLS protocol library</a>
+        <a name="rfc.sftp">(rfc sftp) - SFTP library</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(rfc tls)_47">
-          <span>(rfc tls)</span>
+        <a name="rfc sftp_123">
+          <span>rfc sftp</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides TLS protocol socket APIs.</p>
-      <p node-type="paragraph">CAUTION: This library is not well tested. So it may have security hole or
-incompatible behaviour. If you find such bugs, please let me know.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="make-client-tls-socket_49">
-          <span>make-client-tls-socket</span>
-          <span>
-            <i node-type="i">node</i>
-          </span>
-          <span>
-            <i node-type="i">service</i>
-          </span>
-          <span>
-            <i node-type="i">:key</i>
-          </span>
-          <span>
-            <i node-type="i">(prng</i>
-          </span>
-          <span>
-            <i node-type="i">(secure-randome</i>
-          </span>
-          <span>
-            <i node-type="i">RC4))</i>
-          </span>
-          <span> _</span>
-        </a>
-      </div>
-      <p node-type="paragraph">_ <i node-type="i">(version</i> <i node-type="i"><i node-type="i">tls-version-1.2</i>)</i> <i node-type="i">(session</i> <i node-type="i">#f)</i> <i node-type="i">(handshake</i> <i node-type="i">#t)</i> _
-_ <i node-type="i">(certificates</i> <i node-type="i">'())</i> <i node-type="i">(private-key</i> <i node-type="i">#f)</i> _
-_ <i node-type="i">:allow-other-keys</i> <i node-type="i">opt</i></p>
-      <p node-type="paragraph"><i node-type="i">node</i> and <i node-type="i">service</i> must be string.</p>
-      <p node-type="paragraph">Creates a client TLS socket. <i node-type="i">node</i>, <i node-type="i">service</i> and <i node-type="i">opt</i> will be
-passed to <code node-type="code">make-client-socket</code> described in
-<a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">prng</i> specifies which pseudo random algorithm will
-be used for generating security parameters.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">version</i> specifies which TLS protocol version will be
-used for negotiation. However the real version will be decided by target server.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">session</i> is for future extension, so do not specify.</p>
-      <p node-type="paragraph">If the keyword argument <i node-type="i">handshake</i> #f then the procedure won't do
-TLS handshake after the socket creation so users must do it manually with
-<code node-type="code">tls-client-handshake</code> procedure described below.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">certificates</i> is for certificate request message.
-The value must be a list of x509 certificates. If the certificates argument
-is null, then the procedures send empty certificate list to the server as
-a response of certificate request message.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">private-key</i> specifies which private key is used.
-The value must be private key object described in <a href="section79.html#crypto">"(crypto)"</a>.
-This is needed if the target server only supports RSA key exchange protocol.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-client-handshake_74">
-          <span>tls-client-handshake</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Do client side handshake and return a TLS socket. The procedure must
-*NOT* be called if the socket is created with <i node-type="i">handshake</i> keyword argument
-#t.</p>
-      <p node-type="paragraph">CAUTION: This procedure needs to be called only once and calling more than once
-might cause infinite loop or raise an error.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="make-server-tls-socket_244">
-          <span>make-server-tls-socket</span>
-          <span>
-            <i node-type="i">service</i>
-          </span>
-          <span>
-            <i node-type="i">certificates</i>
-          </span>
-          <span>
-            <i node-type="i">:key</i>
-          </span>
-          <span>
-            <i node-type="i">(prng</i>
-          </span>
-          <span>
-            <i node-type="i">(secure-randome</i>
-          </span>
-          <span>
-            <i node-type="i">RC4))</i>
-          </span>
-          <span> _</span>
-        </a>
-      </div>
-      <p node-type="paragraph">_ <i node-type="i">(version</i> <i node-type="i"><i node-type="i">tls-version-1.2</i>)</i> _
-_ <i node-type="i">(private-key</i> <i node-type="i">#f)</i> <i node-type="i">(authorities</i> <i node-type="i">'())</i> _
-_ <i node-type="i">:allow-other-keys</i> <i node-type="i">opt</i></p>
-      <p node-type="paragraph"><i node-type="i">service</i> must be string. <i node-type="i">certificates</i> must be a
-list of x509 certificate.</p>
-      <p node-type="paragraph">Creates a server TLS socket. <i node-type="i">service</i> and <i node-type="i">opt</i> will be passed to
-<code node-type="code">make-server-socket</code> described in
-<a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
-      <p node-type="paragraph">The keyword arguments <i node-type="i">prng</i> and <i node-type="i">version</i> are the same meaning as
-<code node-type="code">make-client-tls-socket</code>.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">private-key</i> is used the same as client socket.
-The difference is that it is used also for Deffie-Hellman key exchange.
-If this is not specified, then key exhange is done anonymously.
-It is strongly recomended to specify this keyword argument.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">authorities</i> must be a list of x509 certificate and
-if this is not empty list then the server socket will send certificate request
-message to the client.</p>
-      <p node-type="paragraph">CAUTION: the <i node-type="i">authorities</i> keyword argument currently doesn't check
-the certificate signature but only issuer DN.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-send_89">
-          <span>tls-socket-send</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-          <span>
-            <i node-type="i">bytevector</i>
-          </span>
-          <span>
-            <i node-type="i">flags</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be the socket created by the procedure
-<code node-type="code">make-client-tls-socket</code>.</p>
-      <p node-type="paragraph"><i node-type="i">flags</i> must be non negative exact integer.</p>
-      <p node-type="paragraph">Sends given bytevector to <i node-type="i">tls-socket</i>. <i node-type="i">flags</i> are described in
-the section <a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>. The packet
-will be encrypted by <i node-type="i">tls-socket</i>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-recv_88">
-          <span>tls-socket-recv</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-          <span>
-            <i node-type="i">size</i>
-          </span>
-          <span>
-            <i node-type="i">flags</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be the socket created by the procedure
-<code node-type="code">make-client-tls-socket</code>.</p>
-      <p node-type="paragraph"><i node-type="i">size</i> and <i node-type="i">flags</i> must be non negative exact integer.</p>
-      <p node-type="paragraph">Receives decrypted packet from <i node-type="i">tls-socket</i>. <i node-type="i">size</i> indicates how many
-octets the procedure should receive, however it might return less octet.
-<i node-type="i">flags</i> will be passed to <code node-type="code">socket-recv</code>.</p>
-      <p node-type="paragraph">NOTE: <i node-type="i">tls-socket</i> have its own buffer to return the value, so that the
-procedure can take <i node-type="i">size</i> argument.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-close_77">
-          <span>tls-socket-close</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be the socket created by the procedure
-<code node-type="code">make-client-tls-socket</code>.</p>
-      <p node-type="paragraph">Sends close notify alert to the socket and close it.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-closed?_78">
-          <span>tls-socket-closed?</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be the socket created by the procedure
-<code node-type="code">make-client-tls-socket</code>.</p>
-      <p node-type="paragraph">Returns #t if the given socket is closed, otherwise #f.</p>
-      <p node-type="paragraph">NOTE: this procedure checks if session is closed. So the real socket might not
-be closed yet.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-accept_76">
-          <span>tls-socket-accept</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-          <span>
-            <i node-type="i">:key</i>
-          </span>
-          <span>
-            <i node-type="i">(handshake</i>
-          </span>
-          <span>
-            <i node-type="i">#t)</i>
-          </span>
-          <span>
-            <i node-type="i">(raise-error</i>
-          </span>
-          <span>
-            <i node-type="i">#t)</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be a server TLS socket created by
-<code node-type="code">make-server-tls-socket</code>.</p>
-      <p node-type="paragraph">Wait for an incoming connection request and returns a fresh connected client
-socket.</p>
-      <p node-type="paragraph">If the keyword argument <i node-type="i">handshake</i> is #f then the handshake must be done
-by manually with <code node-type="code">tls-server-handshake</code> described blow.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">raise-error</i> will be passed to
-<code node-type="code">tls-server-handshake</code>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-server-handshake_75">
-          <span>tls-server-handshake</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-          <span>
-            <i node-type="i">:key</i>
-          </span>
-          <span>
-            <i node-type="i">(raise-error</i>
-          </span>
-          <span>
-            <i node-type="i">#t)</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Do server side TLS handshake and returns a TLS socket. The procedure must
-*NOT* be called if the socket is created with <i node-type="i">handshake</i> keyword argument
-#t.</p>
-      <p node-type="paragraph">If the keyword argument <i node-type="i">raise-error</i> is #f then it won't raise an error
-when something happens.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-peer_86">
-          <span>tls-socket-peer</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Return peer of given <i node-type="i">tls-socket</i> or #f.</p>
-      <p node-type="paragraph">For more details, see <a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-peer_85">
-          <span>tls-socket-peer</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Return peer of given <i node-type="i">tls-socket</i> or #f. This procedure is TLS
-version of <code node-type="code">socket-peer</code>.</p>
-      <p node-type="paragraph">For more details, see <a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-name_81">
-          <span>tls-socket-name</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Return peer of given <i node-type="i">tls-socket</i> or #f. This procedure is TLS
-version of <code node-type="code">socket-name</code>.</p>
-      <p node-type="paragraph">For more details, see <a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-info-values_79">
-          <span>tls-socket-info-values</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Return peer of given <i node-type="i">tls-socket</i> or #f. This procedure is TLS
-version of <code node-type="code">socket-info-values</code>.</p>
-      <p node-type="paragraph">For more details, see <a href="section612.html#lib.sagittarius.socket">(sagittarius socket)</a>.</p>
-      <div node-type="define" class="define">
-        <span>Constant</span>
-        <a name="*tls-version-1.2*_234">
-          <span>*tls-version-1.2*</span>
-        </a>
-      </div>
-      <p node-type="paragraph">Constant value of <code node-type="code">#x0303</code> for TLS 1.2</p>
-      <div node-type="define" class="define">
-        <span>Constant</span>
-        <a name="*tls-version-1.1*_233">
-          <span>*tls-version-1.1*</span>
-        </a>
-      </div>
-      <p node-type="paragraph">Constant value of <code node-type="code">#x0302</code> for TLS 1.1</p>
-      <div node-type="define" class="define">
-        <span>Constant</span>
-        <a name="*tls-version-1.0*_232">
-          <span>*tls-version-1.0*</span>
-        </a>
-      </div>
-      <p node-type="paragraph">Constant value of <code node-type="code">#x0301</code> for TLS 1.0</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-port_87">
-          <span>tls-socket-port</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-          <span>
-            <i node-type="i">:optional</i>
-          </span>
-          <span>
-            <i node-type="i">(close?</i>
-          </span>
-          <span>
-            <i node-type="i">#t)</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph"><i node-type="i">tls-socket</i> must be the socket created by the procedure
-<code node-type="code">make-client-tls-socket</code>.</p>
-      <p node-type="paragraph">Returns input/output-port of given <i node-type="i">tls-socket</i>.</p>
-      <p node-type="paragraph">If optional argument <i node-type="i">close?</i> is #f then it won't close the socket when the
-port is closed or GCed.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-input-port_80">
-          <span>tls-socket-input-port</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-        </a>
-      </div>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="tls-socket-output-port_84">
-          <span>tls-socket-output-port</span>
-          <span>
-            <i node-type="i">tls-socket</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Convert the given TLS socket to input and output port, respectively.</p>
-      <p node-type="paragraph">The given socket won't be closed when the port is closed or GCed. So it is the
-users responsibility to close.</p>
+      <p node-type="paragraph">This library provides SFTP programmatic operations.</p>
+      <p node-type="paragraph">Following example code describes how to use in high level.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rfc sftp) (pp) (srfi :26))
+
+(call-with-sftp-connection 
+  "localhost"    ;; hostname
+  "23"           ;; port number
+  (lambda (conn)
+    ;; read directory
+    (pp (sftp-readdir conn "."))
+    ;; only short names
+    (pp (sftp-readdir-as-filenames conn "."))
+    ;; only long names (usually POSIX 'ls -l' format)
+    (pp (sftp-readdir-as-longnames conn "."))
+
+    ;; retrieve a file as a bytevector
+    (print (utf8-&gt;string (sftp-read! conn "reading/file" 
+                                    (sftp-binary-receiver))))
+    ;; store a file to local file directly
+    (sftp-read conn "/a/file/path"
+	(sftp-file-receiver "where/to/store" :options (file-options no-fail)))
+
+    ;; upload a file
+    (let ((handle (sftp-open conn "boo" 
+                    (bitwise-ior +ssh-fxf-creat+ +ssh-fxf-write+))))
+     (call-with-input-file "a/local/file" (cut sftp-write! conn handle &lt;&gt;)
+                           :transcoder #f))
+
+    ;; rename a file
+    (sftp-rename! conn "boo" "foo")
+    ;; remove a file
+    (sftp-remove! conn "foo")
+    ;; create a directory
+    (sftp-mkdir! conn "boo")
+    ;; remove a directory
+    (sftp-rmdir! conn "boo")
+
+    ;; create a symbolic link
+    (pp (sftp-symlink! conn "/tmp" "tmp"))
+    ;; get a actual path of symbolic link
+    (pp (sftp-readlink conn "tmp"))
+    ;; get a real path. (usually an absolute path)
+    (pp (sftp-realpath conn "../")))
+  :username "username" :password "password")
+</code></pre>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="Integration-methods">Integration methods</a>
+          <a name="High-level-APIs">High level APIs</a>
         </h3>
-        <p node-type="paragraph">The methods listed below are convenience methods to use TLS socket and
-usual socket without changing code.</p>
         <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-close_168">
-            <span>socket-close</span>
+          <span>Function</span>
+          <a name="call-with-sftp-connection_28">
+            <span>call-with-sftp-connection</span>
             <span>
-              <i node-type="i">(socket</i>
+              <i node-type="i">server</i>
             </span>
             <span>
-              <i node-type="i"><tls-socket>)</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-send_206">
-            <span>socket-send</span>
-            <span>
-              <i node-type="i">(socket</i>
-            </span>
-            <span>
-              <i node-type="i"><tls-socket>)</i>
-            </span>
-            <span>
-              <i node-type="i">data</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">(flags</i>
-            </span>
-            <span>
-              <i node-type="i">0)</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-recv_201">
-            <span>socket-recv</span>
-            <span>
-              <i node-type="i">(socket</i>
-            </span>
-            <span>
-              <i node-type="i"><tls-socket>)</i>
-            </span>
-            <span>
-              <i node-type="i">size</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">(flags</i>
-            </span>
-            <span>
-              <i node-type="i">0)</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-accept_164">
-            <span>socket-accept</span>
-            <span>
-              <i node-type="i">(socket</i>
-            </span>
-            <span>
-              <i node-type="i"><tls-socket>)</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">opt</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-accept_163">
-            <span>socket-accept</span>
-            <span>
-              <i node-type="i">(socket</i>
-            </span>
-            <span>
-              <i node-type="i"><tls-socket>)</i>
-            </span>
-            <span>
-              <i node-type="i">(key</i>
-            </span>
-            <span>
-              <i node-type="i"><keyword>)</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">dummy</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="call-with-socket_29">
-            <span>call-with-socket</span>
-            <span>
-              <i node-type="i">(socket</i>
-            </span>
-            <span>
-              <i node-type="i"><tls-socket>)</i>
+              <i node-type="i">port</i>
             </span>
             <span>
               <i node-type="i">proc</i>
             </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-peer_195">
-            <span>socket-peer</span>
             <span>
-              <i node-type="i">(socket</i>
+              <i node-type="i">.</i>
             </span>
             <span>
-              <i node-type="i"><tls-socket>)</i>
+              <i node-type="i">opts</i>
             </span>
           </a>
         </div>
+        <p node-type="paragraph"><i node-type="i">server</i> and <i node-type="i">port</i> must be string, indicating hostname,
+port number/service name respectively.
+<i node-type="i">proc</i> must accept one argument.</p>
+        <p node-type="paragraph">Creates a SFTP connection, executes given <i node-type="i">proc</i> with the connection
+and closes it after the execution.</p>
+        <p node-type="paragraph">The <i node-type="i">opts</i> will be passed to <code node-type="code">make-client-sftp-connection</code>.</p>
         <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-name_186">
-            <span>socket-name</span>
+          <span>Function</span>
+          <a name="sftp-open_48">
+            <span>sftp-open</span>
             <span>
-              <i node-type="i">(socket</i>
+              <i node-type="i">conn</i>
             </span>
             <span>
-              <i node-type="i"><tls-socket>)</i>
+              <i node-type="i">filename</i>
+            </span>
+            <span>
+              <i node-type="i">pflags</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">filename</i> must be a string.
+<i node-type="i">pflags</i> must be an exact integer which value must be the result of
+inclusive or of following values;</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-read+_19">
+            <span>+ssh-fxf-read+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Open the given <i node-type="i">filename</i> read mode.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-write+_21">
+            <span>+ssh-fxf-write+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Open the given <i node-type="i">filename</i> write mode.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-append+_16">
+            <span>+ssh-fxf-append+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Open the given <i node-type="i">filename</i> append mode.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-creat+_17">
+            <span>+ssh-fxf-creat+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates the given <i node-type="i">filename</i> if it doesn't exist.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-trunc+_20">
+            <span>+ssh-fxf-trunc+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Truncate the given <i node-type="i">filename</i> if it exists. <code node-type="code">+ssh-fxf-creat+</code>
+must be specified as well.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-excl+_18">
+            <span>+ssh-fxf-excl+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Raises and error <i node-type="i">filename</i> if it exists. <code node-type="code">+ssh-fxf-creat+</code>
+must be specified as well.</p>
+        <p node-type="paragraph">If <i node-type="i">filename</i> opened successfully, the procedure will return a handle.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-close_44">
+            <span>sftp-close</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">handle</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.</p>
+        <p node-type="paragraph">Closes given <i node-type="i">handle</i> created by <code node-type="code">sftp-open</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-read_51">
+            <span>sftp-read</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">handle/filename</i>
+            </span>
+            <span>
+              <i node-type="i">receiver</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(offset</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+            <span>
+              <i node-type="i">buffer-size</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">handle/filename</i> must be either a handle or string.
+<i node-type="i">receiver</i> must be a procedure accepts 2 arguments, <i node-type="i">offset</i> which
+is an integer and <i node-type="i">data</i> which is a binary input port, respectively.</p>
+        <p node-type="paragraph">Reads the given <i node-type="i">handle/filename</i> content from the server and
+call <i node-type="i">receiver</i> with the returned value. When it reaches the end of file,
+then it will pass -1 as offset and eof value as data.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">offset</i> specifies starting where to read. It
+is useful to read only diff.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">buffer-size</i> specifies how many bytes it tries to
+read in one read call. The default value is 1048576 (1MB). This value is only
+an indication so that server can decide actual data length to send.</p>
+        <p node-type="paragraph">The return value of this procedure is the result value of <i node-type="i">receiver</i>.</p>
+        <p node-type="paragraph">Receiver must return 2 values, one if processed octet count and the other
+one is result value. Following is the <i node-type="i">sftp-binary-receiver</i> definition;</p>
+        <pre lang="scheme" node-type="block"><code>(define (sftp-binary-receiver)
+  (let-values (((out extract) (open-bytevector-output-port)))
+    (lambda (offset data)
+      (if (&lt; offset 0)
+          (values -1 (extract))
+          (values (copy-binary-port out data) #f)))))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-binary-receiver_43">
+            <span>sftp-binary-receiver</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a in memory receiver for <code node-type="code">sftp-read</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-file-receiver_46">
+            <span>sftp-file-receiver</span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a file receiver for <code node-type="code">sftp-read</code>.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">option</i> must be created by <code node-type="code">file-options</code>.
+By default no option.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-oport-receiver_50">
+            <span>sftp-oport-receiver</span>
+            <span>
+              <i node-type="i">output-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">output-port</i> must be a binary output port.</p>
+        <p node-type="paragraph">Creates a output port receiver for <code node-type="code">sftp-read</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-write!_58">
+            <span>sftp-write!</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">handle</i>
+            </span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(offset</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+            <span>
+              <i node-type="i">buffer-size</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">handle</i> must be a handle.
+<i node-type="i">input-port</i> must be a binary input port.</p>
+        <p node-type="paragraph">Reads the content from given <i node-type="i">input-port</i> and writes it to given
+<i node-type="i">handle</i>.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">offset</i> specifies where to write. This is useful
+to write a file separately or simply append.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">buffer-size</i> specifies how many bytes of data
+the procedure sends in one packet. The default value is 131072 (128KB).
+The RFC defines the minimum value 32768 (3KB) so it is safe to use the
+value. However too small buffer size makes writing extremely slow so
+we use a bit larger value to make performance better. If you meet a
+problem with writing a file, consider to change this size.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-exists?_45">
+            <span>sftp-exists?</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">filename</i> must be a string indicating existing filename.</p>
+        <p node-type="paragraph">Checks if the given <i node-type="i">filename</i> exists.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-remove!_55">
+            <span>sftp-remove!</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">filename</i> must be a string indicating existing filename.</p>
+        <p node-type="paragraph">Removes the given <i node-type="i">filename</i>. It is an error if the file doesn't exist
+or user doesn't have proper permission to remove.</p>
+        <p node-type="paragraph">The result value is raw SFTP status object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-rename!_56">
+            <span>sftp-rename!</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">oldpath</i>
+            </span>
+            <span>
+              <i node-type="i">newpath</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">oldpath</i> and <i node-type="i">newpath</i>  must be strings indicating existing path.</p>
+        <p node-type="paragraph">Renames the given <i node-type="i">oldpath</i> to <i node-type="i">newpath</i>. It is an error if the
+file doesn't exist or user doesn't have proper permission to rename.</p>
+        <p node-type="paragraph">The result value is raw SFTP status object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-mkdir!_47">
+            <span>sftp-mkdir!</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">path</i> must be a string.</p>
+        <p node-type="paragraph">Creates the given <i node-type="i">path</i> directory. It is an error if the
+directory exists or user doesn't have proper permission to create.</p>
+        <p node-type="paragraph">The result value is raw SFTP status object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-rmdir!_57">
+            <span>sftp-rmdir!</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">path</i> must be a string.</p>
+        <p node-type="paragraph">Removes the given <i node-type="i">path</i> directory. It is an error if the
+directory doesn't exists, user doesn't have proper permission to create or
+the directory isn't empty.</p>
+        <p node-type="paragraph">The result value is raw SFTP status object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-opendir_49">
+            <span>sftp-opendir</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">path</i> must be a string indicating existing path.</p>
+        <p node-type="paragraph">Opens the given <i node-type="i">path</i> directory and returns its handle.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-readdir_52">
+            <span>sftp-readdir</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">handle/path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">handle/path</i> must be either a handle opened by <code node-type="code">sftp-opendir</code> or
+a string indicating existing path.</p>
+        <p node-type="paragraph">Reads the given <i node-type="i">handle/path</i> and returns the list of contents. The content
+is an object of <code node-type="code">&lt;sftp-name&gt;</code> which has <code node-type="code">filename</code>, <code node-type="code">longname</code>and <code node-type="code">attribute</code> slots.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-readdir-as-filenames_53">
+            <span>sftp-readdir-as-filenames</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">handle/path</i>
             </span>
           </a>
         </div>
         <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-info-values_181">
-            <span>socket-info-values</span>
+          <span>Function</span>
+          <a name="sftp-readdir-as-longnames_54">
+            <span>sftp-readdir-as-longnames</span>
             <span>
-              <i node-type="i">(socket</i>
+              <i node-type="i">conn</i>
             </span>
             <span>
-              <i node-type="i"><tls-socket>)</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-port_197">
-            <span>socket-port</span>
-            <span>
-              <i node-type="i">(socket</i>
-            </span>
-            <span>
-              <i node-type="i"><tls-socket>)</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">(close?</i>
-            </span>
-            <span>
-              <i node-type="i">#t)</i>
+              <i node-type="i">handle/path</i>
             </span>
           </a>
         </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">handle/path</i> must be either a handle opened by <code node-type="code">sftp-opendir</code> or
+a string indicating existing path.</p>
+        <p node-type="paragraph">Calls <code node-type="code">sftp-readdir</code> and strips out the result object to string by
+calling <code node-type="code">(slot-ref _c_ 'filename)</code> or
+<code node-type="code">(slot-ref _c_ 'longname)</code> respectively.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Mid-level-APIs">Mid level APIs</a>
+        </h3>
+        <p node-type="paragraph">Mid level APIs are changed since 0.7.8. The changes are not backward
+compatible, so if you are using 0.7.7 API and move to 0.7.8, please be aware.</p>
         <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-input-port_183">
-            <span>socket-input-port</span>
+          <span>Function</span>
+          <a name="make-client-sftp-connection_48">
+            <span>make-client-sftp-connection</span>
             <span>
-              <i node-type="i">(socket</i>
+              <i node-type="i">server</i>
             </span>
             <span>
-              <i node-type="i"><tls-socket>)</i>
+              <i node-type="i">port</i>
             </span>
           </a>
         </div>
+        <p node-type="paragraph">Creates a SFTP connection object.</p>
         <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="socket-output-port_193">
-            <span>socket-output-port</span>
+          <span>Function</span>
+          <a name="open-client-sftp-connection!_32">
+            <span>open-client-sftp-connection!</span>
             <span>
-              <i node-type="i">(socket</i>
+              <i node-type="i">sftp-connection</i>
             </span>
             <span>
-              <i node-type="i"><tls-socket>)</i>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(authenticate</i>
+            </span>
+            <span>
+              <i node-type="i">#f</i>
             </span>
           </a>
         </div>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section749.html">(rfc smtp) - SMTP client</a>
+      <a href="./section749.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section751.html">(rfc uri) - Parse and construct URIs</a>
+      <a href="./section751.html">(rfc smtp) - SMTP client</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

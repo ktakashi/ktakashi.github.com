@@ -18,7 +18,9 @@
       <p node-type="paragraph">Sagittarius provides 2 styles to write a library, one is R6RS style and other
 one is R7RS style. Both styles are processed the same and users can use it
 without losing code portability.</p>
-      <p node-type="paragraph">Following example is written in R6RS style, for the detail of <code node-type="code">library</code>syntax please see the R6RS document described in bellow sections.</p>
+      <p node-type="paragraph">Following example is written in R6RS style, for the detail of
+<code node-type="code">library</code> syntax please see the R6RS document described in bellow
+sections.</p>
       <pre lang="scheme" node-type="block"><code>(library (foo)
   (export bar)
   (import (rnrs))
@@ -29,16 +31,48 @@ without losing code portability.</p>
 named <code node-type="code">foo.scm</code>, <code node-type="code">foo.ss</code>, <code node-type="code">foo.sls</code> or <code node-type="code">foo.sld</code> (I use
 <code node-type="code">.scm</code> for all examples) and located on the loading path, the value is
 returned by calling <code node-type="code">add-load-path</code> with 0 length string.</p>
-      <p node-type="paragraph">If you want to write portable code yet want to use Sagittarius specific
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Library-file-extensions">Library file extensions</a>
+        </h3>
+        <p node-type="paragraph">The file extension also controls the reader mode.</p>
+        <dl node-type="dlist">
+          <dt><code node-type="code">.ss</code> and <code node-type="code">.sls</code></dt>
+          <dd>
+            <p node-type="paragraph">When a file with one of the extensions is loaded during library importing,
+then <code node-type="code">#!r6rs</code> directive is applied to the target file by default.</p>
+          </dd>
+          <dt>
+            <code node-type="code">.sld</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">When a file has this extensions, then <code node-type="code">#!r7rs</code> directive is applied to the
+target file by default.</p>
+          </dd>
+          <dt>
+            <code node-type="code">.scm</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">This file extension uses <code node-type="code">#!compatible</code> directive.</p>
+          </dd>
+        </dl>
+        <p node-type="paragraph">If the loading file contains other directive, then the default directive
+is overwritten.</p>
+        <p node-type="paragraph">If you want to write portable code yet want to use Sagittarius specific
 functionality, then you can write implementation specific code separately using
 <code node-type="code">.sagittarius.scm</code>, <code node-type="code">.sagittarius.ss</code>, <code node-type="code">.sagittarius.sls</code> or
 <code node-type="code">.sagittarius.sld</code> extensions. This functionality is implemented almost
 all R6RS implementation. If you use R7RS style library syntax, then you can
 also use <code node-type="code">cond-expand</code> to separate implementation specific
 functionalities.</p>
-      <p node-type="paragraph">If you don't want to share a library but only used in specific one, you can
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Hidden-library">Hidden library</a>
+        </h3>
+        <p node-type="paragraph">If you don't want to share a library but only used in specific one, you can
 write both in one file and name the file you want to show. For example;</p>
-      <pre lang="scheme" node-type="block"><code>(library (not showing)
+        <pre lang="scheme" node-type="block"><code>(library (not showing)
   ;; exports all internal use procedures
   (export ...)
   (import (rnrs))
@@ -52,11 +86,12 @@ write both in one file and name the file you want to show. For example;</p>
 ;; write shared procedures here
 )
 </code></pre>
-      <p node-type="paragraph">Above script must be saved the file named <code node-type="code">shared.scm</code>. The order of
+        <p node-type="paragraph">Above script must be saved the file named <code node-type="code">shared.scm</code>. The order of
 libraries are important. Top most dependency must be the first and next is
 second most, so on.</p>
-      <p node-type="paragraph">Note: This style can hide some private procedures however if you want to write
+        <p node-type="paragraph">Note: This style can hide some private procedures however if you want to write
 portable code, some implementations do not allow you to write this style.</p>
+      </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
       <a href="./section23.html">Working on REPL</a>
@@ -65,7 +100,7 @@ portable code, some implementations do not allow you to write this style.</p>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

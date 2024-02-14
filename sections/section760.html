@@ -7,292 +7,293 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section759.html">(security keystore) - Generic Keystore Access</a>
+      <a href="./section759.html">RPC support framework</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section761.html">(text html-lite) - Simple HTML document builder library</a>
+      <a href="./section761.html">(security keystore) - Generic Keystore Access</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="text.csv">(text csv) - Comma separated values parser library</a>
+        <a name="lib.rpc.json">(rpc json) - JSON RPC library</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(text csv)_156">
-          <span>(text csv)</span>
+        <a name="(rpc json)_82">
+          <span>(rpc json)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides comma separated values parser and write procedures.
-The implementation conforms RFC 4180.</p>
+      <p node-type="paragraph">This library provides procedures handling
+<a href="http://www.jsonrpc.org/specification">JSON RPC 2.0</a>.</p>
+      <p node-type="paragraph">This library doesn't provide transport layer. To send request and receive
+response, use <a href="section759.html#utils.rpc.transport.http">Http transport</a>.</p>
+      <p node-type="paragraph">This library uses <a href="section86.html#ported.json">JSON parser library</a> and its
+JSON representation.</p>
+      <p node-type="paragraph">Following piece of code describes how to use;</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (rpc json) (rpc transport http))
+
+(define (json-rpc-send&amp;request url method param)
+  (let ((request (make-json-request method :param param)))
+    (let-values (((status header response) (rpc-http-request url request)))
+      ;; rpc-http-request unmarshalls only when HTTP status starts with "2"
+      ;; for this example we don't check it.
+      (json-response-result response))))
+
+(json-rpc-send&amp;request "http://localhost/json-rpc" "sample" "parameter")
+;; -&gt; result of method execution
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Class</span>
+        <a name="<json-request&gt;_36">
+          <span>&lt;json-request&gt;</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Class</span>
+        <a name="<json-response&gt;_37">
+          <span>&lt;json-response&gt;</span>
+        </a>
+      </div>
+      <p node-type="paragraph">These classes represents JSON RPC request and response respectively.</p>
+      <p node-type="paragraph">The class instance should be created by <code node-type="code">make-json-request</code>,
+<code node-type="code">json-string-&gt;json-request</code> or <code node-type="code">json-string-&gt;json-response</code>. Users
+should not create an instance directly using <code node-type="code">make</code>.</p>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="High-level-APIs">High level APIs</a>
+          <a name="Predicates">Predicates</a>
         </h3>
-        <p node-type="paragraph">The high level APIs are implemented as object oriented style. So we have CSV
-object and its accessors.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="csv?_182">
-            <span>csv?</span>
+          <a name="json-request?_36">
+            <span>json-request?</span>
             <span>
               <i node-type="i">object</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns #t if <i node-type="i">object</i> is csv object, otherwise #f.</p>
         <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="csv-header_177">
-            <span>csv-header</span>
+          <span>Function</span>
+          <a name="json-response?_40">
+            <span>json-response?</span>
             <span>
-              <i node-type="i">(csv</i>
-            </span>
-            <span>
-              <i node-type="i"><csv>)</i>
+              <i node-type="i">object</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Retrieves CSV header from given CSV object <i node-type="i">csv</i> if it has, otherwise
-'().</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="csv-records_180">
-            <span>csv-records</span>
-            <span>
-              <i node-type="i">(csv</i>
-            </span>
-            <span>
-              <i node-type="i"><csv>)</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Retrieves CSV records from given CSV object <i node-type="i">csv</i> if it has, otherwise
-'().</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="csv-read_179">
-            <span>csv-read</span>
-            <span>
-              <i node-type="i">(port</i>
-            </span>
-            <span>
-              <i node-type="i"><port>)</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">option</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="csv-read_178">
-            <span>csv-read</span>
-            <span>
-              <i node-type="i">(string</i>
-            </span>
-            <span>
-              <i node-type="i"><string>)</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">option</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Reads CSV data from given <i node-type="i">port</i> and returns csv object.</p>
-        <p node-type="paragraph">If the second form is called, the procedure opens string input port from given
-<i node-type="i">string</i> and passes it to the first form.</p>
-        <p node-type="paragraph">The <i node-type="i">option</i> will be passed to <code node-type="code">csv-&gt;list</code> described below.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="csv-write_181">
-            <span>csv-write</span>
-            <span>
-              <i node-type="i">(csv</i>
-            </span>
-            <span>
-              <i node-type="i"><csv>)</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">(out</i>
-            </span>
-            <span>
-              <i node-type="i">(current-output-port))</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Writes given CSV object <i node-type="i">csv</i> to the output port <i node-type="i">port</i>.</p>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">object</i> is an instance of
+<code node-type="code">&lt;json-request&gt;</code> and <code node-type="code">&lt;json-response&gt;</code> respectively.</p>
       </section>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="Middle-level-APIs">Middle level APIs</a>
+          <a name="Constructors">Constructors</a>
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="csv-&gt;list_176">
-            <span>csv-&gt;list</span>
+          <a name="make-json-request_182">
+            <span>make-json-request</span>
             <span>
-              <i node-type="i">port</i>
+              <i node-type="i">method</i>
             </span>
             <span>
-              <i node-type="i">:optional</i>
+              <i node-type="i">:key</i>
             </span>
             <span>
-              <i node-type="i">(first-line-is-header?</i>
+              <i node-type="i">(params</i>
             </span>
             <span>
-              <i node-type="i">#f)</i>
+              <i node-type="i">'())</i>
+            </span>
+            <span>
+              <i node-type="i">id</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Reads CSV data from given input port <i node-type="i">port</i> and returns alist
-representing CSV data.</p>
-        <p node-type="paragraph">If optional argument <i node-type="i">first-line-is-header?</i> is #t, then the procedure reads
-the first line as header line.</p>
-        <p node-type="paragraph">The returning alist is following format;</p>
-        <pre lang="scheme" node-type="block"><code>alist  := (header{0,1} record*)
-header := (:header value*)
-record := (:record value*)
-value  := string
-</code></pre>
-        <p node-type="paragraph">Note: the value returning from <code node-type="code">csv-records</code> or <code node-type="code">csv-header</code> do not
-have meta values <code node-type="code">:record</code> and <code node-type="code">:header</code>.</p>
+        <p node-type="paragraph">Creates a JSON RPC request.</p>
+        <p node-type="paragraph"><i node-type="i">method</i> must be a symbol or string represents method name to be invoked.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">params</i> is the <code node-type="code">params</code> field of the JSON
+RPC protocol.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">id</i> is the <code node-type="code">id</code> field of the JSON RPC protocol.
+If this is not specified then a value generated by UUID v4 will be used.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-string-&gt;json-request_42">
+            <span>json-string-&gt;json-request</span>
+            <span>
+              <i node-type="i">json</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-string-&gt;json-response_43">
+            <span>json-string-&gt;json-response</span>
+            <span>
+              <i node-type="i">json</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates JSON RPC request and response from given JSON string <i node-type="i">json</i>.</p>
       </section>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="Low-level-APIs">Low level APIs</a>
+          <a name="Accessors">Accessors</a>
         </h3>
         <div node-type="define" class="define">
-          <span>Class</span>
-          <a name="<csv&gt;_11">
-            <span>&lt;csv&gt;</span>
-          </a>
-        </div>
-        <p node-type="paragraph">The class representing CSV. If you need to create empty CSV object, you
-can do like following code;</p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(make &lt;csv&gt;)</code></pre>
-        </p>
-        <p node-type="paragraph">.</p>
-        <p node-type="paragraph">Make sure, you import <code node-type="code">(clos user)</code> library.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="add-record!_15">
-            <span>add-record!</span>
+          <span>Function</span>
+          <a name="json-request-method_33">
+            <span>json-request-method</span>
             <span>
-              <i node-type="i">(csv</i>
-            </span>
-            <span>
-              <i node-type="i"><csv>)</i>
-            </span>
-            <span>
-              <i node-type="i">(list</i>
-            </span>
-            <span>
-              <i node-type="i"><list>)</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Adds a CSV representing record <i node-type="i">list</i> to given CSV object <i node-type="i">csv</i>.</p>
-        <p node-type="paragraph">The record must have <code node-type="code">:record</code> keyword in the first element of the list.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="set-header!_38">
-            <span>set-header!</span>
-            <span>
-              <i node-type="i">(csv</i>
-            </span>
-            <span>
-              <i node-type="i"><csv>)</i>
-            </span>
-            <span>
-              <i node-type="i">(list</i>
-            </span>
-            <span>
-              <i node-type="i"><list>)</i>
+              <i node-type="i">json-request</i>
             </span>
           </a>
         </div>
         <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="set-header!_37">
-            <span>set-header!</span>
+          <span>Function</span>
+          <a name="json-request-params_34">
+            <span>json-request-params</span>
             <span>
-              <i node-type="i">(csv</i>
-            </span>
-            <span>
-              <i node-type="i"><csv>)</i>
-            </span>
-            <span>
-              <i node-type="i">(string</i>
-            </span>
-            <span>
-              <i node-type="i"><string>)</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Sets a CSV header <i node-type="i">list</i> to given CSV object <i node-type="i">csv</i>.</p>
-        <p node-type="paragraph">If the second form is called, then first parse the string to CSV header and
-calls the first form with parsed CSV header.</p>
-        <p node-type="paragraph">The <i node-type="i">list</i> must have <code node-type="code">:header</code> keyword in the first element of the
-list.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="add-records!_17">
-            <span>add-records!</span>
-            <span>
-              <i node-type="i">(csv</i>
-            </span>
-            <span>
-              <i node-type="i"><csv>)</i>
-            </span>
-            <span>
-              <i node-type="i">(list</i>
-            </span>
-            <span>
-              <i node-type="i"><list>)</i>
+              <i node-type="i">json-request</i>
             </span>
           </a>
         </div>
         <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="add-records!_16">
-            <span>add-records!</span>
+          <span>Function</span>
+          <a name="json-request-id_32">
+            <span>json-request-id</span>
             <span>
-              <i node-type="i">(csv</i>
-            </span>
-            <span>
-              <i node-type="i"><csv>)</i>
-            </span>
-            <span>
-              <i node-type="i">(string</i>
-            </span>
-            <span>
-              <i node-type="i"><string>)</i>
+              <i node-type="i">json-request</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Convenient procedures.</p>
-        <p node-type="paragraph">Adds given CSV records <i node-type="i">list</i> to given CSV object <i node-type="i">csv</i>.</p>
-        <p node-type="paragraph">If the second form is called, then first parse the given string to CSV
-representing list and call the first form.</p>
+        <p node-type="paragraph">Retrieves JSON RPC request's method, params and id respectively from given
+json request object <i node-type="i">json-request</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-response-result_39">
+            <span>json-response-result</span>
+            <span>
+              <i node-type="i">json-response</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-response-id_38">
+            <span>json-response-id</span>
+            <span>
+              <i node-type="i">json-response</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves JSON RPC response's result and id respectively from given
+json response object <i node-type="i">json-response</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Converters">Converters</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-request-&gt;json-string_31">
+            <span>json-request-&gt;json-string</span>
+            <span>
+              <i node-type="i">json-request</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-response-&gt;json-string_37">
+            <span>json-response-&gt;json-string</span>
+            <span>
+              <i node-type="i">json-response</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Converts given <i node-type="i">json-request</i> and <i node-type="i">json-response</i> to JSON string.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Implemented-methods">Implemented methods</a>
+        </h3>
+        <p node-type="paragraph">Following methods are currently used only in <code node-type="code">(rpc http transport)</code>.
+When we support other transport, this implementation may change.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Message-methods">Message methods</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="rpc-marshall-message_154">
+              <span>rpc-marshall-message</span>
+              <span>
+                <i node-type="i">(message</i>
+              </span>
+              <span>
+                <i node-type="i"><json-request>)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Converts to given JSON RPC request object to UTF8 bytes.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="rpc-unmarshall-message_156">
+              <span>rpc-unmarshall-message</span>
+              <span>
+                <i node-type="i">(type</i>
+              </span>
+              <span>
+                <i node-type="i">(eql</i>
+              </span>
+              <span>
+                <i node-type="i">'json))</i>
+              </span>
+              <span>
+                <i node-type="i">body</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Converts to given UTF8 bytes to JSON RPC response object.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Transport-methods">Transport methods</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="rpc-http-content-type_145">
+              <span>rpc-http-content-type</span>
+              <span>
+                <i node-type="i">(message</i>
+              </span>
+              <span>
+                <i node-type="i"><json-request>)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">application/json</code> content type header value</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="rpc-http-response-type_150">
+              <span>rpc-http-response-type</span>
+              <span>
+                <i node-type="i">(message</i>
+              </span>
+              <span>
+                <i node-type="i"><json-request>)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">json</code> symbol.</p>
+        </section>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section759.html">(security keystore) - Generic Keystore Access</a>
+      <a href="./section759.html">RPC support framework</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section761.html">(text html-lite) - Simple HTML document builder library</a>
+      <a href="./section761.html">(security keystore) - Generic Keystore Access</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

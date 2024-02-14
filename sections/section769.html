@@ -7,250 +7,91 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section768.html">(text json schema) - JSON Schema</a>
+      <a href="./section768.html">(text json mutable) - Mutable JSON</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section770.html">(text json validator) - JSON validator</a>
+      <a href="./section770.html">(text json patch) - JSON Patch</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="text.json.schema-validator">JSON Schema validator</a>
+        <a name="text.json.pointer">(text json pointer) - JSON Pointer</a>
       </h2>
-      <p node-type="paragraph">The following example shows how to use the JSON Schema validator.</p>
-      <p node-type="paragraph">The following JSON Schema defines the structure of product catalogue. It's
-saved in the file <code node-type="code">product.schema.json</code></p>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(text json pointer)_165">
+          <span>(text json pointer)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides JSON Pointer procedures.</p>
+      <p node-type="paragraph">The specification of JSON Pointer is defined by the
+<a href="https://tools.ietf.org/html/rfc6901">RFC 6901</a>.</p>
+      <p node-type="paragraph">The following example shows simple usage of the library:</p>
+      <p node-type="paragraph">This is an input file named <code node-type="code">example.json</code>.</p>
       <pre lang="scheme" node-type="block"><code>{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "http://example.com/product.schema.json",
-  "title": "Product",
-  "description": "A product from Acme's catalog",
-  "type": "object",
-  "properties": {
-    "productId": {
-      "description": "The unique identifier for a product",
-      "type": "integer"
-    },
-    "productName": {
-      "description": "Name of the product",
-      "type": "string"
-    },
-    "price": {
-      "description": "The price of the product",
-      "type": "number",
-      "exclusiveMinimum": 0
-    }
-  },
-  "required": [ "productId", "productName", "price" ]
+  "id": 1234,
+  "data": {
+    "datum0": [0, 1, 2],
+    "datum1": [3, 4]
+  }
 }
 </code></pre>
-      <p node-type="paragraph">We want to validate the following 2 JSON files whose content are the below:</p>
-      <ul node-type="bullet-list">
-        <li>
-          <p node-type="paragraph">
-            <code node-type="code">valid-product.json</code>
-          </p>
-        </li>
-        <li>
-          <p node-type="paragraph">
-            <code node-type="code">invalid-product.json</code>
-          </p>
-        </li>
-      </ul>
-      <pre lang="scheme" node-type="block"><code>{
-  "productId": 1,
-  "productName": "A green door",
-  "price": 12.50,
-  "tags": [ "home", "green" ]
-}
-</code></pre>
-      <pre lang="scheme" node-type="block"><code>{
-  "productId": "This must be an integer",
-  "productName": 1234,
-  "price": -1
-}
-</code></pre>
-      <p node-type="paragraph">For the simple validation, you can write the following code:</p>
       <div node-type="block" class="codeblock">
-        <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (text json)
-        (text json schema)
-        (text json validator))
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (rfc json-pointer) (text json))
 
-(define product-catalogue-schema
-  (json-schema-&gt;json-validator
-   (call-with-input-file "product.schema.json" json-read)))
+(define id-pointer (json-pointer "/id"))
 
-(define valid-catalogue
-  (call-with-input-file "valid-product.json" json-read))
-
-(define invalid-catalogue
-  (call-with-input-file "invalid-product.json" json-read))
-
-(values (validate-json product-catalogue-schema valid-catalogue)
-        (validate-json product-catalogue-schema invalid-catalogue))
+(let ((json (call-with-input-file "example.json" json-read)))
+  (id-pointer json))
 </code></pre>
         <span />
-        <span>(values #t #f)</span>
+        <span>1234</span>
       </div>
       <p node-type="paragraph" />
-      <p node-type="paragraph">If you want to see the first invalid property, then you can write like this:</p>
       <div node-type="block" class="codeblock">
-        <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (text json)
-        (text json schema)
-        (text json validator)
-        (srfi :39 parameters))
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (rfc json-pointer) (text json))
 
-(define product-catalogue-schema
-  (json-schema-&gt;json-validator
-   (call-with-input-file "product.schema.json" json-read)))
+(define data-pointer (json-pointer "/data"))
 
-(define valid-catalogue
-  (call-with-input-file "valid-product.json" json-read))
-
-(define invalid-catalogue
-  (call-with-input-file "invalid-product.json" json-read))
-
-(parameterize ((*json-schema:validator-error-reporter*
-                simple-json-schema-error-reporter))
-  (values (validate-json product-catalogue-schema valid-catalogue)
-          (validate-json product-catalogue-schema invalid-catalogue)))
-;; Prints the following
 #|
-/productId
-        object: "This must be an integer"
-        type: integer
+example.json
 |#
+(let ((json (call-with-input-file "example.json" json-read)))
+  ;; Retrievs /data/datum0
+  ((json-pointer "/datum0" data-pointer) json))
 </code></pre>
         <span />
-        <span>(values #t #f)</span>
+        <span>'(0 1 2)</span>
       </div>
       <p node-type="paragraph" />
-      <p node-type="paragraph">If you want to run as a lint mode, which goes through entire JSON,
-you can write like this:</p>
-      <div node-type="block" class="codeblock">
-        <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (text json)
-        (text json schema)
-        (text json validator)
-        (srfi :39 parameters))
-
-(define product-catalogue-schema
-  (json-schema-&gt;json-validator
-   (call-with-input-file "product.schema.json" json-read)))
-
-(define valid-catalogue
-  (call-with-input-file "valid-product.json" json-read))
-
-(define invalid-catalogue
-  (call-with-input-file "invalid-product.json" json-read))
-
-(parameterize ((*json-schema:validator-error-reporter*
-                simple-json-schema-error-reporter)
-               (*json-schema:lint-mode?* #t))
-  (values (validate-json product-catalogue-schema valid-catalogue)
-          (validate-json product-catalogue-schema invalid-catalogue)))
-;; Prints the following
-#|
-/productId
-        object: "This must be an integer"
-        type: integer
-/productName
-        object: 1234
-        type: string
-/price
-        object: -1
-        exclusive-minimum: 0
-|#
-</code></pre>
-        <span />
-        <span>(values #t #t)</span>
-      </div>
-      <p node-type="paragraph" />
-      <p node-type="paragraph">NOTE: On the lint mode, the validation result will always be <code node-type="code">#t</code>.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="json-schema-&gt;json-validator_37">
-          <span>json-schema-&gt;json-validator</span>
+        <a name="json-pointer_27">
+          <span>json-pointer</span>
           <span>
-            <i node-type="i">schema</i>
+            <i node-type="i">pointer:</i>
           </span>
           <span>
-            <i node-type="i">referencing-validators</i>
+            <i node-type="i">optional</i>
           </span>
           <span>
-            <i node-type="i">...</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Creates JSON validator object of the given JSON Schema <i node-type="i">schema</i>.</p>
-      <p node-type="paragraph">The JSON Schema must be a vector represented S-expression JSON
-(see <a href="section762.html#text.json">JSON parser</a>).</p>
-      <p node-type="paragraph">JSON validator is described in <a href="section770.html#text.json.validator">JSON validator</a>.</p>
-      <p node-type="paragraph">The optional arguments <i node-type="i">referencing-validators</i> must be
-JSON Schema validators, if it's given, and will be used to reference
-external schemas.</p>
-      <div node-type="define" class="define">
-        <span>Parameter</span>
-        <a name="*json-schema:resolve-external-schema?*_125">
-          <span>*json-schema:resolve-external-schema?*</span>
-        </a>
-      </div>
-      <p node-type="paragraph">Specifying if the validator creation procedure to resolve external
-reference of schema. e.g. <code node-type="code">"$ref": "http://json-schema.org/schema#"</code>.</p>
-      <p node-type="paragraph">The default value is <code node-type="code">#f</code>.</p>
-      <div node-type="define" class="define">
-        <span>Parameter</span>
-        <a name="*json-schema:validate-format?*_126">
-          <span>*json-schema:validate-format?*</span>
-        </a>
-      </div>
-      <p node-type="paragraph">Specifying if the validator validates <code node-type="code">"format"</code> keywords.</p>
-      <p node-type="paragraph">The default value is <code node-type="code">#t</code>.</p>
-      <div node-type="define" class="define">
-        <span>Parameter</span>
-        <a name="*json-schema:validator-error-reporter*_127">
-          <span>*json-schema:validator-error-reporter*</span>
-        </a>
-      </div>
-      <p node-type="paragraph">Specifying error reporter.</p>
-      <p node-type="paragraph">The supporting error reporter is the  <code node-type="code">simple-json-schema-error-reporter</code>.</p>
-      <div node-type="define" class="define">
-        <span>Parameter</span>
-        <a name="*json-schema:report-port*_124">
-          <span>*json-schema:report-port*</span>
-        </a>
-      </div>
-      <p node-type="paragraph">Specifying the port to be used to report error.</p>
-      <p node-type="paragraph">The default value is <code node-type="code">(current-error-port)</code></p>
-      <div node-type="define" class="define">
-        <span>Parameter</span>
-        <a name="*json-schema:lint-mode?*_123">
-          <span>*json-schema:lint-mode?*</span>
-        </a>
-      </div>
-      <p node-type="paragraph">Specifying if the validator should act as if it's a linter.</p>
-      <p node-type="paragraph">To make this parameter effected, then
-<code node-type="code">*json-schema:validator-error-reporter*</code> must also be specified.</p>
-      <p node-type="paragraph">The default value is <code node-type="code">#f</code>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="simple-json-schema-error-reporter_111">
-          <span>simple-json-schema-error-reporter</span>
-          <span>
-            <i node-type="i">report</i>
+            <i node-type="i">parent</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">The pre-defined error repoter for JSON schema validator.</p>
+      <p node-type="paragraph">Returns a procedure taks one argument which must be a list or vector
+representing JSON object. The given <i node-type="i">poinster</i> must be a string or
+textual input port which start with <code node-type="code">/</code>.</p>
+      <p node-type="paragraph">The optional argument <i node-type="i">parent</i> is passed, then it must be a procedure
+returned by the <code node-type="code">json-pointer</code> and is called before the current
+<i node-type="i">pointer</i> is processed.</p>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section768.html">(text json schema) - JSON Schema</a>
+      <a href="./section768.html">(text json mutable) - Mutable JSON</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section770.html">(text json validator) - JSON validator</a>
+      <a href="./section770.html">(text json patch) - JSON Patch</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

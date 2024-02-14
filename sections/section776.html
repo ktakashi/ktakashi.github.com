@@ -7,222 +7,60 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section775.html">(text yaml) -- YAML parser</a>
+      <a href="./section775.html">(text sxml object-builder) - SXML to Scheme object builder</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section777.html">(tlv) - TLV library</a>
+      <a href="./section777.html">(text yaml) -- YAML parser</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="util.timer">(util timer) - Timer</a>
+        <a name="text.tree">(text tree) - Lightweight text generation</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(util timer)_195">
-          <span>(util timer)</span>
+        <a name="(text tree)_176">
+          <span>(text tree)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides timer functionality.</p>
-      <p node-type="paragraph">Timer is the mechanism to trigger an event on specified time.</p>
-      <p node-type="paragraph">The following describes how to use;</p>
-      <pre lang="scheme" node-type="block"><code>(import (util timer))
-
-(let ((timer (make-timer)))
-  (timer-start! timer) ;; start timer
-  ;; execute given thunk starting after 1000ms and each 1000ms
-  (timer-schedule! timer (lambda () (display "timer!") (newline)) 1000 1000)
-  ;; do something
-  (timer-cancel! timer))
-</code></pre>
-      <p node-type="paragraph">A timer is kind of task queue running on a timer thread. Once it's started,
-then it waits until its queue is not empty or the first task reaches the
-configured time. The tasks are executed sequentially however its order is
-not reliable if there are multiple tasks queued on the same time.</p>
+      <p node-type="paragraph">Defines simple but commonly used functions for a text construction.</p>
+      <p node-type="paragraph">This library is ported from Gauche.</p>
       <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="timer?_65">
-          <span>timer?</span>
+        <span>Generic</span>
+        <a name="write-tree_83">
+          <span>write-tree</span>
           <span>
-            <i node-type="i">obj</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is a timer object, otherwise #f.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="make-timer_281">
-          <span>make-timer</span>
-          <span>
-            <i node-type="i">:key</i>
-          </span>
-          <span>
-            <i node-type="i">error-handler</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Creates a timer object.</p>
-      <p node-type="paragraph">If keyword argument <i node-type="i">error-handler</i> is specified, then it must be
-a procedure accepts one argument. The <i node-type="i">error-handler</i> is called
-when timer procedure raises an error. If this is not specified, then
-timer stops when one of the tasks raised an error.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="timer-state_63">
-          <span>timer-state</span>
-          <span>
-            <i node-type="i">timer</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Returns the state of given timer. The possible states are the followings:</p>
-      <dl node-type="dlist">
-        <dt>created</dt>
-        <dd>
-          <p node-type="paragraph">The timer is created and not executed yet.</p>
-        </dd>
-        <dt>running</dt>
-        <dd>
-          <p node-type="paragraph">The timer is running.</p>
-        </dd>
-        <dt>stopped</dt>
-        <dd>
-          <p node-type="paragraph">The timer is stopped (can be resumed).</p>
-        </dd>
-        <dt>cancelled</dt>
-        <dd>
-          <p node-type="paragraph">The timer is cancelled (cannot be resumed).</p>
-        </dd>
-      </dl>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="timer-start!_62">
-          <span>timer-start!</span>
-          <span>
-            <i node-type="i">timer</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Starts the given <code node-type="code">created</code> state <i node-type="i">timer</i>.</p>
-      <p node-type="paragraph">If the given timer's state is <code node-type="code">stopped</code>, then this procedure resumes
-the given timer.</p>
-      <p node-type="paragraph">If the timer state is not <code node-type="code">created</code> or <code node-type="code">stopped</code>, then
-<code node-type="code">&amp;assertion</code> is raised.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="timer-stop!_64">
-          <span>timer-stop!</span>
-          <span>
-            <i node-type="i">timer</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Stops the given <i node-type="i">time</i>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="timer-cancel!_57">
-          <span>timer-cancel!</span>
-          <span>
-            <i node-type="i">timer</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Cancel the given <i node-type="i">time</i>. If one of the tasks raised an error and
-no error handler is specified, then this procedure will re-raise the error.</p>
-      <p node-type="paragraph">Once the timer is cancelled, then this timer is completely destroyed.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="timer-schedule!_61">
-          <span>timer-schedule!</span>
-          <span>
-            <i node-type="i">timer</i>
-          </span>
-          <span>
-            <i node-type="i">thunk</i>
-          </span>
-          <span>
-            <i node-type="i">first</i>
+            <i node-type="i">tree</i>
           </span>
           <span>
             <i node-type="i">:optional</i>
           </span>
           <span>
-            <i node-type="i">(period</i>
-          </span>
-          <span>
-            <i node-type="i">0)</i>
+            <i node-type="i">out</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Schedules a timer task.</p>
-      <p node-type="paragraph"><i node-type="i">first</i> can be time object or exact integer. If this is time object,
-then the timer executes the <i node-type="i">thunk</i> with given time (absolute time).
-If this is an exact integer, then the timer executes the <i node-type="i">thunk</i> after
-the given number milliseconds from current time.</p>
-      <p node-type="paragraph">Optional argument <i node-type="i">period</i> specifies if the <i node-type="i">thunk</i> is periodically
-executed or not. 0 is not periodical task.</p>
-      <p node-type="paragraph">The returning value is an ID of scheduled task. This is needed for
-<code node-type="code">timer-remove!</code> and <code node-type="code">timer-exists?</code> procedures.</p>
+      <p node-type="paragraph">Write out an <i node-type="i">tree</i> as a tree of text, to the output port <i node-type="i">out</i>.
+If the <i node-type="i">out</i> is omitted, then current output port is used.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="timer-reschedule!_60">
-          <span>timer-reschedule!</span>
+        <a name="tree-&gt;string_105">
+          <span>tree-&gt;string</span>
           <span>
-            <i node-type="i">timer</i>
-          </span>
-          <span>
-            <i node-type="i">timer-id</i>
-          </span>
-          <span>
-            <i node-type="i">first</i>
-          </span>
-          <span>
-            <i node-type="i">:optional</i>
-          </span>
-          <span>
-            <i node-type="i">(period</i>
-          </span>
-          <span>
-            <i node-type="i">0)</i>
+            <i node-type="i">tree</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Reschedules the timer task associated with <i node-type="i">timer-id</i> and
-returns _timer-id_The <i node-type="i">first</i> and <i node-type="i">period</i> are the same as <code node-type="code">timer-schedule!</code>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="timer-remove!_59">
-          <span>timer-remove!</span>
-          <span>
-            <i node-type="i">timer</i>
-          </span>
-          <span>
-            <i node-type="i">id</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Removes given <i node-type="i">id</i> task from the <i node-type="i">timer</i>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="timer-exists?_58">
-          <span>timer-exists?</span>
-          <span>
-            <i node-type="i">timer</i>
-          </span>
-          <span>
-            <i node-type="i">id</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Returns #t if given <i node-type="i">id</i> task exists in the <i node-type="i">timer</i>,
-otherwise #f.</p>
+      <p node-type="paragraph">Just calls the <code node-type="code">write-tree</code> method for _tree] using an output
+string port, and returns the result string.
+_</p>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section775.html">(text yaml) -- YAML parser</a>
+      <a href="./section775.html">(text sxml object-builder) - SXML to Scheme object builder</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section777.html">(tlv) - TLV library</a>
+      <a href="./section777.html">(text yaml) -- YAML parser</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

@@ -7,183 +7,207 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section756.html">(rfc zlib) - zlib compression library</a>
+      <a href="./section756.html">(rfc websocket) - WebSocket</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section758.html">(rpc json) - JSON RPC library</a>
+      <a href="./section758.html">(rfc zlib) - zlib compression library</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="utils.rpc">RPC support framework</a>
+        <a name="rfc.x.509">(rfc x.509) - X.509 certificate utility library</a>
       </h2>
-      <p node-type="paragraph">RPC is basically separated in 2 parts. One is message marshalling and other
-one is transporting. Following sections and libraries provide some framework
-for generic use.</p>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Message-framework">Message framework</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Library</span>
-          <a name="(rpc message)_82">
-            <span>(rpc message)</span>
-          </a>
-        </div>
-        <p node-type="paragraph">This library provides generic functions for marshalling message.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="rpc-marshall-message_155">
-            <span>rpc-marshall-message</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="rpc-unmarshall-message_157">
-            <span>rpc-unmarshall-message</span>
-          </a>
-        </div>
-        <p node-type="paragraph">These generic function will be used transport layer to marshall or
-unmarshall messages.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="utils.rpc.transport.http">Http transport</a>
-        </h3>
-        <p node-type="paragraph">Currently there is no generic transport framework and support HTTP transport.</p>
-        <p node-type="paragraph">For future, we may provide more generic way to send/receive request
-and response.</p>
-        <div node-type="define" class="define">
-          <span>Library</span>
-          <a name="(rpc transport http)_83">
-            <span>(rpc transport http)</span>
-          </a>
-        </div>
-        <p node-type="paragraph">This library provides procedures and generic function of
-HTTP transport for RCP</p>
-        <p node-type="paragraph">.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rpc-http-request_149">
-            <span>rpc-http-request</span>
-            <span>
-              <i node-type="i">url</i>
-            </span>
-            <span>
-              <i node-type="i">message</i>
-            </span>
-            <span>
-              <i node-type="i">:key</i>
-            </span>
-            <span>
-              <i node-type="i">(unmarshall?</i>
-            </span>
-            <span>
-              <i node-type="i">#t)</i>
-            </span>
-            <span>
-              <i node-type="i">:allow-other-keys</i>
-            </span>
-            <span>
-              <i node-type="i">options</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Send given <i node-type="i">message</i> to <i node-type="i">url</i> and returns 3 values,
-http status, header and response.</p>
-        <p node-type="paragraph">If the keyword argument <i node-type="i">unmarshall?</i> is #f then the returning response
-value will not be unmarshalled.</p>
-        <p node-type="paragraph"><i node-type="i">options</i> will be passed to <code node-type="code">http-request</code> procedure.</p>
-        <section node-type="section">
-          <h4 node-type="header-4">
-            <a name="Http-transport-hook">Http transport hook</a>
-          </h4>
-          <div node-type="define" class="define">
-            <span>Method</span>
-            <a name="rpc-http-method_147">
-              <span>rpc-http-method</span>
-              <span>
-                <i node-type="i">request</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns http method. Default implementation returns <code node-type="code">POST</code></p>
-          <p node-type="paragraph">.</p>
-          <div node-type="define" class="define">
-            <span>Method</span>
-            <a name="rpc-http-content-type_146">
-              <span>rpc-http-content-type</span>
-              <span>
-                <i node-type="i">request</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns content type. Default implementation returns
-<code node-type="code">application/octet-stream</code></p>
-          <p node-type="paragraph">.</p>
-          <div node-type="define" class="define">
-            <span>Method</span>
-            <a name="rpc-http-sender_152">
-              <span>rpc-http-sender</span>
-              <span>
-                <i node-type="i">request</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns http sender. Default implementation returns
-<code node-type="code">http-blob-sender</code> with marshalled request</p>
-          <p node-type="paragraph">.</p>
-          <div node-type="define" class="define">
-            <span>Method</span>
-            <a name="rpc-http-receiver_148">
-              <span>rpc-http-receiver</span>
-              <span>
-                <i node-type="i">request</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns http receiver. Default implementation returns
-<code node-type="code">http-binary-receiver</code></p>
-          <p node-type="paragraph">.</p>
-          <div node-type="define" class="define">
-            <span>Method</span>
-            <a name="rpc-http-response-type_151">
-              <span>rpc-http-response-type</span>
-              <span>
-                <i node-type="i">request</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns a marker type to be used <code node-type="code">rpc-http-unmarshall-message</code>.
-Default implementation returns given <i node-type="i">request</i> itself</p>
-          <p node-type="paragraph">.</p>
-          <div node-type="define" class="define">
-            <span>Method</span>
-            <a name="rpc-http-unmarshall-message_153">
-              <span>rpc-http-unmarshall-message</span>
-              <span>
-                <i node-type="i">type</i>
-              </span>
-              <span>
-                <i node-type="i">header</i>
-              </span>
-              <span>
-                <i node-type="i">body</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Unmarshall the given <i node-type="i">body</i> according to the given <i node-type="i">type</i>.
-Default implementation ignores <i node-type="i">header</i> and passes <i node-type="i">type</i> and
-<i node-type="i">body</i> to <code node-type="code">rpc-unmarshall-message</code>.</p>
-        </section>
-      </section>
+      <p node-type="paragraph">This library does not support whole feature of X.509, it just parse and verify
+a message and signature. So it can not verify certificate itself.</p>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rfc x.509)_54">
+          <span>(rfc x.509)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Exports X.509 utility procedures.</p>
+      <div node-type="define" class="define">
+        <span>Generic</span>
+        <a name="make-x509-certificate_310">
+          <span>make-x509-certificate</span>
+          <span>
+            <i node-type="i">(in</i>
+          </span>
+          <span>
+            <i node-type="i"><port>)</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Generic</span>
+        <a name="make-x509-certificate_309">
+          <span>make-x509-certificate</span>
+          <span>
+            <i node-type="i">(sequence</i>
+          </span>
+          <span>
+            <i node-type="i">&lt;asn.1-sequence&gt;)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates an X.509 certificate object from given binary input port or ASN.1
+sequence object (second form).</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="x509-certificate?_50">
+          <span>x509-certificate?</span>
+          <span>
+            <i node-type="i">o</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return #t if the <i node-type="i">o</i> is X.509 certificate object, otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="x509-certificate-get-version_22">
+          <span>x509-certificate-get-version</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return version of given X.509 certificate object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="x509-certificate-get-serial-number_18">
+          <span>x509-certificate-get-serial-number</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return serial number of given X.509 certificate object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="x509-certificate-get-issuer-dn_14">
+          <span>x509-certificate-get-issuer-dn</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return issuer DN of given X.509 certificate object as X.509 principal.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="x509-certificate-get-subject-dn_21">
+          <span>x509-certificate-get-subject-dn</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return subject DN of given X.509 certificate object as X.509 principal.</p>
+      <p node-type="paragraph">NOTE: These Issuer DN and Subject DN getters return &lt;x.509-principal&gt; object,
+however I did not implement any utility for this class, so it's just useless
+for now.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="x509-certificate-get-not-before_16">
+          <span>x509-certificate-get-not-before</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return start date of given X.509 certificate object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="x509-certificate-get-not-after_15">
+          <span>x509-certificate-get-not-after</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return end date of given X.509 certificate object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="x509-certificate-get-signature_19">
+          <span>x509-certificate-get-signature</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return signature of given X.509 certificate object.</p>
+      <p node-type="paragraph">NOTE: This signature is not for <code node-type="code">verify</code> described below.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="x509-certificate-get-signature-algorithm_20">
+          <span>x509-certificate-get-signature-algorithm</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return signature algorithm of given X.509 certificate object as an OID
+string.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="x509-certificate-get-public-key_17">
+          <span>x509-certificate-get-public-key</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return public key of given X.509 certificate object. The return value is
+<code node-type="code">&lt;public-key&gt;</code> described in the section
+<a href="section79.html#crypto">(crypto) - Cryptographic library</a>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="verify_37">
+          <span>verify</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+          <span>
+            <i node-type="i">message</i>
+          </span>
+          <span>
+            <i node-type="i">signature</i>
+          </span>
+          <span> _</span>
+        </a>
+      </div>
+      <p node-type="paragraph">_ <i node-type="i">:key</i> <i node-type="i">(verify</i> <i node-type="i">pkcs1-emsa-v1.5-verify)</i> <i node-type="i">(hash</i> <i node-type="i">SHA-1)</i></p>
+      <p node-type="paragraph"><i node-type="i">message</i> and <i node-type="i">signature</i> must be bytevector.</p>
+      <p node-type="paragraph">Verify given <i node-type="i">message</i> with <i node-type="i">signature</i> and <i node-type="i">x509</i> certificate.</p>
+      <p node-type="paragraph">This procedure uses the <code node-type="code">verify</code> procedure in <code node-type="code">(crypto)</code> library. The
+keyword arguments will be passed to it. For more detail, see
+<a href="section79.html#crypto">(crypto) - Cryptographic library</a>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="check-validity_73">
+          <span>check-validity</span>
+          <span>
+            <i node-type="i">x509</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(date</i>
+          </span>
+          <span>
+            <i node-type="i">(current-date))</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Validate if the given certificate is valid in given <i node-type="i">date</i>. Return #t
+if it's valid, otherwise raises <code node-type="code">&amp;assertion</code>.</p>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section756.html">(rfc zlib) - zlib compression library</a>
+      <a href="./section756.html">(rfc websocket) - WebSocket</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section758.html">(rpc json) - JSON RPC library</a>
+      <a href="./section758.html">(rfc zlib) - zlib compression library</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

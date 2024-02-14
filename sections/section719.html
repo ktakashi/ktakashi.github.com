@@ -7,160 +7,63 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section718.html">(util logging) - Logging utilities</a>
+      <a href="./section718.html">(util list) - Extra list utility library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section720.html">(net mq amqp) - AMQP library</a>
+      <a href="./section720.html">(math) - Mathematics library</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="math">(math) - Mathematics library</a>
+        <a name="util.logging">(util logging) - Logging utilities</a>
       </h2>
-      <h3 node-type="header-3">
-        <a name="Deprecated-library">Deprecated library</a>
-      </h3>
-      <p node-type="paragraph">
-        <strong node-type="strong">This library is deprecated, please consider to use
-<a href="section617.html#lib.sagittarius.crypto">Cryptographic libraries</a> instead.</strong>
-      </p>
-      <p node-type="paragraph">This section describes matheatics operations which are used by
-<code node-type="code">(crypto)</code>library.</p>
-      <p node-type="paragraph">This library also uses <code node-type="code">libtomcrypt</code> as its implemention except prime
-number operations.</p>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(math)_18">
-          <span>(math)</span>
+        <a name="(util logging)_197">
+          <span>(util logging)</span>
         </a>
       </div>
-      <p node-type="paragraph">The top most level library of mathematics. It exports all of procedures
-from <code node-type="code">(math random)</code>, <code node-type="code">(math hash)</code>, <code node-type="code">(math prime)</code> and
-<code node-type="code">(math helper)</code></p>
+      <p node-type="paragraph">This library provides logging utilities.</p>
+      <p node-type="paragraph"><code node-type="code">(util logger)</code> provides logger and appender style logging utilility.
+Loggers determine loging level and appenders determin how to write logs.
+This example shows the concept.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (util logging))
+
+;; Appenders
+(define console-appender (make-appender "[~w5] ~l ~m"))
+(define file-appender
+  (make-file-appender "[~w5] ~l ~m" "useful.log"))
+
+;; Logger
+(define logger (make-logger +debug-level+ console-appender file-appender))
+
+;; This won't be logged since the logger level is debug.
+(trace-log logger "trace log message")
+(debug-log logger "debug log message")
+
+;; If the logging requires heavy process, then it's better to
+;; check the level
+(when (logger-info? logger)
+  (let ((message (construct-message)))
+    (info-log logger message)))
+
+;; stop logging
+(terminate-logger! logger)
+</code></pre>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="Random-number-operations">Random number operations</a>
+          <a name="Loggers">Loggers</a>
         </h3>
+        <p node-type="paragraph">Loggers contains collection of appenders and level of logging. Once a logger
+is created, appenders and threshold can't be modified.</p>
         <div node-type="define" class="define">
-          <span>Library</span>
-          <a name="(math random)_17">
-            <span>(math random)</span>
+          <span>Record Type</span>
+          <a name="<logger&gt;_48">
+            <span>&lt;logger&gt;</span>
           </a>
         </div>
-        <p node-type="paragraph">This library exports procedures for random numbers.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pseudo-random_145">
-            <span>pseudo-random</span>
-            <span>
-              <i node-type="i">type</i>
-            </span>
-            <span>
-              <i node-type="i">:key</i>
-            </span>
-            <span>
-              <i node-type="i">(seed</i>
-            </span>
-            <span>
-              <i node-type="i">#f)</i>
-            </span>
-            <span>
-              <i node-type="i">(reader</i>
-            </span>
-            <span>
-              <i node-type="i">#f)</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">type</i> must be a string.</p>
-        <p node-type="paragraph">Creates a pseudo random object (prng). If keyword argument <i node-type="i">reader</i> is given
-it creates a custom prng. The <i node-type="i">reader</i> must be a procedure which accepts two
-argument, a bytevector and integer. It must fill the given bytevector with
-random numbers.</p>
-        <p node-type="paragraph"><i node-type="i">type</i> is used to specify the builtin pseudo random algorithm. The possible
-algorithms are below:</p>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="Yarrow_3">
-            <span>Yarrow</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="Fortuna_117">
-            <span>Fortuna</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="RC4_21">
-            <span>RC4</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SOBER-128_161">
-            <span>SOBER-128</span>
-          </a>
-        </div>
-        <p node-type="paragraph">The following is also a psuedo random but this may or may not be cryptographic
-random generator.</p>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="System_367">
-            <span>System</span>
-          </a>
-        </div>
-        <p node-type="paragraph"><code node-type="code">System</code> prng uses platform random generator. For example, on
-Unix like environment, this uses <code node-type="code">/dev/urandom</code> or <code node-type="code">/dev/random</code> if
-the first option is not available.</p>
-        <p node-type="paragraph"><i node-type="i">seed</i> is entropy of the pseudo random.</p>
-        <p node-type="paragraph">Note: each time if you create pseudo random, it returns exactly the same value.
-For example:</p>
-        <div node-type="block" class="codeblock">
-          <pre lang="scheme" node-type="block"><code>(do ((i 0 (+ i 1)) (r '() (cons (random (pseudo-random RC4) 10) r)))
-    ((= i 10) r))
-</code></pre>
-          <span />
-          <span>'(0 0 0 0 0 0 0 0 0 0)</span>
-        </div>
-        <p node-type="paragraph" />
-        <p node-type="paragraph">So if you need different number as I believe, you need to reuse the prng object
-like this</p>
-        <div node-type="block" class="codeblock">
-          <pre lang="scheme" node-type="block"><code>(let ((rc (pseudo-random RC4)))
-  (do ((i 0 (+ i 1)) (r '() (cons (random rc 10) r)))
-      ((= i 10) r)))
-</code></pre>
-          <span />
-          <span>'(3 4 0 6 7 4 3 4 2 0)</span>
-        </div>
-        <p node-type="paragraph" />
-        <p node-type="paragraph">If you don't want to care this behaviour, use <code node-type="code">secure-random</code> below.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="secure-random_9">
-            <span>secure-random</span>
-            <span>
-              <i node-type="i">type</i>
-            </span>
-            <span>
-              <i node-type="i">:key</i>
-            </span>
-            <span>
-              <i node-type="i">(bits</i>
-            </span>
-            <span>
-              <i node-type="i">128)</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">type</i> must be one of the pseudo random algorithms.</p>
-        <p node-type="paragraph">Creates secure random object.</p>
-        <p node-type="paragraph"><i node-type="i">bit</i> is initial entropy of the pseudo random. It must be in between 64 to
-1028.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="prng?_133">
-            <span>prng?</span>
+          <a name="logger?_59">
+            <span>logger?</span>
             <span>
               <i node-type="i">obj</i>
             </span>
@@ -168,8 +71,75 @@ like this</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pseudo-random?_147">
-            <span>pseudo-random?</span>
+          <a name="make-logger_195">
+            <span>make-logger</span>
+            <span>
+              <i node-type="i">threshold</i>
+            </span>
+            <span>
+              <i node-type="i">appenders</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Basic logger.</p>
+        <p node-type="paragraph">Record type <code node-type="code">&lt;logger&gt;</code> is a base type of loggers.</p>
+        <p node-type="paragraph"><code node-type="code">logger?</code> returns #t if <i node-type="i">obj</i> is a logger otherwise #f.</p>
+        <p node-type="paragraph"><code node-type="code">make-logger</code> creates a logger whose threshold is <i node-type="i">threshold</i> and
+appenders are <i node-type="i">appenders</i>. The <i node-type="i">threshold</i> must be one of the
+followings:</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+trace-level+_22">
+            <span>+trace-level+</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+debug-level+_2">
+            <span>+debug-level+</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+info-level+_6">
+            <span>+info-level+</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+warn-level+_23">
+            <span>+warn-level+</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+error-level+_4">
+            <span>+error-level+</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+fatal-level+_5">
+            <span>+fatal-level+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Logging level constants.</p>
+        <p node-type="paragraph">The <code node-type="code">+trace-level+</code> is the lowest level (<code node-type="code">0</code>) and
+<code node-type="code">+fatal-level+</code> is the highest level (<code node-type="code">5</code>). The values are integers
+so users can extend the level for both side.</p>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<async-logger&gt;_9">
+            <span>&lt;async-logger&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-logger?_85">
+            <span>async-logger?</span>
             <span>
               <i node-type="i">obj</i>
             </span>
@@ -177,755 +147,733 @@ like this</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="secure-random?_12">
-            <span>secure-random?</span>
+          <a name="make-async-logger_27">
+            <span>make-async-logger</span>
             <span>
-              <i node-type="i">obj</i>
+              <i node-type="i">threshold</i>
+            </span>
+            <span>
+              <i node-type="i">appenders</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is prng object, builtin pseudo random objcet,
-custom random object or secure random object respectively.</p>
+        <p node-type="paragraph">Asynchronous logger.</p>
+        <p node-type="paragraph">Record type <code node-type="code">&lt;async-logger&gt;</code> is a type of asynchronous loggers. It inherits
+the <code node-type="code">&lt;logger&gt;</code>.</p>
+        <p node-type="paragraph"><code node-type="code">async-logger?</code> returns #t if <i node-type="i">obj</i> is an asynchronous logger
+otherwise #f.</p>
+        <p node-type="paragraph"><code node-type="code">make-async-logger</code> creates an asynchronous logger. The arguments are
+passed to parent protocol.</p>
+        <p node-type="paragraph">Asynchronous logger logs message asynchronously. Means it creates a background
+thread and lets it log. It is useful if a logger has a lot of appenders and
+logging process may take a lot of time.</p>
+        <p node-type="paragraph">To stop background thread, <code node-type="code">terminate-logger!</code> needs to be called. It
+is users responsibility to do it.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="random-seed-set!_16">
-            <span>random-seed-set!</span>
+          <a name="trace-log_99">
+            <span>trace-log</span>
             <span>
-              <i node-type="i">prng</i>
+              <i node-type="i">logger</i>
             </span>
             <span>
-              <i node-type="i">seed</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">seed</i> must be a bytevector or integer.</p>
-        <p node-type="paragraph">Add entropy to given <i node-type="i">prng</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="random_7">
-            <span>random</span>
-            <span>
-              <i node-type="i">prng</i>
-            </span>
-            <span>
-              <i node-type="i">size</i>
-            </span>
-            <span>
-              <i node-type="i">:key</i>
-            </span>
-            <span>
-              <i node-type="i">(read-size</i>
-            </span>
-            <span>
-              <i node-type="i">100)</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns random number according to given <i node-type="i">prng</i> algorithm. The result
-number will be less than <i node-type="i">size</i>.</p>
-        <p node-type="paragraph">Keyword argument <i node-type="i">read-size</i> will be passed to <code node-type="code">read-random-bytes</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="random_6">
-            <span>random</span>
-            <span>
-              <i node-type="i">prng</i>
-            </span>
-            <span>
-              <i node-type="i">size</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">size</i> must a positive fixnum.</p>
-        <p node-type="paragraph">Reads <i node-type="i">size</i> bytes of random byte from <i node-type="i">prng</i>.</p>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="prng-state_132">
-            <span>prng-state</span>
-            <span>
-              <i node-type="i">(prng</i>
-            </span>
-            <span>
-              <i node-type="i"><prng>)</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns given <i node-type="i">prng</i>'s state if the pseudo random implementation
-allows.</p>
-        <p node-type="paragraph">For default built in pseudo randoms return #f.</p>
-        <p node-type="paragraph">NOTE: if &lt;secure-random&gt; is implemented, then the pseudo random implementation
-should not return the state.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="read-random-bytes_47">
-            <span>read-random-bytes</span>
-            <span>
-              <i node-type="i">prng</i>
-            </span>
-            <span>
-              <i node-type="i">size</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="read-random-bytes!_48">
-            <span>read-random-bytes!</span>
-            <span>
-              <i node-type="i">prng</i>
-            </span>
-            <span>
-              <i node-type="i">bv</i>
-            </span>
-            <span>
-              <i node-type="i">size</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Reads random bytes from given <i node-type="i">prng</i>.</p>
-        <p node-type="paragraph">The first form creates fresh bytevector with size <i node-type="i">size</i>.</p>
-        <p node-type="paragraph">The second form reads random bytes from <i node-type="i">prng</i> and sets the result into the
-given <i node-type="i">bv</i> destructively.</p>
-        <p node-type="paragraph">If the second form is used, <i node-type="i">bv</i> must have the length at least <i node-type="i">size</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="read-sys-random_51">
-            <span>read-sys-random</span>
-            <span>
-              <i node-type="i">bits</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns given the <code node-type="code">(+ (* bits 8) (if (zero? (mod bits 8)) 1 0))</code>
-bits of random bytevector.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="read-sys-random!_54">
-            <span>read-sys-random!</span>
-            <span>
-              <i node-type="i">bv</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="read-sys-random!_53">
-            <span>read-sys-random!</span>
-            <span>
-              <i node-type="i">bv</i>
-            </span>
-            <span>
-              <i node-type="i">start</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="read-sys-random!_52">
-            <span>read-sys-random!</span>
-            <span>
-              <i node-type="i">bv</i>
-            </span>
-            <span>
-              <i node-type="i">start</i>
-            </span>
-            <span>
-              <i node-type="i">len</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">bv</i> must be a bytevector.<br><i node-type="i">start</i> must be an exact non negative integer.<br><i node-type="i">len</i> must be an exact non negative integer.</p>
-        <p node-type="paragraph">Reads random bytes from a system random generator and store it into <i node-type="i">bv</i>.<br>If the second form is used, then it stores from the <i node-type="i">start</i> position.<br>If the third form is used, then it stores the <i node-type="i">len</i> bytes from the <i node-type="i">start</i>.</p>
-        <section node-type="section">
-          <h4 node-type="header-4">
-            <a name="Custom-pseudo-random-operations">Custom pseudo random operations</a>
-          </h4>
-          <p node-type="paragraph">Since version 0.3.2, pseudo random also has custom operations. Similar with
-cipher spi or hash algorithm.</p>
-          <p node-type="paragraph">The following example describes how to make it.</p>
-          <pre lang="scheme" node-type="block"><code>;; the code snipet is from math/mt-random
-(define-class &lt;mersenne-twister&gt; (&lt;user-prng&gt;)
-  (;; The array for the state vector
-   ;; using bytevector, it needs to be 64 bit aligned.
-   (state :init-keyword :state :init-form (make-bytevector (* NN 8)))
-   ;; mti==NN+1 means MT[NN] is not initialized
-   (mti   :init-keyword :mti   :init-form (+ NN 1))))
-(define-method initialize ((o &lt;mersenne-twister&gt;) initargs)
-  (call-next-method)
-  (let ((seed (get-keyword :seed initargs #f)))
-    (slot-set! o 'set-seed! mt-set-seed)
-    (slot-set! o 'read-random! mt-read-random!)
-    (when seed
-      (mt-set-seed o seed))))
-</code></pre>
-          <p node-type="paragraph">User just need to set the slots <code node-type="code">set-seed!</code> and <code node-type="code">read-random!</code>. Then
-other process is done by lower layer.</p>
-          <p node-type="paragraph">Following describes the meaning of these slots.</p>
-          <p node-type="paragraph">The slot <code node-type="code">set-seed!</code> requires a procedure which accepts 2 arguments,
-target pseudo random and <i node-type="i">seed</i>. <i node-type="i">seed</i> must be bytevector.</p>
-          <p node-type="paragraph">The slot <code node-type="code">read-random!</code> requires a pseudo which accepts 3 arguments,
-target pseudo random <i node-type="i">buffer</i> and <i node-type="i">bytes</i>. <i node-type="i">buffer</i> must be a
-bytevector and have bigger size than given <i node-type="i">bytes</i>. <i node-type="i">bytes</i> must be
-a non negative fixnum.</p>
-          <p node-type="paragraph">NOTE: The custom pseudo random interface has been changed since version 0.3.6.
-Make sure which version of Sagittarius your application using.</p>
-        </section>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="math.hash">Hash operations</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Library</span>
-          <a name="(math hash)_14">
-            <span>(math hash)</span>
-          </a>
-        </div>
-        <p node-type="paragraph">This library exports procedures for hash (digest) operations.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="hash-algorithm_1">
-            <span>hash-algorithm</span>
-            <span>
-              <i node-type="i">name</i>
+              <i node-type="i">message</i>
             </span>
             <span>
               <i node-type="i">.</i>
             </span>
             <span>
-              <i node-type="i">options</i>
+              <i node-type="i">arguments</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">name</i> must be a string.</p>
-        <p node-type="paragraph">Creates a hash-algorithm object. <i node-type="i">name</i> specifies its algorithm. The
-predefined algorithms are blow:</p>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="WHIRLPOOL_46">
-            <span>WHIRLPOOL</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-512_67">
-            <span>SHA-512</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-384_66">
-            <span>SHA-384</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-256_61">
-            <span>SHA-256</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-224_60">
-            <span>SHA-224</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-512/256_69">
-            <span>SHA-512/256</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-512/224_68">
-            <span>SHA-512/224</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="Tiger-192_55">
-            <span>Tiger-192</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-1_59">
-            <span>SHA-1</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="RIPEMD-320_138">
-            <span>RIPEMD-320</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="RIPEMD-256_137">
-            <span>RIPEMD-256</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="RIPEMD-160_136">
-            <span>RIPEMD-160</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="RIPEMD-128_135">
-            <span>RIPEMD-128</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="MD5_345">
-            <span>MD5</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="MD4_344">
-            <span>MD4</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="MD2_343">
-            <span>MD2</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-3-224_62">
-            <span>SHA-3-224</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-3-256_63">
-            <span>SHA-3-256</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-3-384_64">
-            <span>SHA-3-384</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="SHA-3-512_65">
-            <span>SHA-3-512</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="BLAKE2s-128_62">
-            <span>BLAKE2s-128</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="BLAKE2s-160_63">
-            <span>BLAKE2s-160</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="BLAKE2s-224_64">
-            <span>BLAKE2s-224</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="BLAKE2s-256_65">
-            <span>BLAKE2s-256</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="BLAKE2b-160_58">
-            <span>BLAKE2b-160</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="BLAKE2b-256_59">
-            <span>BLAKE2b-256</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="BLAKE2b-384_60">
-            <span>BLAKE2b-384</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="BLAKE2b-512_61">
-            <span>BLAKE2b-512</span>
-          </a>
-        </div>
-        <p node-type="paragraph">If you want to use other hash algorithm, you can also create a new hash
-algorithm. It is described the section
-<a href="section719.html#custom.hash">Custom hash algorithm</a>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="hash-algorithm?_2">
-            <span>hash-algorithm?</span>
+          <a name="logger-trace?_57">
+            <span>logger-trace?</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="debug-log_55">
+            <span>debug-log</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">arguments</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="logger-debug?_53">
+            <span>logger-debug?</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="info-log_60">
+            <span>info-log</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">arguments</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="logger-info?_56">
+            <span>logger-info?</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="warn-log_2">
+            <span>warn-log</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">arguments</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="logger-warn?_58">
+            <span>logger-warn?</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="error-log_35">
+            <span>error-log</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">arguments</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="logger-error?_54">
+            <span>logger-error?</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="fatal-log_0">
+            <span>fatal-log</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">arguments</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="logger-fatal?_55">
+            <span>logger-fatal?</span>
+            <span>
+              <i node-type="i">logger</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Logging APIs.</p>
+        <p node-type="paragraph"><code node-type="code">_level_-log</code> procedures log <i node-type="i">message</i> on <i node-type="i">logger</i> if
+<i node-type="i">logger</i> has its threshold lower than the <i node-type="i">level</i>.</p>
+        <p node-type="paragraph"><code node-type="code">logger-_level_?</code> procedures check if the <i node-type="i">logger</i> has
+threshold lower than <i node-type="i">level</i>.</p>
+        <div node-type="define" class="define">
+          <span>Generic Function</span>
+          <a name="terminate-logger!_8">
+            <span>terminate-logger!</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="terminate-logger_7">
+            <span>terminate-logger</span>
+            <span>
+              <i node-type="i">(logger</i>
+            </span>
+            <span>
+              <i node-type="i"><logger>)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="terminate-logger_6">
+            <span>terminate-logger</span>
+            <span>
+              <i node-type="i">(logger</i>
+            </span>
+            <span>
+              <i node-type="i"><async-logger>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Terminates logging of the given <i node-type="i">logger</i>.</p>
+        <p node-type="paragraph">The method calls <code node-type="code">appender-finish</code> for all appenders of give <i node-type="i">logger</i>.</p>
+        <p node-type="paragraph">If the <i node-type="i">logger</i> is an asynchronous logger, then it also stops background
+thread.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Appenders">Appenders</a>
+        </h3>
+        <p node-type="paragraph">Appenders are actual logging mechanisms. Each appender must be responsible
+how to write a log message and resource management such as log file.</p>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<appender&gt;_5">
+            <span>&lt;appender&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="appender?_49">
+            <span>appender?</span>
             <span>
               <i node-type="i">obj</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Return #t if <i node-type="i">obj</i> is hash-algorithm object otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="hash-oid_6">
-            <span>hash-oid</span>
+          <a name="make-appender_22">
+            <span>make-appender</span>
             <span>
-              <i node-type="i">hash-algorithm</i>
+              <i node-type="i">log-format</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Return OID of given <i node-type="i">hash-algorithm</i> if it has otherwise #f.</p>
+        <p node-type="paragraph">Base appender. This appender emits log messages into
+<code node-type="code">current-output-port</code>.</p>
+        <p node-type="paragraph"><code node-type="code">appender?</code> returns #f if <i node-type="i">obj</i> is an appender otherwise #f.</p>
+        <p node-type="paragraph"><code node-type="code">make-appender</code> creates an appender. The <i node-type="i">log-format</i> argument
+must be a string and specifying the format of the log line.</p>
+        <p node-type="paragraph">The <i node-type="i">log-format</i> can contains place holders stating with the character
+<code node-type="code">#\~</code>. The followings are the defined place holders:</p>
+        <dl node-type="dlist">
+          <dt>
+            <code node-type="code">#\w_date-format_</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Puts logging date on this location. The <i node-type="i">date-format</i> specifies
+format of the log. It must be a character or string which is surrounded
+by <code node-type="code">#\{ #\}</code>. The format is passed to the <code node-type="code">date-&gt;string</code>    procedure defined in SRFI-19.</p>
+          </dd>
+          <dt>
+            <code node-type="code">#\l</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Puts logging level on this location.</p>
+          </dd>
+          <dt>
+            <code node-type="code">#\m</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Puts log message on this location.</p>
+          </dd>
+          <dt>
+            <code node-type="code">#\a[n]</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Puts _n_th log argument on this location.</p>
+          </dd>
+          <dt>
+            <code node-type="code">#\a</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Puts all log arguments on this location.</p>
+          </dd>
+        </dl>
+        <p node-type="paragraph">The following example shows when <i node-type="i">log-format</i> is <code node-type="code">"[~w5] ~l ~m"</code>and logging with info level.</p>
+        <pre lang="scheme" node-type="block"><code>(define logger (make-logger +info-level+ (make-appender "[~w5] ~l ~m")))
+(info-log logger "message of the log")
+;; [2016-09-06T12:32:06] info message of the log
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<file-appender&gt;_28">
+            <span>&lt;file-appender&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="file-appender?_14">
+            <span>file-appender?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-file-appender_147">
+            <span>make-file-appender</span>
+            <span>
+              <i node-type="i">log-format</i>
+            </span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">File appender. This is a subtype of <code node-type="code">&lt;appender&gt;</code>. This appender
+emits log messages to the file named <i node-type="i">filename</i>.</p>
+        <p node-type="paragraph"><code node-type="code">file-appender?</code> returns #f if <i node-type="i">obj</i> is a file appender otherwise #f.</p>
+        <p node-type="paragraph"><code node-type="code">make-file-appender</code> creates a file appender. The <i node-type="i">log-format</i> is
+passed to parent protocol. The file creation is done with file options of
+<code node-type="code">no-fail</code>, <code node-type="code">no-truncate</code> and <code node-type="code">append</code>. Thus if the file exists
+then it would append the log line.</p>
+        <p node-type="paragraph">The given <i node-type="i">filename</i> will be converted to absolute path so changing
+directory will not affect the log file location.</p>
+        <div node-type="define" class="define">
+          <span>Generic Function</span>
+          <a name="file-appender-filename_13">
+            <span>file-appender-filename</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="file-appender-filename_12">
+            <span>file-appender-filename</span>
+            <span>
+              <i node-type="i">(file-appender</i>
+            </span>
+            <span>
+              <i node-type="i"><file-appender>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns log file name.</p>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<rolling-file-appender&gt;_59">
+            <span>&lt;rolling-file-appender&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-rolling-file-appender_237">
+            <span>make-rolling-file-appender</span>
+            <span>
+              <i node-type="i">log-format</i>
+            </span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(rolling-size</i>
+            </span>
+            <span>
+              <i node-type="i">10485760)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rolling-file-appender?_141">
+            <span>rolling-file-appender?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Rolling file appender. This is a subtype of <code node-type="code">&lt;file-appender&gt;</code>.
+This appender emits log message to the file named <i node-type="i">filename</i> and if
+the file size is more than <i node-type="i">rolling-size</i>, then it renames the old file
+to indexed file and new log file named <i node-type="i">filename</i> is created.</p>
+        <p node-type="paragraph"><code node-type="code">rolling-file-appender?</code> returns #f if <i node-type="i">obj</i> is a rolling file
+appender otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<daily-rolling-file-appender&gt;_21">
+            <span>&lt;daily-rolling-file-appender&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-daily-rolling-file-appender_66">
+            <span>make-daily-rolling-file-appender</span>
+            <span>
+              <i node-type="i">log-format</i>
+            </span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(date-pattern</i>
+            </span>
+            <span>
+              <i node-type="i">"~Y-~m-~d")</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="daily-rolling-file-appender?_0">
+            <span>daily-rolling-file-appender?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Daily rolling file appender. This is a subtype of <code node-type="code">&lt;file-appender&gt;</code>.
+This appender emits log message to the file named <i node-type="i">filename</i> and if
+the date string of last file modified time formatted to _date-pattern_is differ from log time, then the appender rolls the old log file to
+a backup file. The backup file is concatenation of <i node-type="i">filename</i> and
+last modified date.</p>
+        <p node-type="paragraph"><code node-type="code">daily-rolling-file-appender?</code> returns #f if <i node-type="i">obj</i> is a daily rolling
+file appender otherwise #f.</p>
         <section node-type="section">
           <h4 node-type="header-4">
-            <a name="User-level-APIs-of-hash-operations">User level APIs of hash operations</a>
+            <a name="Creating-appenders">Creating appenders</a>
           </h4>
+          <p node-type="paragraph">Users would soon face that predefined appenders are not enough or don't satisfy
+the requirement. For that case, appenders can easily be created.</p>
+          <p node-type="paragraph">The following example shows how to create an Email appender.</p>
+          <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (rfc smtp)
+        (rfc smtp authentications)
+        (util logging)
+        (clos user))
+
+(define-record-type (&lt;smtp-appender&gt; make-smtp-appender smtp-appender?)
+  (parent &lt;appender&gt;)
+  (fields (immutable connection smtp-appender-connection)
+          (immutable username smtp-appender-username)
+          (immutable password smtp-appender-password))
+  (protocol (lambda (p)
+              (lambda (format host port username password)
+                ((p format)
+                 (make-smtp-connection host port) username password)))))
+
+(define-method append-log ((appender &lt;smtp-appender&gt;) log)
+  (let ((message (format-log appender log))
+        (conn (smtp-appender-connection appender)))
+    (guard (e (else (report-error e)))
+      (smtp-connect! conn)
+      (when (smtp-authentication-required? conn)
+        (let* ((methods (smtp-connection-authentication-methods conn))
+               (username (smtp-appender-username appender))
+               (password (smtp-appender-password appender))
+               (method (cond ((memq 'PLAIN methods)
+                              (list (smtp-plain-authentication username password)))
+                             ((memq 'PASSWORD methods)
+                              (let-values ((init&amp;next (smtp-login-authentication username password)))
+                                init&amp;next))
+                             (else #f))))
+          (if methods
+              (apply smtp-authenticate! conn method)
+              (begin
+                (smtp-disconnect! conn)
+                (error 'append-log "not supported")))))
+      (smtp-send! conn (smtp:mail
+                        (smtp:from "Takashi Kato" "ktakashi@ymail.com")
+                        (smtp:to "Takashi Kato" "ktakashi@ymail.com")
+                        (smtp:subject "Logging with email")
+                        message))
+      (smtp-disconnect! conn))))
+</code></pre>
+          <p node-type="paragraph">The example is not really useful since it sends only the fixed recipient with
+fixed format. If you need to use it, you need to modify.</p>
+          <p node-type="paragraph">Only what users need to do to create an appender is the followings:</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">Creates a record type inherits <code node-type="code">&lt;appender&gt;</code>.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">Specialising <code node-type="code">append-log</code> method with the above record.</p>
+            </li>
+          </ul>
           <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="hash_0">
-              <span>hash</span>
+            <span>Generic Function</span>
+            <a name="append-log_46">
+              <span>append-log</span>
               <span>
-                <i node-type="i">type</i>
+                <i node-type="i">appender</i>
               </span>
               <span>
-                <i node-type="i">bv</i>
+                <i node-type="i">log</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Core process of appending logs.</p>
+          <p node-type="paragraph"><i node-type="i">log</i> is an object of <code node-type="code">&lt;log&gt;</code> or its subtype. This method should
+emit logs.</p>
+          <div node-type="define" class="define">
+            <span>Generic Function</span>
+            <a name="appender-finish_47">
+              <span>appender-finish</span>
+              <span>
+                <i node-type="i">appender</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Finishing appender if necessary. This method is called when
+<code node-type="code">terminate-logger</code> is called.</p>
+          <p node-type="paragraph">Implementation should release resource of the <i node-type="i">appender</i>.</p>
+          <div node-type="define" class="define">
+            <span>Generic Function</span>
+            <a name="format-log_114">
+              <span>format-log</span>
+              <span>
+                <i node-type="i">appender</i>
+              </span>
+              <span>
+                <i node-type="i">log</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Formats log object. <i node-type="i">log</i> is an object of <code node-type="code">&lt;log&gt;</code> or its subtype.</p>
+          <p node-type="paragraph">The method must return a string representation of given <i node-type="i">log</i>.</p>
+          <p node-type="paragraph">The default implementation handles the log format described in the
+<code node-type="code">make-logger</code> description.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="appender-log-format_48">
+              <span>appender-log-format</span>
+              <span>
+                <i node-type="i">appender</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns log format of the given <i node-type="i">appender</i>.</p>
+          <div node-type="define" class="define">
+            <span>Record Type</span>
+            <a name="<log&gt;_47">
+              <span>&lt;log&gt;</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="log?_52">
+              <span>log?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-log_194">
+              <span>make-log</span>
+              <span>
+                <i node-type="i">when</i>
+              </span>
+              <span>
+                <i node-type="i">level</i>
+              </span>
+              <span>
+                <i node-type="i">message</i>
               </span>
               <span>
                 <i node-type="i">.</i>
               </span>
               <span>
-                <i node-type="i">options</i>
+                <i node-type="i">arguments</i>
               </span>
             </a>
           </div>
-          <p node-type="paragraph"><i node-type="i">type</i> must be a string which specifies hash algorithms or
-hash-algorithm object.</p>
-          <p node-type="paragraph">The <code node-type="code">hash</code> procedure generates digest from given bytevector _bv_according to the given algorithm. The result digest will be a bytevector.</p>
-          <p node-type="paragraph">If <i node-type="i">type</i> is not a hash algorithm object nor predefined hash algorithm,
-then <i node-type="i">options</i> will be passed to the custom hash algorithm creation.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="hash-size_8">
-              <span>hash-size</span>
+            <a name="log-when_51">
+              <span>log-when</span>
               <span>
-                <i node-type="i">hash-algorithm</i>
+                <i node-type="i">log</i>
               </span>
             </a>
           </div>
-          <p node-type="paragraph">Returns hash size of given <i node-type="i">hash-algorithm</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="hash-block-size_3">
-              <span>hash-block-size</span>
+            <a name="log-level_49">
+              <span>log-level</span>
               <span>
-                <i node-type="i">hash-algorithm</i>
+                <i node-type="i">log</i>
               </span>
             </a>
           </div>
-          <p node-type="paragraph">Returns hash block size of given <i node-type="i">hash-algorithm</i>.</p>
-        </section>
-        <section node-type="section">
-          <h4 node-type="header-4">
-            <a name="Low-level-APIs-of-hash-operations">Low level APIs of hash operations</a>
-          </h4>
-          <p node-type="paragraph">Most of the time User level APIs are sufficient enough, however for some cases,
-for example multiple input datas, you might need to use these low leve APIs.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="hash-init!_5">
-              <span>hash-init!</span>
+            <a name="log-message_50">
+              <span>log-message</span>
               <span>
-                <i node-type="i">hash-algorithm</i>
+                <i node-type="i">log</i>
               </span>
             </a>
           </div>
-          <p node-type="paragraph">Initialise given <i node-type="i">hash-algorithm</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="hash-process!_7">
-              <span>hash-process!</span>
+            <a name="log-arguments_48">
+              <span>log-arguments</span>
               <span>
-                <i node-type="i">hash-algorithm</i>
-              </span>
-              <span>
-                <i node-type="i">bv</i>
-              </span>
-              <span>
-                <i node-type="i">:optional</i>
-              </span>
-              <span>
-                <i node-type="i">(start</i>
-              </span>
-              <span>
-                <i node-type="i">0)</i>
-              </span>
-              <span>
-                <i node-type="i">(end</i>
-              </span>
-              <span>
-                <i node-type="i">(bytevector-length</i>
-              </span>
-              <span>
-                <i node-type="i">bv))</i>
+                <i node-type="i">log</i>
               </span>
             </a>
           </div>
-          <p node-type="paragraph"><i node-type="i">bv</i> must be a bytevector.</p>
-          <p node-type="paragraph">Process hash process with input data <i node-type="i">bv</i>. The result will be stored in the
-<i node-type="i">hash-algorithm</i>.</p>
-          <p node-type="paragraph">Optional arguments <i node-type="i">start</i> and <i node-type="i">end</i> limits the input <i node-type="i">bv</i>.</p>
+          <p node-type="paragraph">Default log object.</p>
+          <p node-type="paragraph"><code node-type="code">&lt;log&gt;</code> has 4 fields <code node-type="code">when</code>, <code node-type="code">level</code>, <code node-type="code">message</code> and
+<code node-type="code">arguments</code>. By the default creation, they are UTC time object, symbol
+of log level, log message and a vector of extra logging arguments, respectively.</p>
+          <p node-type="paragraph">If you want to create own logger which handles log object differently,
+then you need to specialise the following generic function with the
+logger.</p>
           <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="hash-done!_4">
-              <span>hash-done!</span>
+            <span>Generic Function</span>
+            <a name="push-log_166">
+              <span>push-log</span>
               <span>
-                <i node-type="i">hash-algorithm</i>
+                <i node-type="i">logger</i>
               </span>
               <span>
-                <i node-type="i">out</i>
-              </span>
-              <span>
-                <i node-type="i">:optional</i>
-              </span>
-              <span>
-                <i node-type="i">(start</i>
-              </span>
-              <span>
-                <i node-type="i">0)</i>
-              </span>
-              <span>
-                <i node-type="i">(end</i>
-              </span>
-              <span>
-                <i node-type="i">(bytevector-length</i>
-              </span>
-              <span>
-                <i node-type="i">bv))</i>
+                <i node-type="i">log</i>
               </span>
             </a>
           </div>
-          <p node-type="paragraph"><i node-type="i">out</i> must be a bytevector and must have hash size which the
-<code node-type="code">hash-size</code> procedure returns.</p>
-          <p node-type="paragraph">Flushes stored hash result in <i node-type="i">hash-algorithm</i> into <i node-type="i">out</i>.</p>
-          <p node-type="paragraph">Once this procedure is called <i node-type="i">hash-algorithm</i>'s state will be changed. If
-you want to reuse it, you need to call <code node-type="code">hash-init!</code>.</p>
-          <p node-type="paragraph">Optional arguments <i node-type="i">start</i> and <i node-type="i">end</i> specifies the offset of
-output bytevector.</p>
-        </section>
-        <section node-type="section">
-          <h4 node-type="header-4">
-            <a name="custom.hash">Custom hash algorithm</a>
-          </h4>
-          <p node-type="paragraph">Since version 0.3.1, user can create a custom hash algorithm. Similar with
-cipher spi described section <a href="section79.html#custom.cipher">Creating own cipher</a>.</p>
-          <p node-type="paragraph">The following example describes how to make it.</p>
-          <pre lang="scheme" node-type="block"><code>(import (rnrs) (sagittarius) (math) (clos user))
-;; hash operations
-(define (foo-init hash) #t)
-(define (foo-process hash bv)
-  (let ((len (bytevector-length bv)))
-    (bytevector-copy! bv 0 (slot-ref hash 'buffer) 0 (min len 16))))
-(define (foo-done hash out)
-  (let ((v (integer-&gt;bytevector (equal-hash (slot-ref hash 'buffer)))))
-    (bytevector-copy! v 0 out 0 (min 8 (bytevector-length v)))))
-
-(define-class &lt;foo-hash&gt; (&lt;user-hash-algorithm&gt;)
-  ((buffer :init-form (make-bytevector 16))))
-(define-method initialize ((o &lt;foo-hash&gt;) initargs)
-  (call-next-method)
-  (slot-set! o 'init foo-init)
-  (slot-set! o 'process foo-process)
-  (slot-set! o 'done foo-done)
-  (slot-set! o 'block-size 16)
-  (slot-set! o 'hash-size 8)
-  (slot-set! o 'oid #f)
-  (slot-set! o 'state #f))
-;; marker
-(define-class &lt;foo-marker&gt; () ())
-(define FOO (make &lt;foo-marker&gt;))
-(register-hash FOO &lt;foo-hash&gt;)
-
-;; use with APIs
-(hash FOO (string-&gt;utf8 "hash")) ;; -&gt; #vu8(245 221 54 232 0 0 0 0)
-</code></pre>
-          <p node-type="paragraph">The slots <code node-type="code">init</code>, <code node-type="code">process</code> and <code node-type="code">done</code> must be set with a
-procedure which will be called by <code node-type="code">hash-init!</code>, <code node-type="code">hash-process!</code> and
-<code node-type="code">hash-done!</code> respectively.</p>
-          <p node-type="paragraph">The procedure set to <code node-type="code">process</code> and <code node-type="code">done</code>  must accept 2 or 4
-arguments. If it can accept 4 arguments, then optional argumens _start_and <i node-type="i">end</i> are passed. Implementation can use these information to
-ptimise memory allocation. If it can accept 2 argumens, then framework
-handles the range. In this case, uneccesarry allocation may happen.</p>
-          <p node-type="paragraph">The slots <code node-type="code">block-size</code> and <code node-type="code">hash-size</code> must be non negative exact
-integer and will be returned by <code node-type="code">hash-block-size</code> and <code node-type="code">hash-size</code>procedures respectively.</p>
-          <p node-type="paragraph">The slot <code node-type="code">oid</code> must be set #f or string which represent OID of the custom
-hash algorithm. If you don't have it, it's better to set #f.</p>
-          <p node-type="paragraph">The slot <code node-type="code">state</code> can be anything, this slot is for storing the hash state
-if you need.</p>
+          <p node-type="paragraph">Pushes <i node-type="i">log</i> to appenders of the <i node-type="i">logger</i>.</p>
         </section>
       </section>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="Prime-number-operations">Prime number operations</a>
+          <a name="Singleton-logger">Singleton logger</a>
         </h3>
+        <p node-type="paragraph">Asynchronous logger or other loggers should sometimes be singleton. This type
+of thing might need to be done in users responsibility however I think it's
+common idiom. So the very simple one is added to the library.</p>
         <div node-type="define" class="define">
-          <span>Library</span>
-          <a name="(math prime)_16">
-            <span>(math prime)</span>
-          </a>
-        </div>
-        <p node-type="paragraph">This library exports procedures for prime number operations.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="prime?_123">
-            <span>prime?</span>
+          <span>Macro</span>
+          <a name="define-logger-storage_79">
+            <span>define-logger-storage</span>
             <span>
-              <i node-type="i">q</i>
+              <i node-type="i">lookup</i>
             </span>
             <span>
-              <i node-type="i">:optional</i>
+              <i node-type="i">clause*</i>
             </span>
             <span>
-              <i node-type="i">(k</i>
-            </span>
-            <span>
-              <i node-type="i">50)</i>
-            </span>
-            <span>
-              <i node-type="i">(rand</i>
-            </span>
-            <span>
-              <i node-type="i">(secure-random</i>
-            </span>
-            <span>
-              <i node-type="i">RC4))</i>
+              <i node-type="i">...</i>
             </span>
           </a>
         </div>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="is-prime?_80">
-            <span>is-prime?</span>
+          <span>Macro</span>
+          <a name="define-logger-storage_78">
+            <span>define-logger-storage</span>
             <span>
-              <i node-type="i">q</i>
+              <i node-type="i">(lookup</i>
             </span>
             <span>
-              <i node-type="i">:optional</i>
+              <i node-type="i">register)</i>
             </span>
             <span>
-              <i node-type="i">(k</i>
+              <i node-type="i">clause*</i>
             </span>
             <span>
-              <i node-type="i">50)</i>
-            </span>
-            <span>
-              <i node-type="i">(rand</i>
-            </span>
-            <span>
-              <i node-type="i">(secure-random</i>
-            </span>
-            <span>
-              <i node-type="i">RC4))</i>
+              <i node-type="i">...</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Tests if given <i node-type="i">q</i> is a prime number or not.</p>
-        <p node-type="paragraph">This procedure uses Miller Rabin primality test. So there is slight possibility
-to pass non prim number.</p>
-        <p node-type="paragraph">The optional argument <i node-type="i">k</i> is the test times. The default 50 makes failure
-ratio very low. And <i node-type="i">rand</i> specifies whith pseudo random algorithm uses in
-the test.</p>
-        <p node-type="paragraph">The latter form is for backward compatibility.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="random-prime_15">
-            <span>random-prime</span>
-            <span>
-              <i node-type="i">size</i>
-            </span>
-            <span>
-              <i node-type="i">:key</i>
-            </span>
-            <span>
-              <i node-type="i">(prng</i>
-            </span>
-            <span>
-              <i node-type="i">(secure-random</i>
-            </span>
-            <span>
-              <i node-type="i">RC4))</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Find a prime number from <i node-type="i">size</i> bytes. So the minimum range will be
-<code node-type="code">1 &lt;= p &lt;= 251</code>.</p>
-        <p node-type="paragraph">Keyword argument <i node-type="i">prng</i> specifies which pseudo random uses to find a prime
-number.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Misc-arithmetic-operations">Misc arithmetic operations</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Library</span>
-          <a name="(math helper)_15">
-            <span>(math helper)</span>
-          </a>
-        </div>
-        <p node-type="paragraph">This library exports procedures for misc arithmetic operations.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mod-inverse_369">
-            <span>mod-inverse</span>
-            <span>
-              <i node-type="i">x</i>
-            </span>
-            <span>
-              <i node-type="i">m</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Re exporting <code node-type="code">mod-inverse</code> defined in <code node-type="code">(sagittarius)</code> library.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mod-expt_367">
-            <span>mod-expt</span>
-            <span>
-              <i node-type="i">x</i>
-            </span>
-            <span>
-              <i node-type="i">e</i>
-            </span>
-            <span>
-              <i node-type="i">m</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Re exporting <code node-type="code">mod-expt</code> defined in <code node-type="code">(sagittarius)</code> library.</p>
+        <p node-type="paragraph">This macro defines a logger lookup procedure. If the second form is used
+then, a registration procedure.</p>
+        <p node-type="paragraph">The generated procedures have the following signatures</p>
+        <dl node-type="dlist">
+          <dt>(@var{lookup} @var{name})</dt>
+          <dd>
+            <p node-type="paragraph">Looks up the logger named <i node-type="i">name</i></p>
+          </dd>
+          <dt>(@var{register} @var{name} @var{logger})</dt>
+          <dd>
+            <p node-type="paragraph">Registers the given logger with name, <i node-type="i">name</i></p>
+          </dd>
+        </dl>
+        <p node-type="paragraph">The registration procedure stores the given logger to hidden storage. If
+the procedure called the same name argument twice, then the latter logger
+overwrites the previous one.</p>
+        <p node-type="paragraph"><code node-type="code">clause*</code> must the following form:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(loggers (_logger-name_ _make-logger_) ...)</code>
+            </p>
+          </li>
+        </ul>
+        <p node-type="paragraph"><code node-type="code">loggers</code> is an auxiliary syntax. If the <code node-type="code">loggers</code>clause is specified, then the macro stores the logger <i node-type="i">logger-name</i> which
+is created by <i node-type="i">make-logger</i> thunk as its predefined loggers.</p>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section718.html">(util logging) - Logging utilities</a>
+      <a href="./section718.html">(util list) - Extra list utility library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section720.html">(net mq amqp) - AMQP library</a>
+      <a href="./section720.html">(math) - Mathematics library</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

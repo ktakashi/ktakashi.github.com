@@ -7,50 +7,542 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section734.html">(rfc cmac) - CMAC library</a>
+      <a href="./section734.html">(rfc :5322) - Internet message format library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section736.html">(rfc http) - HTTP client</a>
+      <a href="./section736.html">(rfc cmac) - CMAC library</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="rfc.hmac">(rfc hmac) - HMAC library</a>
+        <a name="rfc.base64">(rfc base64) - Base 64 encode and decode library</a>
       </h2>
-      <p node-type="paragraph">This section describes the HMAC extension of hash algorithm. The HMAC itself
-is described <a href="http://tools.ietf.org/html/rfc2104">RFC 2104</a>.
-The provided library make user be able to use the algorithm with the APIs of
-math library's hash algorithm APIs. For the APIs detail, see
-<a href="section719.html#math.hash">Hash operations</a>.</p>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(rfc hmac)_34">
-          <span>(rfc hmac)</span>
+        <a name="(rfc base64)_33">
+          <span>(rfc base64)</span>
         </a>
       </div>
-      <p node-type="paragraph">Provides HMAC hash algorithm.</p>
-      <div node-type="define" class="define">
-        <span>Variable</span>
-        <a name="HMAC_51">
-          <span>HMAC</span>
-        </a>
-      </div>
-      <p node-type="paragraph">The name for HMAC hash algorithm.</p>
-      <p node-type="paragraph">The following example explains, how to use it.</p>
-      <pre lang="scheme" node-type="block"><code>(import (rnrs) (rfc hmac) (math))
-;; the keyword arguments can be omitted, then it will use an empty bytevector
-;; as HMAC key and SHA-1 algorithm as digest algorithm.
-(define hmac (hash-algorithm HMAC :key (string-&gt;utf8 "hmac key") :hash SHA-1))
-(hash hmac (string-&gt;utf8 "test"))
-;; -&gt; #vu8(57 255 153 118 15 133 255 73 12 199 199 115 185 32 43 225 61 254 159 94)
+      <p node-type="paragraph">This library provides Base 64 encoding and decoding procedures.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Encoding-procedures">Encoding procedures</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base64-encode_3">
+            <span>base64-encode</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(line-width</i>
+            </span>
+            <span>
+              <i node-type="i">76)</i>
+            </span>
+            <span>
+              <i node-type="i">(padding?</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base64url-encode_7">
+            <span>base64url-encode</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(line-width</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(padding?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">in</i> must be either a bytevector or binary input port.</p>
+        <p node-type="paragraph">Encodes given input <i node-type="i">in</i> to Base 64 encoded bytevector.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">line-width</i> specifies where the encode procedure
+should put linefeed. If this is less than 1 or #f, encoder does not put
+linefeed.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">padding?</i> controls if the result encoded value
+contains padding character <code node-type="code">#\=</code> or not. If this is #f, then the result
+value won't contain padding character.</p>
+        <p node-type="paragraph">The <code node-type="code">base64url-encode</code> encodes the given input to Base 64 URL safe
+encoded bytevector. Which doesn't use <code node-type="code">+</code> and <code node-type="code">/</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base64-encode-string_4">
+            <span>base64-encode-string</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(line-width</i>
+            </span>
+            <span>
+              <i node-type="i">76)</i>
+            </span>
+            <span>
+              <i node-type="i">transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">(padding?</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base64url-encode-string_8">
+            <span>base64url-encode-string</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(line-width</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">(padding?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Convenient procedure for string.</p>
+        <p node-type="paragraph">Encodes given <i node-type="i">string</i> to Base 64 encoded string.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">transcoder</i> is used to convert given string to
+bytevector. The converted bytevector will be passed to the <code node-type="code">base64-encode</code>procedure. The default value is a transcoder with UTF-8 codec with EOL
+style none.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">padding?</i> is the same as <code node-type="code">base64-encode</code>.</p>
+        <p node-type="paragraph">The <code node-type="code">base64url-encode-string</code> encodes the given input to Base 64 URL safe
+encoded bytevector. Which doesn't use <code node-type="code">+</code> and <code node-type="code">/</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base64-encode-input-port_22">
+            <span>open-base64-encode-input-port</span>
+            <span>
+              <i node-type="i">source</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(owner?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(line-width</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(padding?</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base64-encode-output-port_23">
+            <span>open-base64-encode-output-port</span>
+            <span>
+              <i node-type="i">sink</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(owner?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(line-width</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(padding?</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base64url-encode-input-port_26">
+            <span>open-base64url-encode-input-port</span>
+            <span>
+              <i node-type="i">source</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(owner?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(line-width</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(padding?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base64url-encode-output-port_27">
+            <span>open-base64url-encode-output-port</span>
+            <span>
+              <i node-type="i">sink</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(owner?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(line-width</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(padding?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates binary Base64 encode input and output port, respectively.</p>
+        <p node-type="paragraph"><i node-type="i">source</i> must be binary inpurt port.</p>
+        <p node-type="paragraph">The input port reads bytes from <i node-type="i">source</i> and returns Base64 encoded
+result.</p>
+        <p node-type="paragraph"><i node-type="i">sink</i> must be binary inpurt port.</p>
+        <p node-type="paragraph">The output port puts encoded bytes to <i node-type="i">sink</i>. The port must be closed
+to finish the encoding process properly.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">padding?</i> is the same as <code node-type="code">base64-encode</code>.</p>
+        <p node-type="paragraph">The <code node-type="code">open-base64url-encode-input-port</code> and
+<code node-type="code">open-base64url-encode-output-port</code> encode to Base64 URL safe encode.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Decoding-procedures">Decoding procedures</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base64-decode_1">
+            <span>base64-decode</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base64url-decode_5">
+            <span>base64url-decode</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">in</i> must be a bytevector or binary input port.</p>
+        <p node-type="paragraph">Decode Base 64 encoded input <i node-type="i">in</i> to original bytevector.</p>
+        <p node-type="paragraph">The <code node-type="code">base64url-decode</code> decodes Base64 URL safe encoded value.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base64-decode-string_2">
+            <span>base64-decode-string</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">(native-transcoder))</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base64url-decode-string_6">
+            <span>base64url-decode-string</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">(native-transcoder))</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Convenient procedure.</p>
+        <p node-type="paragraph">Decode Base 64 encoded string to original string. The procedure is using
+<code node-type="code">base64-decode</code>.</p>
+        <p node-type="paragraph">The keyword argument specifies how to convert the decoded bytevector to string.
+If this is #f, the procedure returns raw bytevector.</p>
+        <p node-type="paragraph">The <code node-type="code">base64url-decode-string</code> decodes Base64 URL safe encoded value.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base64-decode-input-port_20">
+            <span>open-base64-decode-input-port</span>
+            <span>
+              <i node-type="i">source</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(owner?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base64-decode-output-port_21">
+            <span>open-base64-decode-output-port</span>
+            <span>
+              <i node-type="i">sink</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(owner?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base64url-decode-input-port_24">
+            <span>open-base64url-decode-input-port</span>
+            <span>
+              <i node-type="i">source</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(owner?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base64url-decode-output-port_25">
+            <span>open-base64url-decode-output-port</span>
+            <span>
+              <i node-type="i">sink</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(owner?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates binary Base64 decode input and output port, respectively.</p>
+        <p node-type="paragraph"><i node-type="i">source</i> must be binary inpurt port.</p>
+        <p node-type="paragraph">The input port reads Base64 encoded bytes from <i node-type="i">source</i> and returns
+decoded results.</p>
+        <p node-type="paragraph"><i node-type="i">sink</i> must be binary inpurt port.</p>
+        <p node-type="paragraph">The output port puts decoded bytes to <i node-type="i">sink</i>. The port must be closed
+to finish the encoding process properly.</p>
+        <p node-type="paragraph">The <code node-type="code">open-base64url-decode-input-port</code> and
+<code node-type="code">open-base64url-decode-output-port</code> decode Base64 URL safe encoded
+value.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Low-level-APIs">Low level APIs</a>
+        </h3>
+        <p node-type="paragraph">Both encode and decode procedures are using encoder and decoder. Both
+encoder and decoder are just a procedure which takes 2 arguments
+<i node-type="i">get</i> and <i node-type="i">put</i> and not reentrant as they have own internal
+buffer to process the input.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-base64-encoder_30">
+            <span>make-base64-encoder</span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(encode-table</i>
+            </span>
+            <span>
+              <i node-type="i"><i node-type="i">base64-encode-table</i>)</i>
+            </span>
+            <span>
+              <i node-type="i">(line-width</i>
+            </span>
+            <span>
+              <i node-type="i">76)</i>
+            </span>
+            <span>
+              <i node-type="i">(padding?</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a Base64 encoder. An encoder is a procedure which takes 2
+arguments <i node-type="i">get</i> and <i node-type="i">put</i>.</p>
+        <p node-type="paragraph"><i node-type="i">get</i> must be a procedure takes 0 argument and it must return one
+of the followings; a fixnum of range 0 to 255, EOF object, or negative
+integer. The fixnum value is treated as an input of the encoding
+value. The negative integer value is treated as a continue
+marker. When the encoder receives this value, then it won't encode
+until the next value is available.</p>
+        <p node-type="paragraph"><i node-type="i">put</i> must be a procedure takes 1 argument which is either a
+fixnum of range 0 to 255 or <code node-type="code">#f</code>. The fixnum is the encoded value
+of the input. <code node-type="code">#f</code> indicates line break point, so user can
+determine which line break this encoder should use.</p>
+        <p node-type="paragraph">The following shows how to make Base64 encoder with line break of CRLF.</p>
+        <pre lang="scheme" node-type="block"><code>(define (base64-encode-w/crlf bv)
+  (let-values (((out e) (open-bytevector-output-port)))
+    (define (put v)
+      (if v
+	  (put-u8 out v)
+	  (begin (put-u8 out #x0d) (put-u8 out #x0a))))
+    (define inp (open-bytevector-input-port bv))
+    (define (in) (get-u8 inp))
+    (define encoder (make-base64-encoder))
+    (do () ((encoder in put)))
+    (e)))
 </code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-base64-decoder_29">
+            <span>make-base64-decoder</span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(decode-table</i>
+            </span>
+            <span>
+              <i node-type="i"><i node-type="i">base64-decode-table</i>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a Base64 decoder. A decoder is a procedure which takes 2
+arguments <i node-type="i">get</i> and <i node-type="i">put</i>.</p>
+        <p node-type="paragraph"><i node-type="i">get</i> is the same as the one from encoder.</p>
+        <p node-type="paragraph"><i node-type="i">put</i> must be a procedure takes 1 arguments which is a fixnm of
+range 0 to 255. The value is always a decoded byte.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="*base64-encode-table*_4">
+            <span>*base64-encode-table*</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="*base64-decode-table*_2">
+            <span>*base64-decode-table*</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="*base64-encode-url-table*_5">
+            <span>*base64-encode-url-table*</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="*base64-decode-url-table*_3">
+            <span>*base64-decode-url-table*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Default encode or decode tables. If the name contains <code node-type="code">url</code>, then it
+is suitable for "base64url".</p>
+      </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section734.html">(rfc cmac) - CMAC library</a>
+      <a href="./section734.html">(rfc :5322) - Internet message format library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section736.html">(rfc http) - HTTP client</a>
+      <a href="./section736.html">(rfc cmac) - CMAC library</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

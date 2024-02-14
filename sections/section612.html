@@ -15,9 +15,9 @@
       <h2 node-type="header-2">
         <a name="lib.sagittarius.socket">(sagittarius socket) - socket library</a>
       </h2>
-      <p node-type="paragraph">This section describes low level socket API on Sagittarius. The APIs are mostly
-the same signature as Ypsilon and mosh. The following example is simple echo
-server, it receives input from a client and just returns it to the client.</p>
+      <p node-type="paragraph">This section describes low level socket API on Sagittarius. The
+following example is simple echo server, it receives input from a
+client and just returns it to the client.</p>
       <p node-type="paragraph">The example program is from example/socket/echo.scm.</p>
       <pre lang="scheme" node-type="block"><code>(import (rnrs) (sagittarius socket))
 ;; creates echo server socket with port number 5000
@@ -54,14 +54,14 @@ server, it receives input from a client and just returns it to the client.</p>
 </code></pre>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(sagittarius socket)_107">
+        <a name="(sagittarius socket)_109">
           <span>(sagittarius socket)</span>
         </a>
       </div>
       <p node-type="paragraph">This library provides procedures for socket programming.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="make-client-socket_48">
+        <a name="make-client-socket_50">
           <span>make-client-socket</span>
           <span>
             <i node-type="i">node</i>
@@ -69,30 +69,42 @@ server, it receives input from a client and just returns it to the client.</p>
           <span>
             <i node-type="i">srvice</i>
           </span>
+          <span> :opational (</span>
           <span>
-            <i node-type="i">:opational</i>
-          </span>
-          <span>
-            <i node-type="i">(ai_family</i>
+            <i node-type="i">ai_family</i>
           </span>
           <span>
             <code node-type="code">AF_INET</code>
           </span>
+          <span> ) (</span>
           <span>
-            <i node-type="i">)</i>
+            <i node-type="i">ai_socktype</i>
           </span>
-          <span> _</span>
+          <span>
+            <code node-type="code">SOCK_STREAM</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">ai_flags</i>
+          </span>
+          <span>
+            <code node-type="code">(+ AI_V4MAPPED AI_ADDRCONFIG)</code>
+          </span>
+          <span>) (_ai_protocol </span>
+          <span>
+            <code node-type="code">0</code>
+          </span>
+          <span>)</span>
         </a>
       </div>
-      <p node-type="paragraph">_ <i node-type="i">(ai_socktype</i> <code node-type="code">SOCK_STREAM</code> <i node-type="i">)</i> _
-_ <i node-type="i">(ai_flags</i> <i node-type="i">(+</i> <code node-type="code">AI_V4MAPPED</code> <code node-type="code">AI_ADDRCONFIG</code> <i node-type="i">))</i> <i node-type="i">(ai_protocol</i> <i node-type="i">0)</i></p>
       <p node-type="paragraph"><i node-type="i">Node</i> and <i node-type="i">service</i> must be string or #f. Other optional arguments
 must be exact integer.</p>
-      <p node-type="paragraph">Returns a client socket connected to an Internet address. The Internet address
-is identified by <i node-type="i">node</i> and <i node-type="i">service</i>. The <code node-type="code">make-client-socket</code>uses <code node-type="code">getaddrinfo(3)</code> to look it up. The arguments <i node-type="i">node</i>, <i node-type="i">service</i>,
-<i node-type="i">ai-family</i>, <i node-type="i">ai-socktype</i>, <i node-type="i">ai-flags</i> and <i node-type="i">ai-protocol</i> are
-passed to <code node-type="code">getaddrinfo(3)</code> as corresponding parameters. For more detail,
-see reference of <code node-type="code">getaddrinfo(3)</code>.</p>
+      <p node-type="paragraph">Returns a client socket connected to an Internet address. The Internet
+address is identified by <i node-type="i">node</i> and <i node-type="i">service</i>. The
+<code node-type="code">make-client-socket</code> uses <code node-type="code">getaddrinfo(3)</code> to look it up. The
+arguments <i node-type="i">node</i>, <i node-type="i">service</i>, <i node-type="i">ai-family</i>, <i node-type="i">ai-socktype</i>, <i node-type="i">ai-flags</i>
+and <i node-type="i">ai-protocol</i> are passed to <code node-type="code">getaddrinfo(3)</code> as corresponding
+parameters. For more detail, see reference of <code node-type="code">getaddrinfo(3)</code>.</p>
       <p node-type="paragraph"><i node-type="i">Node</i> is a network address, ex) "www.w3.org", "localhost", "192.168.1.1".</p>
       <p node-type="paragraph"><i node-type="i">Service</i> is a network service, ex) "http", "ssh", "80", "22".</p>
       <p node-type="paragraph"><i node-type="i">Ai-family</i> is an address family specifier. Predefined specifiers are listed
@@ -160,28 +172,35 @@ below.</p>
       </ul>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="make-server-socket_243">
+        <a name="make-server-socket_248">
           <span>make-server-socket</span>
           <span>
             <i node-type="i">service</i>
           </span>
+          <span> :optional (</span>
           <span>
-            <i node-type="i">:optional</i>
-          </span>
-          <span>
-            <i node-type="i">(ai_family</i>
+            <i node-type="i">ai_family</i>
           </span>
           <span>
             <code node-type="code">AF_INET</code>
           </span>
+          <span>) (</span>
           <span>
-            <i node-type="i">)</i>
+            <i node-type="i">ai_socktype</i>
           </span>
-          <span> _</span>
+          <span>
+            <code node-type="code">SOCK_STREAM</code>
+          </span>
+          <span> ) (</span>
+          <span>
+            <i node-type="i">ai_protocol</i>
+          </span>
+          <span>
+            <code node-type="code">0</code>
+          </span>
+          <span>)</span>
         </a>
       </div>
-      <p node-type="paragraph">_ <i node-type="i">(ai_socktype</i> <code node-type="code">SOCK_STREAM</code> <i node-type="i">)</i> _
-_ <i node-type="i">(ai_protocol</i> <i node-type="i">0)</i></p>
       <p node-type="paragraph"><i node-type="i">Service</i> must be string or #f. Other optional arguments must be exact
 integer. Returns a server socket waiting for connections. The argument details
 are the same as the <code node-type="code">make-client-socket</code>.</p>
@@ -202,15 +221,14 @@ are the same as the <code node-type="code">make-client-socket</code>.</p>
           <span>
             <i node-type="i">socket</i>
           </span>
+          <span> :optional (</span>
           <span>
-            <i node-type="i">:optional</i>
+            <i node-type="i">close?</i>
           </span>
           <span>
-            <i node-type="i">(close?</i>
+            <code node-type="code">#t</code>
           </span>
-          <span>
-            <i node-type="i">#t)</i>
-          </span>
+          <span>)</span>
         </a>
       </div>
       <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object. Returns a binary input/output port
@@ -313,15 +331,14 @@ the procedure returns #f.</p>
           <span>
             <i node-type="i">size</i>
           </span>
+          <span> :optional (</span>
           <span>
-            <i node-type="i">:optional</i>
+            <i node-type="i">flags</i>
           </span>
           <span>
-            <i node-type="i">(flags</i>
+            <code node-type="code">0</code>
           </span>
-          <span>
-            <i node-type="i">0)</i>
-          </span>
+          <span>)</span>
         </a>
       </div>
       <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
@@ -338,15 +355,14 @@ returned, it means the peer connection is closed.</p>
           <span>
             <i node-type="i">bytevector</i>
           </span>
+          <span> :optional (</span>
           <span>
-            <i node-type="i">:optional</i>
+            <i node-type="i">flags</i>
           </span>
           <span>
-            <i node-type="i">(flags</i>
+            <code node-type="code">0</code>
           </span>
-          <span>
-            <i node-type="i">0)</i>
-          </span>
+          <span>)</span>
         </a>
       </div>
       <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
@@ -397,14 +413,14 @@ returned, it means the peer connection is closed.</p>
         </h3>
         <div node-type="define" class="define">
           <span>Class</span>
-          <a name="<socket-info&gt;_60">
+          <a name="<socket-info&gt;_64">
             <span>&lt;socket-info&gt;</span>
           </a>
         </div>
         <p node-type="paragraph">The socket information immutable class. This class has 3 slots</p>
         <div node-type="define" class="define">
           <span>Slot</span>
-          <a name="hostname_55">
+          <a name="hostname_56">
             <span>hostname</span>
           </a>
         </div>
@@ -418,7 +434,7 @@ returned, it means the peer connection is closed.</p>
         <p node-type="paragraph">This slot has ip-address object of own or peer socket.</p>
         <div node-type="define" class="define">
           <span>Slot</span>
-          <a name="port_99">
+          <a name="port_110">
             <span>port</span>
           </a>
         </div>
@@ -487,15 +503,14 @@ IP address and port number. These information is retrieved from getsockname(2).<
             <span>
               <i node-type="i">socket</i>
             </span>
+            <span> :key (</span>
             <span>
-              <i node-type="i">:key</i>
+              <i node-type="i">type</i>
             </span>
             <span>
-              <i node-type="i">(type</i>
+              <code node-type="code">'peer</code>
             </span>
-            <span>
-              <i node-type="i">'peer)</i>
-            </span>
+            <span>)</span>
           </a>
         </div>
         <p node-type="paragraph"><i node-type="i">Socket</i> must be a socket object.</p>
@@ -556,15 +571,14 @@ of <code node-type="code">socket-info-values</code>.</p>
               <span>
                 <i node-type="i">sockaddr</i>
               </span>
+              <span> :optional (</span>
               <span>
-                <i node-type="i">:optional</i>
+                <i node-type="i">flags</i>
               </span>
               <span>
-                <i node-type="i">(flags</i>
+                <code node-type="code">0</code>
               </span>
-              <span>
-                <i node-type="i">0)</i>
-              </span>
+              <span>)</span>
             </a>
           </div>
           <p node-type="paragraph">Sends a binary data block to given sockaddr and returns the
@@ -580,15 +594,14 @@ sent data size.</p>
               <span>
                 <i node-type="i">sockaddr</i>
               </span>
+              <span> :optional (</span>
               <span>
-                <i node-type="i">:optional</i>
+                <i node-type="i">flags</i>
               </span>
               <span>
-                <i node-type="i">(flags</i>
+                <code node-type="code">0</code>
               </span>
-              <span>
-                <i node-type="i">0)</i>
-              </span>
+              <span>)</span>
             </a>
           </div>
           <p node-type="paragraph">Receives a binary data block from given sockaddr. If zero length
@@ -596,7 +609,7 @@ bytevector is returned, it means the peer connection is closed.</p>
           <p node-type="paragraph">This procedures is a thin wrapper of POSIX's <code node-type="code">recvfrom (2)</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-socket_266">
+            <a name="make-socket_271">
               <span>make-socket</span>
               <span>
                 <i node-type="i">ai-family</i>
@@ -1011,7 +1024,7 @@ done by <code node-type="code">socket-read-select</code>.</p>
           <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is an addrinfo, otherwise #f.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-addrinfo_14">
+            <a name="make-addrinfo_15">
               <span>make-addrinfo</span>
             </a>
           </div>
@@ -1051,7 +1064,7 @@ done by <code node-type="code">socket-read-select</code>.</p>
           </ul>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-hint-addrinfo_153">
+            <a name="make-hint-addrinfo_156">
               <span>make-hint-addrinfo</span>
               <span>
                 <i node-type="i">family</i>
@@ -1071,7 +1084,7 @@ done by <code node-type="code">socket-read-select</code>.</p>
 <code node-type="code">get-addrinfo</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="get-addrinfo_27">
+            <a name="get-addrinfo_28">
               <span>get-addrinfo</span>
               <span>
                 <i node-type="i">addrinfo</i>
@@ -1130,7 +1143,7 @@ returns #f.</p>
           <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a fdset object, otherwise #f.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-fdset_143">
+            <a name="make-fdset_146">
               <span>make-fdset</span>
             </a>
           </div>
@@ -1178,7 +1191,7 @@ returns #f.</p>
           <p node-type="paragraph">If the <i node-type="i">flags</i> is #t, then the procedure sets the <i node-type="i">socket</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="collect-sockets_113">
+            <a name="collect-sockets_114">
               <span>collect-sockets</span>
               <span>
                 <i node-type="i">fdset</i>
@@ -1215,7 +1228,7 @@ valid value.</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="host-not-found-error?_54">
+            <a name="host-not-found-error?_55">
               <span>host-not-found-error?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -1224,7 +1237,7 @@ valid value.</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-host-not-found-error_155">
+            <a name="make-host-not-found-error_158">
               <span>make-host-not-found-error</span>
               <span>
                 <i node-type="i">node</i>
@@ -1236,7 +1249,7 @@ valid value.</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="host-not-found-error-node_52">
+            <a name="host-not-found-error-node_53">
               <span>host-not-found-error-node</span>
               <span>
                 <i node-type="i">host-not-found</i>
@@ -1245,7 +1258,7 @@ valid value.</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="host-not-found-error-service_53">
+            <a name="host-not-found-error-service_54">
               <span>host-not-found-error-service</span>
               <span>
                 <i node-type="i">host-not-found</i>
@@ -1270,7 +1283,7 @@ valid value.</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-socket-error_270">
+            <a name="make-socket-error_275">
               <span>make-socket-error</span>
               <span>
                 <i node-type="i">socket</i>
@@ -1304,7 +1317,7 @@ valid value.</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-socket-connection-error_269">
+            <a name="make-socket-connection-error_274">
               <span>make-socket-connection-error</span>
               <span>
                 <i node-type="i">socket</i>
@@ -1329,7 +1342,7 @@ valid value.</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-socket-closed-error_268">
+            <a name="make-socket-closed-error_273">
               <span>make-socket-closed-error</span>
               <span>
                 <i node-type="i">socket</i>
@@ -1354,7 +1367,7 @@ valid value.</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-socket-closed-error_267">
+            <a name="make-socket-closed-error_272">
               <span>make-socket-closed-error</span>
               <span>
                 <i node-type="i">socket</i>
@@ -1379,7 +1392,7 @@ valid value.</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-socket-port-error_271">
+            <a name="make-socket-port-error_276">
               <span>make-socket-port-error</span>
               <span>
                 <i node-type="i">socket</i>
@@ -1415,7 +1428,7 @@ called on socket port since it checks whether or not the given port is ready.</p
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

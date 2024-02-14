@@ -7,331 +7,194 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section763.html">(text json object-builder) -- JSON object builder/serializer</a>
+      <a href="./section763.html">(text csv) - Comma separated values parser library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section765.html">(text json mutable) - Mutable JSON</a>
+      <a href="./section765.html">(text json) -- JSON parser</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="text.json.jmespath">(text json jmespath) - JMESPath</a>
+        <a name="text.html-lite">(text html-lite) - Simple HTML document builder library</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(text json jmespath)_158">
-          <span>(text json jmespath)</span>
+        <a name="(text html-lite)_160">
+          <span>(text html-lite)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides JMESPath procedures. JMESPath is defined on
-<a href="http://jmespath.org/specification.html">JMESPath</a>.</p>
-      <p node-type="paragraph">The following example shows how to use the library:</p>
-      <div node-type="block" class="codeblock">
-        <pre lang="scheme" node-type="block"><code>(import (rnrs) (text json jmespath))
-
-((jmespath "a") '#(("a" . "foo") ("b" . "bar") ("c" . "baz")))
-</code></pre>
-        <span />
-        <span>foo</span>
+      <p node-type="paragraph">This library provides simple HTML builder procedures based on HTML5.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="html-escape_64">
+          <span>html-escape</span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(in</i>
+          </span>
+          <span>
+            <i node-type="i">(current-input-port))</i>
+          </span>
+        </a>
       </div>
-      <p node-type="paragraph" />
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Scheme-APIs">Scheme APIs</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="jmespath_1">
-            <span>jmespath</span>
-            <span>
-              <i node-type="i">path</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns a procedure takes one argument, which must be a vector
-representad JSON.</p>
-        <p node-type="paragraph">The given <i node-type="i">path</i> must be a string which is a valid JMESPath, otherwise
-raises <code node-type="code">&amp;jmespath</code>.</p>
-        <section node-type="section">
-          <h4 node-type="header-4">
-            <a name="Conditions">Conditions</a>
-          </h4>
-          <p node-type="paragraph">This section describes conditions might be raised by the <code node-type="code">jmespath</code>procedure or the procedure returned by the <code node-type="code">jmespath</code> procedure.</p>
-          <p node-type="paragraph">The library doesn't export the condition type itself. (e.g. <code node-type="code">&amp;jmespath</code>isn't exported from the library). However for the comprehensivity, we
-also describe the hierarchy of the conditions here:</p>
-          <pre lang="scheme" node-type="block"><code>+ &amp;error (standard R6RS error)
-  + &amp;jmespath
-    + &amp;jmespath:parse
-    + &amp;jmespath:expression
-        - expression
-        - argument
-      + &amp;jmespath:compile
-      + &amp;jmespath:runtime
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="html-escape-string_65">
+          <span>html-escape-string</span>
+          <span>
+            <i node-type="i">string</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Escapes the unsafe characters in HTML and returns escaped string.</p>
+      <p node-type="paragraph">The <code node-type="code">html-escape</code> reads the string from optional argument <i node-type="i">in</i> which
+must be an textual input port and returns an escaped string.</p>
+      <p node-type="paragraph">The <code node-type="code">html-escape-string</code> takes a string and returns an escaped string.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="html-doctype_63">
+          <span>html-doctype</span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(type</i>
+          </span>
+          <span>
+            <i node-type="i">:html-4.01-strict)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a doctype declaration for an HTML document. <i node-type="i">type</i> can be one
+of the followings;</p>
+      <dl node-type="dlist">
+        <dt>
+          <code node-type="code">:html-5</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">HTML 5</p>
+        </dd>
+        <dt>
+          <code node-type="code">:html-4.01-strict :html-4.01, :strict, :html-strict</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">HTML 4.01 Strict DTD</p>
+        </dd>
+        <dt>
+          <code node-type="code">:html-4.01-transitional :html-transitional, :transitional</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">HTML 4.01 Transitional DTD</p>
+        </dd>
+        <dt>
+          <code node-type="code">:xhtml-1.0-strict :xhtml-1.0</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">XHTML 1.0 Strict DTD</p>
+        </dd>
+        <dt>
+          <code node-type="code">:xhtml-1.0-transitional</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">XHTML 1.0 Transitional DTD</p>
+        </dd>
+        <dt>
+          <code node-type="code">:xhtml-1.0-frameset</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">XHTML 1.0 Frameset DTD</p>
+        </dd>
+        <dt>
+          <code node-type="code">:xhtml-1.1</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">XHTML 1.1 DTD</p>
+        </dd>
+      </dl>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="html:_66">
+          <span>html:</span>
+          <span>
+            <i node-type="i">element</i>
+          </span>
+          <span>
+            <i node-type="i">args</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Construct an HTML element <i node-type="i">element</i>. Currently following elements are
+provided.</p>
+      <pre lang="scheme" node-type="block"><code>   a       abbr    address  area       article  aside
+   audio   b       base     bdi        bdo      blockquote
+   body    br      button   canvas     caption  cite
+   code    col     colgroup command    datalist dd
+   del     details dfn      div        dl       dt
+   em      embed   fieldset figcaption figure   footer
+   form
+   h1      h2      h3       h4         h5       h6
+   head    header  hgroup   hr         html
+   i       iframe  img      input      ins      kbd
+   keygen  label   legend   li         link     map
+   mark    menu    meta     meter      nav      noscript
+   object  ol      optgroup option     output   p
+   param   pre     progress q          rp       rt
+   ruby    s       samp     script     section  select
+   small   source  span     strong     style    sub
+   summary sup     table    tbody      td       textarea
+   tfoot   th      thead    time       title    tr
+   track   u       ul       var        video    wbr
 </code></pre>
-          <p node-type="paragraph">The <code node-type="code">&amp;jmespath</code> is the root condition. This condition itself won't be
-raised.</p>
-          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:parse</code> is the condition raised by the parser. This means
-either the given expression is lexically incorrect or grammartically incorrect.</p>
-          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:expression</code> is the base condition of both
-<code node-type="code">&amp;jmespath:compile</code> and <code node-type="code">&amp;jmespath:runtime</code>. This condition itself
-won't be raised.</p>
-          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:compile</code> is the condition raised by the compiler. This means
-the parsed expression is syntatically incorrect.</p>
-          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:runtime</code> is the condition raised by the returned procedure.
-This means evaluation error. For example, a string is passed to the <code node-type="code">avg</code>function.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="jmespath-error?_5">
-              <span>jmespath-error?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of <code node-type="code">&amp;jmespath</code>,
-otherwise #f.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="jmespath-parse-error?_6">
-              <span>jmespath-parse-error?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of <code node-type="code">&amp;jmespath:parse</code>,
-otherwise #f.</p>
-          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:parse</code> is a sub condition of <code node-type="code">&amp;jmespath</code>.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="jmespath-error-expression_4">
-              <span>jmespath-error-expression</span>
-              <span>
-                <i node-type="i">jmespath-error</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns <code node-type="code">expression</code> field of the given <i node-type="i">jmespath-error</i>.</p>
-          <p node-type="paragraph">The the given <i node-type="i">jmespath-error</i> must be a sub condition of
-<code node-type="code">&amp;jmespath:expression</code>.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="jmespath-error-arguments_3">
-              <span>jmespath-error-arguments</span>
-              <span>
-                <i node-type="i">jmespath-error</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns <code node-type="code">arguments</code> field of the given <i node-type="i">jmespath-error</i>.</p>
-          <p node-type="paragraph">The the given <i node-type="i">jmespath-error</i> must be a sub condition of
-<code node-type="code">&amp;jmespath:expression</code>.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="jmespath-compile-error?_2">
-              <span>jmespath-compile-error?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of <code node-type="code">&amp;jmespath:compile</code>,
-otherwise #f.</p>
-          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:compile</code> is a sub condition of <code node-type="code">&amp;jmespath:expression</code>.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="jmespath-runtime-error?_7">
-              <span>jmespath-runtime-error?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of <code node-type="code">&amp;jmespath:runtime</code>,
-otherwise #f.</p>
-          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:runtime</code> is a sub condition of <code node-type="code">&amp;jmespath:expression</code>.</p>
-        </section>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Extra-functions">Extra functions</a>
-        </h3>
-        <p node-type="paragraph">This library provides extra functions for usability.</p>
-        <div node-type="define" class="define">
-          <span>JMESPath Function</span>
-          <a name="parent_9">
-            <span>parent</span>
-            <span>
-              <i node-type="i">node</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns parent node of the given <i node-type="i">node</i>. This function can be
-used like this:</p>
-        <div node-type="block" class="codeblock">
-          <pre lang="scheme" node-type="block"><code>((jmespath "*.bar.parent(@)") '#(("foo" . #(("bar" . 1)))))
-</code></pre>
+      <p node-type="paragraph">The result of these functions is a tree of text segments, which can be written
+out to a port by <code node-type="code">write-tree</code> or can be converted to a string by
+<code node-type="code">tree-&gt;string</code> <a href="section776.html#text.tree">(text tree) - Lightweight text generation</a>.</p>
+      <p node-type="paragraph">You can specify attributes of the element by using a keyword-value notation
+before the actual content.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(tree-&gt;string (html:a :href "http://example.com" "example")) </code></pre>
           <span />
-          <span>'(#((bar . 1)))</span>
+          <span>\&lt;a href="http://example.com"&gt;example\&lt;/a&gt;</span>
         </div>
-        <p node-type="paragraph" />
-        <p node-type="paragraph">A literal doesn't have a parent so returns <code node-type="code">null</code>.</p>
-        <div node-type="block" class="codeblock">
-          <pre lang="scheme" node-type="block"><code>((jmespath "parent(`{}`)") '#(("foo" . #(("bar" . 1)))))
-</code></pre>
+      </p>
+      <p node-type="paragraph">The boolean value given to the attribute has special meaning. If #t is given,
+the attribute is rendered without a value. If #f is given, the attribute is not
+rendered.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(tree-&gt;string (html:table :border #t))</code></pre>
           <span />
-          <span>'null</span>
+          <span>\&lt;table border&gt;\&lt;/table&gt;</span>
         </div>
-        <p node-type="paragraph" />
-        <div node-type="define" class="define">
-          <span>JMESPath Function</span>
-          <a name="unique_9">
-            <span>unique</span>
-            <span>
-              <i node-type="i">array</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns unique elements of the given <i node-type="i">array</i>. This function can be
-used like this:</p>
-        <div node-type="block" class="codeblock">
-          <pre lang="scheme" node-type="block"><code>((jmespath "unique(@)") '(1 2 1 2 3))
-</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(tree-&gt;string (html:table :border #f))</code></pre>
           <span />
-          <span>'(1 2 3)</span>
+          <span>\&lt;table&gt;\&lt;/table&gt;</span>
         </div>
-        <p node-type="paragraph" />
-        <p node-type="paragraph">It raises a <code node-type="code">&amp;jmespath:runtime</code> if the give <i node-type="i">array</i> is not an array.</p>
-        <div node-type="define" class="define">
-          <span>JMESPath Function</span>
-          <a name="is_odd_82">
-            <span>is_odd</span>
-            <span>
-              <i node-type="i">number</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">number</i> is an odd number.
-This function can be used like this:</p>
-        <p node-type="paragraph">
-          <div node-type="snipet" class="snipet">
-            <pre lang="" node-type="snipet"><code>((jmespath "is_odd(@)") '5)</code></pre>
-            <span />
-            <span>#t</span>
-          </div>
-        </p>
-        <p node-type="paragraph">It raises a <code node-type="code">&amp;jmespath:runtime</code> if the give <i node-type="i">number</i> is not a number.</p>
-        <div node-type="define" class="define">
-          <span>JMESPath Function</span>
-          <a name="is_even_81">
-            <span>is_even</span>
-            <span>
-              <i node-type="i">number</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">number</i> is an even number.
-This function can be used like this:</p>
-        <p node-type="paragraph">
-          <div node-type="snipet" class="snipet">
-            <pre lang="" node-type="snipet"><code>((jmespath "is_even(@)") '5)</code></pre>
-            <span />
-            <span>#t</span>
-          </div>
-        </p>
-        <p node-type="paragraph">It raises a <code node-type="code">&amp;jmespath:runtime</code> if the give <i node-type="i">number</i> is not a number.</p>
-        <div node-type="define" class="define">
-          <span>JMESPath Function</span>
-          <a name="remove_109">
-            <span>remove</span>
-            <span>
-              <i node-type="i">array/object</i>
-            </span>
-            <span>
-              <i node-type="i">expr</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Removes element from the given <i node-type="i">array/object</i> if the _expr_returns true value.</p>
-        <p node-type="paragraph">The <i node-type="i">array/object</i> must be an array or object.</p>
-        <p node-type="paragraph">The <i node-type="i">expr</i> must be an expression reference.</p>
-        <p node-type="paragraph">The <i node-type="i">expr</i> is executed in the context of the elements of <i node-type="i">array/object</i>.
-Means if the <code node-type="code">@</code> is passed to the <i node-type="i">expr</i>, then the receiving
-value is one of the elements of the <i node-type="i">array/object</i>.</p>
-        <p node-type="paragraph">This function can be used like this:</p>
-        <p node-type="paragraph">
-          <div node-type="snipet" class="snipet">
-            <pre lang="" node-type="snipet"><code>((jmespath "remove(@, &amp;odd(@))") '(1 2 3 4 5))</code></pre>
-            <span />
-            <span>'(1 3 5)</span>
-          </div>
-        </p>
-        <p node-type="paragraph">It raises a <code node-type="code">&amp;jmespath:runtime</code> if the give <i node-type="i">array/object</i> is not
-either an array or object, or if the given <i node-type="i">expr</i> is not a function
-reference.</p>
-        <div node-type="define" class="define">
-          <span>JMESPath Function</span>
-          <a name="remove_entry_113">
-            <span>remove_entry</span>
-            <span>
-              <i node-type="i">object</i>
-            </span>
-            <span>
-              <i node-type="i">array/expr</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Removes entries from the given <i node-type="i">object</i> either
-if <i node-type="i">array/expr</i> is an array of string and it contains the key of the entry
-or if <i node-type="i">array/expr</i> is a function expression and returns true value.</p>
-        <p node-type="paragraph">The <i node-type="i">object</i> must be an object.</p>
-        <p node-type="paragraph">This function can be used like this:</p>
-        <div node-type="block" class="codeblock">
-          <pre lang="scheme" node-type="block"><code>((jmespath "remove_entry(@, `[\"key2\"]`)") '#(("key" . 1)))
-</code></pre>
+      </p>
+      <p node-type="paragraph">Special characters in attribute values are escaped by the function, but the
+ones in the content are not.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(tree-&gt;string (html:div :foo "&lt;&gt;&amp;\"" "&lt;not escaped&gt;")) </code></pre>
           <span />
-          <span>'#((key . 1))</span>
+          <span>\&lt;div foo="&amp;lt;&amp;gt;&amp;amp;&amp;quot;"&gt;\&lt;not escaped&gt;\&lt;/div&gt;</span>
         </div>
-        <p node-type="paragraph" />
-        <div node-type="block" class="codeblock">
-          <pre lang="scheme" node-type="block"><code>((jmespath "remove_entry(@, &amp;contains(`[\"key2\"]`, @))")
- '#(("key" . 1) ("key2" . 2)))
-</code></pre>
-          <span />
-          <span>'#((key . 1))</span>
-        </div>
-        <p node-type="paragraph" />
-        <p node-type="paragraph">It raises a <code node-type="code">&amp;jmespath:runtime</code> if the give <i node-type="i">object</i> is not an object,
-or if the given <i node-type="i">array/expr</i> is not an array of string or function
-reference.</p>
-        <div node-type="define" class="define">
-          <span>JMESPath Function</span>
-          <a name="array_of_55">
-            <span>array_of</span>
-            <span>
-              <i node-type="i">any</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns array of given arguments <i node-type="i">any</i>.</p>
-        <p node-type="paragraph">
-          <div node-type="snipet" class="snipet">
-            <pre lang="" node-type="snipet"><code>((jmespath "array_of(`1`, `2`, `3`)") 'null)</code></pre>
-            <span />
-            <span>'(1 2 3)</span>
-          </div>
-        </p>
-      </section>
+      </p>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section763.html">(text json object-builder) -- JSON object builder/serializer</a>
+      <a href="./section763.html">(text csv) - Comma separated values parser library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section765.html">(text json mutable) - Mutable JSON</a>
+      <a href="./section765.html">(text json) -- JSON parser</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

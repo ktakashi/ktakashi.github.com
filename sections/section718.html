@@ -7,873 +7,344 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section717.html">(util list) - Extra list utility library</a>
+      <a href="./section717.html">(util heap) - Heap</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section719.html">(math) - Mathematics library</a>
+      <a href="./section719.html">(util logging) - Logging utilities</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="util.logging">(util logging) - Logging utilities</a>
+        <a name="util.list">(util list) - Extra list utility library</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(util logging)_193">
-          <span>(util logging)</span>
+        <a name="(util list)_196">
+          <span>(util list)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides logging utilities.</p>
-      <p node-type="paragraph"><code node-type="code">(util logger)</code> provides logger and appender style logging utilility.
-Loggers determine loging level and appenders determin how to write logs.
-This example shows the concept.</p>
-      <pre lang="scheme" node-type="block"><code>(import (rnrs) (util logging))
-
-;; Appenders
-(define console-appender (make-appender "[~w5] ~l ~m"))
-(define file-appender
-  (make-file-appender "[~w5] ~l ~m" "useful.log"))
-
-;; Logger
-(define logger (make-logger +debug-level+ console-appender file-appender))
-
-;; This won't be logged since the logger level is debug.
-(trace-log logger "trace log message")
-(debug-log logger "debug log message")
-
-;; If the logging requires heavy process, then it's better to
-;; check the level
-(when (logger-info? logger)
-  (let ((message (construct-message)))
-    (info-log logger message)))
-
-;; stop logging
-(terminate-logger! logger)
+      <p node-type="paragraph">This library provides extra list utility procedures.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="for-each-with-index_99">
+          <span>for-each-with-index</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">list1</i>
+          </span>
+          <span>
+            <i node-type="i">list2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="map-with-index_319">
+          <span>map-with-index</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">list1</i>
+          </span>
+          <span>
+            <i node-type="i">list2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Like <code node-type="code">for-each</code> and <code node-type="code">map</code>, expect <i node-type="i">proc</i> receives the index
+as the first argument.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(map-with-index list '(a b c) '(e f g))</code></pre>
+          <span />
+          <span>((0 a e) (1 b f) (2 c g))</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="intersperse_73">
+          <span>intersperse</span>
+          <span>
+            <i node-type="i">item</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Inserts <i node-type="i">item</i> between elements in the <i node-type="i">list</i>.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(intersperse '+ '(1 2 3))</code></pre>
+          <span />
+          <span>(1 + 2 + 3)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(intersperse '+ '(1))</code></pre>
+          <span />
+          <span>(1)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(intersperse '+ '())</code></pre>
+          <span />
+          <span>()</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="slices_121">
+          <span>slices</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">k</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fill?</i>
+          </span>
+          <span>
+            <i node-type="i">padding</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Splits <i node-type="i">list</i> into the sublists (slices) where the length of each
+slice is <i node-type="i">k</i>. If the length of <i node-type="i">list</i> is not multiple of <i node-type="i">k</i>, the
+last slice is dealt in the same way as <code node-type="code">take*</code>; this is, it is shorter than
+<i node-type="i">k</i> by default, or added <i node-type="i">padding</i> if <i node-type="i">fill?</i> is true.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(slices '(a b c d e f g) 3)</code></pre>
+          <span />
+          <span>((a b c) (d e f) (g))</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(slices '(a b c d e f g) 3 #t 'z)</code></pre>
+          <span />
+          <span>((a b c) (d e f) (g z z))</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="split-at*_216">
+          <span>split-at*</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">k</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(fill?</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+          <span>
+            <i node-type="i">(padding</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Splits the list <i node-type="i">list</i> at index <i node-type="i">k</i>. This is more tolerant version
+of <code node-type="code">split-at</code> defined in SRFI-1 library. Returns the results of
+<code node-type="code">take*</code> and <code node-type="code">drop*</code>.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(split-at* '(a b c d) 6 #t 'z)</code></pre>
+          <span />
+          <span>(a b c d z z) and ()</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="take*_1">
+          <span>take*</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">k</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(fill?</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+          <span>
+            <i node-type="i">(padding</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="drop*_158">
+          <span>drop*</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">k</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">More tolerant version of <code node-type="code">take</code> and <code node-type="code">drop</code> defined in SRFI-1
+library. These won't raise an error when <i node-type="i">k</i> is larger than the size of the
+given list.</p>
+      <p node-type="paragraph">If the list is shorter than <i node-type="i">k</i> elements, <code node-type="code">take*</code> returns a copy of
+<i node-type="i">list</i> by default. If <i node-type="i">fill?</i> is true, <i node-type="i">padding</i> is added to the
+result to make its length <i node-type="i">k</i>.</p>
+      <p node-type="paragraph">On the other hand, <code node-type="code">drop*</code> just returns as empty list when the input list
+is shorter than <i node-type="i">k</i> elements.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(take* '(a b c d) 3)</code></pre>
+          <span />
+          <span>(a b c)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(take* '(a b c d) 6)</code></pre>
+          <span />
+          <span>(a b c d)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(take* '(a b c d) 6 #t)</code></pre>
+          <span />
+          <span>(a b c d #f #f)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(take* '(a b c d) 6 #t 'z)</code></pre>
+          <span />
+          <span>(a b c d z z)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(drop* '(a b c d) 3)</code></pre>
+          <span />
+          <span>(d)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(drop* '(a b c d) 5)</code></pre>
+          <span />
+          <span>()</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="cond-list_127">
+          <span>cond-list</span>
+          <span>
+            <i node-type="i">clause</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Construct a list by conditionally adding entries. Each <i node-type="i">clause</i> must
+have a test and expressions. When its test yields true, then result of
+associated expression is used to construct the resulting list. When the test
+yields false, nothing is inserted.</p>
+      <p node-type="paragraph"><i node-type="i">Clause</i> must either one of the following form:</p>
+      <dl node-type="dlist">
+        <dt>
+          <i node-type="i">(test expr ...)</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph"><i node-type="i">Test</i> is evaluated, and when it is true, <i node-type="i">expr ...</i> are
+evaluated, and the return value becomes a part of the result. If no
+<i node-type="i">expr</i> is given, the result of test is used if it is not false.</p>
+        </dd>
+        <dt>
+          <i node-type="i">(test =&gt; proc)</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph"><i node-type="i">Test</i> is evaluated, and if it is true, <i node-type="i">proc</i> is called with
+the value, and the return value is used to construct the result</p>
+        </dd>
+        <dt>
+          <i node-type="i">(test   expr ...)</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Like <code node-type="code">(test expr ...)</code>, except that the result of the last
+<i node-type="i">expr</i> must be a list, and it is spliced into the resulting list,
+like unquote-splicing.</p>
+        </dd>
+        <dt>
+          <i node-type="i">(test =&gt;   proc)</i>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Like <code node-type="code">(test =&gt; proc)</code>, except that the result of the last
+<i node-type="i">proc</i> must be a list, and it is spliced into the resulting list,
+like unquote-splicing.</p>
+        </dd>
+      </dl>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(let ((alist '((x 3) (y -1) (z 6))))
+ (cond-list ((assoc 'x alist) 'have-x)
+            ((assoc 'w alist) 'have-w)
+            ((assoc 'z alist) =&gt; cadr)))
 </code></pre>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Loggers">Loggers</a>
-        </h3>
-        <p node-type="paragraph">Loggers contains collection of appenders and level of logging. Once a logger
-is created, appenders and threshold can't be modified.</p>
-        <div node-type="define" class="define">
-          <span>Record Type</span>
-          <a name="<logger&gt;_45">
-            <span>&lt;logger&gt;</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="logger?_58">
-            <span>logger?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-logger_191">
-            <span>make-logger</span>
-            <span>
-              <i node-type="i">threshold</i>
-            </span>
-            <span>
-              <i node-type="i">appenders</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Basic logger.</p>
-        <p node-type="paragraph">Record type <code node-type="code">&lt;logger&gt;</code> is a base type of loggers.</p>
-        <p node-type="paragraph"><code node-type="code">logger?</code> returns #t if <i node-type="i">obj</i> is a logger otherwise #f.</p>
-        <p node-type="paragraph"><code node-type="code">make-logger</code> creates a logger whose threshold is <i node-type="i">threshold</i> and
-appenders are <i node-type="i">appenders</i>. The <i node-type="i">threshold</i> must be one of the
-followings:</p>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+trace-level+_22">
-            <span>+trace-level+</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+debug-level+_2">
-            <span>+debug-level+</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+info-level+_6">
-            <span>+info-level+</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+warn-level+_23">
-            <span>+warn-level+</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+error-level+_4">
-            <span>+error-level+</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+fatal-level+_5">
-            <span>+fatal-level+</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Logging level constants.</p>
-        <p node-type="paragraph">The <code node-type="code">+trace-level+</code> is the lowest level (<code node-type="code">0</code>) and
-<code node-type="code">+fatal-level+</code> is the highest level (<code node-type="code">5</code>). The values are integers
-so users can extend the level for both side.</p>
-        <div node-type="define" class="define">
-          <span>Record Type</span>
-          <a name="<async-logger&gt;_9">
-            <span>&lt;async-logger&gt;</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="async-logger?_73">
-            <span>async-logger?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-async-logger_26">
-            <span>make-async-logger</span>
-            <span>
-              <i node-type="i">threshold</i>
-            </span>
-            <span>
-              <i node-type="i">appenders</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Asynchronous logger.</p>
-        <p node-type="paragraph">Record type <code node-type="code">&lt;async-logger&gt;</code> is a type of asynchronous loggers. It inherits
-the <code node-type="code">&lt;logger&gt;</code>.</p>
-        <p node-type="paragraph"><code node-type="code">async-logger?</code> returns #t if <i node-type="i">obj</i> is an asynchronous logger
-otherwise #f.</p>
-        <p node-type="paragraph"><code node-type="code">make-async-logger</code> creates an asynchronous logger. The arguments are
-passed to parent protocol.</p>
-        <p node-type="paragraph">Asynchronous logger logs message asynchronously. Means it creates a background
-thread and lets it log. It is useful if a logger has a lot of appenders and
-logging process may take a lot of time.</p>
-        <p node-type="paragraph">To stop background thread, <code node-type="code">terminate-logger!</code> needs to be called. It
-is users responsibility to do it.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="trace-log_99">
-            <span>trace-log</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-            <span>
-              <i node-type="i">message</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">arguments</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="logger-trace?_56">
-            <span>logger-trace?</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="debug-log_55">
-            <span>debug-log</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-            <span>
-              <i node-type="i">message</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">arguments</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="logger-debug?_52">
-            <span>logger-debug?</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="info-log_60">
-            <span>info-log</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-            <span>
-              <i node-type="i">message</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">arguments</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="logger-info?_55">
-            <span>logger-info?</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="warn-log_2">
-            <span>warn-log</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-            <span>
-              <i node-type="i">message</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">arguments</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="logger-warn?_57">
-            <span>logger-warn?</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="error-log_35">
-            <span>error-log</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-            <span>
-              <i node-type="i">message</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">arguments</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="logger-error?_53">
-            <span>logger-error?</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="fatal-log_0">
-            <span>fatal-log</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-            <span>
-              <i node-type="i">message</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">arguments</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="logger-fatal?_54">
-            <span>logger-fatal?</span>
-            <span>
-              <i node-type="i">logger</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Logging APIs.</p>
-        <p node-type="paragraph"><code node-type="code">_level_-log</code> procedures log <i node-type="i">message</i> on <i node-type="i">logger</i> if
-<i node-type="i">logger</i> has its threshold lower than the <i node-type="i">level</i>.</p>
-        <p node-type="paragraph"><code node-type="code">logger-_level_?</code> procedures check if the <i node-type="i">logger</i> has
-threshold lower than <i node-type="i">level</i>.</p>
-        <div node-type="define" class="define">
-          <span>Generic Function</span>
-          <a name="terminate-logger!_8">
-            <span>terminate-logger!</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="terminate-logger_7">
-            <span>terminate-logger</span>
-            <span>
-              <i node-type="i">(logger</i>
-            </span>
-            <span>
-              <i node-type="i"><logger>)</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="terminate-logger_6">
-            <span>terminate-logger</span>
-            <span>
-              <i node-type="i">(logger</i>
-            </span>
-            <span>
-              <i node-type="i"><async-logger>)</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Terminates logging of the given <i node-type="i">logger</i>.</p>
-        <p node-type="paragraph">The method calls <code node-type="code">appender-finish</code> for all appenders of give <i node-type="i">logger</i>.</p>
-        <p node-type="paragraph">If the <i node-type="i">logger</i> is an asynchronous logger, then it also stops background
-thread.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Appenders">Appenders</a>
-        </h3>
-        <p node-type="paragraph">Appenders are actual logging mechanisms. Each appender must be responsible
-how to write a log message and resource management such as log file.</p>
-        <div node-type="define" class="define">
-          <span>Record Type</span>
-          <a name="<appender&gt;_5">
-            <span>&lt;appender&gt;</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="appender?_49">
-            <span>appender?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-appender_21">
-            <span>make-appender</span>
-            <span>
-              <i node-type="i">log-format</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Base appender. This appender emits log messages into
-<code node-type="code">current-output-port</code>.</p>
-        <p node-type="paragraph"><code node-type="code">appender?</code> returns #f if <i node-type="i">obj</i> is an appender otherwise #f.</p>
-        <p node-type="paragraph"><code node-type="code">make-appender</code> creates an appender. The <i node-type="i">log-format</i> argument
-must be a string and specifying the format of the log line.</p>
-        <p node-type="paragraph">The <i node-type="i">log-format</i> can contains place holders stating with the character
-<code node-type="code">#\~</code>. The followings are the defined place holders:</p>
-        <dl node-type="dlist">
-          <dt>
-            <code node-type="code">#\w_date-format_</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Puts logging date on this location. The <i node-type="i">date-format</i> specifies
-format of the log. It must be a character or string which is surrounded
-by <code node-type="code">#\{ #\}</code>. The format is passed to the <code node-type="code">date-&gt;string</code>    procedure defined in SRFI-19.</p>
-          </dd>
-          <dt>
-            <code node-type="code">#\l</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Puts logging level on this location.</p>
-          </dd>
-          <dt>
-            <code node-type="code">#\m</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Puts log message on this location.</p>
-          </dd>
-          <dt>
-            <code node-type="code">#\a[n]</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Puts _n_th log argument on this location.</p>
-          </dd>
-          <dt>
-            <code node-type="code">#\a</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Puts all log arguments on this location.</p>
-          </dd>
-        </dl>
-        <p node-type="paragraph">The following example shows when <i node-type="i">log-format</i> is <code node-type="code">"[~w5] ~l ~m"</code>and logging with info level.</p>
-        <pre lang="scheme" node-type="block"><code>(define logger (make-logger +info-level+ (make-appender "[~w5] ~l ~m")))
-(info-log logger "message of the log")
-;; [2016-09-06T12:32:06] info message of the log
+        <span />
+        <span>(have-x 6)</span>
+      </div>
+      <p node-type="paragraph" />
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(let ((x 2) (y #f) (z 5))
+  (cond-list (x   `(:x ,x))
+             (y   `(:y ,y))
+             (z   `(:z ,z))))
 </code></pre>
-        <div node-type="define" class="define">
-          <span>Record Type</span>
-          <a name="<file-appender&gt;_27">
-            <span>&lt;file-appender&gt;</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="file-appender?_14">
-            <span>file-appender?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-file-appender_144">
-            <span>make-file-appender</span>
-            <span>
-              <i node-type="i">log-format</i>
-            </span>
-            <span>
-              <i node-type="i">filename</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">File appender. This is a subtype of <code node-type="code">&lt;appender&gt;</code>. This appender
-emits log messages to the file named <i node-type="i">filename</i>.</p>
-        <p node-type="paragraph"><code node-type="code">file-appender?</code> returns #f if <i node-type="i">obj</i> is a file appender otherwise #f.</p>
-        <p node-type="paragraph"><code node-type="code">make-file-appender</code> creates a file appender. The <i node-type="i">log-format</i> is
-passed to parent protocol. The file creation is done with file options of
-<code node-type="code">no-fail</code>, <code node-type="code">no-truncate</code> and <code node-type="code">append</code>. Thus if the file exists
-then it would append the log line.</p>
-        <p node-type="paragraph">The given <i node-type="i">filename</i> will be converted to absolute path so changing
-directory will not affect the log file location.</p>
-        <div node-type="define" class="define">
-          <span>Generic Function</span>
-          <a name="file-appender-filename_13">
-            <span>file-appender-filename</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Method</span>
-          <a name="file-appender-filename_12">
-            <span>file-appender-filename</span>
-            <span>
-              <i node-type="i">(file-appender</i>
-            </span>
-            <span>
-              <i node-type="i"><file-appender>)</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns log file name.</p>
-        <div node-type="define" class="define">
-          <span>Record Type</span>
-          <a name="<rolling-file-appender&gt;_55">
-            <span>&lt;rolling-file-appender&gt;</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-rolling-file-appender_232">
-            <span>make-rolling-file-appender</span>
-            <span>
-              <i node-type="i">log-format</i>
-            </span>
-            <span>
-              <i node-type="i">filename</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">(rolling-size</i>
-            </span>
-            <span>
-              <i node-type="i">10485760)</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rolling-file-appender?_141">
-            <span>rolling-file-appender?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Rolling file appender. This is a subtype of <code node-type="code">&lt;file-appender&gt;</code>.
-This appender emits log message to the file named <i node-type="i">filename</i> and if
-the file size is more than <i node-type="i">rolling-size</i>, then it renames the old file
-to indexed file and new log file named <i node-type="i">filename</i> is created.</p>
-        <p node-type="paragraph"><code node-type="code">rolling-file-appender?</code> returns #f if <i node-type="i">obj</i> is a rolling file
-appender otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Record Type</span>
-          <a name="<daily-rolling-file-appender&gt;_20">
-            <span>&lt;daily-rolling-file-appender&gt;</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-daily-rolling-file-appender_64">
-            <span>make-daily-rolling-file-appender</span>
-            <span>
-              <i node-type="i">log-format</i>
-            </span>
-            <span>
-              <i node-type="i">filename</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">(date-pattern</i>
-            </span>
-            <span>
-              <i node-type="i">"~Y-~m-~d")</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="daily-rolling-file-appender?_0">
-            <span>daily-rolling-file-appender?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Daily rolling file appender. This is a subtype of <code node-type="code">&lt;file-appender&gt;</code>.
-This appender emits log message to the file named <i node-type="i">filename</i> and if
-the date string of last file modified time formatted to _date-pattern_is differ from log time, then the appender rolls the old log file to
-a backup file. The backup file is concatenation of <i node-type="i">filename</i> and
-last modified date.</p>
-        <p node-type="paragraph"><code node-type="code">daily-rolling-file-appender?</code> returns #f if <i node-type="i">obj</i> is a daily rolling
-file appender otherwise #f.</p>
-        <section node-type="section">
-          <h4 node-type="header-4">
-            <a name="Creating-appenders">Creating appenders</a>
-          </h4>
-          <p node-type="paragraph">Users would soon face that predefined appenders are not enough or don't satisfy
-the requirement. For that case, appenders can easily be created.</p>
-          <p node-type="paragraph">The following example shows how to create an Email appender.</p>
-          <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (rfc smtp)
-        (rfc smtp authentications)
-        (util logging)
-        (clos user))
-
-(define-record-type (&lt;smtp-appender&gt; make-smtp-appender smtp-appender?)
-  (parent &lt;appender&gt;)
-  (fields (immutable connection smtp-appender-connection)
-          (immutable username smtp-appender-username)
-          (immutable password smtp-appender-password))
-  (protocol (lambda (p)
-              (lambda (format host port username password)
-                ((p format)
-                 (make-smtp-connection host port) username password)))))
-
-(define-method append-log ((appender &lt;smtp-appender&gt;) log)
-  (let ((message (format-log appender log))
-        (conn (smtp-appender-connection appender)))
-    (guard (e (else (report-error e)))
-      (smtp-connect! conn)
-      (when (smtp-authentication-required? conn)
-        (let* ((methods (smtp-connection-authentication-methods conn))
-               (username (smtp-appender-username appender))
-               (password (smtp-appender-password appender))
-               (method (cond ((memq 'PLAIN methods)
-                              (list (smtp-plain-authentication username password)))
-                             ((memq 'PASSWORD methods)
-                              (let-values ((init&amp;next (smtp-login-authentication username password)))
-                                init&amp;next))
-                             (else #f))))
-          (if methods
-              (apply smtp-authenticate! conn method)
-              (begin
-                (smtp-disconnect! conn)
-                (error 'append-log "not supported")))))
-      (smtp-send! conn (smtp:mail
-                        (smtp:from "Takashi Kato" "ktakashi@ymail.com")
-                        (smtp:to "Takashi Kato" "ktakashi@ymail.com")
-                        (smtp:subject "Logging with email")
-                        message))
-      (smtp-disconnect! conn))))
-</code></pre>
-          <p node-type="paragraph">The example is not really useful since it sends only the fixed recipient with
-fixed format. If you need to use it, you need to modify.</p>
-          <p node-type="paragraph">Only what users need to do to create an appender is the followings:</p>
-          <ul node-type="bullet-list">
-            <li>
-              <p node-type="paragraph">Creates a record type inherits <code node-type="code">&lt;appender&gt;</code>.</p>
-            </li>
-            <li>
-              <p node-type="paragraph">Specialising <code node-type="code">append-log</code> method with the above record.</p>
-            </li>
-          </ul>
-          <div node-type="define" class="define">
-            <span>Generic Function</span>
-            <a name="append-log_46">
-              <span>append-log</span>
-              <span>
-                <i node-type="i">appender</i>
-              </span>
-              <span>
-                <i node-type="i">log</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Core process of appending logs.</p>
-          <p node-type="paragraph"><i node-type="i">log</i> is an object of <code node-type="code">&lt;log&gt;</code> or its subtype. This method should
-emit logs.</p>
-          <div node-type="define" class="define">
-            <span>Generic Function</span>
-            <a name="appender-finish_47">
-              <span>appender-finish</span>
-              <span>
-                <i node-type="i">appender</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Finishing appender if necessary. This method is called when
-<code node-type="code">terminate-logger</code> is called.</p>
-          <p node-type="paragraph">Implementation should release resource of the <i node-type="i">appender</i>.</p>
-          <div node-type="define" class="define">
-            <span>Generic Function</span>
-            <a name="format-log_114">
-              <span>format-log</span>
-              <span>
-                <i node-type="i">appender</i>
-              </span>
-              <span>
-                <i node-type="i">log</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Formats log object. <i node-type="i">log</i> is an object of <code node-type="code">&lt;log&gt;</code> or its subtype.</p>
-          <p node-type="paragraph">The method must return a string representation of given <i node-type="i">log</i>.</p>
-          <p node-type="paragraph">The default implementation handles the log format described in the
-<code node-type="code">make-logger</code> description.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="appender-log-format_48">
-              <span>appender-log-format</span>
-              <span>
-                <i node-type="i">appender</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns log format of the given <i node-type="i">appender</i>.</p>
-          <div node-type="define" class="define">
-            <span>Record Type</span>
-            <a name="<log&gt;_44">
-              <span>&lt;log&gt;</span>
-            </a>
-          </div>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="log?_51">
-              <span>log?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="make-log_190">
-              <span>make-log</span>
-              <span>
-                <i node-type="i">when</i>
-              </span>
-              <span>
-                <i node-type="i">level</i>
-              </span>
-              <span>
-                <i node-type="i">message</i>
-              </span>
-              <span>
-                <i node-type="i">.</i>
-              </span>
-              <span>
-                <i node-type="i">arguments</i>
-              </span>
-            </a>
-          </div>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="log-when_50">
-              <span>log-when</span>
-              <span>
-                <i node-type="i">log</i>
-              </span>
-            </a>
-          </div>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="log-level_48">
-              <span>log-level</span>
-              <span>
-                <i node-type="i">log</i>
-              </span>
-            </a>
-          </div>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="log-message_49">
-              <span>log-message</span>
-              <span>
-                <i node-type="i">log</i>
-              </span>
-            </a>
-          </div>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="log-arguments_47">
-              <span>log-arguments</span>
-              <span>
-                <i node-type="i">log</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Default log object.</p>
-          <p node-type="paragraph"><code node-type="code">&lt;log&gt;</code> has 4 fields <code node-type="code">when</code>, <code node-type="code">level</code>, <code node-type="code">message</code> and
-<code node-type="code">arguments</code>. By the default creation, they are UTC time object, symbol
-of log level, log message and a vector of extra logging arguments, respectively.</p>
-          <p node-type="paragraph">If you want to create own logger which handles log object differently,
-then you need to specialise the following generic function with the
-logger.</p>
-          <div node-type="define" class="define">
-            <span>Generic Function</span>
-            <a name="push-log_155">
-              <span>push-log</span>
-              <span>
-                <i node-type="i">logger</i>
-              </span>
-              <span>
-                <i node-type="i">log</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Pushes <i node-type="i">log</i> to appenders of the <i node-type="i">logger</i>.</p>
-        </section>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Singleton-logger">Singleton logger</a>
-        </h3>
-        <p node-type="paragraph">Asynchronous logger or other loggers should sometimes be singleton. This type
-of thing might need to be done in users responsibility however I think it's
-common idiom. So the very simple one is added to the library.</p>
-        <div node-type="define" class="define">
-          <span>Macro</span>
-          <a name="define-logger-storage_79">
-            <span>define-logger-storage</span>
-            <span>
-              <i node-type="i">lookup</i>
-            </span>
-            <span>
-              <i node-type="i">clause*</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Macro</span>
-          <a name="define-logger-storage_78">
-            <span>define-logger-storage</span>
-            <span>
-              <i node-type="i">(lookup</i>
-            </span>
-            <span>
-              <i node-type="i">register)</i>
-            </span>
-            <span>
-              <i node-type="i">clause*</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">This macro defines a logger lookup procedure. If the second form is used
-then, a registration procedure.</p>
-        <p node-type="paragraph">The generated procedures have the following signatures</p>
-        <dl node-type="dlist">
-          <dt>(@var{lookup} @var{name})</dt>
-          <dd>
-            <p node-type="paragraph">Looks up the logger named <i node-type="i">name</i></p>
-          </dd>
-          <dt>(@var{register} @var{name} @var{logger})</dt>
-          <dd>
-            <p node-type="paragraph">Registers the given logger with name, <i node-type="i">name</i></p>
-          </dd>
-        </dl>
-        <p node-type="paragraph">The registration procedure stores the given logger to hidden storage. If
-the procedure called the same name argument twice, then the latter logger
-overwrites the previous one.</p>
-        <p node-type="paragraph"><code node-type="code">clause*</code> must the following form:</p>
-        <ul node-type="bullet-list">
-          <li>
-            <p node-type="paragraph">
-              <code node-type="code">(loggers (_logger-name_ _make-logger_) ...)</code>
-            </p>
-          </li>
-        </ul>
-        <p node-type="paragraph"><code node-type="code">loggers</code> is an auxiliary syntax. If the <code node-type="code">loggers</code>clause is specified, then the macro stores the logger <i node-type="i">logger-name</i> which
-is created by <i node-type="i">make-logger</i> thunk as its predefined loggers.</p>
-      </section>
+        <span />
+        <span>(:x 2 :z 5)</span>
+      </div>
+      <p node-type="paragraph" />
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section717.html">(util list) - Extra list utility library</a>
+      <a href="./section717.html">(util heap) - Heap</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section719.html">(math) - Mathematics library</a>
+      <a href="./section719.html">(util logging) - Logging utilities</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

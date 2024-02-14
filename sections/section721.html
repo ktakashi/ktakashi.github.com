@@ -7,725 +7,300 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section720.html">(net mq amqp) - AMQP library</a>
+      <a href="./section720.html">(math) - Mathematics library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section722.html">(net mq mqtt) - MQTT library</a>
+      <a href="./section722.html">(net http-client) - Modern HTTP client</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="net.http-client">(net http-client) - Modern HTTP client</a>
+        <a name="net.amqp">(net mq amqp) - AMQP library</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(net http-client)_19">
-          <span>(net http-client)</span>
+        <a name="(net mq amqp)_21">
+          <span>(net mq amqp)</span>
         </a>
       </div>
-      <p node-type="paragraph">Providing, probably, modern HTTP client.</p>
-      <p node-type="paragraph">The <code node-type="code">(net http-client)</code> provides a modern HTTP client, which handles
-connection pooling, client certificate, redirect and cookie. The client
-also provides asynchronous calling atop future object of
-<code node-type="code">(util concurrent)</code>.</p>
-      <p node-type="paragraph">The following example shows how to use in a nutshell.</p>
-      <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (net http-client)
-        (util concurrent))
-
-(define client (http:client-builder
-                (follow-redirects (http:redirect normal))))
-
-(let ((future (http:client-send-async client
-                                      (http:request-builder
-                                       (uri "http://google.com")))))
-  ;; do whatever you need to do during the above HTTP call
-  (let ((response (future-get future)))
-    (http:response-status response)  ;; -&gt; 200
-    (http:response-headers response) ;; -&gt; header object
-    (http:response-body response)    ;; -&gt; body as bytevector
-    ))
-</code></pre>
+      <p node-type="paragraph">Providing APIs for <a href="http://www.amqp.org">AMQP</a>,
+Advanced Message Queuing Protocol.</p>
+      <p node-type="paragraph">Currently, the library lacks security layer such as TLS and SAML, and
+transaction support.</p>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="HTTP-client">HTTP client</a>
+          <a name="Example">Example</a>
         </h3>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:client?_126">
-            <span>http:client?</span>
-            <span>
-              <i node-type="i">o</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is a HTTP client, otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Macro</span>
-          <a name="http:client-builder_125">
-            <span>http:client-builder</span>
-            <span>
-              <i node-type="i">field</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">A constructor macro to build a HTTP client.</p>
-        <p node-type="paragraph">The _field_s must be one or more of the following:</p>
-        <dl node-type="dlist">
-          <dt>
-            <code node-type="code">follow-redirects</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Specifies redirection strategy, the value must be a valid value of <code node-type="code">http:redirect</code>.</p>
-          </dd>
-          <dt>
-            <code node-type="code">cookie-handler</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Specifies a cookie handler. Currently, <code node-type="code">http:make-default-cookie-handler</code> is the only option.</p>
-          </dd>
-          <dt>
-            <code node-type="code">connection-manager</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Specifies a connection manager. See Connection Manager section for more detail.</p>
-          </dd>
-          <dt>
-            <code node-type="code">version</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Specifies a HTTP version. The value must be a valid value of <code node-type="code">http:version</code>. The client handles both HTTP/1.1 and HTTP/2 by default.</p>
-          </dd>
-          <dt>
-            <code node-type="code">executor</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Specifies an executor. The the default executor has 5 threads, but it'd be shared by all the client created without this field, so if you want to use the client in a intense situation, it's a good idea to specify own executor.</p>
-          </dd>
-        </dl>
-        <div node-type="define" class="define">
-          <span>Macro</span>
-          <a name="http:version_142">
-            <span>http:version</span>
-            <span>
-              <i node-type="i">value</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">A macro checks if the given <i node-type="i">value</i> is a valid supporting HTTP
-version.</p>
-        <p node-type="paragraph">The value must be either <code node-type="code">http/1.1</code> or <code node-type="code">http/2</code>. If the later one
-is specified, it first tries to connect with HTTP/2, and falls back to
-HTTP/1.1 if HTTP/2 is not avaiable.</p>
-        <p node-type="paragraph">HTTP/2 works only on TLS environment, as the client uses ALPN to detect the
-version.</p>
-        <div node-type="define" class="define">
-          <span>Macro</span>
-          <a name="http:redirect_134">
-            <span>http:redirect</span>
-            <span>
-              <i node-type="i">value</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">A macro checks if the given <i node-type="i">value</i> is a valid supporting redirect
-strategy.</p>
-        <p node-type="paragraph">The value must be one of <code node-type="code">never</code>, <code node-type="code">always</code> or <code node-type="code">normal</code>. The
-default value is <code node-type="code">never</code>.</p>
-        <p node-type="paragraph"><code node-type="code">never</code> won't redirect, it is suitable if you want to handle 3xx result
-manually.</p>
-        <p node-type="paragraph"><code node-type="code">always</code> redirects as long as the 3xx status is returned. This means
-insecure redirection may happen (i.e. HTTPS to HTTP)</p>
-        <p node-type="paragraph"><code node-type="code">normal</code> redirects 3xx status if the scheme is the same or more secure.</p>
+        <p node-type="paragraph">Following examples describes how to send and receive messages from
+remote queues.</p>
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (net mq amqp api))
+
+;; Sends text message to SAMPLE.QUEUE on localhost:5672
+(call-with-amqp-connection "localhost" "5672"
+  (lambda (conn)
+    (call-with-amqp-session conn
+      (lambda (session)
+        (let ((sender (create-amqp-sender session "SAMPLE.QUEUE"))
+              (message (create-amqp-text-message "Hello AMQP!!")))
+          (send-amqp-message sender message)
+          (destroy-amqp-sender sender))))))
+
+;; Receives text message from SAMPLE.QUEUE on localhost:5672
+(call-with-amqp-connection "localhost" "5672"
+  (lambda (conn)
+    (call-with-amqp-session conn
+      (lambda (session)
+        (let* ((receiver (create-amqp-receiver session "SAMPLE.QUEUE"))
+               (message (receive-amqp-message receiver)
+          (destroy-amqp-sender receiver)
+          message)))))))
+</code></pre>
       </section>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="HTTP-request-and-response">HTTP request and response</a>
+          <a name="High-level-APIs">High level APIs</a>
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:request?_136">
-            <span>http:request?</span>
-            <span>
-              <i node-type="i">o</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is an HTTP request object, otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Macro</span>
-          <a name="http:request-builder_135">
-            <span>http:request-builder</span>
-            <span>
-              <i node-type="i">field*</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Builds a HTTP request object.</p>
-        <p node-type="paragraph">The <code node-type="code">field</code> must be one or more the followings.</p>
-        <dl node-type="dlist">
-          <dt>
-            <code node-type="code">uri</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">The URI of the request, it has to be an URI object of <code node-type="code">(net uri)</code> or valid URI string. This field is mandatory.</p>
-          </dd>
-          <dt>
-            <code node-type="code">method</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">A valid HTTP method. Default value is <code node-type="code">GET</code>.</p>
-          </dd>
-          <dt>
-            <code node-type="code">content-type</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">A content type header, this is used when the method is allowed to have body. Default value <code node-type="code">"application/octet-stream"</code>.</p>
-          </dd>
-          <dt>
-            <code node-type="code">body</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">Content of the request. The value must be either a bytevector ot binary input port.</p>
-          </dd>
-          <dt>
-            <code node-type="code">headers</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">A list of headers or a HTTP header object. If it's a list of header, then the element must contain a pair of name and values.</p>
-          </dd>
-          <dt>
-            <code node-type="code">cookies</code>
-          </dt>
-          <dd>
-            <p node-type="paragraph">A list of cookies. The elements must be cookie object of <code node-type="code">(rfc cookie)</code></p>
-          </dd>
-        </dl>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:headers?_132">
-            <span>http:headers?</span>
-            <span>
-              <i node-type="i">o</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is a HTTP headers object, otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:make-headers_133">
-            <span>http:make-headers</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Make a HTTP headers object.</p>
-        <p node-type="paragraph">A HTTP headers object can contain multiple values on one headers.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:headers-ref*_130">
-            <span>http:headers-ref*</span>
-            <span>
-              <i node-type="i">headers</i>
-            </span>
-            <span>
-              <i node-type="i">name</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Retrieve a list of value of the header <i node-type="i">name</i> from <i node-type="i">headers</i>.</p>
-        <p node-type="paragraph">If the <i node-type="i">name</i> doesn't exists, then it returns <code node-type="code">()</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:headers-ref_129">
-            <span>http:headers-ref</span>
-            <span>
-              <i node-type="i">headers</i>
-            </span>
-            <span>
-              <i node-type="i">name</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Retrieve the first value of the header <i node-type="i">name</i> from <i node-type="i">headers</i>.</p>
-        <p node-type="paragraph">If the <i node-type="i">name</i> doesn't exists, then it returns <code node-type="code">#f</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:headers-set!_131">
-            <span>http:headers-set!</span>
-            <span>
-              <i node-type="i">headers</i>
-            </span>
-            <span>
-              <i node-type="i">name</i>
-            </span>
-            <span>
-              <i node-type="i">value</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Sets the single value of <i node-type="i">value</i> into the <i node-type="i">headers</i> with
-header name of <i node-type="i">name</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:headers-add!_127">
-            <span>http:headers-add!</span>
-            <span>
-              <i node-type="i">headers</i>
-            </span>
-            <span>
-              <i node-type="i">name</i>
-            </span>
-            <span>
-              <i node-type="i">value</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Adds the <i node-type="i">value</i> in the <i node-type="i">headers</i> to the header value
-list of <i node-type="i">name</i>.</p>
-        <p node-type="paragraph">If the <i node-type="i">name</i> doesn't exist, then it works the same as
-<code node-type="code">http:headers-set!</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:headers-names_128">
-            <span>http:headers-names</span>
-            <span>
-              <i node-type="i">headers</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns a list of header names of the given <i node-type="i">headers</i></p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:response?_141">
-            <span>http:response?</span>
-            <span>
-              <i node-type="i">o</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is an HTTP response object, otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:response-status_140">
-            <span>http:response-status</span>
-            <span>
-              <i node-type="i">response</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns the response HTTP status code.</p>
-        <p node-type="paragraph">The code is a string.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:response-headers_139">
-            <span>http:response-headers</span>
-            <span>
-              <i node-type="i">response</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns the response HTTP headers object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:response-cookies_138">
-            <span>http:response-cookies</span>
-            <span>
-              <i node-type="i">response</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns a list of the response cookie, if exists.</p>
-        <p node-type="paragraph">The element of the list is a cookie object of <code node-type="code">(rfc cookie)</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="http:response-body_137">
-            <span>http:response-body</span>
-            <span>
-              <i node-type="i">response</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns the body of the response.
-The value is bytevector.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Connection-Manager">Connection Manager</a>
-        </h3>
-        <p node-type="paragraph">A connection manager manages the connections of a HTTP client. By default,
-we support these three types of connection managers; ephemeral, pooling, and
-logging.</p>
-        <p node-type="paragraph">The ephemeral connection manager creates a connection per request and
-discards it. This connection manager should only be used in disposable
-scripts.</p>
-        <p node-type="paragraph">The pooling connection manager pools the created connection and try to
-reuse if possible.</p>
-        <p node-type="paragraph">Below example shows how to create a HTTP client with pooling connection
-manager.</p>
-        <pre lang="scheme" node-type="block"><code>(define pool-config
-  (http-pooling-connection-config-builder
-    (connection-timeout 1000)     ;; 1 sec, connection timeout
-    (max-connection-per-route 20) ;; pooling connection number per route
-    (read-timeout 3000)           ;; 3 sec, read timeout
-    (dns-timeout 1000)            ;; 1 sec, DNS lookup timeout
-    (time-to-live 120)            ;; 120 sec, expiration time of a connection
-	))
-(define http-client
-  (http:client-builder
-    (connection-manager (make-http-pooling-connection-manager pool-config))))
-</code></pre>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-http-default-connection-manager_156">
-            <span>make-http-default-connection-manager</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Creates a default connection manager. This is at this moment an
-ephemeral connection manager without any timeout or key configuration.</p>
-        <section node-type="section">
-          <h4 node-type="header-4">
-            <a name="Ephemeral-Connection-Manager">Ephemeral Connection Manager</a>
-          </h4>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="http-connection-config?_74">
-              <span>http-connection-config?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is an instance of
-<code node-type="code">http-connection-config</code>, otherwise #f.</p>
-          <div node-type="define" class="define">
-            <span>Macro</span>
-            <a name="http-connection-config-builder_73">
-              <span>http-connection-config-builder</span>
-              <span>
-                <i node-type="i">field</i>
-              </span>
-              <span>
-                <i node-type="i">...</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">A constructor macro to build a <code node-type="code">http-connection-config</code> record.</p>
-          <p node-type="paragraph">The _field_s must be one or more of the following:</p>
-          <dl node-type="dlist">
-            <dt>
-              <code node-type="code">connection-timeout</code>
-            </dt>
-            <dd>
-              <p node-type="paragraph">Specifies connection timeout in milli second.</p>
-            </dd>
-            <dt>
-              <code node-type="code">read-timeout</code>
-            </dt>
-            <dd>
-              <p node-type="paragraph">Specifies read timeout in milli second.</p>
-            </dd>
-            <dt>
-              <code node-type="code">key-manager</code>
-            </dt>
-            <dd>
-              <p node-type="paragraph">Specifies a key manager. See Key Manager section for more detail.</p>
-            </dd>
-          </dl>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="http-ephemeral-connection-manager?_80">
-              <span>http-ephemeral-connection-manager?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is an ephemeral connection manager,
-otherwise #f.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="make-http-ephemeral-connection-manager_157">
-              <span>make-http-ephemeral-connection-manager</span>
-              <span>
-                <i node-type="i">config</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph"><i node-type="i">Config</i> must be a <code node-type="code">http-connection-config</code> record instance.</p>
-          <p node-type="paragraph">Creates an ephemeral connection manager.</p>
-        </section>
-        <section node-type="section">
-          <h4 node-type="header-4">
-            <a name="Pooling-Connection-Manager">Pooling Connection Manager</a>
-          </h4>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="http-pooling-connection-config?_100">
-              <span>http-pooling-connection-config?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is an instance of
-<code node-type="code">http-pooling-connection-config</code>, otherwise #f.</p>
-          <p node-type="paragraph">The <code node-type="code">http-pooling-connection-config</code> record is a child record of
-<code node-type="code">http-connection-config</code>.</p>
-          <div node-type="define" class="define">
-            <span>Macro</span>
-            <a name="http-pooling-connection-config-builder_99">
-              <span>http-pooling-connection-config-builder</span>
-              <span>
-                <i node-type="i">field</i>
-              </span>
-              <span>
-                <i node-type="i">...</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">A constructor macro to build a <code node-type="code">http-pooling-connection-config</code>record.</p>
-          <p node-type="paragraph">The _field_s must be one or more of the following and the ones from
-<code node-type="code">http-connection-config-builder</code>:</p>
-          <dl node-type="dlist">
-            <dt>
-              <code node-type="code">connection-request-timeout</code>
-            </dt>
-            <dd>
-              <p node-type="paragraph">Specifies connection request timeout in milli second. The timeout is only
-for the waiting time of the connection retrieval from the pool.</p>
-            </dd>
-            <dt>
-              <code node-type="code">max-connection-per-route</code>
-            </dt>
-            <dd>
-              <p node-type="paragraph">Specifies pool size per route. A route is defined with the combination of
-hostname and port. Default value is 5.</p>
-            </dd>
-            <dt>
-              <code node-type="code">time-to-live</code>
-            </dt>
-            <dd>
-              <p node-type="paragraph">Specifies the life time of the pooled connection in seconds</p>
-            </dd>
-            <dt>
-              <code node-type="code">delegate-provider</code>
-            </dt>
-            <dd>
-              <p node-type="paragraph">Specifies connection manager delegate provider. Default value is
-<code node-type="code">default-delegate-connection-manager-provider</code></p>
-            </dd>
-          </dl>
-          <p node-type="paragraph">A delegate connection manager is an underlying connection manager of
-the pooling connection manager. The delegate creates and closes the
-actual connection.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="http-pooling-connection-manager?_101">
-              <span>http-pooling-connection-manager?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is a pooling connection manager,
-otherwise #f.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="make-http-pooling-connection-manager_158">
-              <span>make-http-pooling-connection-manager</span>
-              <span>
-                <i node-type="i">config</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph"><i node-type="i">Config</i> must be a <code node-type="code">http-pooling-connection-config</code>record instance.</p>
-          <p node-type="paragraph">Creates a pooling connection manager.</p>
-        </section>
-        <section node-type="section">
-          <h4 node-type="header-4">
-            <a name="Delegate-Connection-Manager-providers">Delegate Connection Manager providers</a>
-          </h4>
-          <p node-type="paragraph">A delegate connection provider is a procedure which accepts one
-argument <i node-type="i">config</i> and returns a connection manager.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="default-delegate-connection-manager-provider_59">
-              <span>default-delegate-connection-manager-provider</span>
-              <span>
-                <i node-type="i">config</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Synonym of <code node-type="code">make-http-ephemeral-connection-manager</code>.</p>
-        </section>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Key-Manager">Key Manager</a>
-        </h3>
-        <p node-type="paragraph">Key manager manages client certificate of HTTP connections. A key manager
-may contain multiple of key providers. A key provider should provide a
-list whose the first element is a private key and the rest are certificate
-chain.</p>
-        <p node-type="paragraph">The following example shows how to make a key manager with multiple
-key providers.</p>
-        <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (net http-client)
-        (rfc base64)
-        (security keystore))
-(define (host-a p)
-  (define node (socket-parameter-socket-node p))
-  (cond ((string=? node "host-a.com") "host-a-key-alias")
-        (else #f)))
-(define (host-b p)
-  (define node (socket-parameter-socket-node p))
-  (and (string-suffix? ".host-b.com" node) "host-b-key-alias"))
-(define keystores
-  ;; keystore file (PKCS12 base64 encoded), store pass, key pass, alias selector
-  `(("host-a.b64" "password0" "password0a" ,host-a)
-    ("host-b.b64" "password1" "password1a" ,host-b)))
-
-(define (-&gt;keystore-key-provider keystore-info)
-  (let ((file (car keystore-info))
-        (storepass (cadr keystore-info))
-        (keypass (caddr keystore-info))
-        (strategy (cadddr keystore-info)))
-    (make-keystore-key-provider
-     (call-with-input-file file
-       (lambda (in)
-         (let ((bin (open-base64-decode-input-port in)))
-           (load-keystore 'pkcs12 bin storepass)))
-       :transcoder #f)
-     keypass
-     strategy)))
-
-(make-key-manager (map -&gt;keystore-key-provider keystores))
-</code></pre>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="key-manager?_4">
-            <span>key-manager?</span>
+          <a name="amqp-connection?_34">
+            <span>amqp-connection?</span>
             <span>
               <i node-type="i">obj</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is a key manager,
-otherwise #f.</p>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is AMQP connection. Otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-key-manager_184">
-            <span>make-key-manager</span>
+          <a name="open-amqp-connection_19">
+            <span>open-amqp-connection</span>
             <span>
-              <i node-type="i">key-providers</i>
+              <i node-type="i">host</i>
+            </span>
+            <span>
+              <i node-type="i">port</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">Key-providers</i> must be a list of key provider.</p>
-        <p node-type="paragraph">Creates a key manager.</p>
-        <section node-type="section">
-          <h4 node-type="header-4">
-            <a name="Key-Provider">Key Provider</a>
-          </h4>
-          <p node-type="paragraph">Key provider provides keys. The key can be retrieved from anywhere but
-must be a format of a list of private key and certificate chain.</p>
-          <p node-type="paragraph">We provide keystore key provider by default. If you need other key
-provider, you need to create a custom one.</p>
-          <div node-type="define" class="define">
-            <span>Record Type</span>
-            <a name="<key-provider&gt;_42">
-              <span>&lt;key-provider&gt;</span>
-            </a>
-          </div>
-          <p node-type="paragraph">An abstruct record type of key provider. Users must inherit this
-record type to create a custom key provider.</p>
-          <p node-type="paragraph">This record type has a filed named <code node-type="code">key-retrievers</code>.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="key-provider?_9">
-              <span>key-provider?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is a key provider
-otherwise #f.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="key-provider-key-retrievers_8">
-              <span>key-provider-key-retrievers</span>
-              <span>
-                <i node-type="i">key-provider</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns the value of field <code node-type="code">key-retrievers</code> of the key provider
-<i node-type="i">key-provider</i>.</p>
-          <p node-type="paragraph">This procedure is not meant to be used by a user of HTTP client.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="keystore-key-provider?_21">
-              <span>keystore-key-provider?</span>
-              <span>
-                <i node-type="i">obj</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Returns #t if the <i node-type="i">obj</i> is a keystore key provider
-otherwise #f.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="make-keystore-key-provider_186">
-              <span>make-keystore-key-provider</span>
-              <span>
-                <i node-type="i">keystore</i>
-              </span>
-              <span>
-                <i node-type="i">password</i>
-              </span>
-              <span>
-                <i node-type="i">alias-provider</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph"><i node-type="i">Keystore</i> must be a keystore object of <code node-type="code">(security keystore)</code>.
-<i node-type="i">password</i> must be a string of valid key password.
-<i node-type="i">alias-provider</i> must be a procedure which accepts one argument,
-socket parameter, and returns either string of key alias or #f.</p>
-          <p node-type="paragraph">Creates a key provider with one key retriever.</p>
-          <div node-type="define" class="define">
-            <span>Function</span>
-            <a name="keystore-key-provider-add-key-retriever!_20">
-              <span>keystore-key-provider-add-key-retriever!</span>
-              <span>
-                <i node-type="i">keystore-key-provider</i>
-              </span>
-              <span>
-                <i node-type="i">password</i>
-              </span>
-              <span>
-                <i node-type="i">alias-provider</i>
-              </span>
-            </a>
-          </div>
-          <p node-type="paragraph">Add a key retriever to the <i node-type="i">keystore-key-provider</i> and returns
-<i node-type="i">keystore-key-provider</i>.</p>
-          <p node-type="paragraph">This procedure is convenient if you have multiple keys in one keystore.</p>
-        </section>
+        <p node-type="paragraph">Creates an AMQP connection object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="close-amqp-connection!_104">
+            <span>close-amqp-connection!</span>
+            <span>
+              <i node-type="i">connection</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Closes given AMQP connection.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-amqp-connection_14">
+            <span>call-with-amqp-connection</span>
+            <span>
+              <i node-type="i">host</i>
+            </span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an AMQP connection and pass it to <i node-type="i">proc</i>. Then returns
+the result of <i node-type="i">proc</i>.</p>
+        <p node-type="paragraph">The created connection will be closed both <i node-type="i">proc</i> returns or raises
+an error. Thus Invoking captured continuation inside of <i node-type="i">proc</i> would not
+work.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="amqp-session?_38">
+            <span>amqp-session?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is AMQP session. Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="begin-amqp-session!_11">
+            <span>begin-amqp-session!</span>
+            <span>
+              <i node-type="i">connection</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Starts AMQP session on the given <i node-type="i">connection</i></p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="end-amqp-session!_6">
+            <span>end-amqp-session!</span>
+            <span>
+              <i node-type="i">session</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Ends given AMQP session.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-amqp-connection_13">
+            <span>call-with-amqp-connection</span>
+            <span>
+              <i node-type="i">connection</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Starts an AMQP session and pass it to <i node-type="i">proc</i>. Then returns
+the result of <i node-type="i">proc</i>.</p>
+        <p node-type="paragraph">The stated session will be ended both <i node-type="i">proc</i> returns or raises
+an error. Thus Invoking captured continuation inside of <i node-type="i">proc</i> would not
+work.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="amqp-sender?_37">
+            <span>amqp-sender?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="amqp-receiver?_36">
+            <span>amqp-receiver?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is AMQP sender and receiver, respectively.
+Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-amqp-sender_163">
+            <span>create-amqp-sender</span>
+            <span>
+              <i node-type="i">session</i>
+            </span>
+            <span>
+              <i node-type="i">source-queue</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-amqp-receiver_162">
+            <span>create-amqp-receiver</span>
+            <span>
+              <i node-type="i">session</i>
+            </span>
+            <span>
+              <i node-type="i">target-queue</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an AMQP sender or receiver, respectively.</p>
+        <p node-type="paragraph"><i node-type="i">source-queue</i> and <i node-type="i">target-queue</i> must be strings and indicating
+queue names on the remote server.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="destroy-amqp-sender_135">
+            <span>destroy-amqp-sender</span>
+            <span>
+              <i node-type="i">sender</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="destroy-amqp-receiver_134">
+            <span>destroy-amqp-receiver</span>
+            <span>
+              <i node-type="i">receiver</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Destory given <i node-type="i">sender</i> and <i node-type="i">receiver</i>, respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="send-amqp-message_21">
+            <span>send-amqp-message</span>
+            <span>
+              <i node-type="i">sender</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Sends <i node-type="i">message</i> to <i node-type="i">sender</i>'s queue.</p>
+        <p node-type="paragraph"><i node-type="i">message</i> must be am AMQP message object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="receive-amqp-message_64">
+            <span>receive-amqp-message</span>
+            <span>
+              <i node-type="i">receiver</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(timeout</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Receives an AMQP message from <i node-type="i">receiver</i>'s queue.</p>
+        <p node-type="paragraph">Keyword argument <i node-type="i">timeout</i> must be #f or integer. If this is specified
+then the procedure waits only specified milliseconds.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="amqp-message?_35">
+            <span>amqp-message?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is AMQP message. Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-amqp-text-message text_164">
+            <span>create-amqp-text-message text</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-amqp-binary-message data_160">
+            <span>create-amqp-binary-message data</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-amqp-mime-message content-type data_161">
+            <span>create-amqp-mime-message content-type data</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an AMQP text message, binary message and data message,
+respectively.</p>
+        <p node-type="paragraph"><i node-type="i">text</i> must be a string. <i node-type="i">data</i> must be a bytevector.
+<i node-type="i">content-type</i> must be a string.</p>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section720.html">(net mq amqp) - AMQP library</a>
+      <a href="./section720.html">(math) - Mathematics library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section722.html">(net mq mqtt) - MQTT library</a>
+      <a href="./section722.html">(net http-client) - Modern HTTP client</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

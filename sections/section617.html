@@ -144,6 +144,21 @@ using a derived key. To do so, you need to use KDF, Key Derivation Function.</p>
 ;; The rest can be the same as above CTR mode example.
 </code></pre>
       <h4 node-type="header-4">
+        <a name="Stream-cipher">Stream cipher</a>
+      </h4>
+      <p node-type="paragraph">This example encrypts and decrypts a plain text with a randomly generated
+secret key. The encryption scheme is ChaCha20 Poly1305.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (sagittarius crypto ciphers)
+        (sagittarius crypto keys))
+
+;; Randomly generates AES-256 secret key.
+(define key (generate-symmetric-key *scheme:aes-256*))
+
+
+
+</code></pre>
+      <h4 node-type="header-4">
         <a name="Asymmetric-cipher">Asymmetric cipher</a>
       </h4>
       <p node-type="paragraph">This example encrypts and decrypts a plain text with a randomly generated
@@ -228,7 +243,7 @@ generates a variable length digest.</p>
 keys.</p>
         <div node-type="define" class="define">
           <span>Library</span>
-          <a name="(sagittarius crypto keys)_88">
+          <a name="(sagittarius crypto keys)_90">
             <span>(sagittarius crypto keys)</span>
           </a>
         </div>
@@ -257,7 +272,7 @@ the key type is below.</p>
 </code></pre>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="crypto-key?_174">
+            <a name="crypto-key?_175">
               <span>crypto-key?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -268,7 +283,7 @@ the key type is below.</p>
 otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="symmetric-key?_356">
+            <a name="symmetric-key?_359">
               <span>symmetric-key?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -290,7 +305,7 @@ otherwise <code node-type="code">#f</code>.</p>
 otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="public-key?_152">
+            <a name="public-key?_163">
               <span>public-key?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -301,7 +316,7 @@ otherwise <code node-type="code">#f</code>.</p>
 otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="private-key?_129">
+            <a name="private-key?_140">
               <span>private-key?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -317,7 +332,7 @@ otherwise <code node-type="code">#f</code>.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-symmetric-key_274">
+            <a name="make-symmetric-key_281">
               <span>make-symmetric-key</span>
               <span> (</span>
               <span>
@@ -335,7 +350,7 @@ size. If you want to make sure the <i node-type="i">bv</i> has the right key siz
 consier using <code node-type="code">generate-symmetric-key</code> method.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="symmetric-key-value_355">
+            <a name="symmetric-key-value_358">
               <span>symmetric-key-value</span>
               <span> (</span>
               <span>
@@ -350,7 +365,7 @@ consier using <code node-type="code">generate-symmetric-key</code> method.</p>
           <p node-type="paragraph">Retrieves the raw key value of the given <i node-type="i">key</i>.</p>
           <div node-type="define" class="define">
             <span>Method</span>
-            <a name="generate-symmetric-key_24">
+            <a name="generate-symmetric-key_25">
               <span>generate-symmetric-key</span>
               <span>
                 <code node-type="code">&lt;block-cipher-descriptor&gt;</code>
@@ -359,7 +374,7 @@ consier using <code node-type="code">generate-symmetric-key</code> method.</p>
           </div>
           <div node-type="define" class="define">
             <span>Method</span>
-            <a name="generate-symmetric-key_23">
+            <a name="generate-symmetric-key_24">
               <span>generate-symmetric-key</span>
               <span>
                 <code node-type="code">&lt;block-cipher-descriptor&gt;</code>
@@ -373,7 +388,7 @@ consier using <code node-type="code">generate-symmetric-key</code> method.</p>
 randomly.</p>
           <div node-type="define" class="define">
             <span>Method</span>
-            <a name="generate-symmetric-key_22">
+            <a name="generate-symmetric-key_23">
               <span>generate-symmetric-key</span>
               <span>
                 <code node-type="code">&lt;block-cipher-descriptor&gt;</code>
@@ -387,7 +402,7 @@ randomly.</p>
 key size if it's appropriate for the given cipher or not.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-rfc3394-key-wrap_230">
+            <a name="make-rfc3394-key-wrap_235">
               <span>make-rfc3394-key-wrap</span>
               <span> (</span>
               <span>
@@ -413,7 +428,7 @@ key size if it's appropriate for the given cipher or not.</p>
 keyword parameter <i node-type="i">iv</i> is used as an initial vector if provided.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-aes-key-wrap_18">
+            <a name="make-aes-key-wrap_19">
               <span>make-aes-key-wrap</span>
               <span> (</span>
               <span>
@@ -434,7 +449,7 @@ keyword parameter <i node-type="i">iv</i> is used as an initial vector if provid
           <p node-type="paragraph">Creates an AES key wrap procedure.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-camellia-key-wrap_43">
+            <a name="make-camellia-key-wrap_44">
               <span>make-camellia-key-wrap</span>
               <span> (</span>
               <span>
@@ -455,7 +470,7 @@ keyword parameter <i node-type="i">iv</i> is used as an initial vector if provid
           <p node-type="paragraph">Creates an Camellia key wrap procedure.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-rfc3394-key-unwrap_229">
+            <a name="make-rfc3394-key-unwrap_234">
               <span>make-rfc3394-key-unwrap</span>
               <span> (</span>
               <span>
@@ -481,7 +496,7 @@ keyword parameter <i node-type="i">iv</i> is used as an initial vector if provid
 keyword parameter <i node-type="i">iv</i> is used as an initial vector if provided.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-aes-key-unwrap_16">
+            <a name="make-aes-key-unwrap_17">
               <span>make-aes-key-unwrap</span>
               <span> (</span>
               <span>
@@ -502,7 +517,7 @@ keyword parameter <i node-type="i">iv</i> is used as an initial vector if provid
           <p node-type="paragraph">Creates an AES key unwrap procedure.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-camellia-key-unwrap_42">
+            <a name="make-camellia-key-unwrap_43">
               <span>make-camellia-key-unwrap</span>
               <span> (</span>
               <span>
@@ -577,50 +592,50 @@ keyword parameter <i node-type="i">iv</i> is used as an initial vector if provid
 schemes:</p>
           <div node-type="define" class="define">
             <span>Key scheme</span>
-            <a name="*key:rsa_132">
+            <a name="*key:rsa_133">
               <span>*key:rsa</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Key scheme</span>
-            <a name="*key:dsa_128">
+            <a name="*key:dsa_129">
               <span>*key:dsa</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Key scheme</span>
-            <a name="*key:ecdsa_129">
+            <a name="*key:ecdsa_130">
               <span>*key:ecdsa</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Key scheme</span>
-            <a name="*key:ed25519_130">
+            <a name="*key:ed25519_131">
               <span>*key:ed25519</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Key scheme</span>
-            <a name="*key:ed448_131">
+            <a name="*key:ed448_132">
               <span>*key:ed448</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Key scheme</span>
-            <a name="*key:x25519_133">
+            <a name="*key:x25519_134">
               <span>*key:x25519</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Key scheme</span>
-            <a name="*key:x448_134">
+            <a name="*key:x448_135">
               <span>*key:x448</span>
             </a>
           </div>
           <p node-type="paragraph">Those are RSA, DSA, ECDSA, Ed5519, Ed448, X25519 and X448 respectively.<br>For convenience <code node-type="code">*scheme:rsa</code> has the same effect as <code node-type="code">*key:rsa</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="generate-public-key_19">
+            <a name="generate-public-key_20">
               <span>generate-public-key</span>
               <span>
                 <i node-type="i">scheme</i>
@@ -633,7 +648,7 @@ schemes:</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="generate-private-key_17">
+            <a name="generate-private-key_18">
               <span>generate-private-key</span>
               <span>
                 <i node-type="i">scheme</i>
@@ -646,7 +661,7 @@ schemes:</p>
           </div>
           <div node-type="define" class="define">
             <span>Macro</span>
-            <a name="public-key-format_149">
+            <a name="public-key-format_160">
               <span>public-key-format</span>
               <span>
                 <i node-type="i">format</i>
@@ -661,14 +676,14 @@ Imports/exports raw public key.
 Imports/exports subject public key info.</p>
           <div node-type="define" class="define">
             <span>Enum set</span>
-            <a name="*public-key-formats*_164">
+            <a name="*public-key-formats*_167">
               <span>*public-key-formats*</span>
             </a>
           </div>
           <p node-type="paragraph">Enum set of the <code node-type="code">public-key-format</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="public-key-format?_150">
+            <a name="public-key-format?_161">
               <span>public-key-format?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -1476,7 +1491,7 @@ is <code node-type="code">raw</code>.</p>
           <p node-type="paragraph">If the first form is used, then the method automatically detects the key type.</p>
           <div node-type="define" class="define">
             <span>Macro</span>
-            <a name="private-key-format_126">
+            <a name="private-key-format_137">
               <span>private-key-format</span>
               <span>
                 <i node-type="i">format</i>
@@ -1491,14 +1506,14 @@ Imports/exports raw public key.
 Imports/exports private key info or one asymmetric key.</p>
           <div node-type="define" class="define">
             <span>Enum set</span>
-            <a name="*private-key-formats*_157">
+            <a name="*private-key-formats*_160">
               <span>*private-key-formats*</span>
             </a>
           </div>
           <p node-type="paragraph">Enum set of the <code node-type="code">private-key-format</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="private-key-format?_127">
+            <a name="private-key-format?_138">
               <span>private-key-format?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -1858,7 +1873,7 @@ from the given key.</p>
           <p node-type="paragraph">Calculate a secret key from the given private key and public key.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="oid-&gt;key-operation_13">
+            <a name="oid-&gt;key-operation_15">
               <span>oid-&gt;key-operation</span>
             </a>
           </div>
@@ -1878,7 +1893,7 @@ from the given key.</p>
 operations.</p>
         <div node-type="define" class="define">
           <span>Library</span>
-          <a name="(sagittarius crypto ciphers)_86">
+          <a name="(sagittarius crypto ciphers)_87">
             <span>(sagittarius crypto ciphers)</span>
           </a>
         </div>
@@ -1897,7 +1912,7 @@ is signalled.</p>
 Asymmetric ciphers use keywords.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-parameter?_91">
+            <a name="cipher-parameter?_92">
               <span>cipher-parameter?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -1909,7 +1924,7 @@ Asymmetric ciphers use keywords.</p>
 like the condition system.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-cipher-parameter_45">
+            <a name="make-cipher-parameter_47">
               <span>make-cipher-parameter</span>
               <span>
                 <i node-type="i">parameter</i>
@@ -1933,7 +1948,7 @@ like the condition system.</p>
           <p node-type="paragraph">This parameter is used all the modes.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-round-parameter_233">
+            <a name="make-round-parameter_238">
               <span>make-round-parameter</span>
               <span> (</span>
               <span>
@@ -1948,7 +1963,7 @@ like the condition system.</p>
           <p node-type="paragraph">Creates a round cipher parameter with the given <i node-type="i">round</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-parameter-rounds_87">
+            <a name="cipher-parameter-rounds_88">
               <span>cipher-parameter-rounds</span>
               <span> (</span>
               <span>
@@ -1975,7 +1990,7 @@ like the condition system.</p>
 modes require it.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-iv-parameter_178">
+            <a name="make-iv-parameter_181">
               <span>make-iv-parameter</span>
               <span> (</span>
               <span>
@@ -1992,7 +2007,7 @@ during the creation so modifying the original value does not affect
 the parameter.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-parameter-iv_85">
+            <a name="cipher-parameter-iv_86">
               <span>cipher-parameter-iv</span>
               <span> (</span>
               <span>
@@ -2007,7 +2022,7 @@ the parameter.</p>
           <p node-type="paragraph">Retrieves the <code node-type="code">iv</code> field of the given <i node-type="i">parameter</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="counter-mode-parameter?_156">
+            <a name="counter-mode-parameter?_157">
               <span>counter-mode-parameter?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -2020,7 +2035,7 @@ otherwise <code node-type="code">#f</code>.</p>
 <code node-type="code">*ctr-mode:big-endian*</code> is used.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-counter-mode-parameter_55">
+            <a name="make-counter-mode-parameter_57">
               <span>make-counter-mode-parameter</span>
               <span>
                 <i node-type="i">mode</i>
@@ -2051,7 +2066,7 @@ be one of the following:</p>
 <a href="https://datatracker.ietf.org/doc/html/rfc3686">RFC 3686</a>, respectively.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-parameter-counter-mode_84">
+            <a name="cipher-parameter-counter-mode_85">
               <span>cipher-parameter-counter-mode</span>
               <span> (</span>
               <span>
@@ -2077,7 +2092,7 @@ be one of the following:</p>
           <p node-type="paragraph">This parameter is used by LRW mode, and it's a required parameter.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-tweak-parameter_283">
+            <a name="make-tweak-parameter_290">
               <span>make-tweak-parameter</span>
               <span> (</span>
               <span>
@@ -2094,7 +2109,7 @@ is copied during the creation so modifying the original value does not
 affect the parameter.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-parameter-tweak_90">
+            <a name="cipher-parameter-tweak_91">
               <span>cipher-parameter-tweak</span>
               <span> (</span>
               <span>
@@ -2120,7 +2135,7 @@ affect the parameter.</p>
           <p node-type="paragraph">This parameter is used by F8 mode, and it's a required parameter.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-salt-parameter_238">
+            <a name="make-salt-parameter_243">
               <span>make-salt-parameter</span>
               <span> (</span>
               <span>
@@ -2137,7 +2152,7 @@ is copied during the creation so modifying the original value does not
 affect the parameter.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-parameter-salt_88">
+            <a name="cipher-parameter-salt_89">
               <span>cipher-parameter-salt</span>
               <span> (</span>
               <span>
@@ -2164,7 +2179,7 @@ affect the parameter.</p>
 others require it.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-nonce-parameter_206">
+            <a name="make-nonce-parameter_211">
               <span>make-nonce-parameter</span>
               <span> (</span>
               <span>
@@ -2181,7 +2196,7 @@ is copied during the creation so modifying the original value does not
 affect the parameter.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-parameter-nonce_86">
+            <a name="cipher-parameter-nonce_87">
               <span>cipher-parameter-nonce</span>
               <span> (</span>
               <span>
@@ -2207,7 +2222,7 @@ affect the parameter.</p>
           <p node-type="paragraph">This parameter is used by EAX and GCM. It's an optional parameter.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-aad-parameter_12">
+            <a name="make-aad-parameter_13">
               <span>make-aad-parameter</span>
               <span> (</span>
               <span>
@@ -2224,7 +2239,7 @@ is copied during the creation so modifying the original value does not
 affect the parameter.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-parameter-aad_83">
+            <a name="cipher-parameter-aad_84">
               <span>cipher-parameter-aad</span>
               <span> (</span>
               <span>
@@ -2251,7 +2266,7 @@ otherwise <code node-type="code">#f</code>.</p>
           <p node-type="paragraph">This parameter is used by OCB3 and it's a required parameter.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-tag-length-parameter_276">
+            <a name="make-tag-length-parameter_283">
               <span>make-tag-length-parameter</span>
               <span> (</span>
               <span>
@@ -2266,7 +2281,7 @@ otherwise <code node-type="code">#f</code>.</p>
           <p node-type="paragraph">Creates a tag length cipher parameter with the given <i node-type="i">tag-length</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-parameter-tag-length_89">
+            <a name="cipher-parameter-tag-length_90">
               <span>cipher-parameter-tag-length</span>
               <span> (</span>
               <span>
@@ -2286,7 +2301,7 @@ otherwise <code node-type="code">#f</code>.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-descriptor?_77">
+            <a name="cipher-descriptor?_78">
               <span>cipher-descriptor?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -2299,7 +2314,7 @@ such as algorithm, key length, etc.<br>This object itself doesn't provide any ci
 them, users need to create a cipher object.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher-descriptor-name_76">
+            <a name="cipher-descriptor-name_77">
               <span>cipher-descriptor-name</span>
               <span> (</span>
               <span>
@@ -2314,7 +2329,7 @@ them, users need to create a cipher object.</p>
           <p node-type="paragraph">Returns the name of the given <i node-type="i">descriptor</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="cipher?_99">
+            <a name="cipher?_100">
               <span>cipher?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -2326,7 +2341,7 @@ them, users need to create a cipher object.</p>
 make sure not to mix up the state.</p>
           <div node-type="define" class="define">
             <span>Macro</span>
-            <a name="cipher-direction_78">
+            <a name="cipher-direction_79">
               <span>cipher-direction</span>
               <span>
                 <i node-type="i">direction</i>
@@ -2340,12 +2355,10 @@ must be either <code node-type="code">encrypt</code> or <code node-type="code">d
           <h3 node-type="header-3">
             <a name="Symmetric-ciphers">Symmetric ciphers</a>
           </h3>
-          <p node-type="paragraph">Symmetric cipher can be either block cipher or stream cipher. At this
-moment, the library only supports block cipher. Stream ciphers may
-come in the future.</p>
+          <p node-type="paragraph">Symmetric cipher can be either block cipher or stream cipher.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="symmetric-cipher-descriptor?_353">
+            <a name="symmetric-cipher-descriptor?_356">
               <span>symmetric-cipher-descriptor?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -2356,7 +2369,7 @@ come in the future.</p>
 otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="symmetric-cipher-descriptor-min-key-length_352">
+            <a name="symmetric-cipher-descriptor-min-key-length_355">
               <span>symmetric-cipher-descriptor-min-key-length</span>
               <span> (</span>
               <span>
@@ -2371,7 +2384,7 @@ otherwise <code node-type="code">#f</code>.</p>
           <p node-type="paragraph">Returns minimum key length of the given <i node-type="i">descriptor</i>'s algorithm.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="symmetric-cipher-descriptor-max-key-length_351">
+            <a name="symmetric-cipher-descriptor-max-key-length_354">
               <span>symmetric-cipher-descriptor-max-key-length</span>
               <span> (</span>
               <span>
@@ -2386,7 +2399,7 @@ otherwise <code node-type="code">#f</code>.</p>
           <p node-type="paragraph">Returns maximum key length of the given <i node-type="i">descriptor</i>'s algorithm.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="symmetric-cipher?_354">
+            <a name="symmetric-cipher?_357">
               <span>symmetric-cipher?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -2394,9 +2407,12 @@ otherwise <code node-type="code">#f</code>.</p>
             </a>
           </div>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a symmetric cipher object, otherwise <code node-type="code">#f</code>.</p>
+          <h4 node-type="header-4">
+            <a name="5-Block-ciphers">[§5] Block ciphers</a>
+          </h4>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-descriptor?_73">
+            <a name="block-cipher-descriptor?_75">
               <span>block-cipher-descriptor?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -2408,157 +2424,157 @@ otherwise <code node-type="code">#f</code>.</p>
           <p node-type="paragraph">Currently, below encryption algorithms are supported:</p>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:aes*_169">
+            <a name="*scheme:aes*_172">
               <span>*scheme:aes*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:aes-128*_170">
+            <a name="*scheme:aes-128*_173">
               <span>*scheme:aes-128*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:aes-192*_171">
+            <a name="*scheme:aes-192*_174">
               <span>*scheme:aes-192*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:aes-256*_172">
+            <a name="*scheme:aes-256*_175">
               <span>*scheme:aes-256*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:blowfish*_173">
+            <a name="*scheme:blowfish*_176">
               <span>*scheme:blowfish*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:camellia*_174">
+            <a name="*scheme:camellia*_177">
               <span>*scheme:camellia*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:cast-128*_175">
+            <a name="*scheme:cast-128*_178">
               <span>*scheme:cast-128*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:cast5*_176">
+            <a name="*scheme:cast5*_179">
               <span>*scheme:cast5*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:des*_177">
+            <a name="*scheme:des*_182">
               <span>*scheme:des*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:des3*_178">
+            <a name="*scheme:des3*_183">
               <span>*scheme:des3*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:desede*_179">
+            <a name="*scheme:desede*_184">
               <span>*scheme:desede*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:kasumi*_180">
+            <a name="*scheme:kasumi*_185">
               <span>*scheme:kasumi*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:khazad*_181">
+            <a name="*scheme:khazad*_186">
               <span>*scheme:khazad*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:noekeon*_182">
+            <a name="*scheme:noekeon*_187">
               <span>*scheme:noekeon*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:rc2*_183">
+            <a name="*scheme:rc2*_188">
               <span>*scheme:rc2*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:rc5*_184">
+            <a name="*scheme:rc5*_189">
               <span>*scheme:rc5*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:rc6*_185">
+            <a name="*scheme:rc6*_190">
               <span>*scheme:rc6*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:safer+*_187">
+            <a name="*scheme:safer+*_192">
               <span>*scheme:safer+*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:safer-k128*_188">
+            <a name="*scheme:safer-k128*_193">
               <span>*scheme:safer-k128*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:safer-k64*_189">
+            <a name="*scheme:safer-k64*_194">
               <span>*scheme:safer-k64*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:safer-sk128*_190">
+            <a name="*scheme:safer-sk128*_195">
               <span>*scheme:safer-sk128*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:safer-sk64*_191">
+            <a name="*scheme:safer-sk64*_196">
               <span>*scheme:safer-sk64*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:seed*_192">
+            <a name="*scheme:seed*_197">
               <span>*scheme:seed*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:skipjack*_193">
+            <a name="*scheme:skipjack*_198">
               <span>*scheme:skipjack*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:twofish*_194">
+            <a name="*scheme:twofish*_199">
               <span>*scheme:twofish*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Block cipher descriptor</span>
-            <a name="*scheme:x-tea*_195">
+            <a name="*scheme:x-tea*_200">
               <span>*scheme:x-tea*</span>
             </a>
           </div>
@@ -2566,7 +2582,7 @@ otherwise <code node-type="code">#f</code>.</p>
           <p node-type="paragraph">NOTE: NIST recommends to use AES.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-descriptor-block-length_71">
+            <a name="block-cipher-descriptor-block-length_73">
               <span>block-cipher-descriptor-block-length</span>
               <span> (</span>
               <span>
@@ -2581,7 +2597,7 @@ otherwise <code node-type="code">#f</code>.</p>
           <p node-type="paragraph">Returns block size of the given <i node-type="i">descriptor</i>'s algorithm.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-descriptor-suggested-key-length_72">
+            <a name="block-cipher-descriptor-suggested-key-length_74">
               <span>block-cipher-descriptor-suggested-key-length</span>
               <span> (</span>
               <span>
@@ -2600,7 +2616,7 @@ the <code node-type="code">symmetric-cipher-descriptor-max-key-length</code> pro
 valid length of the key length.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mode-descriptor?_373">
+            <a name="mode-descriptor?_381">
               <span>mode-descriptor?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -2611,76 +2627,76 @@ valid length of the key length.</p>
           <p node-type="paragraph">Currently, below encryption modes are supported.</p>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:ecb*_145">
+            <a name="*mode:ecb*_146">
               <span>*mode:ecb*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:cbc*_141">
+            <a name="*mode:cbc*_142">
               <span>*mode:cbc*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:cfb*_142">
+            <a name="*mode:cfb*_143">
               <span>*mode:cfb*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:ofb*_151">
+            <a name="*mode:ofb*_152">
               <span>*mode:ofb*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:ctr*_143">
+            <a name="*mode:ctr*_144">
               <span>*mode:ctr*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:lrw*_148">
+            <a name="*mode:lrw*_149">
               <span>*mode:lrw*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:f8*_146">
+            <a name="*mode:f8*_147">
               <span>*mode:f8*</span>
             </a>
           </div>
           <p node-type="paragraph">Mode descriptors for ECB, CBC, CFB, OFB, CTR, LRW and F8 respectively.</p>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:eax*_144">
+            <a name="*mode:eax*_145">
               <span>*mode:eax*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:ocb*_149">
+            <a name="*mode:ocb*_150">
               <span>*mode:ocb*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:ocb3*_150">
+            <a name="*mode:ocb3*_151">
               <span>*mode:ocb3*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Mode descriptor</span>
-            <a name="*mode:gcm*_147">
+            <a name="*mode:gcm*_148">
               <span>*mode:gcm*</span>
             </a>
           </div>
           <p node-type="paragraph">Mode descriptor for EAX, OCB, OCB3 and GCM respectively. These are
-authenticated encryption modes.</p>
+authenticated encryption with assiciated data (AEAD) modes.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mode-descriptor-name_372">
+            <a name="mode-descriptor-name_380">
               <span>mode-descriptor-name</span>
               <span> (</span>
               <span>
@@ -2695,7 +2711,7 @@ authenticated encryption modes.</p>
           <p node-type="paragraph">Returns the name of the given <i node-type="i">descriptor</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher?_86">
+            <a name="block-cipher?_88">
               <span>block-cipher?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -2705,7 +2721,7 @@ authenticated encryption modes.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a block cipher object, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-block-cipher_38">
+            <a name="make-block-cipher_39">
               <span>make-block-cipher</span>
               <span> (</span>
               <span>
@@ -2735,7 +2751,7 @@ authenticated encryption modes.</p>
 <i node-type="i">mode</i> encryption mode.<br><i node-type="i">padding</i> is used to encrypt or decrypt the last block of the plain text.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-block-length_66">
+            <a name="block-cipher-block-length_68">
               <span>block-cipher-block-length</span>
               <span> (</span>
               <span>
@@ -2750,7 +2766,7 @@ authenticated encryption modes.</p>
           <p node-type="paragraph">Returns the block length of the given <i node-type="i">cipher</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-init!_82">
+            <a name="block-cipher-init!_84">
               <span>block-cipher-init!</span>
               <span> (</span>
               <span>
@@ -2787,7 +2803,7 @@ authenticated encryption modes.</p>
 the given <i node-type="i">key</i> and <i node-type="i">parameter</i>.<br>The <i node-type="i">direction</i> must be a symbol returned by the <code node-type="code">cipher-direction</code> macro.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-init_81">
+            <a name="block-cipher-init_83">
               <span>block-cipher-init</span>
               <span> (</span>
               <span>
@@ -2825,7 +2841,7 @@ the given <i node-type="i">key</i> and <i node-type="i">parameter</i>.<br>The <i
 copy of the given <i node-type="i">cipher</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-encrypt!_78">
+            <a name="block-cipher-encrypt!_80">
               <span>block-cipher-encrypt!</span>
               <span> (</span>
               <span>
@@ -2870,7 +2886,7 @@ cipher text into <i node-type="i">ct</i> from the position of <i node-type="i">c
 size of the encrypted plain text.<br>The encryption is executed by the given <i node-type="i">cipher</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-encrypt_77">
+            <a name="block-cipher-encrypt_79">
               <span>block-cipher-encrypt</span>
               <span> (</span>
               <span>
@@ -2899,7 +2915,7 @@ returns the cipher text.<br>The encryption is executed by the given <i node-type
 if the <i node-type="i">pt</i> length is not multiple of the cipher block size.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-encrypt-last-block!_80">
+            <a name="block-cipher-encrypt-last-block!_82">
               <span>block-cipher-encrypt-last-block!</span>
               <span> (</span>
               <span>
@@ -2945,7 +2961,7 @@ size of the encrypted plain text.<br>The encryption is executed by the given <i 
           <p node-type="paragraph">This procedure consumes all the plain text, and applies padding if needed.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-encrypt-last-block_79">
+            <a name="block-cipher-encrypt-last-block_81">
               <span>block-cipher-encrypt-last-block</span>
               <span> (</span>
               <span>
@@ -2973,7 +2989,7 @@ returns the cipher text.<br>The encryption is executed by the given <i node-type
           <p node-type="paragraph">This procedure consumes all the plain text, and applies padding if needed.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-decrypt! _68">
+            <a name="block-cipher-decrypt! _70">
               <span>block-cipher-decrypt! </span>
               <span> (</span>
               <span>
@@ -3019,7 +3035,7 @@ size of the decrypted cipher text.
 The decryption is executed by the given <i node-type="i">cipher</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-decrypt_67">
+            <a name="block-cipher-decrypt_69">
               <span>block-cipher-decrypt</span>
               <span> (</span>
               <span>
@@ -3048,7 +3064,7 @@ returns the plain text.<br>The decryption is executed by the given <i node-type=
 if the <i node-type="i">ct</i> length is not multiple of the cipher block size.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-decrypt-last-block!_70">
+            <a name="block-cipher-decrypt-last-block!_72">
               <span>block-cipher-decrypt-last-block!</span>
               <span> (</span>
               <span>
@@ -3094,7 +3110,7 @@ size of the decrypted cipher text.</p>
           <p node-type="paragraph">This procedure applies unpadding if the <i node-type="i">cipher</i> is created with padding.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-decrypt-last-block_69">
+            <a name="block-cipher-decrypt-last-block_71">
               <span>block-cipher-decrypt-last-block</span>
               <span> (</span>
               <span>
@@ -3122,7 +3138,7 @@ returns the plain text.<br>The decryption is executed by the given <i node-type=
           <p node-type="paragraph">This procedure applies unpadding if the <i node-type="i">cipher</i> is created with padding.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-done!_74">
+            <a name="block-cipher-done!_76">
               <span>block-cipher-done!</span>
               <span> (</span>
               <span>
@@ -3137,7 +3153,7 @@ returns the plain text.<br>The decryption is executed by the given <i node-type=
           <p node-type="paragraph">Cleanup the given <i node-type="i">cipher</i> and make it neutral state.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-update-aad!_84">
+            <a name="block-cipher-update-aad!_86">
               <span>block-cipher-update-aad!</span>
               <span> (</span>
               <span>
@@ -3171,7 +3187,7 @@ returns the plain text.<br>The decryption is executed by the given <i node-type=
           <p node-type="paragraph">This procedure is effective on authenticated encryption modes.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-update-iv!_85">
+            <a name="block-cipher-update-iv!_87">
               <span>block-cipher-update-iv!</span>
               <span> (</span>
               <span>
@@ -3205,7 +3221,7 @@ returns the plain text.<br>The decryption is executed by the given <i node-type=
           <p node-type="paragraph">This procedure is effective only GCM mode.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-max-tag-length_83">
+            <a name="block-cipher-max-tag-length_85">
               <span>block-cipher-max-tag-length</span>
               <span> (</span>
               <span>
@@ -3221,7 +3237,7 @@ returns the plain text.<br>The decryption is executed by the given <i node-type=
 support authentication tag, then it returns <code node-type="code">0</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-done/tag!_76">
+            <a name="block-cipher-done/tag!_78">
               <span>block-cipher-done/tag!</span>
               <span> (</span>
               <span>
@@ -3252,7 +3268,7 @@ given <i node-type="i">tag</i> against the cipher's authentication tag starting 
 position of <i node-type="i">start</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="block-cipher-done/tag_75">
+            <a name="block-cipher-done/tag_77">
               <span>block-cipher-done/tag</span>
               <span> (</span>
               <span>
@@ -3273,6 +3289,72 @@ position of <i node-type="i">start</i>.</p>
           </div>
           <p node-type="paragraph">This procedure is only for encryption mode.<br>Stores the <i node-type="i">cipher</i>'s authentication tag into the given <i node-type="i">tag</i>,
 starting position of <i node-type="i">start</i>.</p>
+          <h4 node-type="header-4">
+            <a name="5-Stream-ciphers">[§5] Stream ciphers</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="stream-cipher-descriptor?_256">
+              <span>stream-cipher-descriptor?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a stream cipher descriptor, otherwise <code node-type="code">#f</code>.</p>
+          <p node-type="paragraph">Currently, below encryption algorithms are supported:</p>
+          <div node-type="define" class="define">
+            <span>Stream cipher descriptor</span>
+            <a name="*scheme:chacha20*_180">
+              <span>*scheme:chacha20*</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Stream cipher descriptor</span>
+            <a name="*scheme:chacha20-poly1305*_181">
+              <span>*scheme:chacha20-poly1305*</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="stream-cipher-descriptor-aead?_255">
+              <span>stream-cipher-descriptor-aead?</span>
+              <span> (</span>
+              <span>
+                <i node-type="i">descriptor</i>
+              </span>
+              <span>
+                <code node-type="code">stream-cipher-descriptor?</code>
+              </span>
+              <span>)</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">#t</code> if given the <i node-type="i">descriptor</i> is a AEAD stream cipher, otherwise <code node-type="code">#f</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="stream-cipher?_257">
+              <span>stream-cipher?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a stream cipher object, otherwise <code node-type="code">#f</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-stream-cipher_277">
+              <span>make-stream-cipher</span>
+              <span> (</span>
+              <span>
+                <i node-type="i">scheme</i>
+              </span>
+              <span>
+                <code node-type="code">stream-cipher-descriptor?</code>
+              </span>
+              <span>)</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates a stream cipher object of <i node-type="i">scheme</i> encryption scheme.</p>
         </section>
         <section node-type="section">
           <h3 node-type="header-3">
@@ -3292,7 +3374,7 @@ otherwise <code node-type="code">#f</code>.</p>
           <p node-type="paragraph">Currently, below asymmetric encryption algorithms are supported:</p>
           <div node-type="define" class="define">
             <span>Asymmetric cipher descriptor</span>
-            <a name="*scheme:rsa*_186">
+            <a name="*scheme:rsa*_191">
               <span>*scheme:rsa*</span>
             </a>
           </div>
@@ -3308,7 +3390,7 @@ otherwise <code node-type="code">#f</code>.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is an asymmetric cipher, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-asymmetric-cipher_25">
+            <a name="make-asymmetric-cipher_26">
               <span>make-asymmetric-cipher</span>
               <span> (</span>
               <span>
@@ -3478,7 +3560,7 @@ keyword. Default value is <code node-type="code">*digest:sha-1*</code></p>
           </dl>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="pkcs1-v1.5-encoding_69">
+            <a name="pkcs1-v1.5-encoding_80">
               <span>pkcs1-v1.5-encoding</span>
             </a>
           </div>
@@ -3496,7 +3578,7 @@ arguments of the <code node-type="code">make-asymmetric-cipher</code> procedure.
           </dl>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mgf-1_364">
+            <a name="mgf-1_372">
               <span>mgf-1</span>
             </a>
           </div>
@@ -3511,7 +3593,7 @@ arguments of the <code node-type="code">make-asymmetric-cipher</code> procedure.
         <p node-type="paragraph">The digest library provides cryptographic hash functions.</p>
         <div node-type="define" class="define">
           <span>Library</span>
-          <a name="(sagittarius crypto digests)_87">
+          <a name="(sagittarius crypto digests)_88">
             <span>(sagittarius crypto digests)</span>
           </a>
         </div>
@@ -3823,7 +3905,7 @@ responsibility to choose appropriate algorithm.</p>
 digests.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="message-digest?_361">
+            <a name="message-digest?_369">
               <span>message-digest?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -3833,7 +3915,7 @@ digests.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a message digest, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-message-digest_196">
+            <a name="make-message-digest_201">
               <span>make-message-digest</span>
               <span> (</span>
               <span>
@@ -3848,7 +3930,7 @@ digests.</p>
           <p node-type="paragraph">Creates a message digest of the algorithm <i node-type="i">descriptor</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="message-digest-descriptor_355">
+            <a name="message-digest-descriptor_363">
               <span>message-digest-descriptor</span>
               <span> (</span>
               <span>
@@ -3863,7 +3945,7 @@ digests.</p>
           <p node-type="paragraph">Returns the digest descriptor of given <i node-type="i">md</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="message-digest-digest-size_356">
+            <a name="message-digest-digest-size_364">
               <span>message-digest-digest-size</span>
               <span> (</span>
               <span>
@@ -3945,7 +4027,7 @@ entire input buffer, say using <code node-type="code">get-bytevector-n!</code> i
 <code node-type="code">get-bytevector-all</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="message-digest-init!_359">
+            <a name="message-digest-init!_367">
               <span>message-digest-init!</span>
               <span> (</span>
               <span>
@@ -3960,7 +4042,7 @@ entire input buffer, say using <code node-type="code">get-bytevector-n!</code> i
           <p node-type="paragraph">Initialises the given <i node-type="i">md</i>. This procedure rests the previous input as well.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="message-digest-process!_360">
+            <a name="message-digest-process!_368">
               <span>message-digest-process!</span>
               <span> (</span>
               <span>
@@ -3988,7 +4070,7 @@ entire input buffer, say using <code node-type="code">get-bytevector-n!</code> i
           <p node-type="paragraph">Ingests the given <i node-type="i">msg</i> into <i node-type="i">md</i>.<br>Optional argument <i node-type="i">start</i> and <i node-type="i">length</i> controls the range of the <i node-type="i">msg</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="message-digest-done!_358">
+            <a name="message-digest-done!_366">
               <span>message-digest-done!</span>
               <span> (</span>
               <span>
@@ -4016,7 +4098,7 @@ entire input buffer, say using <code node-type="code">get-bytevector-n!</code> i
           <p node-type="paragraph">Fill the result digest of <i node-type="i">md</i> into the <i node-type="i">out</i>.<br>Optional argument <i node-type="i">start</i> and <i node-type="i">length</i> controls the range of the <i node-type="i">out</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="message-digest-done_357">
+            <a name="message-digest-done_365">
               <span>message-digest-done</span>
               <span> (</span>
               <span>
@@ -4044,7 +4126,7 @@ algorithm, such as SHAKE. Otherwise it will be ignored.</p>
 generator (CSPRNG) operations.</p>
         <div node-type="define" class="define">
           <span>Library</span>
-          <a name="(sagittarius crypto random)_91">
+          <a name="(sagittarius crypto random)_93">
             <span>(sagittarius crypto random)</span>
           </a>
         </div>
@@ -4056,7 +4138,7 @@ generator (CSPRNG) operations.</p>
           <p node-type="paragraph">PRNG descriptor is a representation of pseudo random generator (PRNG).</p>
           <div node-type="define" class="define">
             <span>Library</span>
-            <a name="prng-descriptor?_131">
+            <a name="prng-descriptor?_142">
               <span>prng-descriptor?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -4066,7 +4148,7 @@ generator (CSPRNG) operations.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a PRNG descriptor, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Library</span>
-            <a name="prng-descriptor-name_130">
+            <a name="prng-descriptor-name_141">
               <span>prng-descriptor-name</span>
               <span> (</span>
               <span>
@@ -4083,31 +4165,31 @@ generator (CSPRNG) operations.</p>
           <p node-type="paragraph">Below are the supported PRNGs.</p>
           <div node-type="define" class="define">
             <span>PRNG descriptor</span>
-            <a name="*prng:yarrow*_163">
+            <a name="*prng:yarrow*_166">
               <span>*prng:yarrow*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>PRNG descriptor</span>
-            <a name="*prng:fortuna*_159">
+            <a name="*prng:fortuna*_162">
               <span>*prng:fortuna*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>PRNG descriptor</span>
-            <a name="*prng:rc4*_160">
+            <a name="*prng:rc4*_163">
               <span>*prng:rc4*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>PRNG descriptor</span>
-            <a name="*prng:sober-128*_161">
+            <a name="*prng:sober-128*_164">
               <span>*prng:sober-128*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>PRNG descriptor</span>
-            <a name="*prng:chacha20*_158">
+            <a name="*prng:chacha20*_161">
               <span>*prng:chacha20*</span>
             </a>
           </div>
@@ -4115,7 +4197,7 @@ generator (CSPRNG) operations.</p>
 respectively.</p>
           <div node-type="define" class="define">
             <span>PRNG descriptor</span>
-            <a name="*prng:system*_162">
+            <a name="*prng:system*_165">
               <span>*prng:system*</span>
             </a>
           </div>
@@ -4156,7 +4238,7 @@ generator is described the below section.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a random generator, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="builtin-random-generator?_98">
+            <a name="builtin-random-generator?_100">
               <span>builtin-random-generator?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -4176,7 +4258,7 @@ generator is described the below section.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a secure random generator, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="custom-random-generator?_192">
+            <a name="custom-random-generator?_193">
               <span>custom-random-generator?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -4281,7 +4363,7 @@ the range of the <i node-type="i">seed</i> bytevector.</p>
           <p node-type="paragraph">Returns a random integer of range 0 &lt;= n &lt;= <i node-type="i">bound</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="pseudo-random-generator_146">
+            <a name="pseudo-random-generator_157">
               <span>pseudo-random-generator</span>
               <span>
                 <i node-type="i">descriptor</i>
@@ -4347,13 +4429,13 @@ if it's supported.<br>By default this method does nothing and returns <code node
           </h3>
           <div node-type="define" class="define">
             <span>Class</span>
-            <a name="<custom-random-generator&gt;_16">
+            <a name="<custom-random-generator&gt;_17">
               <span>&lt;custom-random-generator&gt;</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Generic</span>
-            <a name="make-custom-random-generator_60">
+            <a name="make-custom-random-generator_62">
               <span>make-custom-random-generator</span>
             </a>
           </div>
@@ -4367,7 +4449,7 @@ if it's supported.<br>By default this method does nothing and returns <code node
 operations.</p>
         <div node-type="define" class="define">
           <span>Library</span>
-          <a name="(sagittarius crypto signatures)_92">
+          <a name="(sagittarius crypto signatures)_94">
             <span>(sagittarius crypto signatures)</span>
           </a>
         </div>
@@ -4380,55 +4462,55 @@ below sections.</p>
           <p node-type="paragraph">Below are the algorithms supported by the library.</p>
           <div node-type="define" class="define">
             <span>Signature algorithm</span>
-            <a name="*signature:rsa*_231">
+            <a name="*signature:rsa*_236">
               <span>*signature:rsa*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Signature algorithm</span>
-            <a name="*signature:dsa*_223">
+            <a name="*signature:dsa*_228">
               <span>*signature:dsa*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Signature algorithm</span>
-            <a name="*signature:ecdsa*_224">
+            <a name="*signature:ecdsa*_229">
               <span>*signature:ecdsa*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Signature algorithm</span>
-            <a name="*signature:eddsa*_230">
+            <a name="*signature:eddsa*_235">
               <span>*signature:eddsa*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Signature algorithm</span>
-            <a name="*signature:ed25519*_225">
+            <a name="*signature:ed25519*_230">
               <span>*signature:ed25519*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Signature algorithm</span>
-            <a name="*signature:ed25519ctx*_226">
+            <a name="*signature:ed25519ctx*_231">
               <span>*signature:ed25519ctx*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Signature algorithm</span>
-            <a name="*signature:ed25519ph*_227">
+            <a name="*signature:ed25519ph*_232">
               <span>*signature:ed25519ph*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Signature algorithm</span>
-            <a name="*signature:ed448*_228">
+            <a name="*signature:ed448*_233">
               <span>*signature:ed448*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Signature algorithm</span>
-            <a name="*signature:ed448ph*_229">
+            <a name="*signature:ed448ph*_234">
               <span>*signature:ed448ph*</span>
             </a>
           </div>
@@ -4450,7 +4532,7 @@ below sections.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a signer, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-signer_250">
+            <a name="make-signer_255">
               <span>make-signer</span>
               <span>
                 <i node-type="i">scheme</i>
@@ -4605,7 +4687,7 @@ the range of the <i node-type="i">message</i> to feed.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="verifier?_33">
+            <a name="verifier?_36">
               <span>verifier?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -4615,7 +4697,7 @@ the range of the <i node-type="i">message</i> to feed.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a verifier, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-verifier_290">
+            <a name="make-verifier_298">
               <span>make-verifier</span>
               <span>
                 <i node-type="i">scheme</i>
@@ -4675,7 +4757,7 @@ Specifying context, default value is <code node-type="code">#vu8()</code>.</p>
           </dl>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="verifier-verify-signature_32">
+            <a name="verifier-verify-signature_35">
               <span>verifier-verify-signature</span>
               <span> (</span>
               <span>
@@ -4706,7 +4788,7 @@ with <i node-type="i">verifier</i>.</p>
           <p node-type="paragraph">It returns <code node-type="code">#t</code> if the given <i node-type="i">signature</i> is a valid signature.<br>If the signature verification is failed, then returns <code node-type="code">#f</code>.<br>If the signature format is not valid, then raise an error.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="verifier-init!_29">
+            <a name="verifier-init!_32">
               <span>verifier-init!</span>
               <span> (</span>
               <span>
@@ -4721,7 +4803,7 @@ with <i node-type="i">verifier</i>.</p>
           <p node-type="paragraph">Initialises the given <i node-type="i">verifier</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="verifier-process!_30">
+            <a name="verifier-process!_33">
               <span>verifier-process!</span>
               <span> (</span>
               <span>
@@ -4750,7 +4832,7 @@ with <i node-type="i">verifier</i>.</p>
 the range of the <i node-type="i">message</i> to feed.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="verifier-verify!_31">
+            <a name="verifier-verify!_34">
               <span>verifier-verify!</span>
               <span>  (</span>
               <span>
@@ -4781,7 +4863,7 @@ keyword arguments, the keyword arguments specified in these procedures
 are passed via either <code node-type="code">make-signer</code> or <code node-type="code">make-verifier</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="pkcs1-emsa-pss-encode_62">
+            <a name="pkcs1-emsa-pss-encode_73">
               <span>pkcs1-emsa-pss-encode</span>
               <span> :key salt (mgf </span>
               <span>
@@ -4794,7 +4876,7 @@ are passed via either <code node-type="code">make-signer</code> or <code node-ty
 digest algorithm of the MGF.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="pkcs1-emsa-pss-verify_64">
+            <a name="pkcs1-emsa-pss-verify_75">
               <span>pkcs1-emsa-pss-verify</span>
               <span> :key salt-length (mgf </span>
               <span>
@@ -4807,21 +4889,21 @@ digest algorithm of the MGF.</p>
 digest algorithm of the MGF.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="pkcs1-emsa-v1.5-encode_66">
+            <a name="pkcs1-emsa-v1.5-encode_77">
               <span>pkcs1-emsa-v1.5-encode</span>
             </a>
           </div>
           <p node-type="paragraph">PKCS#1 EMSA PKCS1-v1_5 encode.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="pkcs1-emsa-v1.5-verify_68">
+            <a name="pkcs1-emsa-v1.5-verify_79">
               <span>pkcs1-emsa-v1.5-verify</span>
             </a>
           </div>
           <p node-type="paragraph">PKCS#1 EMSA PKCS1-v1_5 verify.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mgf-1_363">
+            <a name="mgf-1_371">
               <span>mgf-1</span>
             </a>
           </div>
@@ -4833,7 +4915,7 @@ digest algorithm of the MGF.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-random-k-generator_220">
+            <a name="make-random-k-generator_225">
               <span>make-random-k-generator</span>
               <span> (</span>
               <span>
@@ -4848,7 +4930,7 @@ digest algorithm of the MGF.</p>
           <p node-type="paragraph">Creates a random k-generator.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-hmac-k-generator_154">
+            <a name="make-hmac-k-generator_157">
               <span>make-hmac-k-generator</span>
               <span> (</span>
               <span>
@@ -4871,163 +4953,163 @@ to create X.509 algorithm identifier, i.e. <code node-type="code">make-x509-algo
 described in X.509 library.</p>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha1*_211">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha1*_216">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha1*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha256*_213">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha256*_218">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha256*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha384*_218">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha384*_223">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha384*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha512*_219">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha512*_224">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha512*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha224*_212">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha224*_217">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha224*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha512/224*_220">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha512/224*_225">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha512/224*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha512/256*_221">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha512/256*_226">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha512/256*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha3-224*_214">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha3-224*_219">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha3-224*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha3-256*_215">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha3-256*_220">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha3-256*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha3-384*_216">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha3-384*_221">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha3-384*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha3-512*_217">
+            <a name="*signature-algorithm:rsa-pkcs-v1.5-sha3-512*_222">
               <span>*signature-algorithm:rsa-pkcs-v1.5-sha3-512*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:rsa-ssa-pss*_222">
+            <a name="*signature-algorithm:rsa-ssa-pss*_227">
               <span>*signature-algorithm:rsa-ssa-pss*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:dsa-sha224*_196">
+            <a name="*signature-algorithm:dsa-sha224*_201">
               <span>*signature-algorithm:dsa-sha224*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:dsa-sha256*_197">
+            <a name="*signature-algorithm:dsa-sha256*_202">
               <span>*signature-algorithm:dsa-sha256*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:dsa-sha384*_198">
+            <a name="*signature-algorithm:dsa-sha384*_203">
               <span>*signature-algorithm:dsa-sha384*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:dsa-sha512*_199">
+            <a name="*signature-algorithm:dsa-sha512*_204">
               <span>*signature-algorithm:dsa-sha512*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ecdsa-sha1*_200">
+            <a name="*signature-algorithm:ecdsa-sha1*_205">
               <span>*signature-algorithm:ecdsa-sha1*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ecdsa-sha224*_201">
+            <a name="*signature-algorithm:ecdsa-sha224*_206">
               <span>*signature-algorithm:ecdsa-sha224*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ecdsa-sha256*_202">
+            <a name="*signature-algorithm:ecdsa-sha256*_207">
               <span>*signature-algorithm:ecdsa-sha256*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ecdsa-sha384*_207">
+            <a name="*signature-algorithm:ecdsa-sha384*_212">
               <span>*signature-algorithm:ecdsa-sha384*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ecdsa-sha512*_208">
+            <a name="*signature-algorithm:ecdsa-sha512*_213">
               <span>*signature-algorithm:ecdsa-sha512*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ecdsa-sha3-224*_203">
+            <a name="*signature-algorithm:ecdsa-sha3-224*_208">
               <span>*signature-algorithm:ecdsa-sha3-224*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ecdsa-sha3-256*_204">
+            <a name="*signature-algorithm:ecdsa-sha3-256*_209">
               <span>*signature-algorithm:ecdsa-sha3-256*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ecdsa-sha3-384*_205">
+            <a name="*signature-algorithm:ecdsa-sha3-384*_210">
               <span>*signature-algorithm:ecdsa-sha3-384*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ecdsa-sha3-512*_206">
+            <a name="*signature-algorithm:ecdsa-sha3-512*_211">
               <span>*signature-algorithm:ecdsa-sha3-512*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ed25519*_209">
+            <a name="*signature-algorithm:ed25519*_214">
               <span>*signature-algorithm:ed25519*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Constant</span>
-            <a name="*signature-algorithm:ed448*_210">
+            <a name="*signature-algorithm:ed448*_215">
               <span>*signature-algorithm:ed448*</span>
             </a>
           </div>
@@ -5043,7 +5125,7 @@ represents.</p>
 generation / verification operations.</p>
         <div node-type="define" class="define">
           <span>Library</span>
-          <a name="(sagittarius crypto mac)_90">
+          <a name="(sagittarius crypto mac)_92">
             <span>(sagittarius crypto mac)</span>
           </a>
         </div>
@@ -5056,43 +5138,43 @@ below sections.</p>
           <p node-type="paragraph">Below are the MAC algorithms supported by the library.</p>
           <div node-type="define" class="define">
             <span>MAC algorithm</span>
-            <a name="*mac:hmac*_137">
+            <a name="*mac:hmac*_138">
               <span>*mac:hmac*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>MAC algorithm</span>
-            <a name="*mac:cmac*_135">
+            <a name="*mac:cmac*_136">
               <span>*mac:cmac*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>MAC algorithm</span>
-            <a name="*mac:gmac*_136">
+            <a name="*mac:gmac*_137">
               <span>*mac:gmac*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>MAC algorithm</span>
-            <a name="*mac:kmac*_138">
+            <a name="*mac:kmac*_139">
               <span>*mac:kmac*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>MAC algorithm</span>
-            <a name="*mac:kmac-128*_139">
+            <a name="*mac:kmac-128*_140">
               <span>*mac:kmac-128*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>MAC algorithm</span>
-            <a name="*mac:kmac-256*_140">
+            <a name="*mac:kmac-256*_141">
               <span>*mac:kmac-256*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mac?_6">
+            <a name="mac?_7">
               <span>mac?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -5102,7 +5184,7 @@ below sections.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is MAC object, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-mac_192">
+            <a name="make-mac_197">
               <span>make-mac</span>
               <span>
                 <i node-type="i">type</i>
@@ -5122,7 +5204,7 @@ below sections.</p>
 all the algorithms require bytevector.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mac-type_5">
+            <a name="mac-type_6">
               <span>mac-type</span>
               <span> (</span>
               <span>
@@ -5137,7 +5219,7 @@ all the algorithms require bytevector.</p>
           <p node-type="paragraph">Returns the type of given <i node-type="i">mac</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mac-mac-size_2">
+            <a name="mac-mac-size_3">
               <span>mac-mac-size</span>
               <span> (</span>
               <span>
@@ -5153,7 +5235,7 @@ all the algorithms require bytevector.</p>
 otherwise <code node-type="code">#f</code>.<br>Only KMAC is variable length.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mac-oid_3">
+            <a name="mac-oid_4">
               <span>mac-oid</span>
               <span> (</span>
               <span>
@@ -5231,7 +5313,7 @@ MAC size is shorter than <i node-type="i">length</i>, then excess values are fil
 position <i node-type="i">start</i> to <i node-type="i">length</i> count.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="verify-mac_35">
+            <a name="verify-mac_38">
               <span>verify-mac</span>
               <span> (</span>
               <span>
@@ -5261,7 +5343,7 @@ position <i node-type="i">start</i> to <i node-type="i">length</i> count.</p>
 if the MAC is verified, otherwise signals an error.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mac-init!_1">
+            <a name="mac-init!_2">
               <span>mac-init!</span>
               <span> (</span>
               <span>
@@ -5277,7 +5359,7 @@ if the MAC is verified, otherwise signals an error.</p>
 message processing, then the previous state will be reset.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mac-process!_4">
+            <a name="mac-process!_5">
               <span>mac-process!</span>
               <span> (</span>
               <span>
@@ -5305,7 +5387,7 @@ message processing, then the previous state will be reset.</p>
           <p node-type="paragraph">Processes the given <i node-type="i">message</i> with <i node-type="i">mac</i>.<br>Optional arguments specifies the range of <i node-type="i">message</i> to be processed.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="mac-done!_0">
+            <a name="mac-done!_1">
               <span>mac-done!</span>
               <span> (</span>
               <span>
@@ -5342,7 +5424,7 @@ _start to <i node-type="i">length</i> count.</p>
 other related operations.</p>
         <div node-type="define" class="define">
           <span>Library</span>
-          <a name="(sagittarius crypto x509)_93">
+          <a name="(sagittarius crypto x509)_95">
             <span>(sagittarius crypto x509)</span>
           </a>
         </div>
@@ -5354,7 +5436,7 @@ below sections.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate?_49">
+            <a name="x509-certificate?_51">
               <span>x509-certificate?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -5364,7 +5446,7 @@ below sections.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 certificate, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="bytevector-&gt;x509-certificate_114">
+            <a name="bytevector-&gt;x509-certificate_116">
               <span>bytevector-&gt;x509-certificate</span>
               <span> (</span>
               <span>
@@ -5400,7 +5482,7 @@ must be a valid X.509 certificate structure otherwise an error is signalled.</p>
 must be a valid X.509 certificate structure otherwise an error is signalled.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-&gt;bytevector_9">
+            <a name="x509-certificate-&gt;bytevector_11">
               <span>x509-certificate-&gt;bytevector</span>
               <span> (</span>
               <span>
@@ -5434,7 +5516,7 @@ must be a valid X.509 certificate structure otherwise an error is signalled.</p>
 <code node-type="code">(current-output-port)</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-expired?_10">
+            <a name="x509-certificate-expired?_12">
               <span>x509-certificate-expired?</span>
               <span> (</span>
               <span>
@@ -5450,7 +5532,7 @@ must be a valid X.509 certificate structure otherwise an error is signalled.</p>
 if specified, otherwise <code node-type="code">(current-date)</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-issuer-dn_21">
+            <a name="x509-certificate-issuer-dn_23">
               <span>x509-certificate-issuer-dn</span>
               <span> (</span>
               <span>
@@ -5465,7 +5547,7 @@ if specified, otherwise <code node-type="code">(current-date)</code>.</p>
           <p node-type="paragraph">Retrieves IssuerDn of the given <i node-type="i">certificate</i> as X.509 name.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-subject-dn_42">
+            <a name="x509-certificate-subject-dn_44">
               <span>x509-certificate-subject-dn</span>
               <span> (</span>
               <span>
@@ -5480,7 +5562,7 @@ if specified, otherwise <code node-type="code">(current-date)</code>.</p>
           <p node-type="paragraph">Retrieves SubjectDn of the given <i node-type="i">certificate</i> as X.509 name.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-public-key_22">
+            <a name="x509-certificate-public-key_24">
               <span>x509-certificate-public-key</span>
               <span> (</span>
               <span>
@@ -5495,7 +5577,7 @@ if specified, otherwise <code node-type="code">(current-date)</code>.</p>
           <p node-type="paragraph">Retrieves public key of the given <i node-type="i">certificate</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-validity_45">
+            <a name="x509-certificate-validity_47">
               <span>x509-certificate-validity</span>
               <span> (</span>
               <span>
@@ -5510,7 +5592,7 @@ if specified, otherwise <code node-type="code">(current-date)</code>.</p>
           <p node-type="paragraph">Retrieves validity of the given <i node-type="i">certificate</i> as X.509 validity.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-serial-number_37">
+            <a name="x509-certificate-serial-number_39">
               <span>x509-certificate-serial-number</span>
               <span> (</span>
               <span>
@@ -5525,7 +5607,7 @@ if specified, otherwise <code node-type="code">(current-date)</code>.</p>
           <p node-type="paragraph">Retrieves serial number of the given <i node-type="i">certificate</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-version_47">
+            <a name="x509-certificate-version_49">
               <span>x509-certificate-version</span>
               <span> (</span>
               <span>
@@ -5541,7 +5623,7 @@ if specified, otherwise <code node-type="code">(current-date)</code>.</p>
 v1 certificate then the procedure returns <code node-type="code">1</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-signature_38">
+            <a name="x509-certificate-signature_40">
               <span>x509-certificate-signature</span>
               <span> (</span>
               <span>
@@ -5556,7 +5638,7 @@ v1 certificate then the procedure returns <code node-type="code">1</code>.</p>
           <p node-type="paragraph">Retrieves signature of the given <i node-type="i">certificate</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-signature-algorithm_39">
+            <a name="x509-certificate-signature-algorithm_41">
               <span>x509-certificate-signature-algorithm</span>
               <span> (</span>
               <span>
@@ -5572,7 +5654,7 @@ v1 certificate then the procedure returns <code node-type="code">1</code>.</p>
 algorithm identifier.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-extensions_11">
+            <a name="x509-certificate-extensions_13">
               <span>x509-certificate-extensions</span>
               <span> (</span>
               <span>
@@ -5608,7 +5690,7 @@ algorithm identifier.</p>
           <p node-type="paragraph">Validates the given <i node-type="i">certificate</i> against the given <i node-type="i">validator</i>.<br><i node-type="i">validator</i> must be a procedure accepts one argument, <i node-type="i">certificate</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-signature-validator_40">
+            <a name="x509-certificate-signature-validator_42">
               <span>x509-certificate-signature-validator</span>
               <span> (</span>
               <span>
@@ -5623,7 +5705,7 @@ algorithm identifier.</p>
           <p node-type="paragraph">Creates a signature validator.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-validity-validator_46">
+            <a name="x509-certificate-validity-validator_48">
               <span>x509-certificate-validity-validator</span>
               <span> :optional </span>
               <span>
@@ -5635,7 +5717,7 @@ algorithm identifier.</p>
 validity. Default value is <code node-type="code">(current-date)</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-signed-by?_41">
+            <a name="x509-certificate-signed-by?_43">
               <span>x509-certificate-signed-by?</span>
               <span> (</span>
               <span>
@@ -5658,7 +5740,7 @@ validity. Default value is <code node-type="code">(current-date)</code>.</p>
 otherwise <code node-type="code">#t</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revoked?_36">
+            <a name="x509-certificate-revoked?_38">
               <span>x509-certificate-revoked?</span>
               <span>  (</span>
               <span>
@@ -5691,7 +5773,7 @@ otherwise <code node-type="code">#t</code>.</p>
 the given date. Default value is <code node-type="code">(current-date)</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-template?_44">
+            <a name="x509-certificate-template?_46">
               <span>x509-certificate-template?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -5701,7 +5783,7 @@ the given date. Default value is <code node-type="code">(current-date)</code>.</
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 certificate template, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Macro</span>
-            <a name="x509-certificate-template-builder_43">
+            <a name="x509-certificate-template-builder_45">
               <span>x509-certificate-template-builder</span>
               <span> (</span>
               <span>
@@ -5815,7 +5897,7 @@ returns X.509 certificate.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certification-request?_60">
+            <a name="x509-certification-request?_62">
               <span>x509-certification-request?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -5825,7 +5907,7 @@ returns X.509 certificate.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 certificate, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="bytevector-&gt;x509-certification-request_116">
+            <a name="bytevector-&gt;x509-certification-request_118">
               <span>bytevector-&gt;x509-certification-request</span>
               <span> (</span>
               <span>
@@ -5861,7 +5943,7 @@ must be a valid X.509 CSR otherwise an error is signalled.</p>
 must be a valid X.509 CSR structure otherwise an error is signalled.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certification-request-&gt;bytevector_50">
+            <a name="x509-certification-request-&gt;bytevector_52">
               <span>x509-certification-request-&gt;bytevector</span>
               <span> (</span>
               <span>
@@ -5895,7 +5977,7 @@ must be a valid X.509 CSR structure otherwise an error is signalled.</p>
 <code node-type="code">(current-output-port)</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certification-request-version_59">
+            <a name="x509-certification-request-version_61">
               <span>x509-certification-request-version</span>
               <span> (</span>
               <span>
@@ -5911,7 +5993,7 @@ must be a valid X.509 CSR structure otherwise an error is signalled.</p>
 v1 certificate then the procedure returns <code node-type="code">1</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certification-request-subject_56">
+            <a name="x509-certification-request-subject_58">
               <span>x509-certification-request-subject</span>
               <span> (</span>
               <span>
@@ -5926,7 +6008,7 @@ v1 certificate then the procedure returns <code node-type="code">1</code>.</p>
           <p node-type="paragraph">Retrieves SubjectDn of the given <i node-type="i">csr</i> as X.509 name.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certification-request-public-key_52">
+            <a name="x509-certification-request-public-key_54">
               <span>x509-certification-request-public-key</span>
               <span> (</span>
               <span>
@@ -5941,7 +6023,7 @@ v1 certificate then the procedure returns <code node-type="code">1</code>.</p>
           <p node-type="paragraph">Retrieves public key of the given <i node-type="i">csr</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certification-request-attributes_51">
+            <a name="x509-certification-request-attributes_53">
               <span>x509-certification-request-attributes</span>
               <span> (</span>
               <span>
@@ -5956,7 +6038,7 @@ v1 certificate then the procedure returns <code node-type="code">1</code>.</p>
           <p node-type="paragraph">Retrieves list of attributes of the given <i node-type="i">csr</i> as list of X.509 attributes.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certification-request-signature_53">
+            <a name="x509-certification-request-signature_55">
               <span>x509-certification-request-signature</span>
               <span> (</span>
               <span>
@@ -5971,7 +6053,7 @@ v1 certificate then the procedure returns <code node-type="code">1</code>.</p>
           <p node-type="paragraph">Retrieves signature of the given <i node-type="i">csr</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certification-request-signature-algorithm_54">
+            <a name="x509-certification-request-signature-algorithm_56">
               <span>x509-certification-request-signature-algorithm</span>
               <span> (</span>
               <span>
@@ -6008,7 +6090,7 @@ algorithm identifier.</p>
           <p node-type="paragraph">Validates the given <i node-type="i">csr</i> against the given <i node-type="i">validator</i>.<br><i node-type="i">validator</i> must be a procedure accepts one argument, <i node-type="i">csr</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certification-request-signature-validator_55">
+            <a name="x509-certification-request-signature-validator_57">
               <span>x509-certification-request-signature-validator</span>
             </a>
           </div>
@@ -6016,7 +6098,7 @@ algorithm identifier.</p>
 X.509 CSR.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certification-request-template?_58">
+            <a name="x509-certification-request-template?_60">
               <span>x509-certification-request-template?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -6026,7 +6108,7 @@ X.509 CSR.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 CSR template, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Macro</span>
-            <a name="x509-certification-request-template-builder_57">
+            <a name="x509-certification-request-template-builder_59">
               <span>x509-certification-request-template-builder</span>
               <span> (</span>
               <span>
@@ -6095,7 +6177,7 @@ the <i node-type="i">signing-key-pair</i>, then returns X.509 CSR.<br>The return
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list?_35">
+            <a name="x509-certificate-revocation-list?_37">
               <span>x509-certificate-revocation-list?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -6105,7 +6187,7 @@ the <i node-type="i">signing-key-pair</i>, then returns X.509 CSR.<br>The return
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 CRL, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="bytevector-&gt;x509-certificate-revocation-list_115">
+            <a name="bytevector-&gt;x509-certificate-revocation-list_117">
               <span>bytevector-&gt;x509-certificate-revocation-list</span>
               <span> (</span>
               <span>
@@ -6141,7 +6223,7 @@ must be a valid X.509 CRL structure otherwise an error is signalled.</p>
 must be a valid X.509 CRL structure otherwise an error is signalled.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-&gt;bytevector_23">
+            <a name="x509-certificate-revocation-list-&gt;bytevector_25">
               <span>x509-certificate-revocation-list-&gt;bytevector</span>
               <span> (</span>
               <span>
@@ -6175,7 +6257,7 @@ must be a valid X.509 CRL structure otherwise an error is signalled.</p>
 <code node-type="code">(current-output-port)</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-issuer_25">
+            <a name="x509-certificate-revocation-list-issuer_27">
               <span>x509-certificate-revocation-list-issuer</span>
               <span> (</span>
               <span>
@@ -6190,7 +6272,7 @@ must be a valid X.509 CRL structure otherwise an error is signalled.</p>
           <p node-type="paragraph">Retrieves IssuerDn of the given <i node-type="i">crl</i> as X.509 name.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-this-update_34">
+            <a name="x509-certificate-revocation-list-this-update_36">
               <span>x509-certificate-revocation-list-this-update</span>
               <span> (</span>
               <span>
@@ -6205,7 +6287,7 @@ must be a valid X.509 CRL structure otherwise an error is signalled.</p>
           <p node-type="paragraph">Retrieves this update of the given <i node-type="i">crl</i> as date.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-next-update_27">
+            <a name="x509-certificate-revocation-list-next-update_29">
               <span>x509-certificate-revocation-list-next-update</span>
               <span> (</span>
               <span>
@@ -6220,7 +6302,7 @@ must be a valid X.509 CRL structure otherwise an error is signalled.</p>
           <p node-type="paragraph">Retrieves next update of the given <i node-type="i">crl</i> as date.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-revoked-certificates_28">
+            <a name="x509-certificate-revocation-list-revoked-certificates_30">
               <span>x509-certificate-revocation-list-revoked-certificates</span>
               <span> (</span>
               <span>
@@ -6235,7 +6317,7 @@ must be a valid X.509 CRL structure otherwise an error is signalled.</p>
           <p node-type="paragraph">Retrieves X.509 revoked certificate of the given <i node-type="i">crl</i> as list.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-crl-extensions_24">
+            <a name="x509-certificate-revocation-list-crl-extensions_26">
               <span>x509-certificate-revocation-list-crl-extensions</span>
               <span> (</span>
               <span>
@@ -6250,7 +6332,7 @@ must be a valid X.509 CRL structure otherwise an error is signalled.</p>
           <p node-type="paragraph">Retrieves X.509 extensions of the given <i node-type="i">crl</i> as X.509 extension list.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-signature-algorithm_30">
+            <a name="x509-certificate-revocation-list-signature-algorithm_32">
               <span>x509-certificate-revocation-list-signature-algorithm</span>
               <span> (</span>
               <span>
@@ -6265,7 +6347,7 @@ must be a valid X.509 CRL structure otherwise an error is signalled.</p>
           <p node-type="paragraph">Retrieves signature algorithm the given <i node-type="i">crl</i> as X.509 algorithm identifier.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-signature_29">
+            <a name="x509-certificate-revocation-list-signature_31">
               <span>x509-certificate-revocation-list-signature</span>
               <span> (</span>
               <span>
@@ -6302,7 +6384,7 @@ must be a valid X.509 CRL structure otherwise an error is signalled.</p>
 then the procedure signals an error.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-signature-validator_31">
+            <a name="x509-certificate-revocation-list-signature-validator_33">
               <span>x509-certificate-revocation-list-signature-validator</span>
               <span> (</span>
               <span>
@@ -6318,7 +6400,7 @@ then the procedure signals an error.</p>
 given <i node-type="i">public-key</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-issuer-validator_26">
+            <a name="x509-certificate-revocation-list-issuer-validator_28">
               <span>x509-certificate-revocation-list-issuer-validator</span>
               <span> (</span>
               <span>
@@ -6334,7 +6416,7 @@ given <i node-type="i">public-key</i>.</p>
 <i node-type="i">issuer</i> or not.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-revoked-certificate?_72">
+            <a name="x509-revoked-certificate?_74">
               <span>x509-revoked-certificate?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -6344,7 +6426,7 @@ given <i node-type="i">public-key</i>.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 revoked certificate, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-x509-revoked-certificate_305">
+            <a name="make-x509-revoked-certificate_313">
               <span>make-x509-revoked-certificate</span>
               <span> (</span>
               <span>
@@ -6369,7 +6451,7 @@ given <i node-type="i">public-key</i>.</p>
           <p node-type="paragraph">Creates a X.509 revoked certificate.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-revoked-certificate-serial-number_71">
+            <a name="x509-revoked-certificate-serial-number_73">
               <span>x509-revoked-certificate-serial-number</span>
               <span> (</span>
               <span>
@@ -6384,7 +6466,7 @@ given <i node-type="i">public-key</i>.</p>
           <p node-type="paragraph">Retrieves serial number of the given <i node-type="i">rc</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-revoked-certificate-revocation-date_70">
+            <a name="x509-revoked-certificate-revocation-date_72">
               <span>x509-revoked-certificate-revocation-date</span>
               <span> (</span>
               <span>
@@ -6399,7 +6481,7 @@ given <i node-type="i">public-key</i>.</p>
           <p node-type="paragraph">Retrieves revocation date of the given <i node-type="i">rc</i> as date.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-revoked-certificate-crl-entry-extensions_69">
+            <a name="x509-revoked-certificate-crl-entry-extensions_71">
               <span>x509-revoked-certificate-crl-entry-extensions</span>
               <span> (</span>
               <span>
@@ -6414,7 +6496,7 @@ given <i node-type="i">public-key</i>.</p>
           <p node-type="paragraph">Retrieves CRL entry extensions of the given <i node-type="i">rc</i> as X.509 extension list.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-template?_33">
+            <a name="x509-certificate-revocation-list-template?_35">
               <span>x509-certificate-revocation-list-template?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -6424,7 +6506,7 @@ given <i node-type="i">public-key</i>.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 CRL template, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-certificate-revocation-list-template-builder_32">
+            <a name="x509-certificate-revocation-list-template-builder_34">
               <span>x509-certificate-revocation-list-template-builder</span>
               <span> (</span>
               <span>
@@ -6515,7 +6597,7 @@ returns X.509 CRL.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-name?_68">
+            <a name="x509-name?_70">
               <span>x509-name?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -6525,7 +6607,7 @@ returns X.509 CRL.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 name, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-name_66">
+            <a name="x509-name_68">
               <span>x509-name</span>
               <span>
                 <i node-type="i">component</i>
@@ -6537,7 +6619,7 @@ returns X.509 CRL.</p>
           </div>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="list-&gt;x509-name_31">
+            <a name="list-&gt;x509-name_32">
               <span>list-&gt;x509-name</span>
               <span>
                 <i node-type="i">list of component</i>
@@ -6655,7 +6737,7 @@ returns X.509 CRL.</p>
           </dl>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-name-&gt;string_67">
+            <a name="x509-name-&gt;string_69">
               <span>x509-name-&gt;string</span>
               <span> (</span>
               <span>
@@ -6675,7 +6757,7 @@ returns X.509 CRL.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-validity?_75">
+            <a name="x509-validity?_77">
               <span>x509-validity?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -6685,7 +6767,7 @@ returns X.509 CRL.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 validity, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-x509-validity_306">
+            <a name="make-x509-validity_314">
               <span>make-x509-validity</span>
               <span> (</span>
               <span>
@@ -6707,7 +6789,7 @@ returns X.509 CRL.</p>
           <p node-type="paragraph">Creates a X.509 validity of the range of <i node-type="i">not-after</i> and <i node-type="i">not-after</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-validity-not-before_74">
+            <a name="x509-validity-not-before_76">
               <span>x509-validity-not-before</span>
               <span> (</span>
               <span>
@@ -6722,7 +6804,7 @@ returns X.509 CRL.</p>
           <p node-type="paragraph">Retrieves not before of <i node-type="i">validity</i> as date.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-validity-not-after_73">
+            <a name="x509-validity-not-after_75">
               <span>x509-validity-not-after</span>
               <span> (</span>
               <span>
@@ -6742,7 +6824,7 @@ returns X.509 CRL.</p>
           </h3>
           <div node-type="define" class="define">
             <span>function</span>
-            <a name="x509-algorithm-identifier?_3">
+            <a name="x509-algorithm-identifier?_5">
               <span>x509-algorithm-identifier?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -6753,7 +6835,7 @@ returns X.509 CRL.</p>
 otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>function</span>
-            <a name="make-x509-algorithm-identifier_300">
+            <a name="make-x509-algorithm-identifier_308">
               <span>make-x509-algorithm-identifier</span>
               <span> (</span>
               <span>
@@ -6769,7 +6851,7 @@ otherwise <code node-type="code">#f</code>.</p>
 identifier parameter.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-algorithm-identifier-oid_1">
+            <a name="x509-algorithm-identifier-oid_3">
               <span>x509-algorithm-identifier-oid</span>
               <span> (</span>
               <span>
@@ -6784,7 +6866,7 @@ identifier parameter.</p>
           <p node-type="paragraph">Retrieves OID of <i node-type="i">aid</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-algorithm-identifier-parameters_2">
+            <a name="x509-algorithm-identifier-parameters_4">
               <span>x509-algorithm-identifier-parameters</span>
               <span> (</span>
               <span>
@@ -6804,7 +6886,7 @@ identifier parameter.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="subject-public-key-info?_306">
+            <a name="subject-public-key-info?_309">
               <span>subject-public-key-info?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -6814,7 +6896,7 @@ identifier parameter.</p>
           <p node-type="paragraph">returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is subject public key info, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="subject-public-key-info-&gt;public-key_305">
+            <a name="subject-public-key-info-&gt;public-key_308">
               <span>subject-public-key-info-&gt;public-key</span>
               <span> (</span>
               <span>
@@ -6829,7 +6911,7 @@ identifier parameter.</p>
           <p node-type="paragraph">Converts given <i node-type="i">spki</i> to a public key.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="public-key-&gt;subject-public-key-info_148">
+            <a name="public-key-&gt;subject-public-key-info_159">
               <span>public-key-&gt;subject-public-key-info</span>
               <span> (</span>
               <span>
@@ -6844,7 +6926,7 @@ identifier parameter.</p>
           <p node-type="paragraph">Converts given <i node-type="i">public-key</i> to a subject public key info.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="bytevector-&gt;subject-public-key-info_109">
+            <a name="bytevector-&gt;subject-public-key-info_111">
               <span>bytevector-&gt;subject-public-key-info</span>
               <span> (</span>
               <span>
@@ -6860,7 +6942,7 @@ identifier parameter.</p>
 an error is signalled.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="subject-public-key-info-&gt;bytevector_304">
+            <a name="subject-public-key-info-&gt;bytevector_307">
               <span>subject-public-key-info-&gt;bytevector</span>
               <span> (</span>
               <span>
@@ -6880,7 +6962,7 @@ an error is signalled.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-attribute?_8">
+            <a name="x509-attribute?_10">
               <span>x509-attribute?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -6890,7 +6972,7 @@ an error is signalled.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 attribute, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-attribute-type_6">
+            <a name="x509-attribute-type_8">
               <span>x509-attribute-type</span>
               <span> (</span>
               <span>
@@ -6905,7 +6987,7 @@ an error is signalled.</p>
           <p node-type="paragraph">Retrieves type of the <i node-type="i">attr</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-attribute-values_7">
+            <a name="x509-attribute-values_9">
               <span>x509-attribute-values</span>
               <span> (</span>
               <span>
@@ -6921,7 +7003,7 @@ an error is signalled.</p>
 usable as it is.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-attribute-of_5">
+            <a name="x509-attribute-of_7">
               <span>x509-attribute-of</span>
               <span>
                 <i node-type="i">oid</i>
@@ -6932,7 +7014,7 @@ usable as it is.</p>
 checks if the given X.509 attribute has <i node-type="i">oid</i> or not.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-x509-challenge-password-attribute_303">
+            <a name="make-x509-challenge-password-attribute_311">
               <span>make-x509-challenge-password-attribute</span>
               <span> (</span>
               <span>
@@ -6947,7 +7029,7 @@ checks if the given X.509 attribute has <i node-type="i">oid</i> or not.</p>
           <p node-type="paragraph">Creates PKCS#9 challenge password attribute of the value <i node-type="i">password</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-x509-extension-request-attribute_304">
+            <a name="make-x509-extension-request-attribute_312">
               <span>make-x509-extension-request-attribute</span>
               <span>
                 <i node-type="i">x509-extension</i>
@@ -6960,7 +7042,7 @@ checks if the given X.509 attribute has <i node-type="i">oid</i> or not.</p>
           <p node-type="paragraph"><i node-type="i">x509-extension</i> must be X.509 extension.<br>Creates PKCS#9 extension request attribute of the value <i node-type="i">x509-extension</i>s.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-attribute-&gt;x509-extension-list_4">
+            <a name="x509-attribute-&gt;x509-extension-list_6">
               <span>x509-attribute-&gt;x509-extension-list</span>
               <span> (</span>
               <span>
@@ -6976,13 +7058,13 @@ checks if the given X.509 attribute has <i node-type="i">oid</i> or not.</p>
 signals an error.</p>
           <div node-type="define" class="define">
             <span>Object identifier</span>
-            <a name="*pkcs-9:channelge-password*_153">
+            <a name="*pkcs-9:channelge-password*_156">
               <span>*pkcs-9:channelge-password*</span>
             </a>
           </div>
           <div node-type="define" class="define">
             <span>Object identifier</span>
-            <a name="*pkcs-9:extenion-request*_154">
+            <a name="*pkcs-9:extenion-request*_157">
               <span>*pkcs-9:extenion-request*</span>
             </a>
           </div>
@@ -6994,7 +7076,7 @@ signals an error.</p>
           </h3>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-extension?_65">
+            <a name="x509-extension?_67">
               <span>x509-extension?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -7004,7 +7086,7 @@ signals an error.</p>
           <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is X.509 extension, otherwise <code node-type="code">#f</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-extension-id_62">
+            <a name="x509-extension-id_64">
               <span>x509-extension-id</span>
               <span> (</span>
               <span>
@@ -7019,7 +7101,7 @@ signals an error.</p>
           <p node-type="paragraph">Retrieves id of the <i node-type="i">ext</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-extension-critical?_61">
+            <a name="x509-extension-critical?_63">
               <span>x509-extension-critical?</span>
               <span> (</span>
               <span>
@@ -7034,7 +7116,7 @@ signals an error.</p>
           <p node-type="paragraph">Retrieves critical of the <i node-type="i">ext</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-extension-value_64">
+            <a name="x509-extension-value_66">
               <span>x509-extension-value</span>
               <span> (</span>
               <span>
@@ -7201,7 +7283,7 @@ signals an error.</p>
 to see which extension's OID it is.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="x509-extension-of_63">
+            <a name="x509-extension-of_65">
               <span>x509-extension-of</span>
               <span>
                 <i node-type="i">oid</i>
@@ -7301,15 +7383,15 @@ library uses the format as key/value map.</p>
 use raw PKCS#12 format, see <code node-type="code">(sagittarius crypto pkcs keystore)</code>.</p>
         <div node-type="define" class="define">
           <span>Library</span>
-          <a name="(sagittarius crypto keystores)_89">
+          <a name="(sagittarius crypto keystores)_91">
             <span>(sagittarius crypto keystores)</span>
           </a>
         </div>
-        <p node-type="paragraph">The keystore library, this library exports the precedures listed
+        <p node-type="paragraph">The keystore library, this library exports the procedures listed
 blow sections.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore?_87">
+          <a name="pkcs12-keystore?_98">
             <span>pkcs12-keystore?</span>
             <span>
               <i node-type="i">obj</i>
@@ -7319,7 +7401,7 @@ blow sections.</p>
         <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is PKCS#12 keystore, otherwise <code node-type="code">#f</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-pkcs12-keystore_216">
+          <a name="make-pkcs12-keystore_221">
             <span>make-pkcs12-keystore</span>
           </a>
         </div>
@@ -7346,7 +7428,7 @@ blow sections.</p>
 an error is signalled.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="bytevector-&gt;pkcs12-keystore_104">
+          <a name="bytevector-&gt;pkcs12-keystore_106">
             <span>bytevector-&gt;pkcs12-keystore</span>
             <span> (</span>
             <span>
@@ -7370,7 +7452,7 @@ an error is signalled.</p>
 an error is signalled.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-&gt;bytevector_70">
+          <a name="pkcs12-keystore-&gt;bytevector_81">
             <span>pkcs12-keystore-&gt;bytevector</span>
             <span> (</span>
             <span>
@@ -7419,7 +7501,7 @@ both integrity and privacy exchange key.</p>
 using the given <i node-type="i">password</i> as both integrity and privacy exchange key.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-private-key-ref_82">
+          <a name="pkcs12-keystore-private-key-ref_93">
             <span>pkcs12-keystore-private-key-ref</span>
             <span> (</span>
             <span>
@@ -7450,7 +7532,7 @@ the given <i node-type="i">password</i>.</p>
         <p node-type="paragraph">If the <i node-type="i">alias</i> doesn't exist in the <i node-type="i">ks</i>, then returns <code node-type="code">#f</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-private-key-set!_83">
+          <a name="pkcs12-keystore-private-key-set!_94">
             <span>pkcs12-keystore-private-key-set!</span>
             <span> (</span>
             <span>
@@ -7492,7 +7574,7 @@ the given <i node-type="i">password</i>.</p>
         <p node-type="paragraph">The <i node-type="i">certs</i> must be a valid (chain) certificate(s) for the given <i node-type="i">key</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-certificate-ref_73">
+          <a name="pkcs12-keystore-certificate-ref_84">
             <span>pkcs12-keystore-certificate-ref</span>
             <span> (</span>
             <span>
@@ -7515,7 +7597,7 @@ the given <i node-type="i">password</i>.</p>
         <p node-type="paragraph">If the <i node-type="i">alias</i> doesn't exist in the <i node-type="i">ks</i>, then returns <code node-type="code">#f</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-certificate-set!_74">
+          <a name="pkcs12-keystore-certificate-set!_85">
             <span>pkcs12-keystore-certificate-set!</span>
             <span> (</span>
             <span>
@@ -7544,7 +7626,7 @@ the given <i node-type="i">password</i>.</p>
         <p node-type="paragraph">Stores the given <i node-type="i">cert</i> into the given <i node-type="i">ks</i> associating with <i node-type="i">alias</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-certificate-chain-ref_72">
+          <a name="pkcs12-keystore-certificate-chain-ref_83">
             <span>pkcs12-keystore-certificate-chain-ref</span>
             <span> (</span>
             <span>
@@ -7567,7 +7649,7 @@ the given <i node-type="i">password</i>.</p>
         <p node-type="paragraph">If there's no certificate associated to <i node-type="i">alias</i>, then it returns <code node-type="code">()</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-delete-entry!_78">
+          <a name="pkcs12-keystore-delete-entry!_89">
             <span>pkcs12-keystore-delete-entry!</span>
             <span> (</span>
             <span>
@@ -7589,7 +7671,7 @@ the given <i node-type="i">password</i>.</p>
         <p node-type="paragraph">Removes the entry associated to <i node-type="i">alias</i> from the <i node-type="i">ks</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-delete-all-entries!_76">
+          <a name="pkcs12-keystore-delete-all-entries!_87">
             <span>pkcs12-keystore-delete-all-entries!</span>
             <span> (</span>
             <span>
@@ -7603,6 +7685,135 @@ the given <i node-type="i">password</i>.</p>
         </div>
         <p node-type="paragraph">Removes all entries from the <i node-type="i">ks</i>.</p>
       </section>
+      <section node-type="section">
+        <h2 node-type="header-2">
+          <a name="sagittarius.crypto.kdfs">KDF library - (sagittarius crypto kdfs)</a>
+        </h2>
+        <p node-type="paragraph">The KDF, Key Derivation Function, library provides various KDF algorithms.</p>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(sagittarius crypto kdfs)_89">
+            <span>(sagittarius crypto kdfs)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">The KDF library, this library exports the procedures listed below sections.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pbkdf-1_61">
+            <span>pbkdf-1</span>
+            <span>
+              <i node-type="i">P</i>
+            </span>
+            <span>
+              <i node-type="i">S</i>
+            </span>
+            <span>
+              <i node-type="i">c</i>
+            </span>
+            <span>
+              <i node-type="i">dk-len</i>
+            </span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">digest</i>
+            </span>
+            <span>
+              <code node-type="code">*digest:sha-1*</code>
+            </span>
+            <span>)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">_P_and <i node-type="i">S</i> must be bytevectors.<br><i node-type="i">c</i> and <i node-type="i">dk-len</i> must be non-negative integers.</p>
+        <p node-type="paragraph">PBKDF1</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pbkdf-2_63">
+            <span>pbkdf-2</span>
+            <span>
+              <i node-type="i">P</i>
+            </span>
+            <span>
+              <i node-type="i">S</i>
+            </span>
+            <span>
+              <i node-type="i">c</i>
+            </span>
+            <span>
+              <i node-type="i">dk-len</i>
+            </span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">prf</i>
+            </span>
+            <span>
+              <code node-type="code">*hmac-sha1-prf*</code>
+            </span>
+            <span>)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">_P_and <i node-type="i">S</i> must be bytevectors.<br><i node-type="i">c</i> and <i node-type="i">dk-len</i> must be non-negative integers.</p>
+        <p node-type="paragraph">PBKDF2</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mac-&gt;prf-provider_0">
+            <span>mac-&gt;prf-provider</span>
+            <span>
+              <i node-type="i">scheme</i>
+            </span>
+            <span> . </span>
+            <span>
+              <i node-type="i">opts</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">scheme</i> must be a MAC scheme, e.g. <code node-type="code">*mac:hmac*</code>.</p>
+        <p node-type="paragraph">Provides a PRF generator which accepts <i node-type="i">S</i>, secret,
+based on the given <i node-type="i">scheme</i>.<br>The <i node-type="i">opts</i> will be passed to the MAC generation.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hkdf_51">
+            <span>hkdf</span>
+            <span>
+              <i node-type="i">digest</i>
+            </span>
+            <span>
+              <i node-type="i">ikm</i>
+            </span>
+            <span>
+              <i node-type="i">salt</i>
+            </span>
+            <span>
+              <i node-type="i">info</i>
+            </span>
+            <span>
+              <i node-type="i">dk-len</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">HKDF</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcf12-kdf_68">
+            <span>pkcf12-kdf</span>
+            <span>
+              <i node-type="i">digest</i>
+            </span>
+            <span>
+              <i node-type="i">pw</i>
+            </span>
+            <span>
+              <i node-type="i">salt</i>
+            </span>
+            <span>
+              <i node-type="i">iteration</i>
+            </span>
+            <span>
+              <i node-type="i">dk-len</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">PKCS12 KDF</p>
+      </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
       <a href="./section616.html">(sagittarius generators) - Generators</a>
@@ -7611,7 +7822,7 @@ the given <i node-type="i">password</i>.</p>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

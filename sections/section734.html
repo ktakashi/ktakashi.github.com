@@ -7,60 +7,278 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section733.html">(rfc base64) - Base 64 encode and decode library</a>
+      <a href="./section733.html">(record builder) - Record builder</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section735.html">(rfc hmac) - HMAC library</a>
+      <a href="./section735.html">(rfc base64) - Base 64 encode and decode library</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="rfc.cmac">(rfc cmac) - CMAC library</a>
+        <a name="rfc.5322">(rfc :5322) - Internet message format library</a>
       </h2>
-      <p node-type="paragraph">This section describes the CMAC extension of hash algorithm. The CMAC itself
-is described <a href="http://tools.ietf.org/html/rfc4493">RFC 4493</a>.
-The provided library make user be able to use the algorithm with the APIs of
-math library's hash algorithm APIs. For the APIs detail, see
-<a href="section719.html#math.hash">Hash operations</a>.</p>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(rfc cmac)_33">
-          <span>(rfc cmac)</span>
+        <a name="(rfc :5322)_32">
+          <span>(rfc :5322)</span>
         </a>
       </div>
-      <p node-type="paragraph">Provides CMAC hash algorithm.</p>
-      <div node-type="define" class="define">
-        <span>Variable</span>
-        <a name="CMAC_112">
-          <span>CMAC</span>
-        </a>
-      </div>
-      <p node-type="paragraph">The name for CMAC hash algorithm.</p>
-      <p node-type="paragraph">The following example explains, how to use it.</p>
-      <pre lang="scheme" node-type="block"><code>(import (rnrs) (rfc cmac) (math) (crypto))
-
-(define K (generate-secret-key AES (integer-&gt;bytevector 
-				    #x2b7e151628aed2a6abf7158809cf4f3c)))
-
-(define aes-cipher (cipher AES K))
-
-(hash CMAC #vu8() :cipher aes-cipher)
-;; =&gt; #vu8(187 29 105 41 233 89 55 40 127 163 125 18 155 117 103 70)
-
-;; for AES-CMAC-96
-(hash CMAC #vu8() :cipher aes-cipher :size (/ 96 8))
-;; =&gt; #vu8(187 29 105 41 233 89 55 40 127 163 125 18)
-</code></pre>
-      <p node-type="paragraph">The RFC is defined for only AES block cipher however the implementation
-can take any block cipher such as DES3.</p>
-      <p node-type="paragraph">CAUTION: only AES cipher is tested.</p>
+      <p node-type="paragraph">This library provides the procedures for internet message format defined
+in RFC5322(<a href="http://tools.ietf.org/html/rfc5322">RFC 5322</a>).</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Parsing-message-headers">Parsing message headers</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-read-headers_132">
+            <span>rfc5322-read-headers</span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(strict?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">reader</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">input-port</i> must be input port and will be passed to <i node-type="i">reader</i>.</p>
+        <p node-type="paragraph">Reads RFC5322 format message from the given port until it reaches the end of the
+message header and returns a list of the following format;</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>((name body) ...)</code></pre>
+        </p>
+        <p node-type="paragraph"><i node-type="i">name ...</i> are the field names and <i node-type="i">body ...</i> are the
+correspoinding field body. Both are as string. Field names are converted to
+lower-case characters.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">strict?</i> switches the behaviour when the procedure
+encounter EOF. If it's #f, then it simply ignore the field and return the
+composed list. And if it's #t, it raises <code node-type="code">&amp;rfc5322-parse-error</code>.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">reader</i> reads a line from given port. The default
+is <code node-type="code">rfc5322-line-reader</code> and it treats both LF and CRLF eof style. If you
+want to read from binary port, you need to pass own reader.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-line-reader_128">
+            <span>rfc5322-line-reader</span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">input-port</i> must be textual input port.</p>
+        <p node-type="paragraph">Reads a line from given port. If the last character is CR chop it off.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-header-ref_126">
+            <span>rfc5322-header-ref</span>
+            <span>
+              <i node-type="i">header-list</i>
+            </span>
+            <span>
+              <i node-type="i">field-name</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">maybe-default</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">An utility procedure to get a specific field from the parsed header list,
+which is returned by <code node-type="code">rfc5322-read-headers</code>.</p>
+        <p node-type="paragraph">If the field with given <i node-type="i">field-name</i> is in <i node-type="i">header-list</i>, the
+procedure returns its value in a string.  Otherwise, if default is
+given, it is returned, and if not, #f is returned.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-header-ref*_127">
+            <span>rfc5322-header-ref*</span>
+            <span>
+              <i node-type="i">header-list</i>
+            </span>
+            <span>
+              <i node-type="i">field-name</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">An utility procedure to get a specific field from the parsed header list,
+which is returned by <code node-type="code">rfc5322-read-headers</code>.</p>
+        <p node-type="paragraph">This procedure collects all the given <i node-type="i">field-name</i> from the
+<i node-type="i">header-list</i>. If there's no header named <i node-type="i">field-name</i>, then the
+procedure returns <code node-type="code">()</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Basic-field-parsers">Basic field parsers</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-next-token_129">
+            <span>rfc5322-next-token</span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">tokenizer-spec</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">input-port</i> must be textual input port.</p>
+        <p node-type="paragraph">A basic tokenizer. First it skips whitespaces and/or comments (CFWS) from
+<i node-type="i">input-port</i>, if any. Then reads one token according to
+var{tokenizer-specs}. If <i node-type="i">input-port</i> reaches EOF before any token is read,
+EOF is returned.</p>
+        <p node-type="paragraph"><i node-type="i">tokenizer-specs</i> is a list of tokenizer spec. which is a cons of a char-set
+and a procedure.</p>
+        <p node-type="paragraph">After skipping CFWS, the procedure peeks a character at the head of
+<i node-type="i">input-port</i>, and checks it against the char-sets in _tokenizer-specs_one by one. If a char-set that contains the character belongs to is found, then
+a token is retrieved with calling the procedure with <i node-type="i">input-port</i> to read a
+token.</p>
+        <p node-type="paragraph">If the head character doesn’t match any char-sets, the character is taken from
+<i node-type="i">input-port</i> and returned.</p>
+        <p node-type="paragraph">The default <i node-type="i">tokenizer-specs</i> is as follows:</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(list (cons (string-&gt;char-set ":") rfc5322-quoted-string) (cons *rfc5322-atext-chars* rfc5322-dot-atom)) </code></pre>
+        </p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-field-&gt;tokens_125">
+            <span>rfc5322-field-&gt;tokens</span>
+            <span>
+              <i node-type="i">field</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">tokenizer-spec</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A convenience procedure. Creates a string input port from given
+<i node-type="i">field</i> and calls <code node-type="code">rfc5322-next-token</code> repeatedly on it until it
+consumes all input, and returns a list of tokens.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-skip-cfws_133">
+            <span>rfc5322-skip-cfws</span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Consumes whitespace characters and/or any comments from _input-port_and returns a non comment and whitespace character. The returned character
+remains in <i node-type="i">input-port</i>.</p>
+        <div node-type="define" class="define">
+          <span>Variable</span>
+          <a name="*rfc5322-atext-chars*_170">
+            <span>*rfc5322-atext-chars*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A character set which is defined RFC 5322 section 3.2.3 Atom.</p>
+        <div node-type="define" class="define">
+          <span>Variable</span>
+          <a name="*rfc5322-standard-tokenizers*_171">
+            <span>*rfc5322-standard-tokenizers*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Default tokenizer.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-dot-atom_124">
+            <span>rfc5322-dot-atom</span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-quoted-string_131">
+            <span>rfc5322-quoted-string</span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Tokenizers for <code node-type="code">dot-atom</code> and <code node-type="code">quoted-string</code> respectively.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Specific-field-parsers">Specific field parsers</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-parse-date_130">
+            <span>rfc5322-parse-date</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Takes RFC-5322 type date string and returns eight values:</p>
+        <p node-type="paragraph"><code node-type="code">year, month, day-of-month, hour, minute, second, time-zone, day-of-week.</code><i node-type="i">time-zone</i> is an offset from UT in minutes. <i node-type="i">day-of-week</i> is a day from
+sunday, and may be #f if that information is not available. <i node-type="i">month</i> is an
+integer between 1 and 12, inclusive. If the <i node-type="i">string</i> is not parsable, all
+the elements are #f.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Message-constructors">Message constructors</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rfc5322-write-headers_134">
+            <span>rfc5322-write-headers</span>
+            <span>
+              <i node-type="i">headers</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(output</i>
+            </span>
+            <span>
+              <i node-type="i">(current-output-port))</i>
+            </span>
+            <span> _</span>
+          </a>
+        </div>
+        <p node-type="paragraph">_ <i node-type="i">(check</i> <i node-type="i">:error)</i> <i node-type="i">(continue</i> <i node-type="i">#f)</i></p>
+        <p node-type="paragraph">Writes the given <i node-type="i">header</i> to the port <i node-type="i">output</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="date-&gt;rfc5322-date_1">
+            <span>date-&gt;rfc5322-date</span>
+            <span>
+              <i node-type="i">date</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">date</i> must be SRFI-19 date.</p>
+        <p node-type="paragraph">Returns RFC 5322 date formatted string.</p>
+      </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section733.html">(rfc base64) - Base 64 encode and decode library</a>
+      <a href="./section733.html">(record builder) - Record builder</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section735.html">(rfc hmac) - HMAC library</a>
+      <a href="./section735.html">(rfc base64) - Base 64 encode and decode library</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

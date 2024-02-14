@@ -7,278 +7,521 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section731.html">(record builder) - Record builder</a>
+      <a href="./section731.html">(rsa pkcs :12) - PKCS#12</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section733.html">(rfc base64) - Base 64 encode and decode library</a>
+      <a href="./section733.html">(record builder) - Record builder</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="rfc.5322">(rfc :5322) - Internet message format library</a>
+        <a name="util.queue">(util queue) - Queue</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(rfc :5322)_31">
-          <span>(rfc :5322)</span>
+        <a name="(util queue)_198">
+          <span>(util queue)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides the procedures for internet message format defined
-in RFC5322(<a href="http://tools.ietf.org/html/rfc5322">RFC 5322</a>).</p>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Parsing-message-headers">Parsing message headers</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-read-headers_132">
-            <span>rfc5322-read-headers</span>
-            <span>
-              <i node-type="i">input-port</i>
-            </span>
-            <span>
-              <i node-type="i">:key</i>
-            </span>
-            <span>
-              <i node-type="i">(strict?</i>
-            </span>
-            <span>
-              <i node-type="i">#f)</i>
-            </span>
-            <span>
-              <i node-type="i">reader</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">input-port</i> must be input port and will be passed to <i node-type="i">reader</i>.</p>
-        <p node-type="paragraph">Reads RFC5322 format message from the given port until it reaches the end of the
-message header and returns a list of the following format;</p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>((name body) ...)</code></pre>
-        </p>
-        <p node-type="paragraph"><i node-type="i">name ...</i> are the field names and <i node-type="i">body ...</i> are the
-correspoinding field body. Both are as string. Field names are converted to
-lower-case characters.</p>
-        <p node-type="paragraph">The keyword argument <i node-type="i">strict?</i> switches the behaviour when the procedure
-encounter EOF. If it's #f, then it simply ignore the field and return the
-composed list. And if it's #t, it raises <code node-type="code">&amp;rfc5322-parse-error</code>.</p>
-        <p node-type="paragraph">The keyword argument <i node-type="i">reader</i> reads a line from given port. The default
-is <code node-type="code">rfc5322-line-reader</code> and it treats both LF and CRLF eof style. If you
-want to read from binary port, you need to pass own reader.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-line-reader_128">
-            <span>rfc5322-line-reader</span>
-            <span>
-              <i node-type="i">input-port</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">input-port</i> must be textual input port.</p>
-        <p node-type="paragraph">Reads a line from given port. If the last character is CR chop it off.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-header-ref_126">
-            <span>rfc5322-header-ref</span>
-            <span>
-              <i node-type="i">header-list</i>
-            </span>
-            <span>
-              <i node-type="i">field-name</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">maybe-default</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">An utility procedure to get a specific field from the parsed header list,
-which is returned by <code node-type="code">rfc5322-read-headers</code>.</p>
-        <p node-type="paragraph">If the field with given <i node-type="i">field-name</i> is in <i node-type="i">header-list</i>, the
-procedure returns its value in a string.  Otherwise, if default is
-given, it is returned, and if not, #f is returned.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-header-ref*_127">
-            <span>rfc5322-header-ref*</span>
-            <span>
-              <i node-type="i">header-list</i>
-            </span>
-            <span>
-              <i node-type="i">field-name</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">An utility procedure to get a specific field from the parsed header list,
-which is returned by <code node-type="code">rfc5322-read-headers</code>.</p>
-        <p node-type="paragraph">This procedure collects all the given <i node-type="i">field-name</i> from the
-<i node-type="i">header-list</i>. If there's no header named <i node-type="i">field-name</i>, then the
-procedure returns <code node-type="code">()</code>.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Basic-field-parsers">Basic field parsers</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-next-token_129">
-            <span>rfc5322-next-token</span>
-            <span>
-              <i node-type="i">input-port</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">tokenizer-spec</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">input-port</i> must be textual input port.</p>
-        <p node-type="paragraph">A basic tokenizer. First it skips whitespaces and/or comments (CFWS) from
-<i node-type="i">input-port</i>, if any. Then reads one token according to
-var{tokenizer-specs}. If <i node-type="i">input-port</i> reaches EOF before any token is read,
-EOF is returned.</p>
-        <p node-type="paragraph"><i node-type="i">tokenizer-specs</i> is a list of tokenizer spec. which is a cons of a char-set
-and a procedure.</p>
-        <p node-type="paragraph">After skipping CFWS, the procedure peeks a character at the head of
-<i node-type="i">input-port</i>, and checks it against the char-sets in _tokenizer-specs_one by one. If a char-set that contains the character belongs to is found, then
-a token is retrieved with calling the procedure with <i node-type="i">input-port</i> to read a
-token.</p>
-        <p node-type="paragraph">If the head character doesn’t match any char-sets, the character is taken from
-<i node-type="i">input-port</i> and returned.</p>
-        <p node-type="paragraph">The default <i node-type="i">tokenizer-specs</i> is as follows:</p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(list (cons (string-&gt;char-set ":") rfc5322-quoted-string) (cons *rfc5322-atext-chars* rfc5322-dot-atom)) </code></pre>
-        </p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-field-&gt;tokens_125">
-            <span>rfc5322-field-&gt;tokens</span>
-            <span>
-              <i node-type="i">field</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">tokenizer-spec</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">A convenience procedure. Creates a string input port from given
-<i node-type="i">field</i> and calls <code node-type="code">rfc5322-next-token</code> repeatedly on it until it
-consumes all input, and returns a list of tokens.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-skip-cfws_133">
-            <span>rfc5322-skip-cfws</span>
-            <span>
-              <i node-type="i">input-port</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Consumes whitespace characters and/or any comments from _input-port_and returns a non comment and whitespace character. The returned character
-remains in <i node-type="i">input-port</i>.</p>
-        <div node-type="define" class="define">
-          <span>Variable</span>
-          <a name="*rfc5322-atext-chars*_167">
-            <span>*rfc5322-atext-chars*</span>
-          </a>
-        </div>
-        <p node-type="paragraph">A character set which is defined RFC 5322 section 3.2.3 Atom.</p>
-        <div node-type="define" class="define">
-          <span>Variable</span>
-          <a name="*rfc5322-standard-tokenizers*_168">
-            <span>*rfc5322-standard-tokenizers*</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Default tokenizer.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-dot-atom_124">
-            <span>rfc5322-dot-atom</span>
-            <span>
-              <i node-type="i">input-port</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-quoted-string_131">
-            <span>rfc5322-quoted-string</span>
-            <span>
-              <i node-type="i">input-port</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Tokenizers for <code node-type="code">dot-atom</code> and <code node-type="code">quoted-string</code> respectively.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Specific-field-parsers">Specific field parsers</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-parse-date_130">
-            <span>rfc5322-parse-date</span>
-            <span>
-              <i node-type="i">string</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Takes RFC-5322 type date string and returns eight values:</p>
-        <p node-type="paragraph"><code node-type="code">year, month, day-of-month, hour, minute, second, time-zone, day-of-week.</code><i node-type="i">time-zone</i> is an offset from UT in minutes. <i node-type="i">day-of-week</i> is a day from
-sunday, and may be #f if that information is not available. <i node-type="i">month</i> is an
-integer between 1 and 12, inclusive. If the <i node-type="i">string</i> is not parsable, all
-the elements are #f.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Message-constructors">Message constructors</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="rfc5322-write-headers_134">
-            <span>rfc5322-write-headers</span>
-            <span>
-              <i node-type="i">headers</i>
-            </span>
-            <span>
-              <i node-type="i">:key</i>
-            </span>
-            <span>
-              <i node-type="i">(output</i>
-            </span>
-            <span>
-              <i node-type="i">(current-output-port))</i>
-            </span>
-            <span> _</span>
-          </a>
-        </div>
-        <p node-type="paragraph">_ <i node-type="i">(check</i> <i node-type="i">:error)</i> <i node-type="i">(continue</i> <i node-type="i">#f)</i></p>
-        <p node-type="paragraph">Writes the given <i node-type="i">header</i> to the port <i node-type="i">output</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="date-&gt;rfc5322-date_1">
-            <span>date-&gt;rfc5322-date</span>
-            <span>
-              <i node-type="i">date</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">date</i> must be SRFI-19 date.</p>
-        <p node-type="paragraph">Returns RFC 5322 date formatted string.</p>
-      </section>
+      <p node-type="paragraph">This library provides queue (FIFO) data structure and its operations.</p>
+      <p node-type="paragraph">You can create a simple queue, which is not thread-safe, or an MT queue, a
+thread-safe queue. Basic queue operations work on both type of queues. When
+a mtqueue is passed to the procedures listed in this section, each operation
+is done in atomic way, unless otherwise noted.</p>
+      <p node-type="paragraph">There are also a set of procedures for mtqueues that can be used for thread
+synchronisation; for example, you can let the consumer thread block if an
+mtqueue is empty, and/or the producer thread block if the number of items in
+the mtqueue reaches a specified limit. Using these procedures allows the
+program to use an mtqueue as a <i node-type="i">channel</i>.</p>
+      <p node-type="paragraph">The simple queue API is a super set of SLIB's queue implementation.</p>
+      <p node-type="paragraph">NOTE: <a href="section712.html#util.deque">(util deque)</a> is used as underlying library.</p>
+      <div node-type="define" class="define">
+        <span>Class</span>
+        <a name="<queue&gt;_57">
+          <span>&lt;queue&gt;</span>
+        </a>
+      </div>
+      <p node-type="paragraph">A class of simple queue.</p>
+      <div node-type="define" class="define">
+        <span>Class</span>
+        <a name="<mtqueue&gt;_50">
+          <span>&lt;mtqueue&gt;</span>
+        </a>
+      </div>
+      <p node-type="paragraph">A class of mtqueue. Inherits <code node-type="code">&lt;queue&gt;</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-queue_224">
+          <span>make-queue</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates and return an empty simple queue.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-mtqueue_206">
+          <span>make-mtqueue</span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">max-length</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates and return an empty mtqueue.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">max-length</i> specifies the maximum entry count of
+the queue. Negative number indicates unlimited number of entry. If the given
+number is zero then the queue cannot hold any item.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue?_12">
+          <span>queue?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is a queue (either a simple queue or an mtqueue).</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mtqueue?_403">
+          <span>mtqueue?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is an mtqueue.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-empty?_3">
+          <span>queue-empty?</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">queue</i> is an empty queue.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-length_5">
+          <span>queue-length</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the number of the items in the queue.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mtqueue-max-length_401">
+          <span>mtqueue-max-length</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the maximum number of items <i node-type="i">mtqueue</i> can hold.
+#f indicates unlimited.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mtqueue-room_402">
+          <span>mtqueue-room</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the number of elements <i node-type="i">mtqueue</i> can accept at this moment
+before it hits its maximum length. If the queue has unlimited capacity then
+the procedure returns <code node-type="code">+inf.0</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="copy-queue_155">
+          <span>copy-queue</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a copy of <i node-type="i">queue</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="enqueue!_8">
+          <span>enqueue!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Adds <i node-type="i">obj</i> to the end of  <i node-type="i">queue</i>. You may give more than
+one object, and each of them are enqueued in order.</p>
+      <p node-type="paragraph">If <i node-type="i">queue</i> is an mtqueue, all the objects are enqueued atomically; no
+other objects from other threads can be inserted between the objects given
+to a single <code node-type="code">enqueue!</code> call. Besides, if the value of the result of
+<code node-type="code">mtqueue-max-length</code> is positive, and adding <i node-type="i">objs</i> makes the
+number of element in <i node-type="i">queue</i> exceeds it, an error is raised and
+<i node-type="i">queue</i> won't be modified. (If the maximum length is zero, this procedure
+always fail. Use <code node-type="code">enqueue/wait!</code> below.)</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-push!_8">
+          <span>queue-push!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Adds <i node-type="i">obj</i> to in front of <i node-type="i">queue</i>. You may give more than
+one object, and each of them are pushed in order.</p>
+      <p node-type="paragraph">Like <code node-type="code">enqueue!</code>, when <i node-type="i">queue</i> is an mtqueue, all objects are added
+atomically, and the value of max length is checked. See <code node-type="code">enqueue!</code> above
+for more detail.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="enqueue-unique!_9">
+          <span>enqueue-unique!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">eq-proc</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-push-unique!_9">
+          <span>queue-push-unique!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">eq-proc</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Like <code node-type="code">enqueue!</code> and <code node-type="code">queue-push!</code>, respectively, except that
+these don't modify <i node-type="i">queue</i> if it already contains <i node-type="i">objs</i> (elements are
+compared by two-argument procedure <i node-type="i">eq-proc</i>).</p>
+      <p node-type="paragraph">When <i node-type="i">queue</i> is an mtqueue, all objects are added atomically, and the max
+length is checked. See <code node-type="code">enqueue!</code> above for the detail.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="dequeue!_125">
+          <span>dequeue!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-pop!_6">
+          <span>queue-pop!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Take one object from the front of <i node-type="i">queue</i> and return it. Both
+function work the same, but <code node-type="code">queue-pop!</code> may be used to emphasize it
+works with <code node-type="code">queue-push!</code>.</p>
+      <p node-type="paragraph">If <i node-type="i">queue</i> is empty, <i node-type="i">fallback</i> is returned if give, otherwise an
+error is raised.</p>
+      <p node-type="paragraph">If <i node-type="i">queue</i> is mtqueue and its max length is zero, then the queue is
+always empty. Use <code node-type="code">dequeue/wait!</code> to use such a queue as a
+synchronisation device.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="dequeue-all!_126">
+          <span>dequeue-all!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the whole content of <i node-type="i">queue</i> by a list, with emptying
+<i node-type="i">queue</i>. If <i node-type="i">queue</i> is empty, returns an empty list. See also
+<code node-type="code">queue-&gt;list</code> below.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-front_4">
+          <span>queue-front</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-rear_11">
+          <span>queue-rear</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Peek the head or the tail of <i node-type="i">queue</i> and return the object,
+respectively.</p>
+      <p node-type="paragraph">If <i node-type="i">queue</i> is empty, <i node-type="i">fallback</i> is returned if give, otherwise an
+error is raised.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="list-&gt;queue_29">
+          <span>list-&gt;queue</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">class</i>
+          </span>
+          <span>
+            <i node-type="i">:rest</i>
+          </span>
+          <span>
+            <i node-type="i">initargs</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a new queue which content is the elements in <i node-type="i">list</i>, in
+the given order.</p>
+      <p node-type="paragraph">By default the created queue is a simple queue, but you can create mtqueue
+or instance of other subclass <code node-type="code">&lt;queue&gt;</code> by giving the class to the
+optional <i node-type="i">class</i> arguments. The optional <i node-type="i">initargs</i> arguments are
+passed to the constructor of <i node-type="i">class</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-&gt;list_2">
+          <span>queue-&gt;list</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a list whose content is the items in <i node-type="i">queue</i> in order.
+Unlike <code node-type="code">dequeue-all!</code>, the content of <i node-type="i">queue</i> remains intact.
+The returning list is a copy of the content. So modifying the list won't
+affect <i node-type="i">queue</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="find-in-queue_37">
+          <span>find-in-queue</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the first item in <i node-type="i">queue</i> that satisfies a predicate
+<i node-type="i">pred</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="any-in-queue_42">
+          <span>any-in-queue</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Apply <i node-type="i">pred</i> on each item in <i node-type="i">queue</i> until it evaluates true,
+and returns that true value. If no item satisfies <i node-type="i">pred</i>, #f is returned.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="every-in-queue_43">
+          <span>every-in-queue</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Apply <i node-type="i">pred</i> on each item in <i node-type="i">queue</i>. If <i node-type="i">pred</i> returns #f,
+stops iteration and returns #f immediately. Otherwise, returns the result of
+<i node-type="i">pred</i> on the last item of <i node-type="i">queue</i>. If the queue is empty, #t is
+returned.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="remove-from-queue!_112">
+          <span>remove-from-queue!</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Removes all items in <i node-type="i">queue</i> that satisfies <i node-type="i">pred</i>. Returns
+#t if any item is removed. Otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="enqueue/wait!_10">
+          <span>enqueue/wait!</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-push/wait!_10">
+          <span>queue-push/wait!</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="dequeue/wait!_127">
+          <span>dequeue/wait!</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-pop/wait!_7">
+          <span>queue-pop/wait!</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">These synchronising variants work on an mtqueue and make the caller
+thread block when the mtqueue has reached its maximum length (for
+<code node-type="code">enqueue/wait!</code> and <i node-type="i">queue-push/wait!</i>), or the mtqueue is empty
+(for <code node-type="code">dequeue/wait!</code> and <i node-type="i">queue-pop/wait!</i>). The blocked caller
+thread is unblocked either the blocking condition is resolved, or the
+timeout condition is met.</p>
+      <p node-type="paragraph">The optional <i node-type="i">timeout</i> argument specifies the timeout condition. If it
+is #f, those procedure wait indefinitely. If it is a real number, they wait
+at least the given number of seconds.</p>
+      <p node-type="paragraph">In case the call is blocked then timed out, the value of <i node-type="i">timeout-val</i> is
+returned, which default value is #t.</p>
+      <p node-type="paragraph">When <code node-type="code">enqueue/wait!</code> and <code node-type="code">queue-push/wait!</code> succeeds without hitting
+timeout, they return #t.</p>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section731.html">(record builder) - Record builder</a>
+      <a href="./section731.html">(rsa pkcs :12) - PKCS#12</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section733.html">(rfc base64) - Base 64 encode and decode library</a>
+      <a href="./section733.html">(record builder) - Record builder</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

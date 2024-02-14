@@ -7,295 +7,183 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section758.html">(rpc json) - JSON RPC library</a>
+      <a href="./section758.html">(rfc zlib) - zlib compression library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section760.html">(text csv) - Comma separated values parser library</a>
+      <a href="./section760.html">(rpc json) - JSON RPC library</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="security.keystore">(security keystore) - Generic Keystore Access</a>
+        <a name="utils.rpc">RPC support framework</a>
       </h2>
-      <div node-type="define" class="define">
-        <span>Library</span>
-        <a name="(security keystore)_154">
-          <span>(security keystore)</span>
-        </a>
-      </div>
-      <p node-type="paragraph">This library provides generic access for variety of keystores.</p>
-      <p node-type="paragraph">The following example shows how to use this library:</p>
-      <pre lang="scheme" node-type="block"><code>(import (security keystore))
-
-(define keystore (load-keystore 'jks "keystore.jks" "storepass"))
-
-(keystore-get-key keystore "key-name" "key-pass")
-;; -&gt; &lt;private-key&gt;
-
-(keystore-get-certificate keystore "cert-name")
-;; -&gt; &lt;x509-certificate&gt;
-
-;; certs must be a list of certificates
-(keystore-set-key! keystore "key-name2" private-key "key-pass2" certs)
-
-(keystore-set-certificate! keystore "cert-name2" cert)
-
-(store-keystore-to-file keystore "keystore2.jks" "storepass2")
-</code></pre>
+      <p node-type="paragraph">RPC is basically separated in 2 parts. One is message marshalling and other
+one is transporting. Following sections and libraries provide some framework
+for generic use.</p>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="Generic-APIs">Generic APIs</a>
+          <a name="Message-framework">Message framework</a>
         </h3>
         <div node-type="define" class="define">
-          <span>Class</span>
-          <a name="<keystore&gt;_43">
-            <span>&lt;keystore&gt;</span>
+          <span>Library</span>
+          <a name="(rpc message)_83">
+            <span>(rpc message)</span>
           </a>
         </div>
-        <p node-type="paragraph">Base class of keystores.</p>
+        <p node-type="paragraph">This library provides generic functions for marshalling message.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="rpc-marshall-message_155">
+            <span>rpc-marshall-message</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="rpc-unmarshall-message_157">
+            <span>rpc-unmarshall-message</span>
+          </a>
+        </div>
+        <p node-type="paragraph">These generic function will be used transport layer to marshall or
+unmarshall messages.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="utils.rpc.transport.http">Http transport</a>
+        </h3>
+        <p node-type="paragraph">Currently there is no generic transport framework and support HTTP transport.</p>
+        <p node-type="paragraph">For future, we may provide more generic way to send/receive request
+and response.</p>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(rpc transport http)_84">
+            <span>(rpc transport http)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">This library provides procedures and generic function of
+HTTP transport for RCP</p>
+        <p node-type="paragraph">.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="keystore?_24">
-            <span>keystore?</span>
+          <a name="rpc-http-request_149">
+            <span>rpc-http-request</span>
             <span>
-              <i node-type="i">obj</i>
+              <i node-type="i">url</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(unmarshall?</i>
+            </span>
+            <span>
+              <i node-type="i">#t)</i>
+            </span>
+            <span>
+              <i node-type="i">:allow-other-keys</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a keystore object. Otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="load-keystore_39">
-            <span>load-keystore</span>
-            <span>
-              <i node-type="i">type</i>
-            </span>
-            <span>
-              <i node-type="i">input-port</i>
-            </span>
-            <span>
-              <i node-type="i">storepass</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="load-keystore-file_40">
-            <span>load-keystore-file</span>
-            <span>
-              <i node-type="i">type</i>
-            </span>
-            <span>
-              <i node-type="i">file</i>
-            </span>
-            <span>
-              <i node-type="i">storepass</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Loads <i node-type="i">type</i> keystore from <i node-type="i">input-port</i> or <i node-type="i">file</i>.</p>
-        <p node-type="paragraph"><i node-type="i">storepass</i> must be a string and may or may not be used to decrypt
-keystore content.</p>
-        <p node-type="paragraph"><code node-type="code">load-keystore</code> loads from given binary input port <i node-type="i">input-port</i>.</p>
-        <p node-type="paragraph"><code node-type="code">load-keystore-file</code> loads from given file <i node-type="i">file</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-keystore_185">
-            <span>make-keystore</span>
-            <span>
-              <i node-type="i">type</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns newly created <i node-type="i">type</i> keystore object.</p>
-        <p node-type="paragraph">Currently <code node-type="code">pkcs12</code>, <code node-type="code">jks</code> and <code node-type="code">jceks</code> are supported.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="keystore-get-key_19">
-            <span>keystore-get-key</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-            <span>
-              <i node-type="i">keypass</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">The method shall return a private key associated with _alias_from <i node-type="i">keystore</i>. If there is no key entry associated with <i node-type="i">alias</i>
-then #f shall be returned.</p>
-        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
-        <p node-type="paragraph"><i node-type="i">keypass</i> shall be a string. It may or may not be used to decrypt
-the private key.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="keystore-get-certificate_16">
-            <span>keystore-get-certificate</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">The method shall return an X509 certificate associated with _alias_from <i node-type="i">keystore</i>. If there is no certificate entry associated with
-<i node-type="i">alias</i> then #f shall be returned.</p>
-        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="keystore-get-certificate-chain_17">
-            <span>keystore-get-certificate-chain</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">The method shall return a list of key certificates associated
-with <i node-type="i">alias</i> from <i node-type="i">keystore</i>. If there is no certificate entries
-associated with <i node-type="i">alias</i> then #f shall be returned.</p>
-        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="keystore-get-creation-date_18">
-            <span>keystore-get-creation-date</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">The method shall return a date object of <i node-type="i">alias</i> associated entry.
-If there is no entry associated with <i node-type="i">alias</i> then #f shall be returned.</p>
-        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="keystore-contains-alias?_14">
-            <span>keystore-contains-alias?</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">The method shall return #t if <i node-type="i">keystore</i> contains an entry associated
-with <i node-type="i">alias</i>. Otherwise #f shall be returend.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="store-keystore_251">
-            <span>store-keystore</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">output-port</i>
-            </span>
-            <span>
-              <i node-type="i">storepass</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="store-keystore-to-file_252">
-            <span>store-keystore-to-file</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">file</i>
-            </span>
-            <span>
-              <i node-type="i">storepass</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">The methods shall write <i node-type="i">keystore</i> to <i node-type="i">output-port</i> or
-<i node-type="i">file</i>.</p>
-        <p node-type="paragraph">The <code node-type="code">store-keystore</code> shall write to given binary output port
-<i node-type="i">output-port</i>.</p>
-        <p node-type="paragraph">The <code node-type="code">store-keystore-to-file</code> shall write to given file <i node-type="i">file</i>.</p>
-        <p node-type="paragraph"><i node-type="i">storepass</i> shall be a string and may or may not be used to encrypt
-whole contents.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="keystore-set-key!_23">
-            <span>keystore-set-key!</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-            <span>
-              <i node-type="i">private-key</i>
-            </span>
-            <span>
-              <i node-type="i">keypass</i>
-            </span>
-            <span>
-              <i node-type="i">certs</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string represents the name of <i node-type="i">private-key</i> in
-the <i node-type="i">keystore</i>.</p>
-        <p node-type="paragraph"><i node-type="i">private-key</i> shall be an RSA private key.</p>
-        <p node-type="paragraph"><i node-type="i">key-pass</i> shall be a string and may or may not be used to encrypt
-given <i node-type="i">private-key</i>.</p>
-        <p node-type="paragraph"><i node-type="i">certs</i> shall be a list of X509 certificates which associated with
-<i node-type="i">private-key</i>.</p>
-        <p node-type="paragraph">The method shall store given <i node-type="i">private-key</i> to <i node-type="i">keystore</i>.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="keystore-set-certificate!_22">
-            <span>keystore-set-certificate!</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-            <span>
-              <i node-type="i">cert</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string represents the name of <i node-type="i">cert</i> in
-the <i node-type="i">keystore</i>.</p>
-        <p node-type="paragraph"><i node-type="i">cert</i> shall be an X509 certificate.</p>
-        <p node-type="paragraph">The method shall store given <i node-type="i">cert</i> to <i node-type="i">keystore</i>.</p>
-        <div node-type="define" class="define">
-          <span>Generic</span>
-          <a name="keystore-delete-entry!_15">
-            <span>keystore-delete-entry!</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">The method shall remove the entry associated with <i node-type="i">alias</i> from
-<i node-type="i">keystore</i>.</p>
+        <p node-type="paragraph">Send given <i node-type="i">message</i> to <i node-type="i">url</i> and returns 3 values,
+http status, header and response.</p>
+        <p node-type="paragraph">If the keyword argument <i node-type="i">unmarshall?</i> is #f then the returning response
+value will not be unmarshalled.</p>
+        <p node-type="paragraph"><i node-type="i">options</i> will be passed to <code node-type="code">http-request</code> procedure.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Http-transport-hook">Http transport hook</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="rpc-http-method_147">
+              <span>rpc-http-method</span>
+              <span>
+                <i node-type="i">request</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns http method. Default implementation returns <code node-type="code">POST</code></p>
+          <p node-type="paragraph">.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="rpc-http-content-type_146">
+              <span>rpc-http-content-type</span>
+              <span>
+                <i node-type="i">request</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns content type. Default implementation returns
+<code node-type="code">application/octet-stream</code></p>
+          <p node-type="paragraph">.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="rpc-http-sender_152">
+              <span>rpc-http-sender</span>
+              <span>
+                <i node-type="i">request</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns http sender. Default implementation returns
+<code node-type="code">http-blob-sender</code> with marshalled request</p>
+          <p node-type="paragraph">.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="rpc-http-receiver_148">
+              <span>rpc-http-receiver</span>
+              <span>
+                <i node-type="i">request</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns http receiver. Default implementation returns
+<code node-type="code">http-binary-receiver</code></p>
+          <p node-type="paragraph">.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="rpc-http-response-type_151">
+              <span>rpc-http-response-type</span>
+              <span>
+                <i node-type="i">request</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns a marker type to be used <code node-type="code">rpc-http-unmarshall-message</code>.
+Default implementation returns given <i node-type="i">request</i> itself</p>
+          <p node-type="paragraph">.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="rpc-http-unmarshall-message_153">
+              <span>rpc-http-unmarshall-message</span>
+              <span>
+                <i node-type="i">type</i>
+              </span>
+              <span>
+                <i node-type="i">header</i>
+              </span>
+              <span>
+                <i node-type="i">body</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Unmarshall the given <i node-type="i">body</i> according to the given <i node-type="i">type</i>.
+Default implementation ignores <i node-type="i">header</i> and passes <i node-type="i">type</i> and
+<i node-type="i">body</i> to <code node-type="code">rpc-unmarshall-message</code>.</p>
+        </section>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section758.html">(rpc json) - JSON RPC library</a>
+      <a href="./section758.html">(rfc zlib) - zlib compression library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section760.html">(text csv) - Comma separated values parser library</a>
+      <a href="./section760.html">(rpc json) - JSON RPC library</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

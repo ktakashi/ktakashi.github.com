@@ -15,14 +15,11 @@
       <h2 node-type="header-2">
         <a name="lib.sagittarius.reader">(sagittarius reader) - reader macro library</a>
       </h2>
-      <p node-type="paragraph">Unlikely, Sagittarius provides functionalities to modify its reader like Common
-Lisp. It makes Sagittarius programable. However it has some restriction to use.
-The following examples explain it.</p>
+      <p node-type="paragraph">Sagittarius provides functionalities to modify its reader like Common
+Lisp. It makes the reader programable. However it has some restriction
+to use. The following examples explain it.</p>
       <p node-type="paragraph">Using reader macro</p>
-      <pre lang="scheme" node-type="block"><code>;;#&lt;(sagittarius regex)&gt;       ;; this imports only reader macros
-                               ;; This form is only for backward compatibility
-;; portable way for other R6RS implementation's reader.
-#!read-macro=sagittarius/regex
+      <pre lang="scheme" node-type="block"><code>#!read-macro=sagittarius/regex
 (import (sagittarius regex)) ;; usual import for procedures
 #/regex/i                    ;; (sagittarius regex) defines #/regex/ form
                              ;; reader macro in it. it converts it
@@ -61,7 +58,7 @@ outside of the library. The library syntax is just one huge list so Sagittarius
 can not execute the definition of reader macro inside during reading it.</p>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(sagittarius reader)_104">
+        <a name="(sagittarius reader)_106">
           <span>(sagittarius reader)</span>
         </a>
       </div>
@@ -185,14 +182,16 @@ explicitly writing <code node-type="code">lambda</code>. The form is expanded to
 <i node-type="i">Proc</i> must accept three arguments, the first one is a port, the second one
 is a character which is defined as reader macro character and the third one is
 a macro parameter.</p>
-      <p node-type="paragraph"><code node-type="code">define-dispatch-macro</code> creates macro dispatch macro character _char_if there is not dispatch macro yet, and associates <i node-type="i">subchar</i> and _proc_as a reader macro.</p>
+      <p node-type="paragraph"><code node-type="code">define-dispatch-macro</code> creates macro dispatch macro character
+_char_if there is not dispatch macro yet, and associates <i node-type="i">subchar</i> and
+_proc_as a reader macro.</p>
       <p node-type="paragraph">If <i node-type="i">non-term?</i> argument is given and not #f, the <i node-type="i">char</i> is marked as non
 terminated character. So reader reads as one identifier even it it contains the
 given <i node-type="i">char</i> in it.</p>
       <p node-type="paragraph">Note: the <i node-type="i">name</i> is only for error message. It does not affect anything.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="get-macro-character_44">
+        <a name="get-macro-character_45">
           <span>get-macro-character</span>
           <span>
             <i node-type="i">char</i>
@@ -226,7 +225,7 @@ If <i node-type="i">non-term?</i> is given and not #f, the <i node-type="i">char
 terminated macro character.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="make-dispatch-macro-character_125">
+        <a name="make-dispatch-macro-character_128">
           <span>make-dispatch-macro-character</span>
           <span>
             <i node-type="i">char</i>
@@ -245,7 +244,7 @@ If <i node-type="i">non-term?</i> is given and not #f, the <i node-type="i">char
 terminated macro character.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="get-dispatch-macro-character_35">
+        <a name="get-dispatch-macro-character_36">
           <span>get-dispatch-macro-character</span>
           <span>
             <i node-type="i">char</i>
@@ -255,7 +254,8 @@ terminated macro character.</p>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Returns a procedure which is associated with <i node-type="i">char</i> and _subchar_as a reader macro. If nothing is associated, it returns #f.</p>
+      <p node-type="paragraph">Returns a procedure which is associated with <i node-type="i">char</i> and _subchar_as a
+reader macro. If nothing is associated, it returns #f.</p>
       <div node-type="define" class="define">
         <span>Function</span>
         <a name="set-dispatch-macro-character_36">
@@ -351,7 +351,7 @@ character of <i node-type="i">char</i>.</p>
           <tr>
             <td>#\,</td>
             <td>#t</td>
-            <td>Check next character if it is <code node-type="code">@</code> and reads a next expression.<br><br>     Returns <code node-type="code">(unquote-splicing _expr_)</code> if next character was<br>     <code node-type="code">@</code>, otherwise <code node-type="code">(unquote _expr_)</code></td>
+            <td>Check next character if it is <code node-type="code">@</code> and reads a next expression.<br><br> Returns <code node-type="code">(unquote-splicing _expr_)</code> if next character was<br> <code node-type="code">@</code>, otherwise <code node-type="code">(unquote _expr_)</code></td>
           </tr>
           <tr>
             <td>#\:</td>
@@ -379,7 +379,7 @@ character of <i node-type="i">char</i>.</p>
           </tr>
           <tr>
             <td>#\,</td>
-            <td>Check next character if it is <code node-type="code">@</code> and reads a next expression.<br><br>     Returns <code node-type="code">(unsyntax-splicing _expr_)</code> if next character was<br>     <code node-type="code">@</code>, otherwise <code node-type="code">(unsyntax _expr_)</code></td>
+            <td>Check next character if it is <code node-type="code">@</code> and reads a next expression.<br><br>Returns <code node-type="code">(unsyntax-splicing _expr_)</code> if next character was<br><code node-type="code">@</code>, otherwise <code node-type="code">(unsyntax _expr_)</code></td>
           </tr>
           <tr>
             <td>#\!</td>
@@ -449,10 +449,6 @@ character of <i node-type="i">char</i>.</p>
             <td>#\#</td>
             <td>Refers SRFI-38 style shared object.</td>
           </tr>
-          <tr>
-            <td>#\&lt;</td>
-            <td>Reads expressions until '&gt;' and imports reader macro from it.<br>Note: if expressions contains symbol, which is illegal library name, at the end<br>#&lt;-reader can not detect the '&gt;' because '&gt;' can be symbol. So the error message<br>might be a strange one.</td>
-          </tr>
         </table>
         <section node-type="section">
           <h4 node-type="header-4">
@@ -461,28 +457,28 @@ character of <i node-type="i">char</i>.</p>
           <p node-type="paragraph">Sagittarius has multiple reader and VM modes and users can switch these modes
 with <code node-type="code">#!</code>. Following describes details of those modes;</p>
           <dl node-type="dlist">
-            <dt>R6RS mode</dt>
+            <dt><code node-type="code">#!r6rs</code>: R6RS mode</dt>
             <dd>
-              <p node-type="paragraph">Symbols are read according to R6RS specification and VM
-sets the <code node-type="code">no-overwrite</code> flag. With this mode, keywords are read as
-symbols; for example, <code node-type="code">:key</code> is just a symbol and users can not use
-extended <code node-type="code">lambda</code> syntax.</p>
+              <p node-type="paragraph">Symbols are read according to R6RS specification and VM sets the
+<code node-type="code">no-overwrite</code> and <code node-type="code">nounbound</code> flag. With this mode, keywords are
+read as symbols; for example, <code node-type="code">:key</code> is just a symbol and users can
+not use extended <code node-type="code">lambda</code> syntax.</p>
             </dd>
-            <dt>R7RS mode</dt>
+            <dt><code node-type="code">#!r7rs</code>: R7RS mode</dt>
             <dd>
               <p node-type="paragraph">The mode for new specification of Scheme. This mode is
 less strict than R6RS mode described above. The reader can read keyword and VM
 sets the <code node-type="code">no-overwrite</code> flag.</p>
             </dd>
-            <dt>Compatible mode</dt>
+            <dt><code node-type="code">#!compatible</code>: Compatible mode</dt>
             <dd>
               <p node-type="paragraph">This mode is least strict mode. In other words, it
 does not have any restrictions such as described above.</p>
             </dd>
           </dl>
-          <p node-type="paragraph">NOTE: If you import reader macro with <code node-type="code">#&lt; (...) &gt;</code> form and let reader
-read above hash-bang, the read table will be reset. So following code will raise
-a read error;</p>
+          <p node-type="paragraph">NOTE: If you import reader macro with <code node-type="code">#!read-macro=</code> form and let
+reader reads above hash-bang, the read table will be reset. So
+following code will raise a read error;</p>
           <pre lang="scheme" node-type="block"><code>#!read-macro=sagittarius/regex
 #!r6rs
 #/regular expression/ ;; &lt;- &amp;lexical
@@ -510,41 +506,56 @@ Scheme implementation, we chose not to use the library name itself but a bit
 converted name.</p>
         <p node-type="paragraph">This is the list of <code node-type="code">#!</code> flags:</p>
         <dl node-type="dlist">
-          <dt>#!r6rs</dt>
+          <dt>
+            <code node-type="code">#!r6rs</code>
+          </dt>
           <dd>
             <p node-type="paragraph">Switches to R6RS mode</p>
           </dd>
-          <dt>#!r7rs</dt>
+          <dt>
+            <code node-type="code">#!r7rs</code>
+          </dt>
           <dd>
             <p node-type="paragraph">Switches to R7RS mode</p>
           </dd>
-          <dt>#!compatible</dt>
+          <dt>
+            <code node-type="code">#!compatible</code>
+          </dt>
           <dd>
             <p node-type="paragraph">Switches to compatible mode</p>
           </dd>
-          <dt>#!no-overwrite</dt>
+          <dt>
+            <code node-type="code">#!no-overwrite</code>
+          </dt>
           <dd>
             <p node-type="paragraph">Sets no-overwrite flag that does not allow user
 to overwrite exported variables.</p>
           </dd>
-          <dt>#!nocache</dt>
+          <dt>
+            <code node-type="code">#!nocache</code>
+          </dt>
           <dd>
             <p node-type="paragraph">Sets disable cache flag on the current loading file</p>
           </dd>
-          <dt>#!deprecated</dt>
+          <dt>
+            <code node-type="code">#!deprecated</code>
+          </dt>
           <dd>
             <p node-type="paragraph">Display warning message of deprecated library.</p>
           </dd>
-          <dt>#!reader=name</dt>
+          <dt>
+            <code node-type="code">#!reader=name</code>
+          </dt>
           <dd>
             <p node-type="paragraph">Replace reader with library <i node-type="i">name</i>. The <i node-type="i">name</i> must be converted
 with the naming convention described below. For more details, see
 <a href="section69.html#sagittarius.name.convention">Naming convention</a></p>
           </dd>
-          <dt>#!read-macro=name</dt>
+          <dt>
+            <code node-type="code">#!read-macro=name</code>
+          </dt>
           <dd>
-            <p node-type="paragraph">The same as <code node-type="code">#&lt; _name_ &gt;</code> but this is more for compatibility.
-<i node-type="i">name</i> must be converted with the naming convention described below.
+            <p node-type="paragraph"><i node-type="i">name</i> must be converted with the naming convention described below.
 For more details, see	
 <a href="section69.html#sagittarius.name.convention">Naming convention</a></p>
           </dd>
@@ -555,7 +566,7 @@ For more details, see
           </h4>
           <p node-type="paragraph">The naming convention is really easy. For example, replacing with
 <code node-type="code">(srfi :49)</code>, first remove all parentheses or brackets then replace spaces
-to <code node-type="code">/</code>.</p>
+to <code node-type="code">/</code>. Then you get <code node-type="code">srfi/:49</code>.</p>
           <div node-type="define" class="define">
             <span>Macro</span>
             <a name="define-reader_84">
@@ -605,7 +616,7 @@ put <code node-type="code">:export-reader</code> keyword to the library export c
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

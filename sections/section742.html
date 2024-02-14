@@ -7,196 +7,182 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section741.html">(rfc jwk) - Json Web Key</a>
+      <a href="./section741.html">(rfc json-pointer) - JSON Pointer</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section743.html">(rfc jwt) - Json Web Token</a>
+      <a href="./section743.html">(rfc jwk) - Json Web Key</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="rfc.jws">(rfc jws) - Json Web Signature</a>
+        <a name="rfc.jwe">(rfc jwe) - Json Web Encryption</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(rfc jws)_42">
-          <span>(rfc jws)</span>
+        <a name="(rfc jwe)_41">
+          <span>(rfc jwe)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides Json Web Signature (JWS) APIs. JWS is defined
-in <a href="https://tools.ietf.org/html/rfc7515">RFC 7515</a>.</p>
-      <p node-type="paragraph">The library supports <code node-type="code">ES256K</code> defined in
-<a href="https://datatracker.ietf.org/doc/html/rfc8812">RFC 8812</a>section 3.1.</p>
-      <p node-type="paragraph">It also supports EdDSA of both Ed25519 and Ed448 defined in
-<a href="https://datatracker.ietf.org/doc/html/rfc8037">RFC 8037</a>.</p>
-      <p node-type="paragraph">The following examples show how to sign and verify JWS token</p>
-      <pre lang="scheme" node-type="block"><code>;; Signing
-(import (rnrs)
-        (rfc jws)
-        (rfc jwk) ;; to convert key pair to JWK
-        (crypto))
+      <p node-type="paragraph">This library provides Json Web Encryption (JWE) APIs. JWE is defined in
+<a href="https://datatracker.ietf.org/doc/html/rfc7516">RFC 7516</a>.</p>
+      <p node-type="paragraph">The following example shows how to exchange secret key.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (rfc jwe)
+        (rfc jwk))
 
-;; Generate Ed25519 key pair
-(define keypair (generate-key-pair Ed25519))
-
-;; JWS header with crit
-(define jws-header
-  (jws-header-builder
-   (alg 'EdDSA)
-   (crit '("sagittarius:iss" "sagittarius:sub"))
-   (custom-parameters '(("sagittarius:iss" "Sagittarius Scheme")
-                        ("sagittarius:sub" "JWS test")))))
-
-(define payload
-  (string-&gt;utf8 "Payload can be anything as long as a bytevector"))
-
-;; Get signer
-(define signer (private-key-&gt;jws-signer (keypair-private keypair)))
-
-;; The JWS object is not signed yet
-(define unsecure-jws-object (make-jws-object jws-header payload))
-
-(let ((jws-object (jws:sign unsecure-jws-object signer)))
-  (jws:serialize jws-object)
-  ;; -&gt; eyJzYWdpdHRhcml1czpzdWIiOiJKV1MgdGVzdCIsInNhZ2l0dGFyaXVzOmlzcyI6IlNhZ2l0dGFyaXVzIFNjaGVtZSIsImFsZyI6IkVkRFNBIiwiY3JpdCI6WyJzYWdpdHRhcml1czppc3MiLCJzYWdpdHRhcml1czpzdWIiXX0.UGF5bG9hZCBjYW4gYmUgYW55dGhpbmcgYXMgbG9uZyBhcyBhIGJ5dGV2ZWN0b3I.5Aj_AJh4DW01kV80XtFbxRRMw2ktxIrQ5-UXoCwKVWI0Ke0q0t3vpcFnESL39zYDwi3Ps8eLxfmEb-TvhkQGBg
-  (jwk-&gt;json-string (public-key-&gt;jwk (keypair-public keypair)))
-  ;; -&gt; {"kty":"OKP","crv":"Ed25519","x":"o_t1R4fWf7obqTZWlXxrgPG09BMU-zuhqHvb9_ayOew"}
-  )
-</code></pre>
-      <pre lang="scheme" node-type="block"><code>;; Verify
-(import (rnrs)
-        (rfc jws)
-        (rfc jwk) ;; to convert JWK to public key
-        (crypto))
-
-;; JWS string
-(define jws-string
-  "eyJzYWdpdHRhcml1czpzdWIiOiJKV1MgdGVzdCIsInNhZ2l0dGFyaXVzOmlzcyI6IlNhZ2l0dGFyaXVzIFNjaGVtZSIsImFsZyI6IkVkRFNBIiwiY3JpdCI6WyJzYWdpdHRhcml1czppc3MiLCJzYWdpdHRhcml1czpzdWIiXX0.UGF5bG9hZCBjYW4gYmUgYW55dGhpbmcgYXMgbG9uZyBhcyBhIGJ5dGV2ZWN0b3I.5Aj_AJh4DW01kV80XtFbxRRMw2ktxIrQ5-UXoCwKVWI0Ke0q0t3vpcFnESL39zYDwi3Ps8eLxfmEb-TvhkQGBg")
-
-;; Ed25519 public key
-(define jwk
+(define jwk-bob
   (json-string-&gt;jwk
-   "{\"kty\":\"OKP\",\"crv\":\"Ed25519\",\"x\":\"o_t1R4fWf7obqTZWlXxrgPG09BMU-zuhqHvb9_ayOew\"}"))
+   "{\"kty\":\"EC\",
+     \"crv\":\"P-256\",
+     \"x\":\"weNJy2HscCSM6AEDTDg04biOvhFhyyWvOHQfeF_PxMQ\",
+     \"y\":\"e8lnCO-AlStT-NJVX-crhB7QRYhiix03illJOVAOyck\",
+     \"d\":\"VEmDZpDXXK8p8N0Cndsxs924q6nS1RXFASRl6BfUqdw\"}"))
 
-;; Parse the string
-(define jws-object (jws:parse jws-string))
+(define jwe-header
+  (jwe-header-builder
+   (alg 'ECDH-ES+A128KW)
+   (enc 'A128GCM)
+   (apu "QWxpY2U")
+   (apv "Qm9i")))
 
-;; Make a verifier from the JWK
-(define verifier (public-key-&gt;jws-verifier jwk))
+;; Alice wants to encrypt with Bob's public key
+(define alice-encryptor (make-ecdh-jwe-encryptor (jwk-&gt;public-key jwk-bob)))
 
-(when (jws:verify jws-object verifier '("sagittarius:iss" "sagittarius:sub"))
-  (utf8-&gt;string (jws-object-payload jws-object))) ;; -&gt; payload
+;; Bob needs to decrypt Alice's message with his private key
+(define bob-decryptor (make-ecdh-jwe-decryptor jwk-bob))
+
+(define secret-key (string-&gt;utf8 "down the rabbit hole"))
+
+(let ((jwe-object (jwe:encrypt alice-encryptor jwe-header secret-key)))
+  (jwe:serialize jwe-object) ;; -&gt; compact JWE string
+  (let ((secret-key (jwe:decrypt bob-decryptor jwe-object)))
+    (utf8-&gt;string secret-key))) ;; -&gt; "down the rabbit hole"
 </code></pre>
-      <p node-type="paragraph">The above examples only show the flavour of the APIs. In real world
-applications, the users of the library must consider a lot more to
-make the application secure.</p>
+      <p node-type="paragraph">The above is just a taste of how to share a secret key without shared
+secret. In the real world application, you should implement your
+application more carefully.</p>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="JWS-Object">JWS Object</a>
+          <a name="JWE-Object">JWE Object</a>
         </h3>
         <div node-type="define" class="define">
           <span>Record Type</span>
-          <a name="<jws-object&gt;_39">
-            <span>&lt;jws-object&gt;</span>
+          <a name="<jwe-object&gt;_40">
+            <span>&lt;jwe-object&gt;</span>
           </a>
         </div>
-        <p node-type="paragraph">The record type of JWS objects.
-JWS object has 2 fields, <code node-type="code">header</code> and <code node-type="code">payload</code>.</p>
+        <p node-type="paragraph">The record type of JWE objects.
+JWS object has 5 fields, <code node-type="code">header</code>, <code node-type="code">encrypted-key</code>, <code node-type="code">iv</code>,
+<code node-type="code">cipher-text</code> and <code node-type="code">authentication-tag</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws-object?_109">
-            <span>jws-object?</span>
+          <a name="jwe-object?_67">
+            <span>jwe-object?</span>
             <span>
               <i node-type="i">obj</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a JWS object otherwise #f.</p>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a JWE object otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-jws-object_182">
+          <a name="make-jws-object_186">
             <span>make-jws-object</span>
             <span>
-              <i node-type="i">jws-header</i>
+              <i node-type="i">jwe-header</i>
             </span>
             <span>
-              <i node-type="i">payload</i>
+              <i node-type="i">encrypted-key</i>
+            </span>
+            <span>
+              <i node-type="i">iv</i>
+            </span>
+            <span>
+              <i node-type="i">cipher-text</i>
+            </span>
+            <span>
+              <i node-type="i">authentication-tag</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Construct a newly allocated JWS object.</p>
-        <p node-type="paragraph"><i node-type="i">Jws-header</i> must be a JWS header object.</p>
-        <p node-type="paragraph"><i node-type="i">payload</i> must be a bytevector.</p>
+        <p node-type="paragraph">Construct a newly allocated JWE object.</p>
+        <p node-type="paragraph">This constructor doesn't validate if the <i node-type="i">cipher-text</i> can be decrypted
+by the <i node-type="i">encrypted-key</i> as that's not possible.</p>
+        <p node-type="paragraph">NOTE: This constructor is not meant be used by users.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws-object-header_107">
-            <span>jws-object-header</span>
+          <a name="jwe-object-header_65">
+            <span>jwe-object-header</span>
             <span>
-              <i node-type="i">jws-object</i>
+              <i node-type="i">jwe-object</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns the value of <code node-type="code">header</code> field of given <i node-type="i">jws-object</i>.</p>
+        <p node-type="paragraph">Returns the value of <code node-type="code">header</code> field of given <i node-type="i">jwe-object</i></p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws-object-payload_108">
-            <span>jws-object-payload</span>
+          <a name="jwe-object-encrypted-key_64">
+            <span>jwe-object-encrypted-key</span>
             <span>
-              <i node-type="i">jws-object</i>
+              <i node-type="i">jwe-object</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns the value of <code node-type="code">payload</code> field of given <i node-type="i">jws-object</i>.</p>
-        <div node-type="define" class="define">
-          <span>Record Type</span>
-          <a name="<jws-signed-object&gt;_40">
-            <span>&lt;jws-signed-object&gt;</span>
-          </a>
-        </div>
-        <p node-type="paragraph">The record type of signed JWS objects.</p>
-        <p node-type="paragraph">Signed JWS object is a sub record of JWS object, which has <code node-type="code">signature</code>field.</p>
+        <p node-type="paragraph">Returns the value of <code node-type="code">encrypted-key</code> field of given <i node-type="i">jwe-object</i></p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws-signed-object?_111">
-            <span>jws-signed-object?</span>
+          <a name="jwe-object-iv_66">
+            <span>jwe-object-iv</span>
             <span>
-              <i node-type="i">obj</i>
+              <i node-type="i">jwe-object</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a signed JWS object otherwise #f.</p>
-        <p node-type="paragraph">This object can be obtained by <code node-type="code">jws:sign</code> or <code node-type="code">jws:parse</code>.</p>
+        <p node-type="paragraph">Returns the value of <code node-type="code">iv</code> field of given <i node-type="i">jwe-object</i></p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws-signed-object-signature_110">
-            <span>jws-signed-object-signature</span>
+          <a name="jwe-object-cipher-text_63">
+            <span>jwe-object-cipher-text</span>
             <span>
-              <i node-type="i">signed-jws-object</i>
+              <i node-type="i">jwe-object</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns the value of <code node-type="code">signature</code> field of
-given <i node-type="i">signed-jws-object</i>.</p>
+        <p node-type="paragraph">Returns the value of <code node-type="code">cipher-text</code> field of given <i node-type="i">jwe-object</i></p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwe-object-authentication-tag_62">
+            <span>jwe-object-authentication-tag</span>
+            <span>
+              <i node-type="i">jwe-object</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the value of <code node-type="code">authentication-tag</code> field of given
+<i node-type="i">jwe-object</i></p>
       </section>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="JWS-Header">JWS Header</a>
+          <a name="JWE-Header">JWE Header</a>
         </h3>
         <div node-type="define" class="define">
           <span>Record Type</span>
-          <a name="<jws-header&gt;_38">
-            <span>&lt;jws-header&gt;</span>
+          <a name="<jwe-header&gt;_39">
+            <span>&lt;jwe-header&gt;</span>
           </a>
         </div>
-        <p node-type="paragraph">The record type of JWS header.</p>
+        <p node-type="paragraph">The record type of JWE header.</p>
         <p node-type="paragraph">This record type has the below fields:</p>
         <ul node-type="bullet-list">
           <li>
-            <p node-type="paragraph"><code node-type="code">typ</code>: JWS type, must be a symbol</p>
+            <p node-type="paragraph"><code node-type="code">typ</code>: JWE type, must be a symbol</p>
           </li>
           <li>
-            <p node-type="paragraph"><code node-type="code">cty</code>: JWS content type</p>
+            <p node-type="paragraph"><code node-type="code">cty</code>: JWE content type</p>
           </li>
           <li>
-            <p node-type="paragraph"><code node-type="code">alg</code>: JWS algorithm, must be a symbol</p>
+            <p node-type="paragraph"><code node-type="code">alg</code>: JWE algorithm, must be a symbol</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">enc</code>: JWE encryption algorithm, must be a symbol</p>
           </li>
           <li>
             <p node-type="paragraph"><code node-type="code">jku</code>: JWK Set URL</p>
@@ -223,27 +209,51 @@ given <i node-type="i">signed-jws-object</i>.</p>
             <p node-type="paragraph"><code node-type="code">crit</code>: Critical header parameter, must be a list of string</p>
           </li>
           <li>
+            <p node-type="paragraph"><code node-type="code">zip</code>: Compression algorithm</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">p2s</code>: Salt, must be a bytevector</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">p2c</code>: Iteration count, must be an integer</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">iv</code>: Initial vector, must be a bytevector</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">tag</code>: Authentication tag, must be a bytevector</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">apu</code>:</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">apv</code>:</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">epk</code>:</p>
+          </li>
+          <li>
             <p node-type="paragraph">
               <code node-type="code">custom-parameters</code>
             </p>
           </li>
         </ul>
-        <p node-type="paragraph">The above fields have accessors prefixed <i node-type="i">jws-header-</i>. For example,
-to read <code node-type="code">typ</code> field, you can use <code node-type="code">jws-header-typ</code> procedure.</p>
+        <p node-type="paragraph">The above fields have accessors prefixed <i node-type="i">jwe-header-</i>. For example,
+to read <code node-type="code">typ</code> field, you can use <code node-type="code">jwe-header-typ</code> procedure.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws-header?_106">
-            <span>jws-header?</span>
+          <a name="jwe-header?_61">
+            <span>jwe-header?</span>
             <span>
               <i node-type="i">obj</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a JWS header, otherwise #f.</p>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a JWE header, otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Macro</span>
-          <a name="jws-header-builder_105">
-            <span>jws-header-builder</span>
+          <a name="jwe-header-builder_60">
+            <span>jwe-header-builder</span>
             <span>
               <i node-type="i">(field</i>
             </span>
@@ -255,32 +265,32 @@ to read <code node-type="code">typ</code> field, you can use <code node-type="co
             </span>
           </a>
         </div>
-        <p node-type="paragraph">A builder macro of JWS header. The macro is generated by
-<code node-type="code">(record builder)</code>. see <a href="section731.html#record.builder">(record builder)</a>for more details.</p>
+        <p node-type="paragraph">A builder macro of JWE header. The macro is generated by
+<code node-type="code">(record builder)</code>. see <a href="section733.html#record.builder">(record builder)</a>for more details.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws-header-&gt;json_103">
-            <span>jws-header-&gt;json</span>
+          <a name="jwe-header-&gt;json_58">
+            <span>jwe-header-&gt;json</span>
             <span>
-              <i node-type="i">jws-header</i>
+              <i node-type="i">jwe-header</i>
             </span>
           </a>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="write-jws-header_72">
-            <span>write-jws-header</span>
+          <a name="write-jwe-header_66">
+            <span>write-jwe-header</span>
             <span>
-              <i node-type="i">jws-header</i>
+              <i node-type="i">jwe-header</i>
             </span>
           </a>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="write-jws-header_71">
-            <span>write-jws-header</span>
+          <a name="write-jwe-header_65">
+            <span>write-jwe-header</span>
             <span>
-              <i node-type="i">jws-header</i>
+              <i node-type="i">jwe-header</i>
             </span>
             <span>
               <i node-type="i">port</i>
@@ -289,21 +299,21 @@ to read <code node-type="code">typ</code> field, you can use <code node-type="co
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws-header-&gt;json-string_104">
-            <span>jws-header-&gt;json-string</span>
+          <a name="jwe-header-&gt;json-string_59">
+            <span>jwe-header-&gt;json-string</span>
             <span>
-              <i node-type="i">jws-header</i>
+              <i node-type="i">jwe-header</i>
             </span>
           </a>
         </div>
         <p node-type="paragraph">Serialize the given <i node-type="i">json-header</i> to a S-exp representaion,
 to <i node-type="i">port</i> or string.</p>
-        <p node-type="paragraph">If first form of <code node-type="code">write-jws-header</code> is used, then it writes the
-serialized JWS header to current output port.</p>
+        <p node-type="paragraph">If first form of <code node-type="code">write-jwe-header</code> is used, then it writes the
+serialized JWE header to current output port.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="json-&gt;jws-header_11">
-            <span>json-&gt;jws-header</span>
+          <a name="json-&gt;jwe-header_8">
+            <span>json-&gt;jwe-header</span>
             <span>
               <i node-type="i">obj</i>
             </span>
@@ -311,14 +321,14 @@ serialized JWS header to current output port.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="read-jws-header_41">
-            <span>read-jws-header</span>
+          <a name="read-jwe-header_35">
+            <span>read-jwe-header</span>
           </a>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="read-jws-header_40">
-            <span>read-jws-header</span>
+          <a name="read-jwe-header_34">
+            <span>read-jwe-header</span>
             <span>
               <i node-type="i">:optional</i>
             </span>
@@ -329,219 +339,246 @@ serialized JWS header to current output port.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="json-string-&gt;jws-header_43">
-            <span>json-string-&gt;jws-header</span>
+          <a name="json-string-&gt;jwe-header_44">
+            <span>json-string-&gt;jwe-header</span>
             <span>
               <i node-type="i">string</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Construct JWS header from S-exp JSON representation of <i node-type="i">obj</i>,
+        <p node-type="paragraph">Construct JWE header from S-exp JSON representation of <i node-type="i">obj</i>,
 from input port <i node-type="i">port</i> or a string <i node-type="i">string</i>.</p>
-        <p node-type="paragraph">If the first form of <code node-type="code">read-jws-header</code> is used, then it reads from
+        <p node-type="paragraph">If the first form of <code node-type="code">read-jwe-header</code> is used, then it reads from
 current input port.</p>
       </section>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="JWS-Operations">JWS Operations</a>
+          <a name="JWE-Operations">JWE Operations</a>
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws:parse_112">
-            <span>jws:parse</span>
+          <a name="jwe:parse_71">
+            <span>jwe:parse</span>
             <span>
               <i node-type="i">string</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Parse the given compact JWS of <i node-type="i">string</i> and return signed JWS object.</p>
+        <p node-type="paragraph">Parse the given compact JWE of <i node-type="i">string</i> and return JWE object.</p>
         <p node-type="paragraph">If the format of the given <i node-type="i">string</i> is invalid, then an error is signaled.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws:serialize_114">
-            <span>jws:serialize</span>
+          <a name="jwe:serialize_72">
+            <span>jwe:serialize</span>
             <span>
-              <i node-type="i">jws-object</i>
+              <i node-type="i">jwe-object</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Serialize the given <i node-type="i">jwe-object</i> to compact JWE form.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwe:encrypt_70">
+            <span>jwe:encrypt</span>
+            <span>
+              <i node-type="i">jwe-encryptor</i>
+            </span>
+            <span>
+              <i node-type="i">jwe-header</i>
+            </span>
+            <span>
+              <i node-type="i">plain-text</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a JWE object whose <code node-type="code">cipher-text</code> is the encrypted
+<i node-type="i">payload</i>.</p>
+        <p node-type="paragraph">The <i node-type="i">jwe-encryptor</i> must be one of the JWE encryptors described below
+section.</p>
+        <p node-type="paragraph">The <i node-type="i">jwe-header</i> must be a JWE header object.</p>
+        <p node-type="paragraph">The <i node-type="i">plain-text</i> must be a bytevector.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwe:encrypt_69">
+            <span>jwe:encrypt</span>
+            <span>
+              <i node-type="i">jwe-decryptor</i>
+            </span>
+            <span>
+              <i node-type="i">jwe-object</i>
             </span>
           </a>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="jws:serialize_113">
-            <span>jws:serialize</span>
+          <a name="jwe:encrypt_68">
+            <span>jwe:encrypt</span>
             <span>
-              <i node-type="i">jws-object</i>
+              <i node-type="i">jwe-decryptor</i>
             </span>
             <span>
-              <i node-type="i">detach-payload?</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Serialize the given <i node-type="i">jws-object</i> to compact JWS form.</p>
-        <p node-type="paragraph">If the second form is used, then the payload is omitted. (Detached form)</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="jws:sign_115">
-            <span>jws:sign</span>
-            <span>
-              <i node-type="i">jws-object</i>
-            </span>
-            <span>
-              <i node-type="i">signer</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Sign the given <i node-type="i">jws-object</i> with the given <i node-type="i">signer</i> and returns
-signed JWS object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="jws:verify_117">
-            <span>jws:verify</span>
-            <span>
-              <i node-type="i">jws-object</i>
-            </span>
-            <span>
-              <i node-type="i">verifier</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="jws:verify_116">
-            <span>jws:verify</span>
-            <span>
-              <i node-type="i">jws-object</i>
-            </span>
-            <span>
-              <i node-type="i">verifier</i>
+              <i node-type="i">jwe-object</i>
             </span>
             <span>
               <i node-type="i">critical-headers</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Verify the given <i node-type="i">jws-object</i> with the given <i node-type="i">verifier</i>.
-If the verification is success, then it returns #t.</p>
-        <p node-type="paragraph">Otherwise, it may return #f or signals an error, depending on the
-underlying verifier.</p>
-        <p node-type="paragraph">If the second form of <code node-type="code">jws:verify</code> is used, then it uses the given
-<i node-type="i">critical-headers</i> list to check <code node-type="code">crit</code> header value.</p>
+        <p node-type="paragraph">Returns decrypted <code node-type="code">cipher-text</code> as a bytevector.</p>
+        <p node-type="paragraph">The <i node-type="i">jwe-decryptor</i> must be one of the JWE decryptors described below
+section.</p>
+        <p node-type="paragraph">The <i node-type="i">jwe-object</i> must be a JWE object.</p>
+        <p node-type="paragraph">If the second form is used, then the <code node-type="code">crit</code> paramteters of the
+<code node-type="code">header</code> will be checked.</p>
       </section>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="JWS-Verifiers">JWS Verifiers</a>
+          <a name="JWE-Encryptors">JWE Encryptors</a>
         </h3>
-        <p node-type="paragraph">JWS verifier is a procedure takes 3 arguments, JWS header, signing content
-and signature.</p>
-        <p node-type="paragraph">This library doesn't support <code node-type="code">none</code> algorithm verifier. It is obvious
-that if you want to support it, you just don't have to verify it.</p>
+        <p node-type="paragraph">JWE encryptor is a procedure takes two arguments, JWE header and plain text.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-mac-jws-verifier_194">
-            <span>make-mac-jws-verifier</span>
+          <a name="make-ecdh-jwe-encryptor_130">
+            <span>make-ecdh-jwe-encryptor</span>
             <span>
               <i node-type="i">key</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">key</i> must be a JWK:oct or a bytevector.</p>
-        <p node-type="paragraph">Creates a MAC JWS verifier.</p>
+        <p node-type="paragraph"><i node-type="i">key</i> must be a EC JWK, OKP JWK, EcDSA public key, X25519 public key
+or X448 public key.</p>
+        <p node-type="paragraph">Creates a ECDH JWE encryptor.</p>
+        <p node-type="paragraph">This encryptor supports <code node-type="code">ECDH-ES</code>, <code node-type="code">ECDH-ES+A128KW</code>,
+<code node-type="code">ECDH-ES+A198KW</code>, and <code node-type="code">ECDH-ES+A256KW</code> algorithms.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-rsa-jws-verifier_237">
-            <span>make-rsa-jws-verifier</span>
+          <a name="make-rsa-jwe-encryptor_240">
+            <span>make-rsa-jwe-encryptor</span>
             <span>
               <i node-type="i">key</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">key</i> must be a JWK:RSA or a RSA public key.</p>
-        <p node-type="paragraph">Creates a RSA JWS verifier.</p>
+        <p node-type="paragraph"><i node-type="i">key</i> must be a RSA JWK or RSA public key.</p>
+        <p node-type="paragraph">Creates a RSA JWE encryptor.</p>
+        <p node-type="paragraph">This encryptor supports <code node-type="code">RSA1_5</code>, <code node-type="code">RSA-OAEP</code> and
+<code node-type="code">RSA-OAEP-256</code> algorithms.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-ecdsa-jws-verifier_129">
-            <span>make-ecdsa-jws-verifier</span>
+          <a name="make-aeskw-jwe-encryptor_21">
+            <span>make-aeskw-jwe-encryptor</span>
             <span>
               <i node-type="i">key</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">key</i> must be a JWK:EC or a ECDSA public key.</p>
-        <p node-type="paragraph">Creates a ECDSA JWS verifier.</p>
+        <p node-type="paragraph"><i node-type="i">key</i> must be a OCT JWK or AES secret key.</p>
+        <p node-type="paragraph">Creates a AESKW JWE encryptor.</p>
+        <p node-type="paragraph">This encryptor supports <code node-type="code">A128KW</code>, <code node-type="code">A192KW</code>, <code node-type="code">A256KW</code>,
+<code node-type="code">A128GCMKW</code>, <code node-type="code">A192GCMKW</code>, and <code node-type="code">A256GCMKW</code>, algorithms.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-eddsa-jws-verifier_131">
-            <span>make-eddsa-jws-verifier</span>
+          <a name="make-pbes2-jwe-encryptor_219">
+            <span>make-pbes2-jwe-encryptor</span>
+            <span>
+              <i node-type="i">password</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">password</i> must be a string or a bytevector.</p>
+        <p node-type="paragraph">Creates a PBES2 JWE encryptor.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-direct-jwe-encryptor_127">
+            <span>make-direct-jwe-encryptor</span>
             <span>
               <i node-type="i">key</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">key</i> must be a JWK:OKP or a EdDSA public key.</p>
-        <p node-type="paragraph">Creates a EdDSA JWS verifier.</p>
+        <p node-type="paragraph"><i node-type="i">key</i> must be an AES secret key.</p>
+        <p node-type="paragraph">Creates a direct JWE encryptor.</p>
+        <p node-type="paragraph">This encryptor uses given <i node-type="i">key</i> as CEK.</p>
       </section>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="JWS-Signers">JWS Signers</a>
+          <a name="JWE-Decryptors">JWE Decryptors</a>
         </h3>
-        <p node-type="paragraph">JWS signer is a procedure takes 2 arguments, JWS header, signing content.</p>
-        <p node-type="paragraph">This library doesn't support <code node-type="code">none</code> algorithm signer. If you want to
-support it, you need to create a JWS object with <code node-type="code">alg</code> header with
-value of <code node-type="code">none</code>.</p>
+        <p node-type="paragraph">JWE decryptor is a procedure takes 5 arguments, JWE header, encrypted key,
+IV, cipher text and authentication tag.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-mac-jws-signer_193">
-            <span>make-mac-jws-signer</span>
+          <a name="make-ecdh-jwe-decryptor_129">
+            <span>make-ecdh-jwe-decryptor</span>
             <span>
               <i node-type="i">key</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">key</i> must be a JWK:oct or a bytevector.</p>
-        <p node-type="paragraph">Creates a MAC JWS signer.</p>
+        <p node-type="paragraph"><i node-type="i">key</i> must be a EC JWK, OKP JWK, EcDSA private key, X25519 private key
+or X448 private key.</p>
+        <p node-type="paragraph">Creates a ECDH JWE decryptor.</p>
+        <p node-type="paragraph">This decryptor supports <code node-type="code">ECDH-ES</code>, <code node-type="code">ECDH-ES+A128KW</code>,
+<code node-type="code">ECDH-ES+A198KW</code>, and <code node-type="code">ECDH-ES+A256KW</code> algorithms.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-rsa-jws-signer_236">
-            <span>make-rsa-jws-signer</span>
+          <a name="make-rsa-jwe-decryptor_239">
+            <span>make-rsa-jwe-decryptor</span>
             <span>
               <i node-type="i">key</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">key</i> must be a JWK:RSA or a RSA private key.</p>
-        <p node-type="paragraph">Creates a RSA JWS signer.</p>
+        <p node-type="paragraph"><i node-type="i">key</i> must be a RSA JWK or RSA private key.</p>
+        <p node-type="paragraph">Creates a RSA JWE decryptor.</p>
+        <p node-type="paragraph">This decryptor supports <code node-type="code">RSA1_5</code>, <code node-type="code">RSA-OAEP</code> and
+<code node-type="code">RSA-OAEP-256</code> algorithms.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-ecdsa-jws-signer_128">
-            <span>make-ecdsa-jws-signer</span>
+          <a name="make-aeskw-jwe-decryptor_20">
+            <span>make-aeskw-jwe-decryptor</span>
             <span>
               <i node-type="i">key</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">key</i> must be a JWK:EC or a ECDSA private key.</p>
-        <p node-type="paragraph">Creates a ECDSA JWS signer.</p>
+        <p node-type="paragraph"><i node-type="i">key</i> must be a OCT JWK or AES secret key.</p>
+        <p node-type="paragraph">Creates a AESKW JWE decryptor.</p>
+        <p node-type="paragraph">This decryptor supports <code node-type="code">A128KW</code>, <code node-type="code">A192KW</code>, <code node-type="code">A256KW</code>,
+<code node-type="code">A128GCMKW</code>, <code node-type="code">A192GCMKW</code>, and <code node-type="code">A256GCMKW</code>, algorithms.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-eddsa-jws-signer_130">
-            <span>make-eddsa-jws-signer</span>
+          <a name="make-pbes2-jwe-decryptor_218">
+            <span>make-pbes2-jwe-decryptor</span>
+            <span>
+              <i node-type="i">password</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">password</i> must be a string or a bytevector.</p>
+        <p node-type="paragraph">Creates a PBES2 JWE decryptor.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-direct-jwe-decryptor_126">
+            <span>make-direct-jwe-decryptor</span>
             <span>
               <i node-type="i">key</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">key</i> must be a JWK:OKP or a EdDSA private key.</p>
-        <p node-type="paragraph">Creates a EdDSA JWS signer.</p>
+        <p node-type="paragraph"><i node-type="i">key</i> must be an AES secret key.</p>
+        <p node-type="paragraph">Creates a direct JWE decryptor.</p>
+        <p node-type="paragraph">This decryptor uses given <i node-type="i">key</i> as CEK.</p>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section741.html">(rfc jwk) - Json Web Key</a>
+      <a href="./section741.html">(rfc json-pointer) - JSON Pointer</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section743.html">(rfc jwt) - Json Web Token</a>
+      <a href="./section743.html">(rfc jwk) - Json Web Key</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

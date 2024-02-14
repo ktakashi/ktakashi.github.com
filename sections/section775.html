@@ -7,96 +7,267 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section774.html">(text tree) - Lightweight text generation</a>
+      <a href="./section774.html">(text markdown) -- Markdown parser and converter</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section776.html">(util timer) - Timer</a>
+      <a href="./section776.html">(text tree) - Lightweight text generation</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="text.yaml">(text yaml) -- YAML parser</a>
+        <a name="text.object-builder">(text sxml object-builder) - SXML to Scheme object builder</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(text yaml)_174">
-          <span>(text yaml)</span>
+        <a name="(text sxml object-builder)_173">
+          <span>(text sxml object-builder)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides YAML parser and writer.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="yaml-read_0">
-          <span>yaml-read</span>
-          <span>
-            <i node-type="i">in</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Reads YAML documents from the given textual input port <i node-type="i">in</i> and
-returns a list of S-expression represented YAML documents.</p>
-      <p node-type="paragraph">The returning YAML documents are the compatible with vector JSON
-format described in <a href="section762.html#text.json">(text json)</a>.</p>
-      <div node-type="block" class="codeblock">
-        <pre lang="scheme" node-type="block"><code>(yaml-read (open-string-input-port "
-%YAML 1.2
----
-foo: bar
-boo:
-- 1
-- 2
-- 3
-- 4"))
+      <p node-type="paragraph">This library provides APIs to build Scheme object from SXML.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="High-level-APIs">High level APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml-&gt;object_312">
+            <span>sxml-&gt;object</span>
+            <span>
+              <i node-type="i">sxml</i>
+            </span>
+            <span>
+              <i node-type="i">builder</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">unknown-tag-handler</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Builds a Scheme object from given SXML <i node-type="i">sxml</i>. The _builder_must be a object-builder described below.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">unknown-tag-handler</i> is given, then it must be a
+procedure accepts 2 arguments, <i node-type="i">builder</i> and <i node-type="i">sxml</i>. The procedure
+is called when the process met a tag which can't be handled by given
+<i node-type="i">builder</i>. Users can return an object if needed. The default behaviour
+of the handler is raising an error.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="sxml-object-builder_314">
+            <span>sxml-object-builder</span>
+            <span>
+              <i node-type="i">spec</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary syntax</span>
+          <a name="*namespace*_153">
+            <span>*namespace*</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary syntax</span>
+          <a name="<!&gt;_1">
+            <span>&lt;!&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary syntax</span>
+          <a name="?_0">
+            <span>?</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary syntax</span>
+          <a name="??_3">
+            <span>??</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A DSL which constructs object-builder.</p>
+        <p node-type="paragraph">The <i node-type="i">spec</i> must be one of the followings:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(*namespace* ((ns uri) ...) spec ...)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(* spec ...)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(+ spec ...)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(/ spec ...)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(? spec ...)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(&lt;!&gt; _tag_ builder)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">spec spec* ...</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(_tag_ _ctr_)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(_tag_ _ctr_ _next_)</code>
+            </p>
+          </li>
+        </ul>
+        <p node-type="paragraph"><i node-type="i">tag</i> can be either a symbol or the following clause:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(?? pred)</code>
+            </p>
+          </li>
+        </ul>
+        <p node-type="paragraph"><i node-type="i">pred</i> must be a predicate of SXML tag.</p>
+        <p node-type="paragraph"><i node-type="i">ctr</i> must be a procedure which takes 3 arguments, <i node-type="i">name</i>,
+<i node-type="i">attributes</i> and <i node-type="i">contents</i>. These are SXML's tagname, list of
+attributes and SXML contents, respectively.</p>
+        <p node-type="paragraph">The first form of the <i node-type="i">spec</i> specifies aliases of namespaces. Users can
+write qualified name with prefixed instead of unprefixed qualified name.</p>
+        <p node-type="paragraph">The second to forth form of <i node-type="i">spec</i> specify the amount of nested
+<i node-type="i">spec ...</i> existence. The <code node-type="code">*</code> means 0 or more.
+The <code node-type="code">+</code> means 1 or more. And the <code node-type="code">?</code> means 0 or 1.</p>
+        <p node-type="paragraph">The fifth form of <i node-type="i">spec</i> means cyclic structure.</p>
+        <p node-type="paragraph">The sixth form of <i node-type="i">spec</i> means set of <i node-type="i">spec spec ...</i>.</p>
+        <p node-type="paragraph">The following shows how to use this DSL macro</p>
+        <pre lang="scheme" node-type="block"><code>(define builder
+  (sxml-object-builder
+    (*namespace* ((ns "urn:foo")))
+    (ns:bar list
+      (ns:buz list)
+      (foo list))))
 </code></pre>
-        <span />
-        <span>'(#((foo . bar) (boo 1 2 3 4)))</span>
-      </div>
-      <p node-type="paragraph" />
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="yaml-write_2">
-          <span>yaml-write</span>
-          <span>
-            <i node-type="i">yaml</i>
-          </span>
-        </a>
-      </div>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="yaml-write_1">
-          <span>yaml-write</span>
-          <span>
-            <i node-type="i">yaml</i>
-          </span>
-          <span>
-            <i node-type="i">out</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Writes the given list of S-expression represented YAML documents
-<i node-type="i">yaml</i> to the <i node-type="i">out</i>.</p>
-      <p node-type="paragraph">If the first form is used, then it writes to <code node-type="code">(current-output-port)</code>.</p>
-      <pre lang="scheme" node-type="block"><code>(yaml-write '(#(("foo" . "bar") ("boo" 1 2 3 4))))
-;; Prints the following
-#|
-%YAML 1.2
----
-foo: bar
-boo:
-- 1
-- 2
-- 3
-- 4
-...
-|#
+        <p node-type="paragraph">The above definition can build an object from the following SXML</p>
+        <pre lang="scheme" node-type="block"><code>(*TOP*
+  (urn:foo:bar
+    (urn:foo:buz "buz")
+    (foo "foo")))
 </code></pre>
+        <p node-type="paragraph">A generic SXML builder can be written like this:</p>
+        <pre lang="scheme" node-type="block"><code>(define-record-type xml-object
+  (fields name attributes contents))
+
+(define xml-object-builder
+  (sxml-object-builder
+   (&lt;!&gt; (?? values) make-xml-object)))
+</code></pre>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="XML-object">XML object</a>
+          </h4>
+          <p node-type="paragraph">This section describes convenience record type and procedures.</p>
+          <div node-type="define" class="define">
+            <span>Record Type</span>
+            <a name="xml-object_78">
+              <span>xml-object</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="xml-object?_82">
+              <span>xml-object?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-xml-object_315">
+              <span>make-xml-object</span>
+              <span>
+                <i node-type="i">name</i>
+              </span>
+              <span>
+                <i node-type="i">attributes</i>
+              </span>
+              <span>
+                <i node-type="i">contents</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="xml-object-name_81">
+              <span>xml-object-name</span>
+              <span>
+                <i node-type="i">xml-object</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="xml-object-attributes_79">
+              <span>xml-object-attributes</span>
+              <span>
+                <i node-type="i">xml-object</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="xml-object-contents_80">
+              <span>xml-object-contents</span>
+              <span>
+                <i node-type="i">xml-object</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">A very simple XML object type. An instance of this record type
+holds tag name (<i node-type="i">name</i>), attribute as alist (<i node-type="i">attributes</i>) and
+contents which must be a valid SXML or other XML objects (<i node-type="i">contents</i>).</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="sxml-&gt;xml-object_313">
+              <span>sxml-&gt;xml-object</span>
+              <span>
+                <i node-type="i">sxml</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">handler</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Builds XML object described above from given <i node-type="i">sxml</i>.</p>
+        </section>
+      </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section774.html">(text tree) - Lightweight text generation</a>
+      <a href="./section774.html">(text markdown) -- Markdown parser and converter</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section776.html">(util timer) - Timer</a>
+      <a href="./section776.html">(text tree) - Lightweight text generation</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

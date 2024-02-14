@@ -7,319 +7,388 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section724.html">(net server) - Simple server framework</a>
+      <a href="./section724.html">(net mq mqtt) - MQTT library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section726.html">(odbc) - ODBC binding</a>
+      <a href="./section726.html">(net server) - Simple server framework</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="net.socket">(net socket) - Modern Socket library</a>
+        <a name="net.oauth">(net oauth) - OAuth library</a>
       </h2>
+      <p node-type="paragraph">This section describes the APIs for OAuth. OAuth is new secure authentication
+method for web service. For more detail, see
+<a href="http://oauth.net/">OAuth Community Site</a>.</p>
+      <p node-type="paragraph">The following example shows how to obtain an access token from Twitter.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (net oauth) (sagittarius control) (srfi :13 strings))
+;; obtain a request token.
+;; type consumer key and secret you have got issued by Twitter
+(define token (obtain-request-token
+	       "http://api.twitter.com/oauth/request_token"
+	       (make-consumer-token
+		:key "consumer key"
+		:secret "consumer secret")))
+
+(define (get-pin url)
+  (print "Open the following url and type in the shown PIN.")
+  (print url)
+  (let loop ()
+    (display "Input PIN: ") (flush-output-port (current-output-port))
+    (let1 pin (get-line (current-input-port))
+      (cond ((eof-object? pin) #f)
+            ((string-null? pin) (loop))
+            (else pin)))))
+
+(define (report token)
+  (print "(begin")
+  (print " (define consumer-key \"" (token-key (token-consumer token)) "\")")
+  (print " (define consumer-secret \""
+	 (token-secret (token-consumer token))"\")")
+  (print " (define access-token \""(token-key token)"\")")
+  (print " (define access-token-secret \""(token-secret token)"\")")
+  (print ")"))
+
+(define (main args)
+  (let1 pin (get-pin (make-authorization-uri
+		      "http://api.twitter.com/oauth/authorize"
+		      token))
+    ;; authorize the request token manually.
+    (authorize-request-token token pin)
+    ;; obtain the access token
+    (let1 access-token (obtain-access-token 
+			"http://api.twitter.com/oauth/access_token"
+			token)
+      (report access-token))))
+</code></pre>
+      <p node-type="paragraph">Now you get the access token to tweet, let's tweet something on Sagittarius:</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (srfi :26 cut) (text sxml ssax) (net oauth) (sagittarius io))
+(define consumer-key "your consumer key")
+(define consumer-secret "your consumer secret")
+(define access-token "your access token")
+(define access-token-secret "your access token secret")
+
+;; creates an access token to tweet.
+(define access-token
+  (make-access-token :key access-token
+		     :secret access-token-secret
+		     :consumer
+		     (make-consumer-token
+		      :key consumer-key
+		      :secret consumer-secret)))
+
+(define (call/twitter-api-&gt;sxml token method path params . opts)
+  (define (call)
+    (access-protected-resource 
+     (string-append "http://api.twitter.com" path)
+     token
+     :request-method method
+     :user-parameters params))
+  (define (retrieve body status hint advice)
+    (if hint (print hint))
+    (if advice (print advice))
+    (call-with-input-string body (cut ssax:xml-&gt;sxml &lt;&gt; '())))
+  (call-with-values call retrieve))
+
+(define (twitter-update/sxml token message . opts)
+  (call/twitter-api-&gt;sxml 
+   token 'POST "/1/statuses/update.xml" 
+   `(("status" ,message))))
+
+;; if you want to use this from command line.
+(import (getopt))
+
+(define (main args)
+  (with-args args
+      ((message (#\m "message") #t (usage)))
+    (print (twitter-update/sxml access-token message))))
+</code></pre>
+      <p node-type="paragraph">The examples explain basic flows. To obtain an access token, and access to
+protected resource with it.</p>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(net socket)_25">
-          <span>(net socket)</span>
+        <a name="(net oauth)_24">
+          <span>(net oauth)</span>
         </a>
       </div>
-      <p node-type="paragraph">Providing, probably, modern socket library.</p>
-      <p node-type="paragraph">Most of the bindings defined in this library is identical as
-<code node-type="code">(sagittarius socket)</code>, so this document will describe only the
-differences.</p>
+      <p node-type="paragraph">This library provides OAuth 1.0 procedures. The API's names are compatible
+with cl-oauth.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="socket-options?_192">
-          <span>socket-options?</span>
+        <a name="obtain-request-token_8">
+          <span>obtain-request-token</span>
           <span>
-            <i node-type="i">o</i>
+            <i node-type="i">uri</i>
           </span>
+          <span>
+            <i node-type="i">consumer-token</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(version</i>
+          </span>
+          <span>
+            <i node-type="i">:1.0)</i>
+          </span>
+          <span>
+            <i node-type="i">(user-parameters</i>
+          </span>
+          <span>
+            <i node-type="i">'())</i>
+          </span>
+          <span> _</span>
         </a>
       </div>
+      <p node-type="paragraph">_ <i node-type="i">(timestamp</i> <i node-type="i">(time-second</i> <i node-type="i">(current-time)))</i> <i node-type="i">(auth-location</i> <i node-type="i">:header)</i> _
+_ <i node-type="i">(request-method</i> <i node-type="i">'POST)</i> <i node-type="i">(callback-uri</i> <i node-type="i">#f)</i> <i node-type="i">(additional-headers</i> <i node-type="i">'())</i> _
+_ <i node-type="i">(signature-method</i> <i node-type="i">:hmac-sha1)</i> <i node-type="i">(error-translator</i> <i node-type="i">default-message-translator)</i></p>
+      <p node-type="paragraph"><i node-type="i">uri</i> must be string and URI format.</p>
+      <p node-type="paragraph"><i node-type="i">consumer-token</i> must be a consumer token object.</p>
+      <p node-type="paragraph">Obtains request token from given uri with given consumer token.</p>
+      <p node-type="paragraph">if the keyword arguments are specified:</p>
+      <p node-type="paragraph"><i node-type="i">version</i> specifies which version uses. We only support 1.0 so this must not
+be specified.</p>
+      <p node-type="paragraph"><i node-type="i">user-parameters</i> is an alist of the extra parameters to be sent to the
+server. This parameters are in the body message if the <i node-type="i">request-method</i> is
+<code node-type="code">POST</code> or query string if the <i node-type="i">request-method</i> is <code node-type="code">GET</code>.</p>
+      <p node-type="paragraph"><i node-type="i">timestamp</i> specifies timestamp to send to the server.</p>
+      <p node-type="paragraph"><i node-type="i">auth-location</i> specifies the place where the authentication information
+located. This can be either <code node-type="code">:header</code> or <code node-type="code">:parameters</code>.</p>
+      <p node-type="paragraph"><i node-type="i">request-method</i> specifies which request method is used. This can be either
+<code node-type="code">GET</code> or <code node-type="code">POST</code>. <code node-type="code">POST</code> is recommended.</p>
+      <p node-type="paragraph"><i node-type="i">callback-uri</i> specifies call back uri described in OAuth specification. If
+users don't use specific location to be redirected, this must not be specified.</p>
+      <p node-type="paragraph"><i node-type="i">additional-headers</i> is alist of additional header to be sent to the server.</p>
+      <p node-type="paragraph"><i node-type="i">signature-method</i> specifies which hash method is used. For now we only
+support <code node-type="code">:hmac-sha1</code>.</p>
+      <p node-type="paragraph"><i node-type="i">error-translator</i> specifies how to treat the error message sent by the
+server when error occurred. This must be a procedure which accepts 3 arguments,
+http status, headers and body respectively.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="tls-socket-options?_83">
-          <span>tls-socket-options?</span>
+        <a name="make-authorization-uri_28">
+          <span>make-authorization-uri</span>
           <span>
-            <i node-type="i">o</i>
+            <i node-type="i">uri</i>
           </span>
+          <span>
+            <i node-type="i">request-token</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(version</i>
+          </span>
+          <span>
+            <i node-type="i">:1.0)</i>
+          </span>
+          <span>
+            <i node-type="i">(callback-uri</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+          <span> _</span>
         </a>
       </div>
+      <p node-type="paragraph">_ <i node-type="i">(user-parameters</i> <i node-type="i">'())</i></p>
+      <p node-type="paragraph"><i node-type="i">uri</i> must be string and URI format.</p>
+      <p node-type="paragraph"><i node-type="i">request-token</i> must be a request token retrieved by the procedure
+<code node-type="code">obtain-request-token</code>.</p>
+      <p node-type="paragraph">Creates a authorization URI which user must agree.</p>
+      <p node-type="paragraph">The other keyword arguments are the same as <code node-type="code">obtain-request-token</code>.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="server-tls-socket-options?_30">
-          <span>server-tls-socket-options?</span>
+        <a name="authorize-request-token_94">
+          <span>authorize-request-token</span>
           <span>
-            <i node-type="i">o</i>
+            <i node-type="i">request-token</i>
+          </span>
+          <span>
+            <i node-type="i">verificateion-code</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is a <code node-type="code">socket-options</code>,
-<code node-type="code">tls-socket-options</code>, or <code node-type="code">server-tls-socket-options</code>, respectively.</p>
-      <p node-type="paragraph">The <code node-type="code">socket-options?</code> returns #t for all 3 types.</p>
-      <div node-type="define" class="define">
-        <span>Macro</span>
-        <a name="socket-options-builder_191">
-          <span>socket-options-builder</span>
-          <span>
-            <i node-type="i">(fields</i>
-          </span>
-          <span>
-            <i node-type="i">...</i>
-          </span>
-          <span>
-            <i node-type="i">)</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Builds a socket-options object.
-The <code node-type="code">field</code> must be one or multiple of the followings:</p>
-      <dl node-type="dlist">
-        <dt>
-          <i node-type="i">ai-family</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">See <code node-type="code">ai-family</code> of <code node-type="code">(sagittarius socket)</code></p>
-        </dd>
-        <dt>
-          <i node-type="i">ai-socktype</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">See <code node-type="code">ai-socktype</code> of <code node-type="code">(sagittarius socket)</code></p>
-        </dd>
-        <dt>
-          <i node-type="i">ai-flags</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">See <code node-type="code">ai-flags</code> of <code node-type="code">(sagittarius socket)</code></p>
-        </dd>
-        <dt>
-          <i node-type="i">ai-protocol</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">See <code node-type="code">ai-protocl</code> of <code node-type="code">(sagittarius socket)</code></p>
-        </dd>
-        <dt>
-          <i node-type="i">non-blocking?</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">Specifies if the socket is non blocking or not, default #t</p>
-        </dd>
-        <dt>
-          <i node-type="i">connection-timeout</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">Specifies connection timeout in micro seconds, default #f (infinite)</p>
-        </dd>
-        <dt>
-          <i node-type="i">read-timeout</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">Specifies read timeout, default #f (infinite) see <code node-type="code">socket-set-read-timeout!</code> for more details.</p>
-        </dd>
-      </dl>
-      <div node-type="define" class="define">
-        <span>Macro</span>
-        <a name="tls-socket-options-builder_82">
-          <span>tls-socket-options-builder</span>
-          <span>
-            <i node-type="i">(fields</i>
-          </span>
-          <span>
-            <i node-type="i">...</i>
-          </span>
-          <span>
-            <i node-type="i">)</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Builds a tls-socket-options object.
-The <code node-type="code">fields</code> must be the ones from <code node-type="code">socket-options-builder</code> or
-one or multiple of the followings:</p>
-      <dl node-type="dlist">
-        <dt>
-          <i node-type="i">handshake</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">Specifes if handshake must be done or not. Default #t</p>
-        </dd>
-        <dt>
-          <i node-type="i">private-key</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">A client private key</p>
-        </dd>
-        <dt>
-          <i node-type="i">certificates</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">A list of client certificates, must be specified when <code node-type="code">private-key</code> is specified</p>
-        </dd>
-        <dt>
-          <i node-type="i">certificate-verifier</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">A certificate verifier procedure</p>
-        </dd>
-        <dt>
-          <i node-type="i">sni*</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">A list of server name indicators, a list of string</p>
-        </dd>
-        <dt>
-          <i node-type="i">alpn*</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">A list of application layer protocol negotiation names</p>
-        </dd>
-      </dl>
-      <div node-type="define" class="define">
-        <span>Macro</span>
-        <a name="server-tls-socket-options-builder_29">
-          <span>server-tls-socket-options-builder</span>
-          <span>
-            <i node-type="i">(fields</i>
-          </span>
-          <span>
-            <i node-type="i">...</i>
-          </span>
-          <span>
-            <i node-type="i">)</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Builds a server-tls-socket-options object.
-The <code node-type="code">fields</code> must be the ones from <code node-type="code">tls-socket-options-builder</code> or
-one or multiple of the followings:</p>
-      <dl node-type="dlist">
-        <dt>
-          <i node-type="i">client-certificate-required?</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">Specifes if client certificate is required or not. Default #f</p>
-        </dd>
-        <dt>
-          <i node-type="i">trusted-certificates</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">A list of trusted certificates</p>
-        </dd>
-      </dl>
+      <p node-type="paragraph"><i node-type="i">request-token</i> must be a request token which retrieved by the
+procedure <code node-type="code">obtain-request-token</code>.</p>
+      <p node-type="paragraph"><i node-type="i">verificateion-code</i> must be a string returned by the URI generated by the
+procedure <code node-type="code">make-authorization-uri</code>Sets the given <i node-type="i">verificateion-code</i> to the request token and authorized flag
+#t, manually.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="make-client-socket_47">
-          <span>make-client-socket</span>
+        <a name="obtain-access-token_7">
+          <span>obtain-access-token</span>
           <span>
-            <i node-type="i">node</i>
+            <i node-type="i">uri</i>
           </span>
           <span>
-            <i node-type="i">service</i>
+            <i node-type="i">token</i>
           </span>
           <span>
-            <i node-type="i">:optional</i>
+            <i node-type="i">:key</i>
           </span>
           <span>
-            <i node-type="i">options</i>
+            <i node-type="i">(consumer-token</i>
           </span>
+          <span>
+            <i node-type="i">(token-consumer</i>
+          </span>
+          <span>
+            <i node-type="i">token))</i>
+          </span>
+          <span> _</span>
         </a>
       </div>
-      <p node-type="paragraph">Creates a client socket.
-This is almost the same as the one from <code node-type="code">(sagittarius socket)</code>, the only
-difference is it takes <i node-type="i">options</i> to specify extra options, such as
-read timeout or connection timeout.</p>
+      <p node-type="paragraph">_ <i node-type="i">(version</i> <i node-type="i">:1.0)</i> <i node-type="i">(user-parameters</i> <i node-type="i">'())</i> _
+_ <i node-type="i">(timestamp</i> <i node-type="i">(time-second</i> <i node-type="i">(current-time)))</i> <i node-type="i">(auth-location</i> <i node-type="i">:header)</i> _
+_ <i node-type="i">(request-method</i> <i node-type="i">'POST)</i> <i node-type="i">(callback-uri</i> <i node-type="i">#f)</i> <i node-type="i">(additional-headers</i> <i node-type="i">'())</i> _
+_ <i node-type="i">(signature-method</i> <i node-type="i">:hmac-sha1)</i> <i node-type="i">(error-translator</i> <i node-type="i">default-message-translator)</i></p>
+      <p node-type="paragraph"><i node-type="i">uri</i> must a string URI formatted.</p>
+      <p node-type="paragraph"><i node-type="i">token</i> must be either request token or access token.</p>
+      <p node-type="paragraph">Obtains access token from the given URI.</p>
+      <p node-type="paragraph">The keyword arguments <i node-type="i">consumer-token</i> specifies which consumer token is
+used. And must the same one as when you request the request token.</p>
+      <p node-type="paragraph">The rest keyword arguments are the same as <code node-type="code">obtain-request-token</code>.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="make-client-tls-socket_50">
-          <span>make-client-tls-socket</span>
+        <a name="access-protected-resource_3">
+          <span>access-protected-resource</span>
           <span>
-            <i node-type="i">node</i>
+            <i node-type="i">uri</i>
           </span>
           <span>
-            <i node-type="i">service</i>
+            <i node-type="i">access-token</i>
           </span>
           <span>
-            <i node-type="i">:optional</i>
+            <i node-type="i">:key</i>
           </span>
           <span>
-            <i node-type="i">options</i>
+            <i node-type="i">(consumer-token</i>
           </span>
+          <span>
+            <i node-type="i">(token-consumer</i>
+          </span>
+          <span>
+            <i node-type="i">access-token))</i>
+          </span>
+          <span> _</span>
         </a>
       </div>
-      <p node-type="paragraph">Creates a client socket.
-This is almost the same as the one from <code node-type="code">(rfc tls)</code>, the only
-difference is it takes <i node-type="i">options</i> to specify extra options, such as
-client certificate, alpn, etc.</p>
+      <p node-type="paragraph">_ <i node-type="i">(on-refresh</i> <i node-type="i">#f)</i> _
+_ <i node-type="i">(version</i> <i node-type="i">:1.0)</i> <i node-type="i">(user-parameters</i> <i node-type="i">'())</i> _
+_ <i node-type="i">(timestamp</i> <i node-type="i">(time-second</i> <i node-type="i">(current-time)))</i> <i node-type="i">(auth-location</i> <i node-type="i">:header)</i> _
+_ <i node-type="i">(request-method</i> <i node-type="i">'POST)</i> <i node-type="i">(callback-uri</i> <i node-type="i">#f)</i> <i node-type="i">(additional-headers</i> <i node-type="i">'())</i> _
+_ <i node-type="i">(signature-method</i> <i node-type="i">:hmac-sha1)</i> <i node-type="i">(error-translator</i> <i node-type="i">default-message-translator)</i></p>
+      <p node-type="paragraph"><i node-type="i">uri</i> must a string URI formatted.</p>
+      <p node-type="paragraph"><i node-type="i">access-token</i> must be an access token which obtained by the procedure
+<code node-type="code">obtain-access-token</code> or created by <code node-type="code">make-access-token</code>.</p>
+      <p node-type="paragraph">Accesses to protected resource.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">on-refresh</i> is a hook for when token is expired and
+refreshed. It must accept be a procedure which accepts 1 argument that is a
+refreshed access token.</p>
+      <p node-type="paragraph">The rest keyword arguments are the same as the <code node-type="code">obtain-request-token</code>.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="make-server-socket_242">
-          <span>make-server-socket</span>
+        <a name="oauth-uri-encode_2">
+          <span>oauth-uri-encode</span>
           <span>
-            <i node-type="i">node</i>
-          </span>
-          <span>
-            <i node-type="i">service</i>
-          </span>
-          <span>
-            <i node-type="i">:optional</i>
-          </span>
-          <span>
-            <i node-type="i">options</i>
+            <i node-type="i">string</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Creates a client socket.
-This is almost the same as the one from <code node-type="code">(sagittarius socket)</code>, the only
-difference is it takes <i node-type="i">options</i> to specify extra options, such as
-read timeout or connection timeout.</p>
+      <p node-type="paragraph">Encodes given URI and make it OAuth required form.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="make-server-tls-socket_245">
-          <span>make-server-tls-socket</span>
+        <a name="oauth-compose-query_1">
+          <span>oauth-compose-query</span>
           <span>
-            <i node-type="i">node</i>
-          </span>
-          <span>
-            <i node-type="i">service</i>
-          </span>
-          <span>
-            <i node-type="i">:optional</i>
-          </span>
-          <span>
-            <i node-type="i">options</i>
+            <i node-type="i">parameters</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Creates a client socket.
-This is almost the same as the one from <code node-type="code">(rfc tls)</code>, the only
-difference is it takes <i node-type="i">options</i> to specify extra options, such as
-private key, etc.</p>
+      <p node-type="paragraph">Composes given alist to http query form and make it OAuth required form.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="socket-options-&gt;client-socket_190">
-          <span>socket-options-&gt;client-socket</span>
+        <a name="make-consumer-token_56">
+          <span>make-consumer-token</span>
           <span>
-            <i node-type="i">options</i>
+            <i node-type="i">:key</i>
           </span>
           <span>
-            <i node-type="i">node</i>
+            <i node-type="i">(key</i>
           </span>
           <span>
-            <i node-type="i">service</i>
+            <i node-type="i">(random-key))</i>
+          </span>
+          <span>
+            <i node-type="i">(secret</i>
+          </span>
+          <span>
+            <i node-type="i">random-secret)</i>
+          </span>
+          <span>
+            <i node-type="i">(user-data</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+          <span> _</span>
+        </a>
+      </div>
+      <p node-type="paragraph">_ <i node-type="i">(last-timestamp</i> <i node-type="i">0)</i></p>
+      <p node-type="paragraph">Creates a consumer token.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-access-token_14">
+          <span>make-access-token</span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(key</i>
+          </span>
+          <span>
+            <i node-type="i">(random-key))</i>
+          </span>
+          <span>
+            <i node-type="i">(secret</i>
+          </span>
+          <span>
+            <i node-type="i">random-secret)</i>
+          </span>
+          <span>
+            <i node-type="i">(user-data</i>
+          </span>
+          <span>
+            <i node-type="i">#f)</i>
+          </span>
+          <span> _</span>
+        </a>
+      </div>
+      <p node-type="paragraph">_ <i node-type="i">consumer</i> <i node-type="i">(session-handle</i> <i node-type="i">#f)</i> <i node-type="i">(expires</i> <i node-type="i">#f)</i> <i node-type="i">(authorization-expires</i> <i node-type="i">#f)</i> _
+_ <i node-type="i">(origin-uri</i> <i node-type="i">#f)</i></p>
+      <p node-type="paragraph">Creates a access token.</p>
+      <div node-type="define" class="define">
+        <span>Method</span>
+        <a name="token-consumer_96">
+          <span>token-consumer</span>
+          <span>
+            <i node-type="i">token</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Creates a client socket from the given <i node-type="i">options</i>, <i node-type="i">node</i> and
-<i node-type="i">service</i>.</p>
-      <p node-type="paragraph">This is a convenient procedure to make a socket from the options instead
-of let user dispatch manually.</p>
+      <p node-type="paragraph"><i node-type="i">token</i> must be an access token or request token.</p>
+      <p node-type="paragraph">Retrieves consumer token from given <i node-type="i">token</i>.</p>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section724.html">(net server) - Simple server framework</a>
+      <a href="./section724.html">(net mq mqtt) - MQTT library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section726.html">(odbc) - ODBC binding</a>
+      <a href="./section726.html">(net server) - Simple server framework</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

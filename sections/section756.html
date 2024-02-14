@@ -7,342 +7,726 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section755.html">(rfc x.509) - X.509 certificate utility library</a>
+      <a href="./section755.html">(rfc uuid) - UUID generate library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section757.html">RPC support framework</a>
+      <a href="./section757.html">(rfc x.509) - X.509 certificate utility library</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="rfc.zlib">(rfc zlib) - zlib compression library</a>
+        <a name="rfc.websocket">(rfc websocket) - WebSocket</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(rfc zlib)_54">
-          <span>(rfc zlib)</span>
+        <a name="(rfc websocket)_53">
+          <span>(rfc websocket)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides the binding for zlib compression library. For now,
-it only provides the highest level APIs.</p>
-      <div node-type="define" class="define">
-        <span>Condition Type</span>
-        <a name="&amp;zlib-error_50">
-          <span>&amp;zlib-error</span>
-        </a>
-      </div>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="zlib-error?_11">
-          <span>zlib-error?</span>
-          <span>
-            <i node-type="i">obj</i>
-          </span>
-        </a>
-      </div>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="condition-zlib-stream_142">
-          <span>condition-zlib-stream</span>
-          <span>
-            <i node-type="i">zlib-error</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Subcondition of <code node-type="code">&amp;error</code>.</p>
-      <p node-type="paragraph">This condition is raised when zlib process is finished unsuccessfully. You can
-obtain the cause z-stream with the <code node-type="code">condition-zlib-stream</code> procedure and
-get the detail message with the <code node-type="code">zlib-error-message</code> procedure. When error
-occurred, however, it is raised with <code node-type="code">message-condition</code> and it has the
-error message with. So you can simply get it with <code node-type="code">condition-message</code>procedure.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="zlib-error-message_10">
-          <span>zlib-error-message</span>
-          <span>
-            <i node-type="i">z-stream</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph"><i node-type="i">Z-stream</i> must be z-stream object.</p>
-      <p node-type="paragraph">Retrieve error message from <i node-type="i">z-stream</i>. If <i node-type="i">z-stream</i> does not have any
-error message and this procedure is called, the behaviour is unspecified.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="open-deflating-output-port_31">
-          <span>open-deflating-output-port</span>
-          <span>
-            <i node-type="i">sink</i>
-          </span>
-          <span>
-            <i node-type="i">:key</i>
-          </span>
-          <span>
-            <i node-type="i">compression-level</i>
-          </span>
-          <span>
-            <i node-type="i">buffer-size</i>
-          </span>
-          <span>
-            <i node-type="i">window-bits</i>
-          </span>
-          <span>
-            <i node-type="i">memory-level</i>
-          </span>
-          <span> _</span>
-        </a>
-      </div>
-      <p node-type="paragraph">_ <i node-type="i">strategy</i> <i node-type="i">dictionary</i> <i node-type="i">owner?</i></p>
-      <p node-type="paragraph"><i node-type="i">Sink</i> must be binary output port. Creates a custom binary output
-port. The port deflates its input and put the result to <i node-type="i">sink</i>. With the
-optional keys, you can specify the following conditions:</p>
-      <dl node-type="dlist">
-        <dt>
-          <i node-type="i">compression-level</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">You can specify an exact integer between 1 and 9 (inclusive) to
-<i node-type="i">compression-level</i>. When it is omitted, a default compression level is
-used, which is usually 6.
-The following constants are defined to specify _compression-level_conveniently:</p>
-          <div node-type="define" class="define">
-            <span>Constant</span>
-            <a name="Z_NO_COMPRESSION_7">
-              <span>Z_NO_COMPRESSION</span>
-            </a>
-          </div>
-          <div node-type="define" class="define">
-            <span>Constant</span>
-            <a name="Z_BEST_SPEED_1">
-              <span>Z_BEST_SPEED</span>
-            </a>
-          </div>
-          <div node-type="define" class="define">
-            <span>Constant</span>
-            <a name="Z_BEST_COMPRESSION_0">
-              <span>Z_BEST_COMPRESSION</span>
-            </a>
-          </div>
-          <div node-type="define" class="define">
-            <span>Constant</span>
-            <a name="Z_DEFAULT_COMPRESSION_2">
-              <span>Z_DEFAULT_COMPRESSION</span>
-            </a>
-          </div>
-        </dd>
-        <dt>
-          <i node-type="i">buffer-size</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">It specifies the buffer size of the port in bytes.
-The default is 4096.</p>
-        </dd>
-        <dt>
-          <i node-type="i">window-bits</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">It specifies the size of the window in exact
-integer. Typically the value should be between 8 and 15, inclusive, and it
-specifies the base two logarithm of the window size used in compression. Larger
-number yields better compression ratio, but more memory usage. The default value
-is 15.</p>
-        </dd>
-        <dt>
-          <i node-type="i">memory-level</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">It specifies how much memory should be allocated to
-keep the internal state during compression. 1 means smallest memory which causes
-slow and less compression. 9 means fastest and best compression with the largest
-amount of memory. The default value is 8.</p>
-        </dd>
-        <dt>
-          <i node-type="i">strategy</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">To fine tune compression algorithm, you can use the
-<i node-type="i">strategy</i> argument. The following constants are defined as the valid value
-as <i node-type="i">strategy</i>.</p>
-          <div node-type="define" class="define">
-            <span>Constant</span>
-            <a name="Z_DEFAULT_STRATEGY_3">
-              <span>Z_DEFAULT_STRATEGY</span>
-            </a>
-          </div>
-          <p node-type="paragraph">The default strategy, suitable for most ordinary data.</p>
-          <div node-type="define" class="define">
-            <span>Constant</span>
-            <a name="Z_FILTERED_4">
-              <span>Z_FILTERED</span>
-            </a>
-          </div>
-          <p node-type="paragraph">Suitable for data generated by filters (or predictors). Filtered data
-consists mostly of small values with a somewhat compress them better. The
-effect of this is to force more huffman coding and less string matching.</p>
-          <div node-type="define" class="define">
-            <span>Constant</span>
-            <a name="Z_HUFFMAN_ONLY_6">
-              <span>Z_HUFFMAN_ONLY</span>
-            </a>
-          </div>
-          <p node-type="paragraph">Force to use huffman encoding only.</p>
-          <div node-type="define" class="define">
-            <span>Constant</span>
-            <a name="Z_RLE_8">
-              <span>Z_RLE</span>
-            </a>
-          </div>
-          <p node-type="paragraph">This is designed to be almost as fast as Z_HUFFMAN_ONLY, but gives better
-compression for PNG image data.</p>
-          <div node-type="define" class="define">
-            <span>Constant</span>
-            <a name="Z_FIXED_5">
-              <span>Z_FIXED</span>
-            </a>
-          </div>
-          <p node-type="paragraph">This prevents the use of dynamic huffman codes, allowing for a simpler
-decoder for special applications.
-The choice of <i node-type="i">strategy</i> only affects compression ratio and speed. Any
-choice produces correct and decompressable data.</p>
-        </dd>
-        <dt>
-          <i node-type="i">dictionary</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">You can give an initial dictionary to the
-<i node-type="i">dictionary</i> argument to be used in compression. The compressor and
-decompressor must use exactly the same dictionary.</p>
-        </dd>
-        <dt>
-          <i node-type="i">owner?</i>
-        </dt>
-        <dd>
-          <p node-type="paragraph">If this argument is specified true value, the created
-port automatically closes the given output port <i node-type="i">sink</i> when it is closed.</p>
-        </dd>
-      </dl>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="open-inflating-input-port_36">
-          <span>open-inflating-input-port</span>
-          <span>
-            <i node-type="i">source</i>
-          </span>
-          <span>
-            <i node-type="i">:key</i>
-          </span>
-          <span>
-            <i node-type="i">buffer-size</i>
-          </span>
-          <span>
-            <i node-type="i">window-bits</i>
-          </span>
-          <span>
-            <i node-type="i">dictionary</i>
-          </span>
-          <span>
-            <i node-type="i">owner?</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph"><i node-type="i">Source</i> must be a binary input port.</p>
-      <p node-type="paragraph">The <code node-type="code">open-inflating-input-port</code> creates a custom binary input port, which
-reads compressed binary data from the given port <i node-type="i">source</i> and decompresses
-the read data. When <i node-type="i">source</i> port supports both <code node-type="code">port-position</code> and
-<code node-type="code">set-port-position!</code> then the procedure will set <i node-type="i">source</i> position
-to offset of used bytes length when the created custom port is being closed.
-Thus if the <i node-type="i">source</i> port contains mixture of deflated data and non
-deflated data then the custom port will only read deflated data and won't
-forward the original port position beyond it no matter how big the
-<i node-type="i">buffer-size</i> is specified.</p>
-      <p node-type="paragraph">The meaning of <i node-type="i">buffer-size</i> is the same as
-<code node-type="code">open-deflating-output-port</code>.</p>
-      <p node-type="paragraph">The meaning of <i node-type="i">window-bits</i> is almost the same, except if a value increased
-by 32 is given, the inflating port automatically detecs whether the source
-stream is zlib or gzip by its header.</p>
-      <p node-type="paragraph">If the input data is compressed with specified dictionary, the same dictionary
-must be given to <i node-type="i">dictionary</i> argument. Otherwise &amp;zlib-error condition is
+      <p node-type="paragraph">This library provides WebSocket APIs defined by
+<a href="https://tools.ietf.org/html/rfc6455">RFC 6455</a>.</p>
+      <p node-type="paragraph">Following is a simple example to use user level APIs.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (rfc websocket))
+
+;; Creates an WebSocket object
+(define websocket (make-websocket "wss://echo.websocket.org"))
+
+;; Sets text message event handler
+(websocket-on-text-message websocket
+  (lambda (ws text) (display text) (newline)))
+
+;; Opens the WebSocket
+(websocket-open websocket)
+
+;; Sends a message to endpoint
+(websocket-send websocket "Hello")
+
+;; Closes the WebSocket
+(websocket-close websocket)
+</code></pre>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="User-level-APIs">User level APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-websocket_305">
+            <span>make-websocket</span>
+            <span>
+              <i node-type="i">uri</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(protocols</i>
+            </span>
+            <span>
+              <i node-type="i">'())</i>
+            </span>
+            <span>
+              <i node-type="i">(extensions</i>
+            </span>
+            <span>
+              <i node-type="i">'())</i>
+            </span>
+            <span>
+              <i node-type="i">(engine</i>
+            </span>
+            <span>
+              <i node-type="i">'http)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an WebSocket object which communicate to given <i node-type="i">uri</i>.</p>
+        <p node-type="paragraph">The URI reprented by <i node-type="i">uri</i> must be a valid WebSocket URI. If it's
+not a valid URI, then <code node-type="code">&amp;websocket-engine</code> or its sub condition
+shall be raised.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">protocols</i> are a list of sub protocols of the
+creating WebSocket. If this is set, then handshake will send it with
+<code node-type="code">Sec-WebSocket-Protocol</code> header or equivalent.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">extensions</i> are a list of extensions of the
+creating WebSocket. If this is set, then handshake will send it with
+<code node-type="code">Sec-WebSocket-Extensions</code> header or equivalent.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">engine</i> is a type of handshake engine and
+must be a symbol. This determines which handshake protocol it should
+use. The default value is <code node-type="code">http</code> which uses HTTP/1.1.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="websocket?_44">
+            <span>websocket?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is an WebSocket object otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="websocket-open_33">
+            <span>websocket-open</span>
+            <span>
+              <i node-type="i">websocket</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Operating handshake on given WebSocket object <i node-type="i">websocket</i> if
+it's not opened, yet. And returns <i node-type="i">websocket</i>.</p>
+        <p node-type="paragraph">If handshake failed, then <code node-type="code">&amp;websocket-engine</code> or its sub condition
+shall be raised.</p>
+        <p node-type="paragraph">After successfull call of this procedure, the <i node-type="i">websocket</i> has a
+message dispatcher thread.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="websocket-close_20">
+            <span>websocket-close</span>
+            <span>
+              <i node-type="i">websocket</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(status</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(message</i>
+            </span>
+            <span>
+              <i node-type="i">"")</i>
+            </span>
+            <span>
+              <i node-type="i">(timeout</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Closes the given <i node-type="i">websocket</i> if it's open and returns the
+<i node-type="i">websocket</i>. This procedure also finishes the underlying thread
+created by <code node-type="code">websocket-open</code>.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">status</i> is specified, it must be a non
+negative integer which has less then or equal to 16 bits length, then
+the procedure sends it as a connection close code.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">message</i> is specified, must be a string, then
+the procedure sends it as a connection close message. This is sent only
+if the <i node-type="i">status</i> is specified otherwise ignored.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">timeout</i> is used as a timeout period for waiting
+underlying dispatcher thread. If the thread didn't finish in the specified
+period, then it'd be terminated and <code node-type="code">&amp;websocket-close-timeout</code> is
 raised.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="inflate-bytevector_59">
-          <span>inflate-bytevector</span>
-          <span>
-            <i node-type="i">bv</i>
-          </span>
-          <span>
-            <i node-type="i">opts</i>
-          </span>
-          <span>
-            <i node-type="i">...</i>
-          </span>
-        </a>
-      </div>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="deflate-bytevector_98">
-          <span>deflate-bytevector</span>
-          <span>
-            <i node-type="i">bv</i>
-          </span>
-          <span>
-            <i node-type="i">opts</i>
-          </span>
-          <span>
-            <i node-type="i">...</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Inflate/deflate given bytevector <i node-type="i">bv</i> respectively.</p>
-      <p node-type="paragraph">These are convenient procedures. It uses <code node-type="code">open-inflating-input-port</code> or
-<code node-type="code">open-deflating-output-port</code> to inflate/deflate.</p>
-      <p node-type="paragraph">The <i node-type="i">opts</i> will be passed to underlying procedures.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="crc32_158">
-          <span>crc32</span>
-          <span>
-            <i node-type="i">bv</i>
-          </span>
-          <span>
-            <i node-type="i">:optional</i>
-          </span>
-          <span>
-            <i node-type="i">(checksum</i>
-          </span>
-          <span>
-            <i node-type="i">0)</i>
-          </span>
-        </a>
-      </div>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="adler32_22">
-          <span>adler32</span>
-          <span>
-            <i node-type="i">bv</i>
-          </span>
-          <span>
-            <i node-type="i">:optional</i>
-          </span>
-          <span>
-            <i node-type="i">(checksum</i>
-          </span>
-          <span>
-            <i node-type="i">0)</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Returns CSC32/Adler32 checksum of bytevector <i node-type="i">bv</i>, respectively.</p>
-      <p node-type="paragraph">If optional <i node-type="i">checksum</i> is given, then returned checksum is an update of
-<i node-type="i">checksum</i> by <i node-type="i">bv</i>.</p>
+        <p node-type="paragraph">If the underlying thread raised an <code node-type="code">&amp;uncaught-exception</code>, then the
+procedure raises its reason.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="websocket-send_38">
+            <span>websocket-send</span>
+            <span>
+              <i node-type="i">websocket</i>
+            </span>
+            <span>
+              <i node-type="i">data</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">start</i>
+            </span>
+            <span>
+              <i node-type="i">splitter</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Sends given <i node-type="i">data</i> to the <i node-type="i">websocket</i> and returns
+<i node-type="i">websocket</i>. This procedure runs in atomic so the <i node-type="i">data</i> is sent
+in one fragmentation sequence.</p>
+        <p node-type="paragraph">The optional arguments are passed to underlying data transport procedures.
+If the <i node-type="i">data</i> is a string, then <code node-type="code">websocket-send-text</code> is used.
+If the <i node-type="i">data</i> is a bytevector, then <code node-type="code">websocket-send-binary</code> is used.
+If the <i node-type="i">data</i> is not one of the aboves, then <code node-type="code">&amp;assertion</code> is raised.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="websocket-ping_35">
+            <span>websocket-ping</span>
+            <span>
+              <i node-type="i">websocket</i>
+            </span>
+            <span>
+              <i node-type="i">data</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(timeout</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(timeout-value</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Send ping control frame whose data is <i node-type="i">data</i> to _websocket_and returns <i node-type="i">websocket</i>.</p>
+        <p node-type="paragraph">The procedure waits until the endpoint returns pong control frame. If the
+pong frame doesn't contain the same <i node-type="i">data</i> in its payload, then
+<code node-type="code">&amp;websocket-pong</code> is raised.</p>
+        <p node-type="paragraph">The optional argument <i node-type="i">timeout</i> specifies how long the procedure waits
+the pong response.</p>
+        <p node-type="paragraph">The optional argument <i node-type="i">timeout-value</i> is an alternative value when
+the endpoint didn't return pong in time.</p>
+        <p node-type="paragraph">CAUTION: this procedure depends on the endpoint's behaviour.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Event-handling">Event handling</a>
+          </h4>
+          <p node-type="paragraph">The user level APIs are event driven like JavaScript's WebSocket API.
+Whenever an event is occured, then the configured event handler is
+invoked.</p>
+          <p node-type="paragraph">There are 2 types of error handler invocations. One is calling active
+procedures such as <code node-type="code">websocket-send</code>. The other one is passive situation
+such as receiving frame from endpoint. The first case, all active procedures
+would catch <code node-type="code">&amp;websocket</code> and its sub conditions. If the condition is
+<code node-type="code">&amp;websocket-engine</code> or its sub condition, then the condition is
+re-raised. Other <code node-type="code">&amp;websocket</code> conditions are not re-raised by the
+APIs. Other conditions are simply re-raised without invcating event handler.
+On the second case, it's mostly the same, but when
+<code node-type="code">&amp;websocket-closed</code> is raised, then event handler won't be invoked.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-on-text-message_32">
+              <span>websocket-on-text-message</span>
+              <span>
+                <i node-type="i">websocket</i>
+              </span>
+              <span>
+                <i node-type="i">event-handler</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-on-binary-message_28">
+              <span>websocket-on-binary-message</span>
+              <span>
+                <i node-type="i">websocket</i>
+              </span>
+              <span>
+                <i node-type="i">event-handler</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sets <i node-type="i">event-handler</i> for receiving text message and binary
+message to <i node-type="i">websocket</i>, respectively.</p>
+          <p node-type="paragraph">The <i node-type="i">event-handler</i> must be a procedure which accepts 2 arguments,
+WebSocket object and response data, string or bytevector.</p>
+          <p node-type="paragraph">If the <i node-type="i">event-handler</i> raises an error, and it's not
+a <code node-type="code">&amp;websocket</code>, then the dispatcher thread opened by
+<code node-type="code">websocket-open</code> stops running.</p>
+          <p node-type="paragraph">The procedure returns <i node-type="i">websocket</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-on-open_31">
+              <span>websocket-on-open</span>
+              <span>
+                <i node-type="i">websocket</i>
+              </span>
+              <span>
+                <i node-type="i">event-handler</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-on-close_29">
+              <span>websocket-on-close</span>
+              <span>
+                <i node-type="i">websocket</i>
+              </span>
+              <span>
+                <i node-type="i">event-handler</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sets <i node-type="i">event-handler</i> for open and close event to <i node-type="i">websocket</i>,
+respectively.</p>
+          <p node-type="paragraph">The <i node-type="i">event-handler</i> must be a procedure which accepts 1 argument,
+WebSocket object.</p>
+          <p node-type="paragraph">The procedure returns <i node-type="i">websocket</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-on-error_30">
+              <span>websocket-on-error</span>
+              <span>
+                <i node-type="i">websocket</i>
+              </span>
+              <span>
+                <i node-type="i">event-handler</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sets <i node-type="i">event-handler</i> for error situation to <i node-type="i">websocket</i>.</p>
+          <p node-type="paragraph">The <i node-type="i">event-handler</i> must be a procedure which accepts 2 arguments,
+WebSocket object and a captured error.</p>
+          <p node-type="paragraph">If the <i node-type="i">event-handler</i> raises an error, then it would be propagated
+caller of the user level APIs.</p>
+          <p node-type="paragraph">The procedure returns <i node-type="i">websocket</i>.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Low-level-APIs">Low level APIs</a>
+        </h3>
+        <p node-type="paragraph">The low level APIs can be used when users want to implement WebSocket process
+in programatic way. The user level APIs are implemented on this APIs.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="WebSocket-Connection">WebSocket Connection</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-websocket-connection_306">
+              <span>make-websocket-connection</span>
+              <span>
+                <i node-type="i">uri</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(engine</i>
+              </span>
+              <span>
+                <i node-type="i">'http)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Creates WebSocket connection object. <i node-type="i">uri</i> and <i node-type="i">engine</i> are
+the same as <i node-type="i">make-websocket</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-connection?_26">
+              <span>websocket-connection?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is WebSocket connection object
+otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-connection-handshake!_24">
+              <span>websocket-connection-handshake!</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(protocols</i>
+              </span>
+              <span>
+                <i node-type="i">'())</i>
+              </span>
+              <span>
+                <i node-type="i">(extensions</i>
+              </span>
+              <span>
+                <i node-type="i">'())</i>
+              </span>
+              <span>
+                <i node-type="i">:rest</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Processes handshake on given <i node-type="i">connection</i>. All the optional
+arguments are passed to underlying handshake engine.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-connection-close!_22">
+              <span>websocket-connection-close!</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Closes given <i node-type="i">connection</i>. This procedure simply closes
+socket connection.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-connection-closed?_23">
+              <span>websocket-connection-closed?</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the <i node-type="i">connection</i> is not connected otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-connection-pong-queue_25">
+              <span>websocket-connection-pong-queue</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns a shared queue which stores pong data from the endpoint of
+the <i node-type="i">connection</i>.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="WebSocket-Messages">WebSocket Messages</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-send-text_43">
+              <span>websocket-send-text</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+              <span>
+                <i node-type="i">data</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(start</i>
+              </span>
+              <span>
+                <i node-type="i">0)</i>
+              </span>
+              <span>
+                <i node-type="i">split</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-send-binary_39">
+              <span>websocket-send-binary</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+              <span>
+                <i node-type="i">data</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(start</i>
+              </span>
+              <span>
+                <i node-type="i">0)</i>
+              </span>
+              <span>
+                <i node-type="i">split</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sends text or binary frame of <i node-type="i">data</i> to given <i node-type="i">connection</i>.</p>
+          <p node-type="paragraph">If the first procedure is called, then <i node-type="i">data</i> must be a string.</p>
+          <p node-type="paragraph">If the second procedure is called, then <i node-type="i">data</i> must be a bytevector.</p>
+          <p node-type="paragraph">The optional argument start specifies from which point of <i node-type="i">data</i> to send.</p>
+          <p node-type="paragraph">The optional argument <i node-type="i">split</i> is specified, it must be an non negative
+integer or procedure which accepts 2 arguments, <i node-type="i">data</i> and start, then
+the <i node-type="i">data</i> is sent fragmented.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-send-close_40">
+              <span>websocket-send-close</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(data</i>
+              </span>
+              <span>
+                <i node-type="i">#vu8())</i>
+              </span>
+              <span>
+                <i node-type="i">(wait?</i>
+              </span>
+              <span>
+                <i node-type="i">#t)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sends close control frame to given <i node-type="i">connection</i>.</p>
+          <p node-type="paragraph">If the optional argument <i node-type="i">data</i> is specified, it must be a properly
+coded connection close status, the it's sent as a payload of close frame.</p>
+          <p node-type="paragraph">If the optional argument <i node-type="i">wait?</i> is true value, then the procedure
+waits until the endpoint sends close frame back.</p>
+          <p node-type="paragraph">If <i node-type="i">wait?</i> is #f, then it is users responsibility to receive the
+response close frame and closes the connection.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-send-ping_41">
+              <span>websocket-send-ping</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(data</i>
+              </span>
+              <span>
+                <i node-type="i">#vu8())</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-send-pong_42">
+              <span>websocket-send-pong</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(data</i>
+              </span>
+              <span>
+                <i node-type="i">#vu8())</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sends ping and pong frame to given <i node-type="i">connection</i> respectively.</p>
+          <p node-type="paragraph">The optional argument <i node-type="i">data</i> is sent as its payload.</p>
+          <p node-type="paragraph">NB: the payload must be less than 125 bytes.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-receive_36">
+              <span>websocket-receive</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+              <span>
+                <i node-type="i">:key</i>
+              </span>
+              <span>
+                <i node-type="i">(push-pong?</i>
+              </span>
+              <span>
+                <i node-type="i">#f)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Receives a data frame and return 2 values, opcode and payload.</p>
+          <p node-type="paragraph">If the frame is text, then returning value is a string. Otherwise
+returning value is a bytevector.</p>
+          <p node-type="paragraph">If the keyword argument <i node-type="i">push-pong?</i> is true value, then
+payload of pong control frame will be pushed in to the <code node-type="code">pong-queue</code>of the <i node-type="i">connection</i>.</p>
+          <p node-type="paragraph">This procedure doesn't return ping and pong control frame.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-receive-fragments_37">
+              <span>websocket-receive-fragments</span>
+              <span>
+                <i node-type="i">connection</i>
+              </span>
+              <span>
+                <i node-type="i">proc</i>
+              </span>
+              <span>
+                <i node-type="i">:key</i>
+              </span>
+              <span>
+                <i node-type="i">(push-pong?</i>
+              </span>
+              <span>
+                <i node-type="i">#f)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Receives a data fragments until its end and return the result of
+the last call of <i node-type="i">proc</i>.</p>
+          <p node-type="paragraph">The <i node-type="i">proc</i> must accept 3 values, <i node-type="i">finished?</i>, <i node-type="i">opcode</i> and
+<i node-type="i">data</i>.</p>
+          <p node-type="paragraph">This procedure is useful to receive a huge frame without concising.</p>
+          <p node-type="paragraph">The <code node-type="code">websocket-receive</code> is implemented on top of this procedure
+like this:</p>
+          <pre lang="scheme" node-type="block"><code>(define (websocket-receive conn :key (push-pong? #f))
+  (define (convert opcode data)
+    (if (eqv? opcode +websocket-text-frame+)
+	(values opcode (utf8-&gt;string data))
+	(values opcode data)))
+  (let-values (((out extract) (open-bytevector-output-port)))
+    (websocket-receive-fragments conn
+     (lambda (fin? opcode data)
+       (put-bytevector out data)
+       (if fin? (convert opcode (extract)) (values opcode #f)))
+     :push-pong? push-pong?)))
+</code></pre>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-compose-close-status_21">
+              <span>websocket-compose-close-status</span>
+              <span>
+                <i node-type="i">status</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">message</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph"><i node-type="i">status</i> must be an non negative integer whose bit length
+must be less than or equal to 16 bits.</p>
+          <p node-type="paragraph">If optional argument <i node-type="i">message</i> is specified, then it must be a
+string.</p>
+          <p node-type="paragraph">Composes a payload of close frame.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="websocket-parse-close-status_34">
+              <span>websocket-parse-close-status</span>
+              <span>
+                <i node-type="i">data</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph"><i node-type="i">data</i> must be a payload of close frame.</p>
+          <p node-type="paragraph">Returns 2 values, status and mesasge of the close frame payload.</p>
+          <div node-type="define" class="define">
+            <span>Constants</span>
+            <a name="+websocket-text-frame+_28">
+              <span>+websocket-text-frame+</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Constants</span>
+            <a name="+websocket-binary-frame+_24">
+              <span>+websocket-binary-frame+</span>
+            </a>
+          </div>
+          <p node-type="paragraph">WebSocket frame type constants. It represents text frame and
+binary frame, respectively.</p>
+          <div node-type="define" class="define">
+            <span>Constants</span>
+            <a name="+websocket-close-frame+_25">
+              <span>+websocket-close-frame+</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Constants</span>
+            <a name="+websocket-ping-frame+_26">
+              <span>+websocket-ping-frame+</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Constants</span>
+            <a name="+websocket-pong-frame+_27">
+              <span>+websocket-pong-frame+</span>
+            </a>
+          </div>
+          <p node-type="paragraph">WebSocket control frame type constants. It represents cloe frame,
+ping frame, and pong frame, respectively.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Conditions">Conditions</a>
+        </h3>
+        <p node-type="paragraph"><code node-type="code">&amp;websocket</code> is a base condition of the WebSocket library's condition.
+The hierarchy is the following:</p>
+        <pre lang="scheme" node-type="block"><code>+ &amp;error
+  + &amp;websocket
+    + &amp;websocket-engine
+      + &amp;websocket-engine-not-found
+         - engine
+	 - reason
+      + &amp;websocket-engine-scheme
+         - scheme
+      + &amp;websocket-engine-connection
+         - host
+	 - port
+    + &amp;websocket-closed
+       - status
+       - message
+    + &amp;websocket-pong
+       - pong-data
+    + &amp;websocket-close-timeout
+</code></pre>
+        <p node-type="paragraph">The condition types are not exported by the library.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="websocket-error?_27">
+            <span>websocket-error?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+      </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section755.html">(rfc x.509) - X.509 certificate utility library</a>
+      <a href="./section755.html">(rfc uuid) - UUID generate library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section757.html">RPC support framework</a>
+      <a href="./section757.html">(rfc x.509) - X.509 certificate utility library</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

@@ -7,284 +7,668 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section728.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+      <a href="./section728.html">(odbc) - ODBC binding</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section730.html">(util queue) - Queue</a>
+      <a href="./section730.html">(rsa pkcs :5) - Password Based Cryptography library</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="pkcs.12">(rsa pkcs :12) - PKCS#12</a>
+        <a name="peg">(peg) - PEG library</a>
       </h2>
-      <p node-type="paragraph">This section describes the implementation of PKCS#12 specification library.
-However we do not describe PKCS#12 itself and I don't think it is necessary to
-know it if you just want to use it.</p>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="rsa pkcs :12_159">
-          <span>rsa pkcs :12</span>
+        <a name="(peg)_30">
+          <span>(peg)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides procedures for PKCS#12 operations.</p>
+      <p node-type="paragraph">A parser combinators library.</p>
+      <p node-type="paragraph">This library is named PEG (Paring Expression Grammar), howerver it
+only provides parser combinator not syntactical layer, yet.</p>
+      <p node-type="paragraph">The following example shows parsing simple arithmetic expressions.</p>
+      <p node-type="paragraph">The first part of the example shows how to define the parser. The parser
+is defined with the name of <code node-type="code">calc:expr</code>. This parser accepts one
+argument which is a lazy sequence provided by SRFI-127 <code node-type="code">(srfi :127)</code>,
+and returns 3 values, parse state, parser value and next input.</p>
+      <p node-type="paragraph">NOTE: A lazy sequence is a pair, whose <code node-type="code">cdr</code> part might be a generator.
+A normal pair can also be a lazy sequence.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs)
+	(peg)
+	(peg chars)
+	(srfi :14 char-sets)
+	(srfi :121 generators)
+	(srfi :127 lseqs))
+
+(define ascii-digits (char-set-intersection char-set:digit char-set:ascii))
+(define calc:num
+  ($do (s ($optional ($or ($eqv? #\+) ($eqv? #\-)) #\+))
+       (n ($many ($char-set-contains? ascii-digits) 1))
+       ($return (string-&gt;number (apply string s n)))))
+(define (calc:op c)
+  ($seq ($many ($satisfy char-whitespace?))
+	($eqv? c)
+	($many ($satisfy char-whitespace?))))
+(define calc:+ (calc:op #\+))
+(define calc:* (calc:op #\*))
+(define calc:open (calc:op #\())
+(define calc:close (calc:op #\)))
+
+(define calc:simple
+  ($or ($do calc:open (a ($lazy calc:expr)) calc:close ($return a))
+       calc:num))
+(define calc:mulexp
+  ($or ($do (a calc:simple) calc:* (b calc:simple) ($return (* a b)))
+       calc:simple))
+(define calc:expr
+  ($or ($do (a calc:mulexp) calc:+ (b calc:mulexp) ($return (+ a b)))
+       calc:mulexp))
+</code></pre>
+      <p node-type="paragraph">The parser can be called like this:</p>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(calc:expr (generator-&gt;lseq (string-&gt;generator "1 + 2")))
+</code></pre>
+        <span />
+        <span>#\&lt;parse-succcess&gt; 3 '()</span>
+      </div>
+      <p node-type="paragraph" />
+      <p node-type="paragraph">The parser doesn't check if the input is consumed entirely. So this also
+returns success:</p>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(calc:expr (generator-&gt;lseq (string-&gt;generator "1 - 2")))
+</code></pre>
+        <span />
+        <span>#\&lt;parse-succcess&gt; 1 '(#space #- #space #2)</span>
+      </div>
+      <p node-type="paragraph" />
+      <p node-type="paragraph">If you want to make sure that the entire input is consumed, then you need to
+check if the next input is <code node-type="code">()</code> or not.</p>
+      <p node-type="paragraph">NOTE: An input of parsers, which is lazy sequence, doesn't necessarily be a
+character sequence. So users can implmenet own lexer.</p>
+      <p node-type="paragraph">NOTE2: The above example of the parser usage can also be like this:</p>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(calc:expr (string-&gt;list "1 + 2"))
+</code></pre>
+        <span />
+        <span>#\&lt;parse-succcess&gt; 3 '()</span>
+      </div>
+      <p node-type="paragraph" />
+      <p node-type="paragraph">In this document, we always convert to a lazy sequence.</p>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="Keystore-APIs">Keystore APIs</a>
+          <a name="Predefined-parsers">Predefined parsers</a>
         </h3>
-        <p node-type="paragraph">The example shows how to use keystore APIs:</p>
-        <pre lang="scheme" node-type="block"><code>(import (rnrs) (rsa pkcs :12))
-
-(define keystore (load-pkcs12-keystore-file "keystore.p12" "pass"))
-
-(pkcs12-keystore-get-key keystore "key-name" "key-pass")
-;; -&gt; &lt;private-key&gt;
-
-(pkcs12-keystore-get-certificate keystore "cert-name")
-;; -&gt; &lt;x509-certificate&gt;
-
-;; certs are list of X509 certificate associated with given private-key
-(pkcs12-keystore-set-key! keystore "key-name2" private-key "key-pass2" certs)
-
-;; cert must be an X509 certificate
-(pkcs12-keystore-set-certificate! keystore "cert-name2" cert)
-
-(store-pkcs12-keystore-to-file keystore "keystore2.p12" "pass2")
-</code></pre>
-        <div node-type="define" class="define">
-          <span>Class</span>
-          <a name="<pkcs12-keystore&gt;_49">
-            <span>&lt;pkcs12-keystore&gt;</span>
-          </a>
-        </div>
-        <p node-type="paragraph">PKCS#12 keystore class.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore?_86">
-            <span>pkcs12-keystore?</span>
+          <a name="$return_26">
+            <span>$return</span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$return_25">
+            <span>$return</span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+            <span>
+              <i node-type="i">state</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$return_24">
+            <span>$return</span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+            <span>
+              <i node-type="i">state</i>
+            </span>
+            <span>
+              <i node-type="i">l</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a parser which returns given <i node-type="i">v</i> as its value.</p>
+        <p node-type="paragraph">The second form specifies the state of parser result, which must be
+one of the followings:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph"><code node-type="code">+parse-success+</code> - Indicating successful parse result</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">+parse-fail+</code> - Indicating failure parse result</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">+parse-expect+</code> - Indicating different from expected input</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">+parse-unexpect+</code> - Indicating unexpectedly matched input</p>
+          </li>
+        </ul>
+        <p node-type="paragraph">The third form specifies the state described above and the next input.
+The next input must be a lazy sequence.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$fail_10">
+            <span>$fail</span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a parser whose returning state is <code node-type="code">+parse-fail+</code> and
+return value is given <i node-type="i">message</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$expect_9">
+            <span>$expect</span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a parser whose returning state is <code node-type="code">+parse-expect+</code> and
+return value is given <i node-type="i">message</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$eof_7">
+            <span>$eof</span>
+            <span>
+              <i node-type="i">input</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A parser which check if the <i node-type="i">input</i> is exhausted or not.</p>
+        <p node-type="paragraph">It returns success if the <i node-type="i">input</i> is exhausted otherwise
+<code node-type="code">+parse-expect+</code> as its state.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$any_0">
+            <span>$any</span>
+            <span>
+              <i node-type="i">input</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A parser which consume the first element of <i node-type="i">input</i> and returns
+success.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$empty_6">
+            <span>$empty</span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a parser which returns success and given <i node-type="i">v</i> as its value
+without consuming input.</p>
+        <p node-type="paragraph">In the context of BNF term, this is called epsilon.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$satisfy_28">
+            <span>$satisfy</span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$satisfy_27">
+            <span>$satisfy</span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a parser which check if the first element of the input
+of the parser satisfies the given <i node-type="i">pred</i> or not.</p>
+        <p node-type="paragraph">If the <i node-type="i">pred</i> returns true value, then it return success and the
+first element. Otherwise <code node-type="code">+parse-expect+</code>.</p>
+        <p node-type="paragraph">If the second form is used, then the <i node-type="i">message</i> is returned when
+the <i node-type="i">pred</i> returned <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$not_17">
+            <span>$not</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a parser which uses the given <i node-type="i">parser</i> as its parser
+and check if the returning state is not successful or not.</p>
+        <p node-type="paragraph">If the state is successful, then returns <code node-type="code">+parse-unexpect+</code>,
+otherwise return successful and <code node-type="code">#f</code> as its returning value.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$seq_29">
+            <span>$seq</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a parser which uses the given _parser_s as its parser.</p>
+        <p node-type="paragraph">It returns successful if all the given _parser_s return successful.
+The returning value is the last parser's value. Otherwise
+<code node-type="code">+parse-expect+</code> is returned.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$or_20">
+            <span>$or</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a parser which uses the given _parser_s as its parser.</p>
+        <p node-type="paragraph">It returns successful if one of the given _parser_s return successful.
+The returning value is the first successful parser's value. Otherwise
+<code node-type="code">+parse-expect+</code> is returned.</p>
+        <p node-type="paragraph">If one of the parser returns <code node-type="code">+parse-fail+</code>, then the entire parser
+returned by this procedure fails. For example, the parser after the
+<code node-type="code">$fail</code> won't be evaluated.</p>
+        <pre lang="scheme" node-type="block"><code>($or ($satisfy char-whitespace?)
+     ($fail "Boom!")
+     ($satisfy char-lower-case?))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$many_16">
+            <span>$many</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$many_15">
+            <span>$many</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+            <span>
+              <i node-type="i">at-least</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$many_14">
+            <span>$many</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+            <span>
+              <i node-type="i">at-least</i>
+            </span>
+            <span>
+              <i node-type="i">at-most</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a parser which uses the given <i node-type="i">parser</i> as its parser.</p>
+        <p node-type="paragraph">The parser parses the input as long as the given <i node-type="i">parser</i> returns
+successful state. The returning value is a list of the values returned by
+the given <i node-type="i">parser</i>.</p>
+        <p node-type="paragraph">If the second or third form is used, then it limits the number of
+trial.</p>
+        <p node-type="paragraph"><i node-type="i">at-least</i> specifies the number of minimum parse. If the given
+<i node-type="i">parser</i> returned non successful state before this number, then
+the parser return <code node-type="code">+parse-expect+</code>.</p>
+        <p node-type="paragraph"><i node-type="i">at-most</i> specifies the number of maximum parse. If the parser
+parsed <i node-type="i">at-most</i> input, then it returns successful even the
+rest of the input contains the valid input of the given <i node-type="i">parser</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$peek_22">
+            <span>$peek</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a parser which uses the given <i node-type="i">parser</i> as its parser.</p>
+        <p node-type="paragraph">The parser returns successful if the given <i node-type="i">parser</i> returns successful.
+The returning next input will not be consumed by the parser.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="$eqv?_8">
+            <span>$eqv?</span>
             <span>
               <i node-type="i">obj</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is PKCS#12 keystore object, otherwise #f.</p>
+        <p node-type="paragraph">Returns a parser which compares the first element of the input
+and the given <i node-type="i">obj</i> using <code node-type="code">eqv?</code>.</p>
+        <p node-type="paragraph">If the comparison result is <code node-type="code">#t</code>, then it returns successful.</p>
+        <p node-type="paragraph">This procedure is equivalent with the following:</p>
+        <pre lang="scheme" node-type="block"><code>(define ($eqv? v) ($satisfy (lambda (e) (eqv? e v))))
+</code></pre>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-pkcs12-keystore_215">
-            <span>make-pkcs12-keystore</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns newly created PKCS#12 keystore object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="load-pkcs12-keystore_43">
-            <span>load-pkcs12-keystore</span>
+          <a name="$optional_19">
+            <span>$optional</span>
             <span>
-              <i node-type="i">input-port</i>
-            </span>
-            <span>
-              <i node-type="i">storepass</i>
+              <i node-type="i">parser</i>
             </span>
           </a>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="load-pkcs12-keystore-file_44">
-            <span>load-pkcs12-keystore-file</span>
+          <a name="$optional_18">
+            <span>$optional</span>
             <span>
-              <i node-type="i">file</i>
+              <i node-type="i">parser</i>
             </span>
             <span>
-              <i node-type="i">storepass</i>
+              <i node-type="i">fallback</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Loads PKCS#12 keystore from given <i node-type="i">input-port</i> or <i node-type="i">file</i> and
-returns newly created keystore object.</p>
-        <p node-type="paragraph">The <code node-type="code">load-pkcs12-keystore</code> loads from given binary input port.</p>
-        <p node-type="paragraph">The <code node-type="code">load-pkcs12-keystore-file</code> loads from given file.</p>
-        <p node-type="paragraph"><i node-type="i">storepass</i> must be a string and a password for given keystore.</p>
+        <p node-type="paragraph">Returns a parser which uses the given <i node-type="i">parser</i> as its parser.</p>
+        <p node-type="paragraph">The parser returns always successful state. The returning value is the
+value of the given <i node-type="i">parser</i> if the <i node-type="i">parser</i> returns successful.
+Otherwise <code node-type="code">#f</code>.</p>
+        <p node-type="paragraph">If the second form is used, then <i node-type="i">fallback</i> is returned when the
+<i node-type="i">parser</i> returned non successful.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-get-key_81">
-            <span>pkcs12-keystore-get-key</span>
+          <a name="$repeat_23">
+            <span>$repeat</span>
             <span>
-              <i node-type="i">keystore</i>
+              <i node-type="i">parser</i>
             </span>
             <span>
-              <i node-type="i">alias</i>
-            </span>
-            <span>
-              <i node-type="i">keypass</i>
+              <i node-type="i">n</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Retrives a private key associated with <i node-type="i">alias</i> from <i node-type="i">keystore</i>.
-If there is no key entry associated with <i node-type="i">alias</i> then #f is returned.</p>
-        <p node-type="paragraph"><i node-type="i">alias</i> must be a string.</p>
-        <p node-type="paragraph"><i node-type="i">keypass</i> must be a string. It is used to decrypt the private key and
-it is <strong node-type="strong">not</strong> allowed to pass empty password.</p>
+        <p node-type="paragraph">Returns a parser which uses the given <i node-type="i">parser</i> as its parser.</p>
+        <p node-type="paragraph">The parser parses input exactly <i node-type="i">n</i> times and returns a list of
+result value if the given <i node-type="i">parser</i> returns <i node-type="i">n</i> times successful.</p>
+        <p node-type="paragraph">This is equivalent with the following code:</p>
+        <pre lang="scheme" node-type="block"><code>(define ($repeat parser n) ($many parser n n))
+</code></pre>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-get-certificate_79">
-            <span>pkcs12-keystore-get-certificate</span>
+          <a name="$bind_1">
+            <span>$bind</span>
             <span>
-              <i node-type="i">keystore</i>
+              <i node-type="i">parser</i>
             </span>
             <span>
-              <i node-type="i">alias</i>
+              <i node-type="i">f</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Retrives a certificate associated with <i node-type="i">alias</i> from <i node-type="i">keystore</i>.
-If there is no certificate entry associated with <i node-type="i">alias</i> then #f is
-returned.</p>
-        <p node-type="paragraph"><i node-type="i">alias</i> must be a string.</p>
+        <p node-type="paragraph">Returns a parser which uses the given <i node-type="i">parser</i> as its parser.</p>
+        <p node-type="paragraph">The <i node-type="i">f</i> must be a procedure which takes one argument and returns a parser.</p>
+        <p node-type="paragraph">The parser returns the result of the parser created by <i node-type="i">f</i>. The <i node-type="i">f</i> is
+called when the given <i node-type="i">parser</i> returned successful state, passed the
+returning value of the given <i node-type="i">parser</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">$bind</code> is useful to take the result of the parsers.</p>
+        <p node-type="paragraph">This procedure is used to implement <code node-type="code">$do</code> described below.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="$do_5">
+            <span>$do</span>
+            <span>
+              <i node-type="i">clause</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A macro which creates a parser.</p>
+        <p node-type="paragraph">The <code node-type="code">$do</code> macro makes users easier to bind variables. The syntax is
+the following:</p>
+        <pre lang="scheme" node-type="block"><code>$do    ::= ($do clause ... parser)
+clause ::= (var parser)
+         | (parser)
+	 | parser
+</code></pre>
+        <p node-type="paragraph">The following example shows how to bind a variable returned by the <code node-type="code">$many</code>procedure.</p>
+        <pre lang="scheme" node-type="block"><code>($do (c* ($many ($satisfy char-numeric?)))
+     ($return (string-&gt;number (list-&gt;string c*))))
+</code></pre>
+        <p node-type="paragraph">The above parser parses given numeric character sequence and returns a number.
+The <i node-type="i">c*</i> is the result of the <i node-type="i">$many</i>.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="$lazy_13">
+            <span>$lazy</span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A macro which creates a parser.</p>
+        <p node-type="paragraph">The <code node-type="code">$lazy</code> macro delays the creation of <i node-type="i">parser</i>. This macro is
+useful to handle cross reference. For example:</p>
+        <pre lang="scheme" node-type="block"><code>(define a ($do (c b) ($return c)))
+(define b ($do (c a) ($return c)))
+</code></pre>
+        <p node-type="paragraph">The above code causes unbound variable in runtime when the definition of
+<code node-type="code">a</code> is evaluated. To avoid this, users can use the <code node-type="code">$lazy</code> like this:</p>
+        <pre lang="scheme" node-type="block"><code>(define a ($do (c ($lazy b)) ($return c)))
+(define b ($do (c a) ($return c)))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="$if_12">
+            <span>$if</span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+            <span>
+              <i node-type="i">then</i>
+            </span>
+            <span>
+              <i node-type="i">else</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A macro which creates a parser.</p>
+        <p node-type="paragraph">The returning parser calls either <i node-type="i">then</i> or <i node-type="i">else</i> parser depending
+on the result of <i node-type="i">pred</i>.</p>
+        <p node-type="paragraph">This is the simple example.</p>
+        <pre lang="scheme" node-type="block"><code>($if #t ($eqv? #\t) ($eqv? #\f))
+;; ($eqv? #\t) will ba called
+</code></pre>
+        <p node-type="paragraph">The <code node-type="code">$if</code> can be used to dispatch parsers by the results like this:</p>
+        <pre lang="scheme" node-type="block"><code>($do (c ($optional ($eqv? #\t)))
+     ($if c
+          ($return c)
+	  ($return 'something)))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="$cond_4">
+            <span>$cond</span>
+            <span>
+              <i node-type="i">clause</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="$cond_3">
+            <span>$cond</span>
+            <span>
+              <i node-type="i">clause</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+            <span>
+              <i node-type="i">(else</i>
+            </span>
+            <span>
+              <i node-type="i">parser)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A macro which creates a parser.</p>
+        <p node-type="paragraph">The <i node-type="i">clause</i> must be the following form:</p>
+        <pre lang="scheme" node-type="block"><code>clause ::= (pred parser)
+</code></pre>
+        <p node-type="paragraph">The parser returned by this macro is similar with the one from <code node-type="code">$if</code>,
+the difference is this macro can handle multiple predicates.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="$when_32">
+            <span>$when</span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="$unless_31">
+            <span>$unless</span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A macro which creates a parser.</p>
+        <p node-type="paragraph">The <code node-type="code">$when</code> macro returns a parser which calls the given _parser_only if the <i node-type="i">pred</i> returned true value.</p>
+        <p node-type="paragraph">The <code node-type="code">$unless</code> macro returns a parser which calls the given _parser_only if the <i node-type="i">pred</i> returned <code node-type="code">#f</code>.</p>
+        <p node-type="paragraph">They are defined like this:</p>
+        <pre lang="scheme" node-type="block"><code>(define-syntax $when
+  (syntax-rules ()
+    ((_ pred body)
+     ($if pred body ($fail 'pred)))))
+
+(define-syntax $unless
+  (syntax-rules ()
+    ((_ pred body)
+     ($when (not pred) body))))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="$parameterize_21">
+            <span>$parameterize</span>
+            <span>
+              <i node-type="i">bindings</i>
+            </span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A macro which creates a parser.</p>
+        <p node-type="paragraph">The <code node-type="code">$parameterize</code> macro returns a parser which calls the given
+<i node-type="i">parser</i> in the extended dynamic extend with the given <i node-type="i">bindings</i>.</p>
+        <p node-type="paragraph">The <i node-type="i">bindings</i> must be the following form:</p>
+        <pre lang="scheme" node-type="block"><code>bindings ::= ((parameter value) ...)
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="$guard_11">
+            <span>$guard</span>
+            <span>
+              <i node-type="i">guard-clause</i>
+            </span>
+            <span>
+              <i node-type="i">parser</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A macro which creates a parser.</p>
+        <p node-type="paragraph">The <code node-type="code">$guard</code> macro returns a parser which is wrapped by the <code node-type="code">guard</code>.
+When the given <i node-type="i">parser</i> raises an error during parsing, then the
+<i node-type="i">guard-clause</i> will be executed.</p>
+        <p node-type="paragraph">The <i node-type="i">guard-clause</i> must be the following form:
+<code node-type="code">guard-clause ::= (variable (pred clause) ...) </code>The <i node-type="i">pred</i> must be a expression which checks if the raised condition
+should be handled by the coupled <i node-type="i">clause</i> or not. If the _pred_is evaluated to true value, then the coupled <i node-type="i">clause</i> is called with
+the input of the given <i node-type="i">parser</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Character-specific-parsers">Character specific parsers</a>
+        </h3>
+        <p node-type="paragraph">The procedures provided by the <code node-type="code">(peg)</code> can be used for all kinds of
+input. This section describes parsers which can only be used for character
+input.</p>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(peg chars)_29">
+            <span>(peg chars)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Character specific PEG parser library.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-get-certificate-chain_80">
-            <span>pkcs12-keystore-get-certificate-chain</span>
+          <a name="$char-set-contains?_2">
+            <span>$char-set-contains?</span>
             <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
+              <i node-type="i">char-set</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Retrives certificate chain associated with given key alias _alias_from <i node-type="i">keystore</i>. If there is no certificate chain then <code node-type="code">'()</code> is
-returned.</p>
-        <p node-type="paragraph"><i node-type="i">alias</i> must be a string.</p>
+        <p node-type="paragraph">Returns a parser which returns successful if the given
+<i node-type="i">char-set</i> contains the input of the parser.</p>
+        <p node-type="paragraph">This procedure is defined like this:</p>
+        <pre lang="scheme" node-type="block"><code>(define ($char-set-contains? s) 
+  ($satisfy (lambda (c) (char-set-contains? s c)) s))
+</code></pre>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pkcs12-keystore-contains-alias?_75">
-            <span>pkcs12-keystore-contains-alias?</span>
+          <a name="$token_30">
+            <span>$token</span>
             <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
+              <i node-type="i">string</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns #t if <i node-type="i">keystore</i> contains <i node-type="i">alias</i>. Otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="store-pkcs12-keystore_253">
-            <span>store-pkcs12-keystore</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">output-port</i>
-            </span>
-            <span>
-              <i node-type="i">storepass</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="store-pkcs12-keystore-to-file_254">
-            <span>store-pkcs12-keystore-to-file</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">file</i>
-            </span>
-            <span>
-              <i node-type="i">storepass</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Writes given <i node-type="i">keystore</i> to <i node-type="i">output-port</i> or <i node-type="i">file</i>.</p>
-        <p node-type="paragraph">The <code node-type="code">store-pkcs12-keystore</code> writes to given binary output port
-<i node-type="i">output-port</i>.</p>
-        <p node-type="paragraph">The <code node-type="code">store-pkcs12-keystore-to-file</code> writes to given file <i node-type="i">file</i>.</p>
-        <p node-type="paragraph"><i node-type="i">storepass</i> must be a string and is used to encrypt whole contents.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="pkcs12-keystore-set-key!_85">
-            <span>pkcs12-keystore-set-key!</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-            <span>
-              <i node-type="i">private-key</i>
-            </span>
-            <span>
-              <i node-type="i">key-pass</i>
-            </span>
-            <span>
-              <i node-type="i">certs</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">alias</i> must be a string represents the name of <i node-type="i">private-key</i> in
-the <i node-type="i">keystore</i>.</p>
-        <p node-type="paragraph"><i node-type="i">private-key</i> must be an RSA private key.</p>
-        <p node-type="paragraph"><i node-type="i">key-pass</i> must be a string and is used to encrypt given <i node-type="i">private-key</i>.</p>
-        <p node-type="paragraph"><i node-type="i">certs</i> must be a list of X509 certificates which associated with
-<i node-type="i">private-key</i>.</p>
-        <p node-type="paragraph">Stores given <i node-type="i">private-key</i> to <i node-type="i">keystore</i>.</p>
-        <p node-type="paragraph">The implementation allows users to set separate password from storepass.
-Be aware that current implementation of Bouncy Castle JCE uses the same
-password as storepass to encrypt a private key. Thus if you use different
-password, then it is not compatible with Bouncy Castle.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="pkcs12-keystore-set-certificate!_84">
-            <span>pkcs12-keystore-set-certificate!</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-            <span>
-              <i node-type="i">cert</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">alias</i> must be a string represents the name of <i node-type="i">cert</i> in
-<i node-type="i">keystore</i>.</p>
-        <p node-type="paragraph"><i node-type="i">cert</i> must be an X509 certificate.</p>
-        <p node-type="paragraph">Stores given <i node-type="i">cert</i> to <i node-type="i">keystore</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="pkcs12-keystore-delete-entry!_77">
-            <span>pkcs12-keystore-delete-entry!</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-            <span>
-              <i node-type="i">alias</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">alias</i> must be a string.</p>
-        <p node-type="paragraph">Removes the entry associated with <i node-type="i">alias</i> in <i node-type="i">keystore</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="pkcs12-keystore-aliases_71">
-            <span>pkcs12-keystore-aliases</span>
-            <span>
-              <i node-type="i">keystore</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns all defined names in <i node-type="i">keystore</i>.</p>
+        <p node-type="paragraph">Returns a parser which returns successful if the input of
+the parser matches with the given <i node-type="i">string</i>.</p>
+        <p node-type="paragraph">This procedure is defined like this:</p>
+        <pre lang="scheme" node-type="block"><code>(define ($token s) (apply $seq (map $eqv? (string-&gt;list s))))
+</code></pre>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section728.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+      <a href="./section728.html">(odbc) - ODBC binding</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section730.html">(util queue) - Queue</a>
+      <a href="./section730.html">(rsa pkcs :5) - Password Based Cryptography library</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>

@@ -7,85 +7,175 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section769.html">JSON Schema validator</a>
+      <a href="./section769.html">(text json pointer) - JSON Pointer</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section771.html">(text sxml html-parser) - Flxible HTML parser</a>
+      <a href="./section771.html">(text json schema) - JSON Schema</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="text.json.validator">(text json validator) - JSON validator</a>
+        <a name="text.json.patch">(text json patch) - JSON Patch</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(text json validator)_164">
-          <span>(text json validator)</span>
+        <a name="(text json pointer)_164">
+          <span>(text json pointer)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides abstraction layer of JSON validation.</p>
-      <div node-type="define" class="define">
-        <span>Record Type</span>
-        <a name="<json-validator&gt;_35">
-          <span>&lt;json-validator&gt;</span>
-        </a>
+      <p node-type="paragraph">This library provides JSON Patch procedures.</p>
+      <p node-type="paragraph">The specification of JSON Patch is defined by the
+<a href="https://tools.ietf.org/html/rfc6902">RFC 6902</a>.</p>
+      <p node-type="paragraph">The following example shows simple usage of the library:</p>
+      <p node-type="paragraph">This is an input file named <code node-type="code">example.json</code>.</p>
+      <pre lang="scheme" node-type="block"><code>{
+  "id": 1234,
+  "data": {
+    "datum0": [0, 1, 2],
+    "datum1": [3, 4]
+  }
+}
+</code></pre>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (text json patch) (text json))
+
+(define data-patcher
+ (json-patcher 
+  '(#(("op" . "replace") ("path" . "/data/datum0") ("value" . "ok"))
+    #(("op" . "remove") ("path" . "/data/datum1")))))
+
+(let ((json (call-with-input-file "example.json" json-read)))
+  (data-patcher json))
+</code></pre>
+        <span />
+        <span>#((id . 1234) (data . #((datum0 . ok))))</span>
       </div>
-      <p node-type="paragraph">Base class of JSON validators.</p>
-      <p node-type="paragraph">The record have <code node-type="code">validator</code> field.</p>
+      <p node-type="paragraph" />
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="json-validator?_47">
-          <span>json-validator?</span>
+        <a name="json-patcher_25">
+          <span>json-patcher</span>
+          <span>
+            <i node-type="i">patch</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a procedure takes one argument which must be a list or vector
+representing JSON object. The given <i node-type="i">patch</i> must be a list of vector
+which represents JSON patch.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="json-patch-error?_22">
+          <span>json-patch-error?</span>
           <span>
             <i node-type="i">obj</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Return <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a JSON validator,
-otherwise <code node-type="code">#f</code>.</p>
+      <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of <code node-type="code">&amp;json-patch</code>condition.</p>
+      <p node-type="paragraph"><code node-type="code">&amp;json-patch</code> is the base condition of this library. The hierarchy is
+the following:</p>
+      <pre lang="scheme" node-type="block"><code>&amp;json-patch
+ + &amp;json-patch:runtime (path)
+   + &amp;json-patch-path-not-found
+   + &amp;json-patch-illegal-type
+ + &amp;json-patch:compile (patch)
+</code></pre>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="make-json-validator_180">
-          <span>make-json-validator</span>
+        <a name="json-patch-compile-error?_18">
+          <span>json-patch-compile-error?</span>
           <span>
-            <i node-type="i">validator</i>
+            <i node-type="i">obj</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Creates a JSON validator.</p>
-      <p node-type="paragraph">The <i node-type="i">validator</i> must be a procedure accepts one argument.</p>
+      <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of
+<code node-type="code">&amp;json-patch:compile</code> condition.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="json-validator-validator_46">
-          <span>json-validator-validator</span>
+        <a name="json-patch-error?_21">
+          <span>json-patch-error?</span>
           <span>
-            <i node-type="i">json-validator</i>
+            <i node-type="i">obj</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Returns the <code node-type="code">validator</code> field value of the given
-<i node-type="i">json-validator</i>.</p>
+      <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of
+<code node-type="code">&amp;json-patch:runtime</code> condition.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="validate-json_0">
-          <span>validate-json</span>
+        <a name="json-patch-path-not-found-error?_24">
+          <span>json-patch-path-not-found-error?</span>
           <span>
-            <i node-type="i">json-validator</i>
-          </span>
-          <span>
-            <i node-type="i">json</i>
+            <i node-type="i">obj</i>
           </span>
         </a>
       </div>
-      <p node-type="paragraph">Calls value of <code node-type="code">validator</code> field of given JSON validator with
-parameter of <i node-type="i">json</i>.</p>
+      <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of
+<code node-type="code">&amp;json-patch-path-not-found</code> condition.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="json-patch-path-illegal-type-error?_23">
+          <span>json-patch-path-illegal-type-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of
+<code node-type="code">&amp;json-patch-illegal-type</code> condition.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="json-patch-error-path_20">
+          <span>json-patch-error-path</span>
+          <span>
+            <i node-type="i">json-patch-error</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the <code node-type="code">path</code> field of the given <i node-type="i">json-patch-error</i> if
+the condition is type of <code node-type="code">&amp;json-patch-runtime</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="json-patch-error-patch_19">
+          <span>json-patch-error-patch</span>
+          <span>
+            <i node-type="i">json-patch-error</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the <code node-type="code">patch</code> field of the given <i node-type="i">json-patch-error</i> if
+the condition is type of <code node-type="code">&amp;json-patch-compile</code>.</p>
+      <div node-type="define" class="define">
+        <span>Parameter</span>
+        <a name="*json-patcher:ignore-no-such-path*_122">
+          <span>*json-patcher:ignore-no-such-path*</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Flag to supress no such path error. The value must be either a symbol
+or a list of symbol of the name of the patch command. If the value is matched
+with the patch command, then the runtime doesn't raise a condition.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="json-diff_15">
+          <span>json-diff</span>
+          <span>
+            <i node-type="i">json0</i>
+          </span>
+          <span>
+            <i node-type="i">json1</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates JSON patch from given <i node-type="i">json0</i> and <i node-type="i">json1</i>.<br>The returning patch is <i node-type="i">json1</i> to <i node-type="i">json1</i> format.</p>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section769.html">JSON Schema validator</a>
+      <a href="./section769.html">(text json pointer) - JSON Pointer</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section771.html">(text sxml html-parser) - Flxible HTML parser</a>
+      <a href="./section771.html">(text json schema) - JSON Schema</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2023-06-18T11:03:41+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
     </div>
   </body>
 </html>
