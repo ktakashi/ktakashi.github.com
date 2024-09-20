@@ -7,496 +7,135 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section749.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+      <a href="./section749.html">(rfc totp) - Time-based One-Time Password library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section751.html">(rfc smtp) - SMTP client</a>
+      <a href="./section751.html">(rfc sftp) - SFTP library</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="rfc.sftp">(rfc sftp) - SFTP library</a>
+        <a name="rfc.quoted-printable">(rfc quoted-printable) - Base 64 encode and decode library</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="rfc sftp_123">
-          <span>rfc sftp</span>
+        <a name="(rfc quoted-printable)_47">
+          <span>(rfc quoted-printable)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides SFTP programmatic operations.</p>
-      <p node-type="paragraph">Following example code describes how to use in high level.</p>
-      <pre lang="scheme" node-type="block"><code>(import (rfc sftp) (pp) (srfi :26))
-
-(call-with-sftp-connection 
-  "localhost"    ;; hostname
-  "23"           ;; port number
-  (lambda (conn)
-    ;; read directory
-    (pp (sftp-readdir conn "."))
-    ;; only short names
-    (pp (sftp-readdir-as-filenames conn "."))
-    ;; only long names (usually POSIX 'ls -l' format)
-    (pp (sftp-readdir-as-longnames conn "."))
-
-    ;; retrieve a file as a bytevector
-    (print (utf8-&gt;string (sftp-read! conn "reading/file" 
-                                    (sftp-binary-receiver))))
-    ;; store a file to local file directly
-    (sftp-read conn "/a/file/path"
-	(sftp-file-receiver "where/to/store" :options (file-options no-fail)))
-
-    ;; upload a file
-    (let ((handle (sftp-open conn "boo" 
-                    (bitwise-ior +ssh-fxf-creat+ +ssh-fxf-write+))))
-     (call-with-input-file "a/local/file" (cut sftp-write! conn handle &lt;&gt;)
-                           :transcoder #f))
-
-    ;; rename a file
-    (sftp-rename! conn "boo" "foo")
-    ;; remove a file
-    (sftp-remove! conn "foo")
-    ;; create a directory
-    (sftp-mkdir! conn "boo")
-    ;; remove a directory
-    (sftp-rmdir! conn "boo")
-
-    ;; create a symbolic link
-    (pp (sftp-symlink! conn "/tmp" "tmp"))
-    ;; get a actual path of symbolic link
-    (pp (sftp-readlink conn "tmp"))
-    ;; get a real path. (usually an absolute path)
-    (pp (sftp-realpath conn "../")))
-  :username "username" :password "password")
-</code></pre>
+      <p node-type="paragraph">This library provides quoted printable encoding and decoding procedures.</p>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="High-level-APIs">High level APIs</a>
+          <a name="Encoding-procedures">Encoding procedures</a>
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="call-with-sftp-connection_28">
-            <span>call-with-sftp-connection</span>
+          <a name="quoted-printable-encode_16">
+            <span>quoted-printable-encode</span>
             <span>
-              <i node-type="i">server</i>
-            </span>
-            <span>
-              <i node-type="i">port</i>
-            </span>
-            <span>
-              <i node-type="i">proc</i>
-            </span>
-            <span>
-              <i node-type="i">.</i>
-            </span>
-            <span>
-              <i node-type="i">opts</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">server</i> and <i node-type="i">port</i> must be string, indicating hostname,
-port number/service name respectively.
-<i node-type="i">proc</i> must accept one argument.</p>
-        <p node-type="paragraph">Creates a SFTP connection, executes given <i node-type="i">proc</i> with the connection
-and closes it after the execution.</p>
-        <p node-type="paragraph">The <i node-type="i">opts</i> will be passed to <code node-type="code">make-client-sftp-connection</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-open_48">
-            <span>sftp-open</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">filename</i>
-            </span>
-            <span>
-              <i node-type="i">pflags</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">filename</i> must be a string.
-<i node-type="i">pflags</i> must be an exact integer which value must be the result of
-inclusive or of following values;</p>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+ssh-fxf-read+_19">
-            <span>+ssh-fxf-read+</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Open the given <i node-type="i">filename</i> read mode.</p>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+ssh-fxf-write+_21">
-            <span>+ssh-fxf-write+</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Open the given <i node-type="i">filename</i> write mode.</p>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+ssh-fxf-append+_16">
-            <span>+ssh-fxf-append+</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Open the given <i node-type="i">filename</i> append mode.</p>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+ssh-fxf-creat+_17">
-            <span>+ssh-fxf-creat+</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Creates the given <i node-type="i">filename</i> if it doesn't exist.</p>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+ssh-fxf-trunc+_20">
-            <span>+ssh-fxf-trunc+</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Truncate the given <i node-type="i">filename</i> if it exists. <code node-type="code">+ssh-fxf-creat+</code>
-must be specified as well.</p>
-        <div node-type="define" class="define">
-          <span>Constant</span>
-          <a name="+ssh-fxf-excl+_18">
-            <span>+ssh-fxf-excl+</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Raises and error <i node-type="i">filename</i> if it exists. <code node-type="code">+ssh-fxf-creat+</code>
-must be specified as well.</p>
-        <p node-type="paragraph">If <i node-type="i">filename</i> opened successfully, the procedure will return a handle.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-close_44">
-            <span>sftp-close</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">handle</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.</p>
-        <p node-type="paragraph">Closes given <i node-type="i">handle</i> created by <code node-type="code">sftp-open</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-read_51">
-            <span>sftp-read</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">handle/filename</i>
-            </span>
-            <span>
-              <i node-type="i">receiver</i>
+              <i node-type="i">bv</i>
             </span>
             <span>
               <i node-type="i">:key</i>
             </span>
             <span>
-              <i node-type="i">(offset</i>
+              <i node-type="i">(line-width</i>
             </span>
             <span>
-              <i node-type="i">0)</i>
+              <i node-type="i">76)</i>
             </span>
             <span>
-              <i node-type="i">buffer-size</i>
+              <i node-type="i">(binary?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">handle/filename</i> must be either a handle or string.
-<i node-type="i">receiver</i> must be a procedure accepts 2 arguments, <i node-type="i">offset</i> which
-is an integer and <i node-type="i">data</i> which is a binary input port, respectively.</p>
-        <p node-type="paragraph">Reads the given <i node-type="i">handle/filename</i> content from the server and
-call <i node-type="i">receiver</i> with the returned value. When it reaches the end of file,
-then it will pass -1 as offset and eof value as data.</p>
-        <p node-type="paragraph">The keyword argument <i node-type="i">offset</i> specifies starting where to read. It
-is useful to read only diff.</p>
-        <p node-type="paragraph">The keyword argument <i node-type="i">buffer-size</i> specifies how many bytes it tries to
-read in one read call. The default value is 1048576 (1MB). This value is only
-an indication so that server can decide actual data length to send.</p>
-        <p node-type="paragraph">The return value of this procedure is the result value of <i node-type="i">receiver</i>.</p>
-        <p node-type="paragraph">Receiver must return 2 values, one if processed octet count and the other
-one is result value. Following is the <i node-type="i">sftp-binary-receiver</i> definition;</p>
-        <pre lang="scheme" node-type="block"><code>(define (sftp-binary-receiver)
-  (let-values (((out extract) (open-bytevector-output-port)))
-    (lambda (offset data)
-      (if (&lt; offset 0)
-          (values -1 (extract))
-          (values (copy-binary-port out data) #f)))))
-</code></pre>
+        <p node-type="paragraph"><i node-type="i">bv</i> must be a bytevector.</p>
+        <p node-type="paragraph">Encodes given bytevector to quoted printable encoded bytevector.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">line-width</i> specifies where the encode procedure
+should put linefeed. If this is less than 1 or #f, encoder does not put
+linefeed.</p>
+        <p node-type="paragraph">If the keyword argument <i node-type="i">binary?</i> is not #f, then the procedure encodes
+#x0a and #x0b to <code node-type="code">=0A</code> and <code node-type="code">=0D</code> respectively.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-binary-receiver_43">
-            <span>sftp-binary-receiver</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Creates a in memory receiver for <code node-type="code">sftp-read</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-file-receiver_46">
-            <span>sftp-file-receiver</span>
-            <span>
-              <i node-type="i">filename</i>
-            </span>
+          <a name="quoted-printable-encode-string string_17">
+            <span>quoted-printable-encode-string string</span>
             <span>
               <i node-type="i">:key</i>
             </span>
             <span>
-              <i node-type="i">options</i>
+              <i node-type="i">(line-width</i>
+            </span>
+            <span>
+              <i node-type="i">76)</i>
+            </span>
+            <span>
+              <i node-type="i">transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">(binary?</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates a file receiver for <code node-type="code">sftp-read</code>.</p>
-        <p node-type="paragraph">The keyword argument <i node-type="i">option</i> must be created by <code node-type="code">file-options</code>.
-By default no option.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-oport-receiver_50">
-            <span>sftp-oport-receiver</span>
-            <span>
-              <i node-type="i">output-port</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">output-port</i> must be a binary output port.</p>
-        <p node-type="paragraph">Creates a output port receiver for <code node-type="code">sftp-read</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-write!_58">
-            <span>sftp-write!</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">handle</i>
-            </span>
-            <span>
-              <i node-type="i">input-port</i>
-            </span>
-            <span>
-              <i node-type="i">:key</i>
-            </span>
-            <span>
-              <i node-type="i">(offset</i>
-            </span>
-            <span>
-              <i node-type="i">0)</i>
-            </span>
-            <span>
-              <i node-type="i">buffer-size</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">handle</i> must be a handle.
-<i node-type="i">input-port</i> must be a binary input port.</p>
-        <p node-type="paragraph">Reads the content from given <i node-type="i">input-port</i> and writes it to given
-<i node-type="i">handle</i>.</p>
-        <p node-type="paragraph">The keyword argument <i node-type="i">offset</i> specifies where to write. This is useful
-to write a file separately or simply append.</p>
-        <p node-type="paragraph">The keyword argument <i node-type="i">buffer-size</i> specifies how many bytes of data
-the procedure sends in one packet. The default value is 131072 (128KB).
-The RFC defines the minimum value 32768 (3KB) so it is safe to use the
-value. However too small buffer size makes writing extremely slow so
-we use a bit larger value to make performance better. If you meet a
-problem with writing a file, consider to change this size.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-exists?_45">
-            <span>sftp-exists?</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">filename</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">filename</i> must be a string indicating existing filename.</p>
-        <p node-type="paragraph">Checks if the given <i node-type="i">filename</i> exists.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-remove!_55">
-            <span>sftp-remove!</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">filename</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">filename</i> must be a string indicating existing filename.</p>
-        <p node-type="paragraph">Removes the given <i node-type="i">filename</i>. It is an error if the file doesn't exist
-or user doesn't have proper permission to remove.</p>
-        <p node-type="paragraph">The result value is raw SFTP status object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-rename!_56">
-            <span>sftp-rename!</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">oldpath</i>
-            </span>
-            <span>
-              <i node-type="i">newpath</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">oldpath</i> and <i node-type="i">newpath</i>  must be strings indicating existing path.</p>
-        <p node-type="paragraph">Renames the given <i node-type="i">oldpath</i> to <i node-type="i">newpath</i>. It is an error if the
-file doesn't exist or user doesn't have proper permission to rename.</p>
-        <p node-type="paragraph">The result value is raw SFTP status object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-mkdir!_47">
-            <span>sftp-mkdir!</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">path</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">path</i> must be a string.</p>
-        <p node-type="paragraph">Creates the given <i node-type="i">path</i> directory. It is an error if the
-directory exists or user doesn't have proper permission to create.</p>
-        <p node-type="paragraph">The result value is raw SFTP status object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-rmdir!_57">
-            <span>sftp-rmdir!</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">path</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">path</i> must be a string.</p>
-        <p node-type="paragraph">Removes the given <i node-type="i">path</i> directory. It is an error if the
-directory doesn't exists, user doesn't have proper permission to create or
-the directory isn't empty.</p>
-        <p node-type="paragraph">The result value is raw SFTP status object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-opendir_49">
-            <span>sftp-opendir</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">path</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">path</i> must be a string indicating existing path.</p>
-        <p node-type="paragraph">Opens the given <i node-type="i">path</i> directory and returns its handle.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-readdir_52">
-            <span>sftp-readdir</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">handle/path</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">handle/path</i> must be either a handle opened by <code node-type="code">sftp-opendir</code> or
-a string indicating existing path.</p>
-        <p node-type="paragraph">Reads the given <i node-type="i">handle/path</i> and returns the list of contents. The content
-is an object of <code node-type="code">&lt;sftp-name&gt;</code> which has <code node-type="code">filename</code>, <code node-type="code">longname</code>and <code node-type="code">attribute</code> slots.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-readdir-as-filenames_53">
-            <span>sftp-readdir-as-filenames</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">handle/path</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="sftp-readdir-as-longnames_54">
-            <span>sftp-readdir-as-longnames</span>
-            <span>
-              <i node-type="i">conn</i>
-            </span>
-            <span>
-              <i node-type="i">handle/path</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
-<i node-type="i">handle/path</i> must be either a handle opened by <code node-type="code">sftp-opendir</code> or
-a string indicating existing path.</p>
-        <p node-type="paragraph">Calls <code node-type="code">sftp-readdir</code> and strips out the result object to string by
-calling <code node-type="code">(slot-ref _c_ 'filename)</code> or
-<code node-type="code">(slot-ref _c_ 'longname)</code> respectively.</p>
+        <p node-type="paragraph">Convenient procedure for string.</p>
+        <p node-type="paragraph">Encodes given <i node-type="i">string</i> to quoted printable encoded string.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">transcoder</i> is used to convert given string to
+bytevector. The converted bytevector will be passed to the
+<code node-type="code">quoted-printable-encode</code> procedure. The default is utf-8 codec with
+NONE eol style.</p>
       </section>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="Mid-level-APIs">Mid level APIs</a>
+          <a name="Decoding-procedures">Decoding procedures</a>
         </h3>
-        <p node-type="paragraph">Mid level APIs are changed since 0.7.8. The changes are not backward
-compatible, so if you are using 0.7.7 API and move to 0.7.8, please be aware.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-client-sftp-connection_48">
-            <span>make-client-sftp-connection</span>
+          <a name="quoted-printable-decode_14">
+            <span>quoted-printable-decode</span>
             <span>
-              <i node-type="i">server</i>
-            </span>
-            <span>
-              <i node-type="i">port</i>
+              <i node-type="i">bv</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates a SFTP connection object.</p>
+        <p node-type="paragraph"><i node-type="i">bv</i> must be a bytevector.</p>
+        <p node-type="paragraph">Decode quoted printable encoded bytevector to original bytevector.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="open-client-sftp-connection!_32">
-            <span>open-client-sftp-connection!</span>
+          <a name="quoted-printable-decode-string_15">
+            <span>quoted-printable-decode-string</span>
             <span>
-              <i node-type="i">sftp-connection</i>
+              <i node-type="i">string</i>
             </span>
             <span>
               <i node-type="i">:key</i>
             </span>
             <span>
-              <i node-type="i">(authenticate</i>
+              <i node-type="i">(transcoder</i>
             </span>
             <span>
-              <i node-type="i">#f</i>
+              <i node-type="i">(native-transcoder))</i>
             </span>
           </a>
         </div>
+        <p node-type="paragraph">Convenient procedure.</p>
+        <p node-type="paragraph">Decode quoted printable encoded string to original string. The procedure is
+using <code node-type="code">quoted-printable-decode</code>.</p>
+        <p node-type="paragraph">The keyword argument specifies how to convert the decoded bytevector to string.
+If this is #f, the procedure returns raw bytevector.</p>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section749.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+      <a href="./section749.html">(rfc totp) - Time-based One-Time Password library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section751.html">(rfc smtp) - SMTP client</a>
+      <a href="./section751.html">(rfc sftp) - SFTP library</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-09-09T21:26:28+0200</i></p>
     </div>
   </body>
 </html>

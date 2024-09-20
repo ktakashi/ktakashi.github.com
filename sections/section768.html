@@ -7,274 +7,331 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section767.html">(text json jmespath) - JMESPath</a>
+      <a href="./section767.html">(text json object-builder) -- JSON object builder/serializer</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section769.html">(text json pointer) - JSON Pointer</a>
+      <a href="./section769.html">(text json mutable) - Mutable JSON</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="text.json.mutable">(text json mutable) - Mutable JSON</a>
+        <a name="text.json.jmespath">(text json jmespath) - JMESPath</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(text json mutable)_162">
-          <span>(text json mutable)</span>
+        <a name="(text json jmespath)_162">
+          <span>(text json jmespath)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides an mutable JSON representation.</p>
-      <p node-type="paragraph">The following example shows how to use:</p>
-      <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (text json mutable))
+      <p node-type="paragraph">This library provides JMESPath procedures. JMESPath is defined on
+<a href="http://jmespath.org/specification.html">JMESPath</a>.</p>
+      <p node-type="paragraph">The following example shows how to use the library:</p>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (text json jmespath))
 
-(define json '#(("key" . "value")))
-(define mutable-json (json-&gt;mutable-json json))
-
-(mutable-json-object-set! mutable-json "key" '#(("value" . "as object")))
-
-(mutable-json-&gt;json mutable-json)
-;; -&gt; #(("key" . #(("value" . "as object"))))
+((jmespath "a") '#(("a" . "foo") ("b" . "bar") ("c" . "baz")))
 </code></pre>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="json-&gt;mutable-json_13">
-          <span>json-&gt;mutable-json</span>
-          <span>
-            <i node-type="i">json</i>
-          </span>
-        </a>
+        <span />
+        <span>foo</span>
       </div>
-      <p node-type="paragraph">Converts the given <i node-type="i">json</i> to a mutable JSON.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="mutable-json-&gt;json_404">
-          <span>mutable-json-&gt;json</span>
-          <span>
-            <i node-type="i">mutable-json</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Converts the given <i node-type="i">mutable-json</i> to a JSON.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="mutable-json?_418">
-          <span>mutable-json?</span>
-          <span>
-            <i node-type="i">obj</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a mutable JSON,
-otherwise <code node-type="code">#f</code>.</p>
-      <p node-type="paragraph">Mutable JSON object consists with 2 containers</p>
-      <ul node-type="bullet-list">
-        <li>
-          <p node-type="paragraph">Mutable JSON object</p>
-        </li>
-        <li>
-          <p node-type="paragraph">Mutable JSON array</p>
-        </li>
-      </ul>
+      <p node-type="paragraph" />
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="Mutable-JSON-object">Mutable JSON object</a>
+          <a name="Scheme-APIs">Scheme APIs</a>
         </h3>
-        <p node-type="paragraph">Mutable JSON object is a JSON object. The difference is a mutable JSON object
-doesn't allow to have multiple identical keys while JSON object allows it.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="mutable-json-object?_417">
-            <span>mutable-json-object?</span>
+          <a name="jmespath_1">
+            <span>jmespath</span>
             <span>
-              <i node-type="i">obj</i>
+              <i node-type="i">path</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a mutable JSON object,
-otherwise <code node-type="code">#f</code>.</p>
+        <p node-type="paragraph">Returns a procedure takes one argument, which must be a vector
+representad JSON.</p>
+        <p node-type="paragraph">The given <i node-type="i">path</i> must be a string which is a valid JMESPath, otherwise
+raises <code node-type="code">&amp;jmespath</code>.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Conditions">Conditions</a>
+          </h4>
+          <p node-type="paragraph">This section describes conditions might be raised by the <code node-type="code">jmespath</code>procedure or the procedure returned by the <code node-type="code">jmespath</code> procedure.</p>
+          <p node-type="paragraph">The library doesn't export the condition type itself. (e.g. <code node-type="code">&amp;jmespath</code>isn't exported from the library). However for the comprehensivity, we
+also describe the hierarchy of the conditions here:</p>
+          <pre lang="scheme" node-type="block"><code>+ &amp;error (standard R6RS error)
+  + &amp;jmespath
+    + &amp;jmespath:parse
+    + &amp;jmespath:expression
+        - expression
+        - argument
+      + &amp;jmespath:compile
+      + &amp;jmespath:runtime
+</code></pre>
+          <p node-type="paragraph">The <code node-type="code">&amp;jmespath</code> is the root condition. This condition itself won't be
+raised.</p>
+          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:parse</code> is the condition raised by the parser. This means
+either the given expression is lexically incorrect or grammartically incorrect.</p>
+          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:expression</code> is the base condition of both
+<code node-type="code">&amp;jmespath:compile</code> and <code node-type="code">&amp;jmespath:runtime</code>. This condition itself
+won't be raised.</p>
+          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:compile</code> is the condition raised by the compiler. This means
+the parsed expression is syntatically incorrect.</p>
+          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:runtime</code> is the condition raised by the returned procedure.
+This means evaluation error. For example, a string is passed to the <code node-type="code">avg</code>function.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jmespath-error?_5">
+              <span>jmespath-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of <code node-type="code">&amp;jmespath</code>,
+otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jmespath-parse-error?_6">
+              <span>jmespath-parse-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of <code node-type="code">&amp;jmespath:parse</code>,
+otherwise #f.</p>
+          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:parse</code> is a sub condition of <code node-type="code">&amp;jmespath</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jmespath-error-expression_4">
+              <span>jmespath-error-expression</span>
+              <span>
+                <i node-type="i">jmespath-error</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">expression</code> field of the given <i node-type="i">jmespath-error</i>.</p>
+          <p node-type="paragraph">The the given <i node-type="i">jmespath-error</i> must be a sub condition of
+<code node-type="code">&amp;jmespath:expression</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jmespath-error-arguments_3">
+              <span>jmespath-error-arguments</span>
+              <span>
+                <i node-type="i">jmespath-error</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">arguments</code> field of the given <i node-type="i">jmespath-error</i>.</p>
+          <p node-type="paragraph">The the given <i node-type="i">jmespath-error</i> must be a sub condition of
+<code node-type="code">&amp;jmespath:expression</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jmespath-compile-error?_2">
+              <span>jmespath-compile-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of <code node-type="code">&amp;jmespath:compile</code>,
+otherwise #f.</p>
+          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:compile</code> is a sub condition of <code node-type="code">&amp;jmespath:expression</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jmespath-runtime-error?_7">
+              <span>jmespath-runtime-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an instance of <code node-type="code">&amp;jmespath:runtime</code>,
+otherwise #f.</p>
+          <p node-type="paragraph">The <code node-type="code">&amp;jmespath:runtime</code> is a sub condition of <code node-type="code">&amp;jmespath:expression</code>.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Extra-functions">Extra functions</a>
+        </h3>
+        <p node-type="paragraph">This library provides extra functions for usability.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object-set!_416">
-            <span>mutable-json-object-set!</span>
+          <span>JMESPath Function</span>
+          <a name="parent_9">
+            <span>parent</span>
             <span>
-              <i node-type="i">mutable-json-object</i>
-            </span>
-            <span>
-              <i node-type="i">key</i>
-            </span>
-            <span>
-              <i node-type="i">value</i>
+              <i node-type="i">node</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Associates the given <i node-type="i">key</i> and <i node-type="i">value</i> to the <i node-type="i">mutable-json</i>.</p>
+        <p node-type="paragraph">Returns parent node of the given <i node-type="i">node</i>. This function can be
+used like this:</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>((jmespath "*.bar.parent(@)") '#(("foo" . #(("bar" . 1)))))
+</code></pre>
+          <span />
+          <span>'(#((bar . 1)))</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">A literal doesn't have a parent so returns <code node-type="code">null</code>.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>((jmespath "parent(`{}`)") '#(("foo" . #(("bar" . 1)))))
+</code></pre>
+          <span />
+          <span>'null</span>
+        </div>
+        <p node-type="paragraph" />
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object-merge!_414">
-            <span>mutable-json-object-merge!</span>
+          <span>JMESPath Function</span>
+          <a name="unique_9">
+            <span>unique</span>
             <span>
-              <i node-type="i">mutable-json-object</i>
+              <i node-type="i">array</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns unique elements of the given <i node-type="i">array</i>. This function can be
+used like this:</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>((jmespath "unique(@)") '(1 2 1 2 3))
+</code></pre>
+          <span />
+          <span>'(1 2 3)</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">It raises a <code node-type="code">&amp;jmespath:runtime</code> if the give <i node-type="i">array</i> is not an array.</p>
+        <div node-type="define" class="define">
+          <span>JMESPath Function</span>
+          <a name="is_odd_82">
+            <span>is_odd</span>
+            <span>
+              <i node-type="i">number</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">number</i> is an odd number.
+This function can be used like this:</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>((jmespath "is_odd(@)") '5)</code></pre>
+            <span />
+            <span>#t</span>
+          </div>
+        </p>
+        <p node-type="paragraph">It raises a <code node-type="code">&amp;jmespath:runtime</code> if the give <i node-type="i">number</i> is not a number.</p>
+        <div node-type="define" class="define">
+          <span>JMESPath Function</span>
+          <a name="is_even_81">
+            <span>is_even</span>
+            <span>
+              <i node-type="i">number</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">number</i> is an even number.
+This function can be used like this:</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>((jmespath "is_even(@)") '5)</code></pre>
+            <span />
+            <span>#t</span>
+          </div>
+        </p>
+        <p node-type="paragraph">It raises a <code node-type="code">&amp;jmespath:runtime</code> if the give <i node-type="i">number</i> is not a number.</p>
+        <div node-type="define" class="define">
+          <span>JMESPath Function</span>
+          <a name="remove_109">
+            <span>remove</span>
+            <span>
+              <i node-type="i">array/object</i>
             </span>
             <span>
-              <i node-type="i">mutable-json-object1</i>
+              <i node-type="i">expr</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Removes element from the given <i node-type="i">array/object</i> if the _expr_returns true value.</p>
+        <p node-type="paragraph">The <i node-type="i">array/object</i> must be an array or object.</p>
+        <p node-type="paragraph">The <i node-type="i">expr</i> must be an expression reference.</p>
+        <p node-type="paragraph">The <i node-type="i">expr</i> is executed in the context of the elements of <i node-type="i">array/object</i>.
+Means if the <code node-type="code">@</code> is passed to the <i node-type="i">expr</i>, then the receiving
+value is one of the elements of the <i node-type="i">array/object</i>.</p>
+        <p node-type="paragraph">This function can be used like this:</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>((jmespath "remove(@, &amp;odd(@))") '(1 2 3 4 5))</code></pre>
+            <span />
+            <span>'(1 3 5)</span>
+          </div>
+        </p>
+        <p node-type="paragraph">It raises a <code node-type="code">&amp;jmespath:runtime</code> if the give <i node-type="i">array/object</i> is not
+either an array or object, or if the given <i node-type="i">expr</i> is not a function
+reference.</p>
+        <div node-type="define" class="define">
+          <span>JMESPath Function</span>
+          <a name="remove_entry_113">
+            <span>remove_entry</span>
+            <span>
+              <i node-type="i">object</i>
+            </span>
+            <span>
+              <i node-type="i">array/expr</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Removes entries from the given <i node-type="i">object</i> either
+if <i node-type="i">array/expr</i> is an array of string and it contains the key of the entry
+or if <i node-type="i">array/expr</i> is a function expression and returns true value.</p>
+        <p node-type="paragraph">The <i node-type="i">object</i> must be an object.</p>
+        <p node-type="paragraph">This function can be used like this:</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>((jmespath "remove_entry(@, `[\"key2\"]`)") '#(("key" . 1)))
+</code></pre>
+          <span />
+          <span>'#((key . 1))</span>
+        </div>
+        <p node-type="paragraph" />
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>((jmespath "remove_entry(@, &amp;contains(`[\"key2\"]`, @))")
+ '#(("key" . 1) ("key2" . 2)))
+</code></pre>
+          <span />
+          <span>'#((key . 1))</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">It raises a <code node-type="code">&amp;jmespath:runtime</code> if the give <i node-type="i">object</i> is not an object,
+or if the given <i node-type="i">array/expr</i> is not an array of string or function
+reference.</p>
+        <div node-type="define" class="define">
+          <span>JMESPath Function</span>
+          <a name="array_of_55">
+            <span>array_of</span>
+            <span>
+              <i node-type="i">any</i>
             </span>
             <span>
               <i node-type="i">...</i>
             </span>
-            <span>
-              <i node-type="i">mutable-json-object*</i>
-            </span>
           </a>
         </div>
-        <p node-type="paragraph">Merges the <i node-type="i">mutable-json-object1</i> and <i node-type="i">mutable-json-object*</i> into
-<i node-type="i">mutable-json-object</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object-delete!_413">
-            <span>mutable-json-object-delete!</span>
-            <span>
-              <i node-type="i">mutable-json-object</i>
-            </span>
-            <span>
-              <i node-type="i">key</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Remves the given <i node-type="i">key</i> from the <i node-type="i">mutable-json-object</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object-contains?_412">
-            <span>mutable-json-object-contains?</span>
-            <span>
-              <i node-type="i">mutable-json-object</i>
-            </span>
-            <span>
-              <i node-type="i">key</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">key</i> exists in the
-<i node-type="i">mutable-json-object</i>, otherwise <code node-type="code">#f</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-object-ref_415">
-            <span>mutable-json-object-ref</span>
-            <span>
-              <i node-type="i">mutable-json-object</i>
-            </span>
-            <span>
-              <i node-type="i">key</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns the value associated with the given <i node-type="i">key</i> in the
-<i node-type="i">mutable-json-object</i>, otherwise returns <code node-type="code">mutable JSON not found</code>object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-not-found?_411">
-            <span>mutable-json-not-found?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a mutable JSON not found,
-otherwise <code node-type="code">#f</code>.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Mutable-JSON-array">Mutable JSON array</a>
-        </h3>
-        <p node-type="paragraph">Mutable JSON array is a JSON array with capability of expansion or shrinking.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array?_410">
-            <span>mutable-json-array?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a mutable JSON array
-otherwise <code node-type="code">#f</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array-set!_408">
-            <span>mutable-json-array-set!</span>
-            <span>
-              <i node-type="i">mutable-json-array</i>
-            </span>
-            <span>
-              <i node-type="i">index</i>
-            </span>
-            <span>
-              <i node-type="i">value</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Sets the given value <i node-type="i">value</i> to the _mutable-json-array_on position of <i node-type="i">index</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array-insert!_406">
-            <span>mutable-json-array-insert!</span>
-            <span>
-              <i node-type="i">mutable-json-array</i>
-            </span>
-            <span>
-              <i node-type="i">index</i>
-            </span>
-            <span>
-              <i node-type="i">value</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Insets the given value <i node-type="i">value</i> to the _mutable-json-array_on position of <i node-type="i">index</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array-delete!_405">
-            <span>mutable-json-array-delete!</span>
-            <span>
-              <i node-type="i">mutable-json-array</i>
-            </span>
-            <span>
-              <i node-type="i">index</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Deletes the value of given _mutable-json-array_on position of <i node-type="i">index</i> and shrink it.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array-ref_407">
-            <span>mutable-json-array-ref</span>
-            <span>
-              <i node-type="i">mutable-json-array</i>
-            </span>
-            <span>
-              <i node-type="i">index</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Retrieves the value of <i node-type="i">mutable-json-array</i> on position of
-<i node-type="i">index</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="mutable-json-array-size_409">
-            <span>mutable-json-array-size</span>
-            <span>
-              <i node-type="i">mutable-json-array</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns the size of the given <i node-type="i">mutable-json-array</i>.</p>
+        <p node-type="paragraph">Returns array of given arguments <i node-type="i">any</i>.</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>((jmespath "array_of(`1`, `2`, `3`)") 'null)</code></pre>
+            <span />
+            <span>'(1 2 3)</span>
+          </div>
+        </p>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section767.html">(text json jmespath) - JMESPath</a>
+      <a href="./section767.html">(text json object-builder) -- JSON object builder/serializer</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section769.html">(text json pointer) - JSON Pointer</a>
+      <a href="./section769.html">(text json mutable) - Mutable JSON</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-09-09T21:26:28+0200</i></p>
     </div>
   </body>
 </html>

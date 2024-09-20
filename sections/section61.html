@@ -17,7 +17,7 @@
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(sagittarius)_112">
+        <a name="(sagittarius)_113">
           <span>(sagittarius)</span>
         </a>
       </div>
@@ -69,7 +69,7 @@ environment. The results of the last expression in the body are the values of
 the <code node-type="code">receive</code>-expression.</p>
         <div node-type="define" class="define">
           <span>Syntax</span>
-          <a name="cond-expand_126">
+          <a name="cond-expand_127">
             <span>cond-expand</span>
             <span>
               <i node-type="i">clauses</i>
@@ -87,6 +87,11 @@ platform dependencies such as C's <code node-type="code">#ifdef</code> preproces
             <p node-type="paragraph">(<i node-type="i">feature-identifier</i> <i node-type="i">body</i> ...)</p>
           </li>
           <li>
+            <p node-type="paragraph">((<code node-type="code">version</code> (<i node-type="i">compare</i> _version)) <i node-type="i">body</i> ...) <since node-type="since">
+              <span node-type="since-version" version="0.9.12">0.9.12</span>
+            </since></p>
+          </li>
+          <li>
             <p node-type="paragraph">((<code node-type="code">library</code> <i node-type="i">library-name</i>) <i node-type="i">body</i> ...)</p>
           </li>
           <li>
@@ -99,10 +104,28 @@ platform dependencies such as C's <code node-type="code">#ifdef</code> preproces
             <p node-type="paragraph">(<code node-type="code">not</code> <i node-type="i">feature-identifier</i>)</p>
           </li>
         </ul>
-        <p node-type="paragraph"><code node-type="code">library</code> form searches the given <i node-type="i">library-name</i> and if it is found,
+        <p node-type="paragraph"><code node-type="code">version</code> clause checks the Sagittarius version. The <i node-type="i">compare</i> must be
+one of <code node-type="code">&gt;</code>, <code node-type="code">&gt;=</code>, <code node-type="code">=</code>, <code node-type="code">&lt;=</code> or <code node-type="code">&lt;</code>. And <i node-type="i">version</i> must be a string which
+represents the target version.<br>This feature is since <code node-type="code">0.9.12</code> and provides <code node-type="code">cond-expand.version</code> feature
+identifier.<br>This is Sagittarius' extension. See the below example how to use it.</p>
+        <p node-type="paragraph"><code node-type="code">library</code> clause searches the given <i node-type="i">library-name</i> and if it is found,
 then compiles <i node-type="i">body</i>.</p>
         <p node-type="paragraph"><code node-type="code">and</code>, <code node-type="code">or</code> and <code node-type="code">not</code> are the same as usual syntax.</p>
         <p node-type="paragraph">Users can check possible _feature-identifier_s via <code node-type="code">cond-features</code>procedure.</p>
+        <pre lang="scheme" node-type="block"><code>;; version clause example
+(cond-expand
+ ;; For backward compatible way among other Sagittarius versions
+ ((and cond-expand.version (version (&gt;= "0.9.12")))
+  ;; Code for higher than or equal to the version 0.9.12
+  )
+ ;; In case other Scheme implementations support the same thing
+ ((and sagittarius cond-expand.version (version (&gt;= "0.9.12")))
+  ;; Sagittarius 0.9.12 or higher specific code
+  )
+ (else
+  ;; Version lower than 0.9.12 code
+  ))
+</code></pre>
       </section>
       <section node-type="section">
         <h3 node-type="header-3">
@@ -256,7 +279,7 @@ Moreover, if you do not use <i node-type="i">rename</i>, it always makes it non-
 these procedures converts given arguments inexact number.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="mod-inverse_378">
+          <a name="mod-inverse_392">
             <span>mod-inverse</span>
             <span>
               <i node-type="i">x</i>
@@ -270,7 +293,7 @@ these procedures converts given arguments inexact number.</p>
         <p node-type="paragraph">Returns <code node-type="code">_x_ ^ -1 mod _m_</code></p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="mod-expt_376">
+          <a name="mod-expt_390">
             <span>mod-expt</span>
             <span>
               <i node-type="i">x</i>
@@ -429,7 +452,7 @@ number, then the timestamp is set to current time.</p>
         <p node-type="paragraph">NOTE: On Windows, only the owner permission is considered.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="create-symbolic-link_172">
+          <a name="create-symbolic-link_173">
             <span>create-symbolic-link</span>
             <span>
               <i node-type="i">old-filename</i>
@@ -457,7 +480,7 @@ number, then the timestamp is set to current time.</p>
         <p node-type="paragraph">If <i node-type="i">new-filename</i> exists, it overwrite the existing file.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="create-directory_166">
+          <a name="create-directory_167">
             <span>create-directory</span>
             <span>
               <i node-type="i">path</i>
@@ -488,7 +511,7 @@ number, then the timestamp is set to current time.</p>
 not exist, it returns #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="copy-file_153">
+          <a name="copy-file_154">
             <span>copy-file</span>
             <span>
               <i node-type="i">src</i>
@@ -512,7 +535,7 @@ existing file path.</p>
 if it exists.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="current-directory_186">
+          <a name="current-directory_187">
             <span>current-directory</span>
             <span>
               <i node-type="i">:optional</i>
@@ -537,7 +560,7 @@ current working directory to <i node-type="i">path</i> and returns unspecified v
         <p node-type="paragraph">Sets current working directory to <i node-type="i">path</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="build-path_98">
+          <a name="build-path_107">
             <span>build-path</span>
             <span>
               <i node-type="i">path1</i>
@@ -556,7 +579,7 @@ current working directory to <i node-type="i">path</i> and returns unspecified v
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-equal-hashtable_139">
+          <a name="make-equal-hashtable_147">
             <span>make-equal-hashtable</span>
             <span>
               <i node-type="i">:optional</i>
@@ -571,7 +594,7 @@ current working directory to <i node-type="i">path</i> and returns unspecified v
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-string-hashtable_279">
+          <a name="make-string-hashtable_290">
             <span>make-string-hashtable</span>
             <span>
               <i node-type="i">:optional</i>
@@ -723,7 +746,7 @@ returned from <code node-type="code">endianness</code> macro.</p>
         <p node-type="paragraph">Write <i node-type="i">v</i> to <i node-type="i">out</i> as unsigned/signed 16/32 bit integer.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="get-u16_61">
+          <a name="get-u16_63">
             <span>get-u16</span>
             <span>
               <i node-type="i">in</i>
@@ -735,7 +758,7 @@ returned from <code node-type="code">endianness</code> macro.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="get-s16_52">
+          <a name="get-s16_54">
             <span>get-s16</span>
             <span>
               <i node-type="i">in</i>
@@ -747,7 +770,7 @@ returned from <code node-type="code">endianness</code> macro.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="get-u32_63">
+          <a name="get-u32_65">
             <span>get-u32</span>
             <span>
               <i node-type="i">in</i>
@@ -759,7 +782,7 @@ returned from <code node-type="code">endianness</code> macro.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="get-s32_54">
+          <a name="get-s32_56">
             <span>get-s32</span>
             <span>
               <i node-type="i">in</i>
@@ -1055,7 +1078,7 @@ always returns #t;</p>
         <p node-type="paragraph" />
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="buffered-port_96">
+          <a name="buffered-port_105">
             <span>buffered-port</span>
             <span>
               <i node-type="i">port</i>
@@ -1087,7 +1110,7 @@ as its internal buffer. If the bytevector size is zero or literal bytevector
 then <code node-type="code">&amp;assertion</code> is raised.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-codec_53">
+          <a name="make-codec_61">
             <span>make-codec</span>
             <span>
               <i node-type="i">symbol</i>
@@ -1131,7 +1154,7 @@ custom codecs.</p>
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="symbol<?_349">
+          <a name="symbol<?_355">
             <span>symbol&lt;?</span>
             <span>
               <i node-type="i">symbol1</i>
@@ -1149,7 +1172,7 @@ custom codecs.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="symbol<=?_348">
+          <a name="symbol<=?_354">
             <span>symbol&lt;=?</span>
             <span>
               <i node-type="i">symbol1</i>
@@ -1167,7 +1190,7 @@ custom codecs.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="symbol&gt;?_352">
+          <a name="symbol&gt;?_358">
             <span>symbol&gt;?</span>
             <span>
               <i node-type="i">symbol1</i>
@@ -1185,7 +1208,7 @@ custom codecs.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="symbol&gt;=?_351">
+          <a name="symbol&gt;=?_357">
             <span>symbol&gt;=?</span>
             <span>
               <i node-type="i">symbol1</i>
@@ -1222,7 +1245,7 @@ keyword objects are self quoting so users don't have to put <code node-type="cod
 <code node-type="code">#!r6rs</code> or <code node-type="code">#!r7rs</code> directive and <code node-type="code">-r6</code> or <code node-type="code">-r7</code>command line option disable it.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-keyword_190">
+          <a name="make-keyword_199">
             <span>make-keyword</span>
             <span>
               <i node-type="i">symbol</i>
@@ -1231,7 +1254,7 @@ keyword objects are self quoting so users don't have to put <code node-type="cod
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="symbol-&gt;keyword_345">
+          <a name="symbol-&gt;keyword_351">
             <span>symbol-&gt;keyword</span>
             <span>
               <i node-type="i">symbol</i>
@@ -1241,7 +1264,7 @@ keyword objects are self quoting so users don't have to put <code node-type="cod
         <p node-type="paragraph">Creates a new keyword from <i node-type="i">symbol</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="string-&gt;keyword_262">
+          <a name="string-&gt;keyword_267">
             <span>string-&gt;keyword</span>
             <span>
               <i node-type="i">string</i>
@@ -1251,7 +1274,7 @@ keyword objects are self quoting so users don't have to put <code node-type="cod
         <p node-type="paragraph">Creates a new keyword from <i node-type="i">string</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="keyword?_27">
+          <a name="keyword?_29">
             <span>keyword?</span>
             <span>
               <i node-type="i">obj</i>
@@ -1261,7 +1284,7 @@ keyword objects are self quoting so users don't have to put <code node-type="cod
         <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is keyword, otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="keyword-&gt;symbol_26">
+          <a name="keyword-&gt;symbol_28">
             <span>keyword-&gt;symbol</span>
             <span>
               <i node-type="i">keyword</i>
@@ -1271,7 +1294,7 @@ keyword objects are self quoting so users don't have to put <code node-type="cod
         <p node-type="paragraph">Returns a symbol representation of given keyword <i node-type="i">keyword</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="keyword-&gt;string_25">
+          <a name="keyword-&gt;string_27">
             <span>keyword-&gt;string</span>
             <span>
               <i node-type="i">keyword</i>
@@ -1281,7 +1304,7 @@ keyword objects are self quoting so users don't have to put <code node-type="cod
         <p node-type="paragraph">Returns a string representation of given keyword <i node-type="i">keyword</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="get-keyword_41">
+          <a name="get-keyword_43">
             <span>get-keyword</span>
             <span>
               <i node-type="i">keyword</i>
@@ -1350,7 +1373,7 @@ being garbage-collected.</p>
         <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is weak box otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-weak-box_301">
+          <a name="make-weak-box_315">
             <span>make-weak-box</span>
             <span>
               <i node-type="i">obj</i>
@@ -1422,7 +1445,7 @@ object is collected, the entry of the weak vector is replaced to #f.</p>
         <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is weak vector otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-weak-vector_304">
+          <a name="make-weak-vector_318">
             <span>make-weak-vector</span>
             <span>
               <i node-type="i">size</i>
@@ -1503,7 +1526,7 @@ condition.</p>
         <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is weak hashtable otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-weak-eq-hashtable_302">
+          <a name="make-weak-eq-hashtable_316">
             <span>make-weak-eq-hashtable</span>
             <span>
               <i node-type="i">:key</i>
@@ -1527,7 +1550,7 @@ condition.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-weak-eqv-hashtable_303">
+          <a name="make-weak-eqv-hashtable_317">
             <span>make-weak-eqv-hashtable</span>
             <span>
               <i node-type="i">:key</i>
@@ -1664,7 +1687,7 @@ removed entry. This is only for GC friendliness.</p>
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="bytevector-&gt;sinteger_109">
+          <a name="bytevector-&gt;sinteger_118">
             <span>bytevector-&gt;sinteger</span>
             <span>
               <i node-type="i">bytevector</i>
@@ -1682,7 +1705,7 @@ removed entry. This is only for GC friendliness.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="bytevector-&gt;uinteger_114">
+          <a name="bytevector-&gt;uinteger_123">
             <span>bytevector-&gt;uinteger</span>
             <span>
               <i node-type="i">bytevector</i>
@@ -1700,7 +1723,7 @@ removed entry. This is only for GC friendliness.</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="bytevector-&gt;integer_105">
+          <a name="bytevector-&gt;integer_114">
             <span>bytevector-&gt;integer</span>
             <span>
               <i node-type="i">bytevector</i>
@@ -1792,7 +1815,7 @@ smaller than given <i node-type="i">ei</i> bytes, then the rest of left bytes wi
         </p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="bytevector-append_121">
+          <a name="bytevector-append_130">
             <span>bytevector-append</span>
             <span>
               <i node-type="i">bvs</i>
@@ -1806,7 +1829,7 @@ smaller than given <i node-type="i">ei</i> bytes, then the rest of left bytes wi
 order from the subsequent locations in <i node-type="i">bvs ...</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="bytevector-concatenate_123">
+          <a name="bytevector-concatenate_132">
             <span>bytevector-concatenate</span>
             <span>
               <i node-type="i">list-of-bytevectors</i>
@@ -1825,7 +1848,7 @@ equivalent to:</p>
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="circular-list?_102">
+          <a name="circular-list?_103">
             <span>circular-list?</span>
             <span>
               <i node-type="i">list</i>
@@ -1896,7 +1919,7 @@ reverse order. The cells of list may be reused to construct the returned list.</
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="vector-copy_15">
+          <a name="vector-copy_21">
             <span>vector-copy</span>
             <span>
               <i node-type="i">vector</i>
@@ -1941,7 +1964,7 @@ vector, the <i node-type="i">fill</i> value is used to fill the result vector.</
         </p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="vector-append_12">
+          <a name="vector-append_18">
             <span>vector-append</span>
             <span>
               <i node-type="i">vector</i>
@@ -1962,7 +1985,7 @@ order from the subsequent locations in <i node-type="i">vector ...</i>.</p>
         </p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="vector-concatenate_14">
+          <a name="vector-concatenate_20">
             <span>vector-concatenate</span>
             <span>
               <i node-type="i">list-of-vectors</i>
@@ -1976,7 +1999,7 @@ equivalent to:</p>
         </p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="vector-reverse_27">
+          <a name="vector-reverse_33">
             <span>vector-reverse</span>
             <span>
               <i node-type="i">vector</i>
@@ -1994,7 +2017,7 @@ equivalent to:</p>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="vector-reverse!_28">
+          <a name="vector-reverse!_34">
             <span>vector-reverse!</span>
             <span>
               <i node-type="i">vector</i>
@@ -2021,7 +2044,7 @@ if it's given. And it restricts the range of the target elements.</p>
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="string-scan_295">
+          <a name="string-scan_301">
             <span>string-scan</span>
             <span>
               <i node-type="i">string</i>
@@ -2087,7 +2110,7 @@ rest. after it. If <i node-type="i">item</i> is not found then return
         </dl>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="string-concatenate_279">
+          <a name="string-concatenate_285">
             <span>string-concatenate</span>
             <span>
               <i node-type="i">list-of-strings</i>
@@ -2120,7 +2143,7 @@ equivalent to:</p>
         </ul>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="string-&gt;istring_261">
+          <a name="string-&gt;istring_266">
             <span>string-&gt;istring</span>
             <span>
               <i node-type="i">string</i>
@@ -2190,13 +2213,13 @@ appended to the current suffix list, otherwise prepend to the list.</p>
         <p node-type="paragraph">The <i node-type="i">suffix</i> should contain <code node-type="code">.</code> as well.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="load-path_43">
+          <a name="load-path_44">
             <span>load-path</span>
           </a>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="load-path_42">
+          <a name="load-path_43">
             <span>load-path</span>
             <span>
               <i node-type="i">paths</i>
@@ -2247,7 +2270,7 @@ unexpected results.</p>
 and formatted to look like the result of <code node-type="code">uname(2)</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="get-mac-address_44">
+          <a name="get-mac-address_46">
             <span>get-mac-address</span>
             <span>
               <i node-type="i">:optional</i>
@@ -2265,13 +2288,13 @@ contains 6 elements.</p>
         <p node-type="paragraph">If optional argument specifies which NIC's MAC address should be returned.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="get-process-times_50">
+          <a name="get-process-times_52">
             <span>get-process-times</span>
           </a>
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="get-thread-times_59">
+          <a name="get-thread-times_61">
             <span>get-thread-times</span>
             <span>
               <i node-type="i">:optional</i>
@@ -2302,7 +2325,7 @@ assumed value.</p>
         <p node-type="paragraph">Invokes garbage collection manually.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="cpu-count_158">
+          <a name="cpu-count_159">
             <span>cpu-count</span>
           </a>
         </div>
@@ -2344,14 +2367,14 @@ is boolean which indicates if the procedure accepts optional arguments or
 not.</p>
         <div node-type="define" class="define">
           <span>Library</span>
-          <a name="(time)_179">
+          <a name="(time)_180">
             <span>(time)</span>
           </a>
         </div>
         <p node-type="paragraph">Exports <code node-type="code">time</code> macro</p>
         <div node-type="define" class="define">
           <span>Macro</span>
-          <a name="time_56">
+          <a name="time_57">
             <span>time</span>
             <span>
               <i node-type="i">expr</i>
@@ -2369,7 +2392,7 @@ not.</p>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-09-09T21:26:28+0200</i></p>
     </div>
   </body>
 </html>

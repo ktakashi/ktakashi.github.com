@@ -7,108 +7,67 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section747.html">(rfc hotp) - HMAC-based One-Time Password library</a>
+      <a href="./section747.html">(rfc pem) - PEM format  library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section749.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+      <a href="./section749.html">(rfc totp) - Time-based One-Time Password library</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="rfc.totp">(rfc totp) - Time-based One-Time Password library</a>
+        <a name="rfc.hotp">(rfc hotp) - HMAC-based One-Time Password library</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(rfc totp)_49">
-          <span>(rfc totp)</span>
+        <a name="(rfc hotp)_37">
+          <span>(rfc hotp)</span>
         </a>
       </div>
-      <p node-type="paragraph">Provides Time-based One-Time Password (TOTP) generating procedures. TOTP is
-defined in RFC 6238:
-<a href="http://tools.ietf.org/html/rfc6238">RFC 6238</a>.</p>
+      <p node-type="paragraph">Provides HMAC-based One-Time Password (HOTP) generating procedures. HOTP is
+defined in RFC 4226:
+<a href="http://tools.ietf.org/html/rfc4226">RFC 4226</a>.</p>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="generate-time-based-one-time-password_27">
-          <span>generate-time-based-one-time-password</span>
+        <a name="generate-hmac-based-one-time-password_11">
+          <span>generate-hmac-based-one-time-password</span>
           <span>
             <i node-type="i">K</i>
           </span>
           <span>
+            <i node-type="i">C</i>
+          </span>
+          <span>
             <i node-type="i">digit</i>
-          </span>
-          <span>
-            <i node-type="i">:key</i>
-          </span>
-          <span>
-            <i node-type="i">time</i>
-          </span>
-          <span>
-            <i node-type="i">start-time</i>
-          </span>
-          <span>
-            <i node-type="i">step</i>
-          </span>
-          <span>
-            <i node-type="i">mode</i>
           </span>
         </a>
       </div>
       <div node-type="define" class="define">
         <span>Function</span>
-        <a name="totp_98">
-          <span>totp</span>
+        <a name="hotp_57">
+          <span>hotp</span>
           <span>
             <i node-type="i">K</i>
           </span>
           <span>
+            <i node-type="i">C</i>
+          </span>
+          <span>
             <i node-type="i">digit</i>
-          </span>
-          <span>
-            <i node-type="i">:key</i>
-          </span>
-          <span>
-            <i node-type="i">time</i>
-          </span>
-          <span>
-            <i node-type="i">start-time</i>
-          </span>
-          <span>
-            <i node-type="i">step</i>
-          </span>
-          <span>
-            <i node-type="i">mode</i>
           </span>
         </a>
       </div>
       <p node-type="paragraph"><i node-type="i">K</i> must be a bytevector represents shared secret.</p>
-      <p node-type="paragraph"><i node-type="i">digit</i> must be a positive exact integer.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">time</i> is given, then it must be a UTC time object
-of SRFI-19. The procedure computes returning one-time password according to
-the given time. The default value is <code node-type="code">(current-time)</code>.</p>
-      <p node-type="paragraph">NOTE: <i node-type="i">time</i> keyword should not be specified unless its testing purpose.</p>
-      <p node-type="paragraph">The keyword arguments described below are system parameters, means these
-parameters must be agreed between authenticator.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">start-time</i> is given, then it must be a UTC time
-object of SRFI-19. The procedure computes returning one-time password according
-to the given time. The defaule value is <code node-type="code">(make-time time-utc 0 0)</code>.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">step</i> is given, then it must be a positive exact
-integer. The procedure computes returning one-time password according
-to the given time. The defaule value is <code node-type="code">30</code>.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">step</i> is given, then it must be a positive exact
-integer. The procedure computes returning one-time password according
-to the given time. The defaule value is <code node-type="code">30</code>.</p>
-      <p node-type="paragraph">The keyword argument <i node-type="i">mode</i> is given, then it must be a hash algorithm name
-either builtin or custom. The procedure computes returning one-time password
-according to the given time. The defaule value is <code node-type="code">SHA-1</code>.</p>
-      <p node-type="paragraph">Generates an Time-based one-time password.</p>
-      <p node-type="paragraph"><code node-type="code">totp</code> is an alias of <code node-type="code">generate-time-based-one-time-password</code>.</p>
+      <p node-type="paragraph"><i node-type="i">C</i> must be an exact integer represents counter.</p>
+      <p node-type="paragraph"><i node-type="i">digit</i> must be an exact integer.</p>
+      <p node-type="paragraph">Generates an HMAC-based one-time password.</p>
+      <p node-type="paragraph"><code node-type="code">hotp</code> is an alias of <code node-type="code">generate-hmac-based-one-time-password</code>.</p>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section747.html">(rfc hotp) - HMAC-based One-Time Password library</a>
+      <a href="./section747.html">(rfc pem) - PEM format  library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section749.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
+      <a href="./section749.html">(rfc totp) - Time-based One-Time Password library</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-09-09T21:26:28+0200</i></p>
     </div>
   </body>
 </html>

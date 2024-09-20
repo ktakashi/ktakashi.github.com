@@ -7,85 +7,327 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section771.html">(text json schema) - JSON Schema</a>
+      <a href="./section771.html">(text json patch) - JSON Patch</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section773.html">(text sxml html-parser) - Flxible HTML parser</a>
+      <a href="./section773.html">(text json validator) - JSON validator</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="text.json.validator">(text json validator) - JSON validator</a>
+        <a name="text.json.schema">(text json schema) - JSON Schema</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(text json validator)_167">
-          <span>(text json validator)</span>
+        <a name="(text json schema)_167">
+          <span>(text json schema)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides abstraction layer of JSON validation.</p>
-      <div node-type="define" class="define">
-        <span>Record Type</span>
-        <a name="<json-validator&gt;_38">
-          <span>&lt;json-validator&gt;</span>
-        </a>
-      </div>
-      <p node-type="paragraph">Base class of JSON validators.</p>
-      <p node-type="paragraph">The record have <code node-type="code">validator</code> field.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="json-validator?_51">
-          <span>json-validator?</span>
-          <span>
-            <i node-type="i">obj</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Return <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a JSON validator,
-otherwise <code node-type="code">#f</code>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="make-json-validator_183">
-          <span>make-json-validator</span>
-          <span>
-            <i node-type="i">validator</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Creates a JSON validator.</p>
-      <p node-type="paragraph">The <i node-type="i">validator</i> must be a procedure accepts one argument.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="json-validator-validator_50">
-          <span>json-validator-validator</span>
-          <span>
-            <i node-type="i">json-validator</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Returns the <code node-type="code">validator</code> field value of the given
-<i node-type="i">json-validator</i>.</p>
-      <div node-type="define" class="define">
-        <span>Function</span>
-        <a name="validate-json_0">
-          <span>validate-json</span>
-          <span>
-            <i node-type="i">json-validator</i>
-          </span>
-          <span>
-            <i node-type="i">json</i>
-          </span>
-        </a>
-      </div>
-      <p node-type="paragraph">Calls value of <code node-type="code">validator</code> field of given JSON validator with
-parameter of <i node-type="i">json</i>.</p>
+      <p node-type="paragraph">This library provides JSON Schema procedures.</p>
+      <p node-type="paragraph">Currently, it supports the below drafts of JSON Schema</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">Draft 7</p>
+        </li>
+        <li>
+          <p node-type="paragraph">Draft 2019-09</p>
+        </li>
+        <li>
+          <p node-type="paragraph">Draft 2029-12</p>
+        </li>
+      </ul>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="text.json.schema-validator">JSON Schema validator</a>
+        </h3>
+        <p node-type="paragraph">The following example shows how to use the JSON Schema validator.</p>
+        <p node-type="paragraph">The following JSON Schema defines the structure of product catalogue. It's
+saved in the file <code node-type="code">product.schema.json</code></p>
+        <pre lang="json" node-type="block"><code>{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/product.schema.json",
+  "title": "Product",
+  "description": "A product from Acme's catalog",
+  "type": "object",
+  "properties": {
+    "productId": {
+      "description": "The unique identifier for a product",
+      "type": "integer"
+    },
+    "productName": {
+      "description": "Name of the product",
+      "type": "string"
+    },
+    "price": {
+      "description": "The price of the product",
+      "type": "number",
+      "exclusiveMinimum": 0
+    }
+  },
+  "required": [ "productId", "productName", "price" ]
+}
+</code></pre>
+        <p node-type="paragraph">We want to validate the following 2 JSON files whose content are the below:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">valid-product.json</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">invalid-product.json</code>
+            </p>
+          </li>
+        </ul>
+        <pre lang="json" node-type="block"><code>{
+  "productId": 1,
+  "productName": "A green door",
+  "price": 12.50,
+  "tags": [ "home", "green" ]
+}
+</code></pre>
+        <pre lang="json" node-type="block"><code>{
+  "productId": "This must be an integer",
+  "productName": 1234,
+  "price": -1
+}
+</code></pre>
+        <p node-type="paragraph">For the simple validation, you can write the following code:</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (text json)
+        (text json schema)
+        (text json validator))
+
+(define product-catalogue-schema
+  (json-schema-&gt;json-validator
+   (call-with-input-file "product.schema.json" json-read)))
+
+(define valid-catalogue
+  (call-with-input-file "valid-product.json" json-read))
+
+(define invalid-catalogue
+  (call-with-input-file "invalid-product.json" json-read))
+
+(values (validate-json product-catalogue-schema valid-catalogue)
+        (validate-json product-catalogue-schema invalid-catalogue))
+</code></pre>
+          <span />
+          <span>(values #t #f)</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">If you want to see the first invalid property, then you can write like this:</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (text json)
+        (text json schema)
+        (text json validator)
+        (srfi :39 parameters))
+
+(define product-catalogue-schema
+  (json-schema-&gt;json-validator
+   (call-with-input-file "product.schema.json" json-read)))
+
+(define valid-catalogue
+  (call-with-input-file "valid-product.json" json-read))
+
+(define invalid-catalogue
+  (call-with-input-file "invalid-product.json" json-read))
+
+(parameterize ((*json-schema:validator-error-reporter*
+                simple-json-schema-error-reporter))
+  (validate-json product-catalogue-schema valid-catalogue)
+  (validate-json product-catalogue-schema invalid-catalogue))
+;; Prints the following
+#|
+/productId
+             object: "This must be an integer"
+        schema path: #/$defs/product/properties/productId/type
+|#
+</code></pre>
+          <span />
+          <span>(values #t #f)</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">If you want to run as a lint mode, which goes through entire JSON,
+you can write like this:</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (text json)
+        (text json schema)
+        (text json validator)
+        (srfi :39 parameters))
+
+(define product-catalogue-schema
+  (json-schema-&gt;json-validator
+   (call-with-input-file "product.schema.json" json-read)))
+
+(define valid-catalogue
+  (call-with-input-file "valid-product.json" json-read))
+
+(define invalid-catalogue
+  (call-with-input-file "invalid-product.json" json-read))
+
+(parameterize ((*json-schema:validator-error-reporter*
+                simple-json-schema-error-reporter)
+               (*json-schema:lint-mode?* #t))
+  (validate-json product-catalogue-schema valid-catalogue)
+  (validate-json product-catalogue-schema invalid-catalogue))
+;; Prints the following
+#|
+/productId
+             object: "This must be an integer"
+        schema path: #/$defs/product/properties/productId/type
+/productName
+             object: 1234
+        schema path: #/$defs/product/properties/productName/type
+/price
+             object: -1
+        schema path: #/$defs/product/properties/price/exclusiveMinimum
+|#
+</code></pre>
+          <span />
+          <span>(values #t #t)</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">NOTE: On the lint mode, the validation result will always be <code node-type="code">#t</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-schema-&gt;json-validator_41">
+            <span>json-schema-&gt;json-validator</span>
+            <span>
+              <i node-type="i">schema</i>
+            </span>
+            <span>
+              <i node-type="i">dependencies</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates JSON validator object of the given JSON Schema <i node-type="i">schema</i>.</p>
+        <p node-type="paragraph">The JSON Schema must be a vector represented S-expression JSON
+(see <a href="section766.html#text.json">JSON parser</a>).</p>
+        <p node-type="paragraph">JSON validator is described in <a href="section773.html#text.json.validator">JSON validator</a>.</p>
+        <p node-type="paragraph">The optional arguments <i node-type="i">dependencies</i> must be JSON Schema or
+JSON Schema validators, if it's given, then the procedure uses
+them as external dependency. This is useful if the
+<code node-type="code">*json-schema:resolve-external-schema*</code> parameter is <code node-type="code">#f</code> or,
+you don't want to make any socket connection.</p>
+        <div node-type="define" class="define">
+          <span>Parameter</span>
+          <a name="*json-schema:resolve-external-schema?*_133">
+            <span>*json-schema:resolve-external-schema?*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Specifying if the validator creation procedure to resolve external
+reference of schema. e.g. <code node-type="code">"$ref": "http://json-schema.org/schema#"</code>.</p>
+        <p node-type="paragraph">The default value is <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Parameter</span>
+          <a name="*json-schema:external-schema-resolver*_130">
+            <span>*json-schema:external-schema-resolver*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Specifying the procedure to retrieve extrenal resource. This parameter
+supersedes the <code node-type="code">*json-schema:resolve-external-schema?*</code> parameter.</p>
+        <p node-type="paragraph">The provided procedure must accept one argument, which is a string
+representation of external URL, and return Sexp JSON Schema.</p>
+        <div node-type="define" class="define">
+          <span>Parameter</span>
+          <a name="*json-schema:validate-format?*_134">
+            <span>*json-schema:validate-format?*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Specifying if the validator validates <code node-type="code">"format"</code> keywords.</p>
+        <p node-type="paragraph">The default value is <code node-type="code">#t</code>.</p>
+        <div node-type="define" class="define">
+          <span>Parameter</span>
+          <a name="*json-schema:validator-error-reporter*_135">
+            <span>*json-schema:validator-error-reporter*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Specifying error reporter. The error reporter must be a procedure
+which accepts one argument.</p>
+        <div node-type="define" class="define">
+          <span>Parameter</span>
+          <a name="*json-schema:report-port*_132">
+            <span>*json-schema:report-port*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Specifying the port to be used to report error.</p>
+        <p node-type="paragraph">The default value is <code node-type="code">(current-error-port)</code></p>
+        <div node-type="define" class="define">
+          <span>Parameter</span>
+          <a name="*json-schema:lint-mode?*_131">
+            <span>*json-schema:lint-mode?*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Specifying if the validator should act as if it's a linter.</p>
+        <p node-type="paragraph">To make this parameter effected, then
+<code node-type="code">*json-schema:validator-error-reporter*</code> must also be specified.</p>
+        <p node-type="paragraph">The default value is <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="simple-json-schema-error-reporter_111">
+            <span>simple-json-schema-error-reporter</span>
+            <span>
+              <i node-type="i">reports</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The pre-defined error repoter for JSON schema validator.
+This error reporter doesn't show duplicated path, so if a JSON
+value contains multiple errors, then only one will be shown.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Custom-error-reporter">Custom error reporter</a>
+          </h4>
+          <p node-type="paragraph">You can specify error reporting procedure by
+<code node-type="code">*json-schema:validator-error-reporter*</code> parameter. The argument
+is a list of validation error report. Below procedures provide
+the accessor of the error report.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="validation-report-object_10">
+              <span>validation-report-object</span>
+              <span>
+                <i node-type="i">report</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns erronous object.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="validation-report-path_11">
+              <span>validation-report-path</span>
+              <span>
+                <i node-type="i">report</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns the JSON pointer (path) of the erronous object.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="validation-report-schema-path_12">
+              <span>validation-report-schema-path</span>
+              <span>
+                <i node-type="i">report</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns the JSON Schema path where the definition is defined.</p>
+        </section>
+      </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section771.html">(text json schema) - JSON Schema</a>
+      <a href="./section771.html">(text json patch) - JSON Patch</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section773.html">(text sxml html-parser) - Flxible HTML parser</a>
+      <a href="./section773.html">(text json validator) - JSON validator</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-09-09T21:26:28+0200</i></p>
     </div>
   </body>
 </html>

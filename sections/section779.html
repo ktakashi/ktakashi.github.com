@@ -7,174 +7,222 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section778.html">(util timer) - Timer</a>
+      <a href="./section778.html">(text yaml) -- YAML parser</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section780.html">(util treemap) - Treemap</a>
+      <a href="./section780.html">(tlv) - TLV library</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="util.tlv">(tlv) - TLV library</a>
+        <a name="util.timer">(util timer) - Timer</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(tlv)_180">
-          <span>(tlv)</span>
+        <a name="(util timer)_200">
+          <span>(util timer)</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides TLV (tag length value) data operation procedures.</p>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="High-level-APIs">High level APIs</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-emv-tlv-parser_136">
-            <span>make-emv-tlv-parser</span>
-            <span>
-              <i node-type="i">:key</i>
-            </span>
-            <span>
-              <i node-type="i">(object-builder</i>
-            </span>
-            <span>
-              <i node-type="i">tlv-builder)</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Creates EMV type TLV parser.</p>
-        <p node-type="paragraph">This procedure returns a procedure which accepts a binary port as its argument.</p>
-        <p node-type="paragraph">The keyword argument <code node-type="code">object-builder</code> specifies how to construct a TLV
-object. The default value is <code node-type="code">tlv-builder</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="tlv-object?_94">
-            <span>tlv-object?</span>
-            <span>
-              <i node-type="i">o</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given object is TLV object otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="tlv-tag_95">
-            <span>tlv-tag</span>
-            <span>
-              <i node-type="i">tlv</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns TLV tag of given TLV object <i node-type="i">tlv</i>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="tlv-data_93">
-            <span>tlv-data</span>
-            <span>
-              <i node-type="i">tlv</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns TLV binary data if the given TLV object <i node-type="i">tlv</i> is not
-constructed, otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="tlv-components_92">
-            <span>tlv-components</span>
-            <span>
-              <i node-type="i">tlv</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns TLV components of given TLV object <i node-type="i">tlv</i>. If the _tlv_is not constructed, this returns <code node-type="code">()</code>.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="tlv-&gt;bytevector_90">
-            <span>tlv-&gt;bytevector</span>
-            <span>
-              <i node-type="i">tlv</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Converts given TLV object <i node-type="i">tlv</i> to bytevector.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="write-tlv_82">
-            <span>write-tlv</span>
-            <span>
-              <i node-type="i">tlv</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">(out</i>
-            </span>
-            <span>
-              <i node-type="i">(current-output-port))</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">out</i> must be binary output port.</p>
-        <p node-type="paragraph">Writes given TLV object <i node-type="i">tlv</i> to <i node-type="i">out</i> as TLV data.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="dump-tlv_160">
-            <span>dump-tlv</span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">(out</i>
-            </span>
-            <span>
-              <i node-type="i">(current-output-port))</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Dump given TLV object <i node-type="i">tlv</i> as human readable form.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Custom-object-builder">Custom object builder</a>
-        </h3>
-        <p node-type="paragraph">Sometimes default TLV object is not convenient to use. Then users can create
-own object from TLV data passing own object builder to the
-<code node-type="code">make-emv-tlv-parser</code> procedure.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="tlv-builder_91">
-            <span>tlv-builder</span>
-            <span>
-              <i node-type="i">first-byte</i>
-            </span>
-            <span>
-              <i node-type="i">tag</i>
-            </span>
-            <span>
-              <i node-type="i">data</i>
-            </span>
-            <span>
-              <i node-type="i">constructed?</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Default TLV object builder. User should not use this procedure directly.</p>
-        <p node-type="paragraph"><i node-type="i">first-byte</i> is the first byte of the leading TLV object.</p>
-        <p node-type="paragraph"><i node-type="i">tag</i> is the read tag of the TLV object.</p>
-        <p node-type="paragraph"><i node-type="i">data</i> is either a list of TLV object or bytevector. User can check it with
-<i node-type="i">constructed?</i> argument.</p>
-        <p node-type="paragraph"><i node-type="i">constructed?</i> indicates if the TLV object is constructed or not. If this is
-#t then <i node-type="i">data</i> is a list of TLV objects.</p>
-      </section>
+      <p node-type="paragraph">This library provides timer functionality.</p>
+      <p node-type="paragraph">Timer is the mechanism to trigger an event on specified time.</p>
+      <p node-type="paragraph">The following describes how to use;</p>
+      <pre lang="scheme" node-type="block"><code>(import (util timer))
+
+(let ((timer (make-timer)))
+  (timer-start! timer) ;; start timer
+  ;; execute given thunk starting after 1000ms and each 1000ms
+  (timer-schedule! timer (lambda () (display "timer!") (newline)) 1000 1000)
+  ;; do something
+  (timer-cancel! timer))
+</code></pre>
+      <p node-type="paragraph">A timer is kind of task queue running on a timer thread. Once it's started,
+then it waits until its queue is not empty or the first task reaches the
+configured time. The tasks are executed sequentially however its order is
+not reliable if there are multiple tasks queued on the same time.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timer?_66">
+          <span>timer?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is a timer object, otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-timer_300">
+          <span>make-timer</span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">error-handler</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a timer object.</p>
+      <p node-type="paragraph">If keyword argument <i node-type="i">error-handler</i> is specified, then it must be
+a procedure accepts one argument. The <i node-type="i">error-handler</i> is called
+when timer procedure raises an error. If this is not specified, then
+timer stops when one of the tasks raised an error.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timer-state_64">
+          <span>timer-state</span>
+          <span>
+            <i node-type="i">timer</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the state of given timer. The possible states are the followings:</p>
+      <dl node-type="dlist">
+        <dt>created</dt>
+        <dd>
+          <p node-type="paragraph">The timer is created and not executed yet.</p>
+        </dd>
+        <dt>running</dt>
+        <dd>
+          <p node-type="paragraph">The timer is running.</p>
+        </dd>
+        <dt>stopped</dt>
+        <dd>
+          <p node-type="paragraph">The timer is stopped (can be resumed).</p>
+        </dd>
+        <dt>cancelled</dt>
+        <dd>
+          <p node-type="paragraph">The timer is cancelled (cannot be resumed).</p>
+        </dd>
+      </dl>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timer-start!_63">
+          <span>timer-start!</span>
+          <span>
+            <i node-type="i">timer</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Starts the given <code node-type="code">created</code> state <i node-type="i">timer</i>.</p>
+      <p node-type="paragraph">If the given timer's state is <code node-type="code">stopped</code>, then this procedure resumes
+the given timer.</p>
+      <p node-type="paragraph">If the timer state is not <code node-type="code">created</code> or <code node-type="code">stopped</code>, then
+<code node-type="code">&amp;assertion</code> is raised.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timer-stop!_65">
+          <span>timer-stop!</span>
+          <span>
+            <i node-type="i">timer</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Stops the given <i node-type="i">time</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timer-cancel!_58">
+          <span>timer-cancel!</span>
+          <span>
+            <i node-type="i">timer</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Cancel the given <i node-type="i">time</i>. If one of the tasks raised an error and
+no error handler is specified, then this procedure will re-raise the error.</p>
+      <p node-type="paragraph">Once the timer is cancelled, then this timer is completely destroyed.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timer-schedule!_62">
+          <span>timer-schedule!</span>
+          <span>
+            <i node-type="i">timer</i>
+          </span>
+          <span>
+            <i node-type="i">thunk</i>
+          </span>
+          <span>
+            <i node-type="i">first</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(period</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Schedules a timer task.</p>
+      <p node-type="paragraph"><i node-type="i">first</i> can be time object or exact integer. If this is time object,
+then the timer executes the <i node-type="i">thunk</i> with given time (absolute time).
+If this is an exact integer, then the timer executes the <i node-type="i">thunk</i> after
+the given number milliseconds from current time.</p>
+      <p node-type="paragraph">Optional argument <i node-type="i">period</i> specifies if the <i node-type="i">thunk</i> is periodically
+executed or not. 0 is not periodical task.</p>
+      <p node-type="paragraph">The returning value is an ID of scheduled task. This is needed for
+<code node-type="code">timer-remove!</code> and <code node-type="code">timer-exists?</code> procedures.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timer-reschedule!_61">
+          <span>timer-reschedule!</span>
+          <span>
+            <i node-type="i">timer</i>
+          </span>
+          <span>
+            <i node-type="i">timer-id</i>
+          </span>
+          <span>
+            <i node-type="i">first</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(period</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Reschedules the timer task associated with <i node-type="i">timer-id</i> and
+returns _timer-id_The <i node-type="i">first</i> and <i node-type="i">period</i> are the same as <code node-type="code">timer-schedule!</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timer-remove!_60">
+          <span>timer-remove!</span>
+          <span>
+            <i node-type="i">timer</i>
+          </span>
+          <span>
+            <i node-type="i">id</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Removes given <i node-type="i">id</i> task from the <i node-type="i">timer</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timer-exists?_59">
+          <span>timer-exists?</span>
+          <span>
+            <i node-type="i">timer</i>
+          </span>
+          <span>
+            <i node-type="i">id</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if given <i node-type="i">id</i> task exists in the <i node-type="i">timer</i>,
+otherwise #f.</p>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section778.html">(util timer) - Timer</a>
+      <a href="./section778.html">(text yaml) -- YAML parser</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section780.html">(util treemap) - Treemap</a>
+      <a href="./section780.html">(tlv) - TLV library</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-09-09T21:26:28+0200</i></p>
     </div>
   </body>
 </html>

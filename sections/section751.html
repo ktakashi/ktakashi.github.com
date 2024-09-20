@@ -7,100 +7,64 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section750.html">(rfc sftp) - SFTP library</a>
+      <a href="./section750.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section752.html">(rfc tls) - TLS protocol library</a>
+      <a href="./section752.html">(rfc smtp) - SMTP client</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="rfc.smtp">(rfc smtp) - SMTP client</a>
+        <a name="rfc.sftp">(rfc sftp) - SFTP library</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(rfc smtp)_47">
-          <span>(rfc smtp)</span>
+        <a name="rfc sftp_123">
+          <span>rfc sftp</span>
         </a>
       </div>
-      <p node-type="paragraph">This library provides simple SMTP client defined in
-<a href="https://www.ietf.org/rfc/rfc5321.txt">RFC 5321</a>.</p>
-      <p node-type="paragraph">The library provides high level APIs to use SMTP.</p>
-      <p node-type="paragraph">Following is the simple example to send an email.</p>
-      <pre lang="scheme" node-type="block"><code>(import (rnrs) (rfc client))
+      <p node-type="paragraph">This library provides SFTP programmatic operations.</p>
+      <p node-type="paragraph">Following example code describes how to use in high level.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rfc sftp) (pp) (srfi :26))
 
-;; creates SMTP mail object
-(define mail 
-  (smtp:mail
-   (smtp:from "Takashi Kato" "ktakashi@ymail.com")
-   (smtp:subject "Subject")
-   "Message"
-   (smtp:cc "ktakashi@ymail.com")))
+(call-with-sftp-connection 
+  "localhost"    ;; hostname
+  "23"           ;; port number
+  (lambda (conn)
+    ;; read directory
+    (pp (sftp-readdir conn "."))
+    ;; only short names
+    (pp (sftp-readdir-as-filenames conn "."))
+    ;; only long names (usually POSIX 'ls -l' format)
+    (pp (sftp-readdir-as-longnames conn "."))
 
-;; creates an SMTP connection
-(define smtp-conn (make-smtp-connection "your.smtp.server.com" "587"))
+    ;; retrieve a file as a bytevector
+    (print (utf8-&gt;string (sftp-read! conn "reading/file" 
+                                    (sftp-binary-receiver))))
+    ;; store a file to local file directly
+    (sftp-read conn "/a/file/path"
+	(sftp-file-receiver "where/to/store" :options (file-options no-fail)))
 
-;; connect to the server
-(smtp-connect! smtp-conn) ;; returns SMTP connection
+    ;; upload a file
+    (let ((handle (sftp-open conn "boo" 
+                    (bitwise-ior +ssh-fxf-creat+ +ssh-fxf-write+))))
+     (call-with-input-file "a/local/file" (cut sftp-write! conn handle &lt;&gt;)
+                           :transcoder #f))
 
-;; Authenticate if required.
-(when (smtp-authentication-required? smtp-conn)
-  ;; NOTE: only AUTH PLAIN is supported for now
-  (cond ((memq 'PLAIN (smtp-connection-authentication-methods smtp-conn))
-         (smtp-authenticate! smtp-conn (smtp-plain-authentication
-                                        "username"
-                                        "password")))
-        (else (smtp-disconnect! smtp-conn)
-              (error #f "authentication method not supported" 
-                     (smtp-connection-authentication-methods smtp-conn)))))
+    ;; rename a file
+    (sftp-rename! conn "boo" "foo")
+    ;; remove a file
+    (sftp-remove! conn "foo")
+    ;; create a directory
+    (sftp-mkdir! conn "boo")
+    ;; remove a directory
+    (sftp-rmdir! conn "boo")
 
-;; Send it
-(smtp-send! smtp-conn mail) ;; returns SMTP connection
-
-;; Clean up
-(smtp-disconnect! smtp-conn)
-</code></pre>
-      <p node-type="paragraph">The followings describe how to create SMTP mail object with attachment(s)
-or inlined image.</p>
-      <pre lang="scheme" node-type="block"><code>;; Messae with attachment
-(smtp:mail
- (smtp:from "Takashi Kato" "ktakashi@ymail.com")
- (smtp:subject "Message with attachment")
- "Message"
- (smtp:to "ktakashi@ymail.com")
- (smtp:attachment "application" "octet-stream" 
-                  (get-file-content) ;; file content suitable for this
-                  "file.odt"))
-
-;; HTML message with inlined image.
-(smtp:mail
- (smtp:from "Takashi Kato" "ktakashi@ymail.com")
- (smtp:subject "HTML message with inlined image")
- "&lt;html&gt;&lt;body&gt;&lt;img src='cid:image' /&gt;&lt;/body&gt;&lt;/html&gt;"
- (smtp:to "ktakashi@ymail.com")
- (smtp:attachment "image" "jpeg" 
-                  ;; port can also be used
-                  ;; NB: if you call smtp-mail-&gt;string twice in this case
-                  ;;     then this may break. So make sure you use this
-                  ;;     mail object once (includeing smtp-send!)
-                  (open-file-input-port "image/file.jpg")
-                  "image.jpg" 
-                  ;; specifies content-disposition parameter
-                  "inline"
-                  ;; adding content-id of this attachment
-                  '("content-id" "&lt;image&gt;"))
- ;; make this mail HTML
- (smtp:header "Content-Type" "text/html"))
-</code></pre>
-      <p node-type="paragraph">Alternative message can be created like this:</p>
-      <pre lang="scheme" node-type="block"><code>;; Message with alternative
-;; Content must not be specified otherwise raise an syntax error
-(smtp:mail
- (smtp:from "Takashi Kato" "ktakashi@ymail.com")
- (smtp:subject "Message with alternative")
- (smtp:to "ktakashi@ymail.com")
- (smtp:alternative
-  ("text" "plain" "Plain text message")
-  ("text" "html" "&lt;html&gt;&lt;body&gt;HTML message&lt;/body&gt;&lt;html&gt;"))
- )
+    ;; create a symbolic link
+    (pp (sftp-symlink! conn "/tmp" "tmp"))
+    ;; get a actual path of symbolic link
+    (pp (sftp-readlink conn "tmp"))
+    ;; get a real path. (usually an absolute path)
+    (pp (sftp-realpath conn "../")))
+  :username "username" :password "password")
 </code></pre>
       <section node-type="section">
         <h3 node-type="header-3">
@@ -108,19 +72,8 @@ or inlined image.</p>
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="smtp-connection?_141">
-            <span>smtp-connection?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an SMTP connection object,
-Otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-connection_265">
-            <span>make-smtp-connection</span>
+          <a name="call-with-sftp-connection_28">
+            <span>call-with-sftp-connection</span>
             <span>
               <i node-type="i">server</i>
             </span>
@@ -128,597 +81,422 @@ Otherwise #f.</p>
               <i node-type="i">port</i>
             </span>
             <span>
-              <i node-type="i">:optiona</i>
+              <i node-type="i">proc</i>
             </span>
             <span>
-              <i node-type="i">domain</i>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">opts</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates an SMTP connection object.</p>
-        <p node-type="paragraph">If optional argument <i node-type="i">domain</i> is specified, then the value is used
-for <code node-type="code">EHLO</code> or <code node-type="code">HELO</code> command parameter. Otherwise the result of
-<code node-type="code">machine-name</code> (defined in SRFI 112) is used.</p>
+        <p node-type="paragraph"><i node-type="i">server</i> and <i node-type="i">port</i> must be string, indicating hostname,
+port number/service name respectively.
+<i node-type="i">proc</i> must accept one argument.</p>
+        <p node-type="paragraph">Creates a SFTP connection, executes given <i node-type="i">proc</i> with the connection
+and closes it after the execution.</p>
+        <p node-type="paragraph">The <i node-type="i">opts</i> will be passed to <code node-type="code">make-client-sftp-connection</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="smtp-connection-authentication-methods_140">
-            <span>smtp-connection-authentication-methods</span>
+          <a name="sftp-open_48">
+            <span>sftp-open</span>
             <span>
-              <i node-type="i">smtp-connection</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns a symbol list of possible authentication methods.</p>
-        <p node-type="paragraph">This procedure returns a proper value only after <code node-type="code">smtp-connect!</code>
-is called.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-authentication-required?_135">
-            <span>smtp-authentication-required?</span>
-            <span>
-              <i node-type="i">smtp-connection</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given SMTP connection requires authentication,
-otherwise #f.</p>
-        <p node-type="paragraph">This procedure returns a proper value only after <code node-type="code">smtp-connect!</code>
-is called.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-connect!_139">
-            <span>smtp-connect!</span>
-            <span>
-              <i node-type="i">smtp-connection</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Establishes connection and return SMTP connection object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-authenticate!_134">
-            <span>smtp-authenticate!</span>
-            <span>
-              <i node-type="i">smtp-connection</i>
-            </span>
-            <span>
-              <i node-type="i">initial-response-generator</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
-            </span>
-            <span>
-              <i node-type="i">next-step</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph"><i node-type="i">initial-response-generator</i> must be a procedure accepts 0
-argument and must return 2 values, authentication method and initial
-response value (credential).</p>
-        <p node-type="paragraph">Authenticates the given <i node-type="i">smtp-connection</i>. If the response status
-is <code node-type="code">354</code> and <i node-type="i">next-step</i> is specified, then the _next-step_is called with <i node-type="i">smtp-connection</i>, status and response string. The
-procedure must return 2 values, next command and next-next procedure or #f.
-The <code node-type="code">smtp-authenticate!</code> procedure stops when <i node-type="i">next-next</i>
-procedure is #f or returning response is <code node-type="code">235</code>.</p>
-        <p node-type="paragraph">The following is a simple LOGIN <i node-type="i">next-step</i>.</p>
-        <pre lang="scheme" node-type="block"><code>(define (smtp-login-authentication)
-  (define (prompt next?)
-    (lambda (conn status resp)
-      (or (and (= status 334)
-               ;; response is encoded to BASE 64 so decode it
-               (display (base64-decode-string resp))
-               (flush-output-port (current-output-port))
-               ;; next command (either username or password)
-               ;; must be encoded to BASE 64
-               (values (base64-encode-string (get-line (current-input-port)))
-                       (and next? (prompt #f))))
-          (values #f #f))))
-  (values (lambda () (values "LOGIN" #f)) (prompt #t)))
-</code></pre>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-send!_151">
-            <span>smtp-send!</span>
-            <span>
-              <i node-type="i">smtp-connection</i>
-            </span>
-            <span>
-              <i node-type="i">smtp-mail</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Sends the given <i node-type="i">smtp-mail</i> and returns SMTP connection object.</p>
-        <p node-type="paragraph">The procedure internally calls <code node-type="code">smtp-mail-&gt;string</code>. So if the
-<i node-type="i">smtp-mail</i> object contains an attachment with input port, then
-the port position will be forwarded. Thus second call of the
-<code node-type="code">smtp-mail-&gt;string</code> or <code node-type="code">smtp-send!</code> doesn't create/send
-attachment message properly.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-connect!_138">
-            <span>smtp-connect!</span>
-            <span>
-              <i node-type="i">smtp-connection</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Disconnect the <i node-type="i">smtp-connection</i> and returns SMTP connection.</p>
-        <p node-type="paragraph">The closed SMTP connection can be re-used.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-plain-authentication_149">
-            <span>smtp-plain-authentication</span>
-            <span>
-              <i node-type="i">username</i>
-            </span>
-            <span>
-              <i node-type="i">password</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns a thunk that can be used <code node-type="code">smtp-authenticate!</code> procedure
-for PLAIN authentication.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-login-authentication_143">
-            <span>smtp-login-authentication</span>
-            <span>
-              <i node-type="i">:rest</i>
-            </span>
-            <span>
-              <i node-type="i">data</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns a thunk that can be used <code node-type="code">smtp-authenticate!</code> procedure
-for LOGIN authentication.</p>
-        <p node-type="paragraph">The rest argument <i node-type="i">date</i> is given, all of the values must be string,
-then each authentication prompt uses the given data as if it's typed by
-user. If there is no data or sufficient date, then input prompt will be
-shown and let user type the authentication information.</p>
-        <div node-type="define" class="define">
-          <span>Macro</span>
-          <a name="smtp:mail_158">
-            <span>smtp:mail</span>
-            <span>
-              <i node-type="i">from</i>
-            </span>
-            <span>
-              <i node-type="i">message-elements</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Auxiliary Syntax</span>
-          <a name="smtp:from_156">
-            <span>smtp:from</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Auxiliary Syntax</span>
-          <a name="smtp:subject_159">
-            <span>smtp:subject</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Auxiliary Syntax</span>
-          <a name="smtp:to_160">
-            <span>smtp:to</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Auxiliary Syntax</span>
-          <a name="smtp:cc_155">
-            <span>smtp:cc</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Auxiliary Syntax</span>
-          <a name="smtp:bcc_154">
-            <span>smtp:bcc</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Auxiliary Syntax</span>
-          <a name="smtp:attachment_153">
-            <span>smtp:attachment</span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Auxiliary Syntax</span>
-          <a name="smtp:header_157">
-            <span>smtp:header</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Constructs an SMTP mail object.</p>
-        <p node-type="paragraph"><i node-type="i">from</i> must be one of the following forms:
-<pre lang="" node-type="snipet"><code>(smtp:from email)</code></pre></p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:from name email)</code></pre>
-        </p>
-        <p node-type="paragraph"><i node-type="i">message-elements</i> must be one of the following forms:
-<pre lang="" node-type="snipet"><code>(smtp:subject subject)</code></pre></p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:to email)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:to name email)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:cc email)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:cc name email)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:bcc email)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:bcc name email)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:attachment type subtype content)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:attachment type subtype content filename)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:attachment type subtype content filename disposition-parameter)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:attachment type subtype content filename disposition-parameter headers ...)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:alternative type subtype content)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:alternative type subtype content headers ...)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>(smtp:header name value)</code></pre>
-        </p>
-        <p node-type="paragraph">
-          <pre lang="" node-type="snipet"><code>string</code></pre>
-        </p>
-        <p node-type="paragraph">The order of the appearance does not matter, except <i node-type="i">string</i> which will be
-the content of the creating SMTP mail. Except the <code node-type="code">smtp:subject</code> and
-<code node-type="code">smtp:alternative</code>, all elements can be appear multiple times.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-mail-&gt;string_144">
-            <span>smtp-mail-&gt;string</span>
-            <span>
-              <i node-type="i">smtp-mail</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns MIME string of given <i node-type="i">smtp-mail</i>.</p>
-        <p node-type="paragraph">NOTE: the procedure consumes input port attachments if exists.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Middle-level-APIs">Middle level APIs</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-mail_268">
-            <span>make-smtp-mail</span>
-            <span>
-              <i node-type="i">from</i>
-            </span>
-            <span>
-              <i node-type="i">subject</i>
-            </span>
-            <span>
-              <i node-type="i">content</i>
-            </span>
-            <span>
-              <i node-type="i">:rest</i>
-            </span>
-            <span>
-              <i node-type="i">recipients</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Creates an SMTP mail object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-mail?_148">
-            <span>smtp-mail?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an SMTP mail object, otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-from_267">
-            <span>make-smtp-from</span>
-            <span>
-              <i node-type="i">email</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-from_266">
-            <span>make-smtp-from</span>
-            <span>
-              <i node-type="i">name</i>
-            </span>
-            <span>
-              <i node-type="i">email</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">creates an SMTP from object.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-from?_142">
-            <span>smtp-from?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an SMTP from object, otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-recipient?_150">
-            <span>smtp-recipient?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is an SMTP recipient object,
-otherwise #f.</p>
-        <p node-type="paragraph">SMTP recipient objects are one of the following objects:</p>
-        <ul node-type="bullet-list">
-          <li>
-            <p node-type="paragraph">SMTP to object</p>
-          </li>
-          <li>
-            <p node-type="paragraph">SMTP cc object</p>
-          </li>
-          <li>
-            <p node-type="paragraph">SMTP bcc object</p>
-          </li>
-        </ul>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-to_270">
-            <span>make-smtp-to</span>
-            <span>
-              <i node-type="i">email</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-to_269">
-            <span>make-smtp-to</span>
-            <span>
-              <i node-type="i">name</i>
-            </span>
-            <span>
-              <i node-type="i">email</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-cc_264">
-            <span>make-smtp-cc</span>
-            <span>
-              <i node-type="i">email</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-cc_263">
-            <span>make-smtp-cc</span>
-            <span>
-              <i node-type="i">name</i>
-            </span>
-            <span>
-              <i node-type="i">email</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-bcc_262">
-            <span>make-smtp-bcc</span>
-            <span>
-              <i node-type="i">email</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-bcc_261">
-            <span>make-smtp-bcc</span>
-            <span>
-              <i node-type="i">name</i>
-            </span>
-            <span>
-              <i node-type="i">email</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Creates SMTP to, SMTP cc and SMTP bcc objects respectively.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-to?_152">
-            <span>smtp-to?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-cc?_137">
-            <span>smtp-cc?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="smtp-bcc?_136">
-            <span>smtp-bcc?</span>
-            <span>
-              <i node-type="i">obj</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is SMTP to, SMTP cc or SMTP bcc,
-respectively. Otherwise #f.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-smtp-attachment_260">
-            <span>make-smtp-attachment</span>
-            <span>
-              <i node-type="i">type</i>
-            </span>
-            <span>
-              <i node-type="i">subtype</i>
-            </span>
-            <span>
-              <i node-type="i">content</i>
-            </span>
-            <span>
-              <i node-type="i">:optional</i>
+              <i node-type="i">conn</i>
             </span>
             <span>
               <i node-type="i">filename</i>
             </span>
             <span>
-              <i node-type="i">disposition-parameter</i>
-            </span>
-            <span>
-              <i node-type="i">headers</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
+              <i node-type="i">pflags</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates a MIME object which represents SMTP attachment.</p>
-        <p node-type="paragraph">Together <i node-type="i">type</i> and <i node-type="i">subtype</i> represent MIME type. e.g.
-<code node-type="code">text/plain</code><i node-type="i">content</i> can be string, bytevector, input-port.</p>
-        <p node-type="paragraph">Optional argument <i node-type="i">filename</i> is specified, then <code node-type="code">content-disposition</code>header will have <code node-type="code">filename</code> parameter.</p>
-        <p node-type="paragraph">Optional argument <i node-type="i">disposition-parameter</i> is specified, then
-<code node-type="code">content-disposition</code> header will have specified parameter. Default
-values is <code node-type="code">attachment</code>.</p>
-        <p node-type="paragraph">Rest argument <i node-type="i">headers</i> is specified, then the created attachment has
-extra mime header. Each <i node-type="i">header</i> must be a list which contains 2
-elements, header name and value. The value part can also contain
-MIME parameters.</p>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">filename</i> must be a string.
+<i node-type="i">pflags</i> must be an exact integer which value must be the result of
+inclusive or of following values;</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-read+_19">
+            <span>+ssh-fxf-read+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Open the given <i node-type="i">filename</i> read mode.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-write+_21">
+            <span>+ssh-fxf-write+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Open the given <i node-type="i">filename</i> write mode.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-append+_16">
+            <span>+ssh-fxf-append+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Open the given <i node-type="i">filename</i> append mode.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-creat+_17">
+            <span>+ssh-fxf-creat+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates the given <i node-type="i">filename</i> if it doesn't exist.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-trunc+_20">
+            <span>+ssh-fxf-trunc+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Truncate the given <i node-type="i">filename</i> if it exists. <code node-type="code">+ssh-fxf-creat+</code>
+must be specified as well.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+ssh-fxf-excl+_18">
+            <span>+ssh-fxf-excl+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Raises and error <i node-type="i">filename</i> if it exists. <code node-type="code">+ssh-fxf-creat+</code>
+must be specified as well.</p>
+        <p node-type="paragraph">If <i node-type="i">filename</i> opened successfully, the procedure will return a handle.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-smtp-alternative-component_259">
-            <span>make-smtp-alternative-component</span>
+          <a name="sftp-close_44">
+            <span>sftp-close</span>
             <span>
-              <i node-type="i">type</i>
+              <i node-type="i">conn</i>
             </span>
             <span>
-              <i node-type="i">subtype</i>
-            </span>
-            <span>
-              <i node-type="i">content</i>
-            </span>
-            <span>
-              <i node-type="i">headers</i>
-            </span>
-            <span>
-              <i node-type="i">...</i>
+              <i node-type="i">handle</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates a component of alternative message. The returning component
-is a mere MIME object.</p>
-        <p node-type="paragraph"><i node-type="i">type</i> and <i node-type="i">subtype</i> are the same as <code node-type="code">make-smtp-attachment</code>.</p>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.</p>
+        <p node-type="paragraph">Closes given <i node-type="i">handle</i> created by <code node-type="code">sftp-open</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-smtp-alternative_258">
-            <span>make-smtp-alternative</span>
+          <a name="sftp-read_51">
+            <span>sftp-read</span>
             <span>
-              <i node-type="i">alternatives</i>
+              <i node-type="i">conn</i>
             </span>
             <span>
-              <i node-type="i">...</i>
+              <i node-type="i">handle/filename</i>
+            </span>
+            <span>
+              <i node-type="i">receiver</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(offset</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+            <span>
+              <i node-type="i">buffer-size</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates an alternative message. The returning message
-is a mere MIME object.</p>
-        <p node-type="paragraph">NOTE: the returning message should be added by <code node-type="code">smtp-mail-add-attachment!</code>and not <i node-type="i">content</i> argument of <code node-type="code">make-smtp-mail</code>. To make mail
-construction easier, use <code node-type="code">smtp:mail</code> macro.</p>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">handle/filename</i> must be either a handle or string.
+<i node-type="i">receiver</i> must be a procedure accepts 2 arguments, <i node-type="i">offset</i> which
+is an integer and <i node-type="i">data</i> which is a binary input port, respectively.</p>
+        <p node-type="paragraph">Reads the given <i node-type="i">handle/filename</i> content from the server and
+call <i node-type="i">receiver</i> with the returned value. When it reaches the end of file,
+then it will pass -1 as offset and eof value as data.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">offset</i> specifies starting where to read. It
+is useful to read only diff.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">buffer-size</i> specifies how many bytes it tries to
+read in one read call. The default value is 1048576 (1MB). This value is only
+an indication so that server can decide actual data length to send.</p>
+        <p node-type="paragraph">The return value of this procedure is the result value of <i node-type="i">receiver</i>.</p>
+        <p node-type="paragraph">Receiver must return 2 values, one if processed octet count and the other
+one is result value. Following is the <i node-type="i">sftp-binary-receiver</i> definition;</p>
+        <pre lang="scheme" node-type="block"><code>(define (sftp-binary-receiver)
+  (let-values (((out extract) (open-bytevector-output-port)))
+    (lambda (offset data)
+      (if (&lt; offset 0)
+          (values -1 (extract))
+          (values (copy-binary-port out data) #f)))))
+</code></pre>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="smtp-mail-add-recipent!_147">
-            <span>smtp-mail-add-recipent!</span>
-            <span>
-              <i node-type="i">smtp-mail</i>
-            </span>
-            <span>
-              <i node-type="i">recipient</i>
-            </span>
+          <a name="sftp-binary-receiver_43">
+            <span>sftp-binary-receiver</span>
           </a>
         </div>
-        <p node-type="paragraph">Adds SMTP recipient <i node-type="i">recipient</i> to <i node-type="i">smtp-mail</i> and returns
-SMTP mail object.</p>
+        <p node-type="paragraph">Creates a in memory receiver for <code node-type="code">sftp-read</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="smtp-mail-add-attachment!_145">
-            <span>smtp-mail-add-attachment!</span>
+          <a name="sftp-file-receiver_46">
+            <span>sftp-file-receiver</span>
             <span>
-              <i node-type="i">smtp-mail</i>
+              <i node-type="i">filename</i>
             </span>
             <span>
-              <i node-type="i">attachment</i>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Adds SMTP attachment <i node-type="i">attachment</i> to <i node-type="i">smtp-mail</i> and returns
-SMTP mail object.</p>
+        <p node-type="paragraph">Creates a file receiver for <code node-type="code">sftp-read</code>.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">option</i> must be created by <code node-type="code">file-options</code>.
+By default no option.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="smtp-mail-add-header!_146">
-            <span>smtp-mail-add-header!</span>
+          <a name="sftp-oport-receiver_50">
+            <span>sftp-oport-receiver</span>
             <span>
-              <i node-type="i">smtp-mail</i>
-            </span>
-            <span>
-              <i node-type="i">name</i>
-            </span>
-            <span>
-              <i node-type="i">value</i>
+              <i node-type="i">output-port</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Adds header to <i node-type="i">smtp-mail</i> and returns SMTP mail object.</p>
-        <p node-type="paragraph">If there is the same header insense of <code node-type="code">string-ci=?</code>, then the old
-one is overwritten.</p>
+        <p node-type="paragraph"><i node-type="i">output-port</i> must be a binary output port.</p>
+        <p node-type="paragraph">Creates a output port receiver for <code node-type="code">sftp-read</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-write!_58">
+            <span>sftp-write!</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">handle</i>
+            </span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(offset</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+            <span>
+              <i node-type="i">buffer-size</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">handle</i> must be a handle.
+<i node-type="i">input-port</i> must be a binary input port.</p>
+        <p node-type="paragraph">Reads the content from given <i node-type="i">input-port</i> and writes it to given
+<i node-type="i">handle</i>.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">offset</i> specifies where to write. This is useful
+to write a file separately or simply append.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">buffer-size</i> specifies how many bytes of data
+the procedure sends in one packet. The default value is 131072 (128KB).
+The RFC defines the minimum value 32768 (3KB) so it is safe to use the
+value. However too small buffer size makes writing extremely slow so
+we use a bit larger value to make performance better. If you meet a
+problem with writing a file, consider to change this size.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-exists?_45">
+            <span>sftp-exists?</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">filename</i> must be a string indicating existing filename.</p>
+        <p node-type="paragraph">Checks if the given <i node-type="i">filename</i> exists.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-remove!_55">
+            <span>sftp-remove!</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">filename</i> must be a string indicating existing filename.</p>
+        <p node-type="paragraph">Removes the given <i node-type="i">filename</i>. It is an error if the file doesn't exist
+or user doesn't have proper permission to remove.</p>
+        <p node-type="paragraph">The result value is raw SFTP status object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-rename!_56">
+            <span>sftp-rename!</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">oldpath</i>
+            </span>
+            <span>
+              <i node-type="i">newpath</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">oldpath</i> and <i node-type="i">newpath</i>  must be strings indicating existing path.</p>
+        <p node-type="paragraph">Renames the given <i node-type="i">oldpath</i> to <i node-type="i">newpath</i>. It is an error if the
+file doesn't exist or user doesn't have proper permission to rename.</p>
+        <p node-type="paragraph">The result value is raw SFTP status object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-mkdir!_47">
+            <span>sftp-mkdir!</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">path</i> must be a string.</p>
+        <p node-type="paragraph">Creates the given <i node-type="i">path</i> directory. It is an error if the
+directory exists or user doesn't have proper permission to create.</p>
+        <p node-type="paragraph">The result value is raw SFTP status object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-rmdir!_57">
+            <span>sftp-rmdir!</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">path</i> must be a string.</p>
+        <p node-type="paragraph">Removes the given <i node-type="i">path</i> directory. It is an error if the
+directory doesn't exists, user doesn't have proper permission to create or
+the directory isn't empty.</p>
+        <p node-type="paragraph">The result value is raw SFTP status object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-opendir_49">
+            <span>sftp-opendir</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">path</i> must be a string indicating existing path.</p>
+        <p node-type="paragraph">Opens the given <i node-type="i">path</i> directory and returns its handle.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-readdir_52">
+            <span>sftp-readdir</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">handle/path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">handle/path</i> must be either a handle opened by <code node-type="code">sftp-opendir</code> or
+a string indicating existing path.</p>
+        <p node-type="paragraph">Reads the given <i node-type="i">handle/path</i> and returns the list of contents. The content
+is an object of <code node-type="code">&lt;sftp-name&gt;</code> which has <code node-type="code">filename</code>, <code node-type="code">longname</code>and <code node-type="code">attribute</code> slots.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-readdir-as-filenames_53">
+            <span>sftp-readdir-as-filenames</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">handle/path</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-readdir-as-longnames_54">
+            <span>sftp-readdir-as-longnames</span>
+            <span>
+              <i node-type="i">conn</i>
+            </span>
+            <span>
+              <i node-type="i">handle/path</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">conn</i> must be a SFTP connection.
+<i node-type="i">handle/path</i> must be either a handle opened by <code node-type="code">sftp-opendir</code> or
+a string indicating existing path.</p>
+        <p node-type="paragraph">Calls <code node-type="code">sftp-readdir</code> and strips out the result object to string by
+calling <code node-type="code">(slot-ref _c_ 'filename)</code> or
+<code node-type="code">(slot-ref _c_ 'longname)</code> respectively.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Mid-level-APIs">Mid level APIs</a>
+        </h3>
+        <p node-type="paragraph">Mid level APIs are changed since 0.7.8. The changes are not backward
+compatible, so if you are using 0.7.7 API and move to 0.7.8, please be aware.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-client-sftp-connection_55">
+            <span>make-client-sftp-connection</span>
+            <span>
+              <i node-type="i">server</i>
+            </span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a SFTP connection object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-client-sftp-connection!_40">
+            <span>open-client-sftp-connection!</span>
+            <span>
+              <i node-type="i">sftp-connection</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(authenticate</i>
+            </span>
+            <span>
+              <i node-type="i">#f</i>
+            </span>
+          </a>
+        </div>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section750.html">(rfc sftp) - SFTP library</a>
+      <a href="./section750.html">(rfc quoted-printable) - Base 64 encode and decode library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section752.html">(rfc tls) - TLS protocol library</a>
+      <a href="./section752.html">(rfc smtp) - SMTP client</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-09-09T21:26:28+0200</i></p>
     </div>
   </body>
 </html>

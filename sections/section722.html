@@ -50,14 +50,85 @@ also provides asynchronous calling atop future object of
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:client?_135">
+          <a name="http:client?_138">
             <span>http:client?</span>
             <span>
               <i node-type="i">o</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is a HTTP client, otherwise #f.</p>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">o</i> is a HTTP client, otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="http:client-send_135">
+            <span>http:client-send</span>
+            <span> (</span>
+            <span>
+              <i node-type="i">client</i>
+            </span>
+            <span>
+              <code node-type="code">http:client?</code>
+            </span>
+            <span>) (</span>
+            <span>
+              <i node-type="i">request</i>
+            </span>
+            <span>
+              <code node-type="code">http:request?</code>
+            </span>
+            <span>)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Sends the given <i node-type="i">request</i> via the <i node-type="i">client</i> and returns <code node-type="code">http:response</code>.</p>
+        <p node-type="paragraph">This procedure is synchronous procedure, so it blocks.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="http:client-send-async_136">
+            <span>http:client-send-async</span>
+            <span> (</span>
+            <span>
+              <i node-type="i">client</i>
+            </span>
+            <span>
+              <code node-type="code">http:client?</code>
+            </span>
+            <span>) (</span>
+            <span>
+              <i node-type="i">request</i>
+            </span>
+            <span>
+              <code node-type="code">http:request?</code>
+            </span>
+            <span>)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Sends the given <i node-type="i">request</i> via the <i node-type="i">client</i> and returns a future which
+returns <code node-type="code">http:response</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="http:client-shutdown!_137">
+            <span>http:client-shutdown!</span>
+            <span> (</span>
+            <span>
+              <i node-type="i">client</i>
+            </span>
+            <span>
+              <code node-type="code">http:client?</code>
+            </span>
+            <span>) :optional (</span>
+            <span>
+              <i node-type="i">shutdown-executor?</i>
+            </span>
+            <span>
+              <code node-type="code">#t</code>
+            </span>
+            <span>)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Shutdowns the given <i node-type="i">client</i>. If the optional argument <i node-type="i">shutdown-executor?</i>
+is specified to <code node-type="code">#f</code>, then the underlying executor won't be shutdown.</p>
+        <p node-type="paragraph">If the underlying executor is the default executor, then it won't be shutdown,
+even if the optional argument is true value.</p>
         <div node-type="define" class="define">
           <span>Macro</span>
           <a name="http:client-builder_134">
@@ -106,7 +177,7 @@ also provides asynchronous calling atop future object of
         </dl>
         <div node-type="define" class="define">
           <span>Macro</span>
-          <a name="http:version_153">
+          <a name="http:version_156">
             <span>http:version</span>
             <span>
               <i node-type="i">value</i>
@@ -122,7 +193,7 @@ HTTP/1.1 if HTTP/2 is not avaiable.</p>
 version.</p>
         <div node-type="define" class="define">
           <span>Macro</span>
-          <a name="http:redirect_143">
+          <a name="http:redirect_146">
             <span>http:redirect</span>
             <span>
               <i node-type="i">value</i>
@@ -160,7 +231,7 @@ insecure redirection may happen (i.e. HTTPS to HTTP)</p>
         </h3>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:request?_147">
+          <a name="http:request?_150">
             <span>http:request?</span>
             <span>
               <i node-type="i">o</i>
@@ -170,7 +241,7 @@ insecure redirection may happen (i.e. HTTPS to HTTP)</p>
         <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is an HTTP request object, otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Macro</span>
-          <a name="http:request-builder_146">
+          <a name="http:request-builder_149">
             <span>http:request-builder</span>
             <span>
               <i node-type="i">field*</i>
@@ -229,7 +300,7 @@ header value.</p>
         </dl>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:headers?_141">
+          <a name="http:headers?_144">
             <span>http:headers?</span>
             <span>
               <i node-type="i">o</i>
@@ -239,7 +310,7 @@ header value.</p>
         <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is a HTTP headers object, otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:make-headers_142">
+          <a name="http:make-headers_145">
             <span>http:make-headers</span>
           </a>
         </div>
@@ -247,7 +318,7 @@ header value.</p>
         <p node-type="paragraph">A HTTP headers object can contain multiple values on one headers.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:headers-ref*_139">
+          <a name="http:headers-ref*_142">
             <span>http:headers-ref*</span>
             <span>
               <i node-type="i">headers</i>
@@ -261,7 +332,7 @@ header value.</p>
         <p node-type="paragraph">If the <i node-type="i">name</i> doesn't exists, then it returns <code node-type="code">()</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:headers-ref_138">
+          <a name="http:headers-ref_141">
             <span>http:headers-ref</span>
             <span>
               <i node-type="i">headers</i>
@@ -275,7 +346,7 @@ header value.</p>
         <p node-type="paragraph">If the <i node-type="i">name</i> doesn't exists, then it returns <code node-type="code">#f</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:headers-set!_140">
+          <a name="http:headers-set!_143">
             <span>http:headers-set!</span>
             <span>
               <i node-type="i">headers</i>
@@ -292,7 +363,7 @@ header value.</p>
 header name of <i node-type="i">name</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:headers-add!_136">
+          <a name="http:headers-add!_139">
             <span>http:headers-add!</span>
             <span>
               <i node-type="i">headers</i>
@@ -311,7 +382,7 @@ list of <i node-type="i">name</i>.</p>
 <code node-type="code">http:headers-set!</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:headers-names_137">
+          <a name="http:headers-names_140">
             <span>http:headers-names</span>
             <span>
               <i node-type="i">headers</i>
@@ -321,7 +392,7 @@ list of <i node-type="i">name</i>.</p>
         <p node-type="paragraph">Returns a list of header names of the given <i node-type="i">headers</i></p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:response?_152">
+          <a name="http:response?_155">
             <span>http:response?</span>
             <span>
               <i node-type="i">o</i>
@@ -331,7 +402,7 @@ list of <i node-type="i">name</i>.</p>
         <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is an HTTP response object, otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:response-status_151">
+          <a name="http:response-status_154">
             <span>http:response-status</span>
             <span>
               <i node-type="i">response</i>
@@ -342,7 +413,7 @@ list of <i node-type="i">name</i>.</p>
         <p node-type="paragraph">The code is a string.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:response-headers_150">
+          <a name="http:response-headers_153">
             <span>http:response-headers</span>
             <span>
               <i node-type="i">response</i>
@@ -352,7 +423,7 @@ list of <i node-type="i">name</i>.</p>
         <p node-type="paragraph">Returns the response HTTP headers object.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:response-cookies_149">
+          <a name="http:response-cookies_152">
             <span>http:response-cookies</span>
             <span>
               <i node-type="i">response</i>
@@ -363,7 +434,7 @@ list of <i node-type="i">name</i>.</p>
         <p node-type="paragraph">The element of the list is a cookie object of <code node-type="code">(rfc cookie)</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="http:response-body_148">
+          <a name="http:response-body_151">
             <span>http:response-body</span>
             <span>
               <i node-type="i">response</i>
@@ -380,7 +451,7 @@ The value is bytevector.</p>
 HTTP request.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="http:request-basic-auth_144">
+            <a name="http:request-basic-auth_147">
               <span>http:request-basic-auth</span>
               <span>
                 <i node-type="i">username</i>
@@ -393,7 +464,7 @@ HTTP request.</p>
           <p node-type="paragraph">Provides basic auth value provider of the given <i node-type="i">username</i> and <i node-type="i">password</i>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="http:request-basic-bearer_145">
+            <a name="http:request-basic-bearer_148">
               <span>http:request-basic-bearer</span>
               <span>
                 <i node-type="i">token</i>
@@ -431,7 +502,7 @@ manager.</p>
 </code></pre>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-http-default-connection-manager_159">
+          <a name="make-http-default-connection-manager_167">
             <span>make-http-default-connection-manager</span>
           </a>
         </div>
@@ -499,7 +570,7 @@ ephemeral connection manager without any timeout or key configuration.</p>
 otherwise #f.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-http-ephemeral-connection-manager_160">
+            <a name="make-http-ephemeral-connection-manager_168">
               <span>make-http-ephemeral-connection-manager</span>
               <span>
                 <i node-type="i">config</i>
@@ -586,7 +657,7 @@ actual connection.</p>
 otherwise #f.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-http-pooling-connection-manager_161">
+            <a name="make-http-pooling-connection-manager_169">
               <span>make-http-pooling-connection-manager</span>
               <span>
                 <i node-type="i">config</i>
@@ -658,7 +729,7 @@ key providers.</p>
 </code></pre>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="key-manager?_4">
+          <a name="key-manager?_5">
             <span>key-manager?</span>
             <span>
               <i node-type="i">obj</i>
@@ -669,14 +740,35 @@ key providers.</p>
 otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="make-key-manager_187">
+          <a name="make-key-manager_195">
             <span>make-key-manager</span>
             <span>
               <i node-type="i">key-providers</i>
             </span>
           </a>
         </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="list-&gt;key-manager_29">
+            <span>list-&gt;key-manager</span>
+            <span>
+              <i node-type="i">key-providers</i>
+            </span>
+          </a>
+        </div>
         <p node-type="paragraph"><i node-type="i">Key-providers</i> must be a list of key provider.</p>
+        <p node-type="paragraph">Creates a key manager.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="key-manager_4">
+            <span>key-manager</span>
+            <span>
+              <i node-type="i">key-provider</i>
+            </span>
+            <span> ...</span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Key-provider</i> must be a provider.</p>
         <p node-type="paragraph">Creates a key manager.</p>
         <section node-type="section">
           <h4 node-type="header-4">
@@ -697,7 +789,7 @@ record type to create a custom key provider.</p>
           <p node-type="paragraph">This record type has a filed named <code node-type="code">key-retrievers</code>.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="key-provider?_9">
+            <a name="key-provider?_10">
               <span>key-provider?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -708,7 +800,19 @@ record type to create a custom key provider.</p>
 otherwise #f.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="key-provider-key-retrievers_8">
+            <a name="make-key-provider_196">
+              <span>make-key-provider</span>
+              <span>
+                <i node-type="i">key-obtainer</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph"><i node-type="i">key-obtainer</i> must be a procedure which receives one argument,
+<code node-type="code">socket-parameter</code>.</p>
+          <p node-type="paragraph">Creates a key provider.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="key-provider-key-retrievers_9">
               <span>key-provider-key-retrievers</span>
               <span>
                 <i node-type="i">key-provider</i>
@@ -720,7 +824,7 @@ otherwise #f.</p>
           <p node-type="paragraph">This procedure is not meant to be used by a user of HTTP client.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="keystore-key-provider?_21">
+            <a name="keystore-key-provider?_23">
               <span>keystore-key-provider?</span>
               <span>
                 <i node-type="i">obj</i>
@@ -731,7 +835,7 @@ otherwise #f.</p>
 otherwise #f.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="make-keystore-key-provider_189">
+            <a name="make-keystore-key-provider_198">
               <span>make-keystore-key-provider</span>
               <span>
                 <i node-type="i">keystore</i>
@@ -751,7 +855,7 @@ socket parameter, and returns either string of key alias or #f.</p>
           <p node-type="paragraph">Creates a key provider with one key retriever.</p>
           <div node-type="define" class="define">
             <span>Function</span>
-            <a name="keystore-key-provider-add-key-retriever!_20">
+            <a name="keystore-key-provider-add-key-retriever!_22">
               <span>keystore-key-provider-add-key-retriever!</span>
               <span>
                 <i node-type="i">keystore-key-provider</i>
@@ -768,6 +872,81 @@ socket parameter, and returns either string of key alias or #f.</p>
 <i node-type="i">keystore-key-provider</i>.</p>
           <p node-type="paragraph">This procedure is convenient if you have multiple keys in one keystore.</p>
         </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Socket-parameter">Socket parameter</a>
+          </h4>
+          <p node-type="paragraph">Socket parameter is used to determine which private key to be used.
+The object contains basic socket information.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-parameter?_199">
+              <span>socket-parameter?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a socket parameter, otherwise <code node-type="code">#f</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-parameter-socket-hostname_195">
+              <span>socket-parameter-socket-hostname</span>
+              <span> (</span>
+              <span>
+                <i node-type="i">sp</i>
+              </span>
+              <span>
+                <code node-type="code">socket-parameter?</code>
+              </span>
+              <span>)</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-parameter-socket-ip-address_196">
+              <span>socket-parameter-socket-ip-address</span>
+              <span> (</span>
+              <span>
+                <i node-type="i">sp</i>
+              </span>
+              <span>
+                <code node-type="code">socket-parameter?</code>
+              </span>
+              <span>)</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-parameter-socket-node_197">
+              <span>socket-parameter-socket-node</span>
+              <span> (</span>
+              <span>
+                <i node-type="i">sp</i>
+              </span>
+              <span>
+                <code node-type="code">socket-parameter?</code>
+              </span>
+              <span>)</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="socket-parameter-socket-service_198">
+              <span>socket-parameter-socket-service</span>
+              <span> (</span>
+              <span>
+                <i node-type="i">sp</i>
+              </span>
+              <span>
+                <code node-type="code">socket-parameter?</code>
+              </span>
+              <span>)</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">hostname</code>, <code node-type="code">ip-address</code>, <code node-type="code">node</code> and <code node-type="code">service</code> respectively.</p>
+          <p node-type="paragraph">The first 2 values are peer information, the latter 2 are local information.</p>
+        </section>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
@@ -777,7 +956,7 @@ socket parameter, and returns either string of key alias or #f.</p>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-09-09T21:26:28+0200</i></p>
     </div>
   </body>
 </html>

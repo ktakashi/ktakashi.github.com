@@ -7,336 +7,310 @@
   </head>
   <body>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section761.html">(security keystore) - Generic Keystore Access</a>
+      <a href="./section761.html">(rpc json) - JSON RPC library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section763.html">(text csv) - Comma separated values parser library</a>
+      <a href="./section763.html">(security password) - Password policy</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
-        <a name="security.policy">(security password) - Password policy</a>
+        <a name="security.keystore">(security keystore) - Generic Keystore Access</a>
       </h2>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(security password)_157">
-          <span>(security password)</span>
+        <a name="(security keystore)_157">
+          <span>(security keystore)</span>
         </a>
       </div>
-      <p node-type="paragraph">Strong password is a base component for strong security. This library
-provides a password policies, validator and generator.</p>
-      <p node-type="paragraph">This example shows how to validate if the given password is compliant
-to the given password policy.</p>
-      <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (security password))
+      <p node-type="paragraph">This library provides generic access for variety of keystores.</p>
+      <p node-type="paragraph">The following example shows how to use this library:</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (security keystore))
 
-;; Password requires
-;; - at least length of 16 characters,
-;; - at least one lower char (a-z)
-;; - at least one upper char (A-Z)
-;; - at least one digit char (0-9)
-;; - at least one symbol char ($#!)
-(define policy (password-policies
-                (make-length-policy 16)
-                (make-lower-case-policy 1)
-                (make-upper-case-policy 1)
-                (make-digit-policy 1)
-                (make-symbol-policy 1)))
+(define keystore (load-keystore 'jks "keystore.jks" "storepass"))
 
-(password-policy-compliant? policy "password")         ;; -&gt; #f
-(password-policy-compliant? policy "password12345678") ;; -&gt; #f
-(password-policy-compliant? policy "pa$$word12345678") ;; -&gt; #f
-(password-policy-compliant? policy "Pa$$word12345678") ;; -&gt; #t
+(keystore-get-key keystore "key-name" "key-pass")
+;; -&gt; &lt;private-key&gt;
+
+(keystore-get-certificate keystore "cert-name")
+;; -&gt; &lt;x509-certificate&gt;
+
+;; certs must be a list of certificates
+(keystore-set-key! keystore "key-name2" private-key "key-pass2" certs)
+
+(keystore-set-certificate! keystore "cert-name2" cert)
+
+(store-keystore-to-file keystore "keystore2.jks" "storepass2")
 </code></pre>
-      <p node-type="paragraph">And this example shows how to generate a password which is compliant
-to the given password policy.</p>
-      <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (security password))
-
-;; Password requires
-;; - at least length of 16 characters,
-;; - at least one lower char (a-z)
-;; - at least one upper char (A-Z)
-;; - at least one digit char (0-9)
-;; - at least one symbol char ($#!)
-(define policy (password-policies
-                (make-length-policy 16)
-                (make-lower-case-policy 1)
-                (make-upper-case-policy 1)
-                (make-digit-policy 1)
-                (make-symbol-policy 1)))
-
-(generate-password policy) ;; -&gt; "1uI#tfUzL_]H-&lt;$%" (as an example)
-</code></pre>
-      <p node-type="paragraph">The password generation is based on a random seed, so the result
-may differ on every invocation.</p>
       <section node-type="section">
         <h3 node-type="header-3">
-          <a name="Password-policy-operations">Password policy operations</a>
+          <a name="Generic-APIs">Generic APIs</a>
         </h3>
         <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<keystore&gt;_46">
+            <span>&lt;keystore&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Base class of keystores.</p>
+        <div node-type="define" class="define">
           <span>Function</span>
-          <a name="password-policy?_50">
-            <span>password-policy?</span>
+          <a name="keystore?_26">
+            <span>keystore?</span>
             <span>
               <i node-type="i">obj</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a password policy, otherwise <code node-type="code">#f</code>.</p>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a keystore object. Otherwise #f.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="password-policies_43">
-            <span>password-policies</span>
-            <span> (</span>
+          <a name="load-keystore_41">
+            <span>load-keystore</span>
             <span>
-              <i node-type="i">policy</i>
+              <i node-type="i">type</i>
             </span>
             <span>
-              <code node-type="code">password-policy?</code>
+              <i node-type="i">input-port</i>
             </span>
-            <span>) </span>
             <span>
-              <i node-type="i">...</i>
+              <i node-type="i">storepass</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Construct a composite password policy which contains <i node-type="i">policies</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="password-policy-compliant?_47">
-            <span>password-policy-compliant?</span>
-            <span> (</span>
+          <a name="load-keystore-file_42">
+            <span>load-keystore-file</span>
             <span>
-              <i node-type="i">policy</i>
+              <i node-type="i">type</i>
             </span>
             <span>
-              <code node-type="code">password-policy?</code>
-            </span>
-            <span>) (</span>
-            <span>
-              <i node-type="i">password</i>
+              <i node-type="i">file</i>
             </span>
             <span>
-              <code node-type="code">string?</code>
+              <i node-type="i">storepass</i>
             </span>
-            <span>)</span>
           </a>
         </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">password</i> is compliant to the given <i node-type="i">policy</i>,
-otherwise <code node-type="code">#f</code>.</p>
+        <p node-type="paragraph">Loads <i node-type="i">type</i> keystore from <i node-type="i">input-port</i> or <i node-type="i">file</i>.</p>
+        <p node-type="paragraph"><i node-type="i">storepass</i> must be a string and may or may not be used to decrypt
+keystore content.</p>
+        <p node-type="paragraph"><code node-type="code">load-keystore</code> loads from given binary input port <i node-type="i">input-port</i>.</p>
+        <p node-type="paragraph"><code node-type="code">load-keystore-file</code> loads from given file <i node-type="i">file</i>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="length-policy?_5">
-            <span>length-policy?</span>
+          <a name="make-keystore_197">
+            <span>make-keystore</span>
             <span>
-              <i node-type="i">obj</i>
+              <i node-type="i">type</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a length policy, otherwise <code node-type="code">#f</code>.</p>
+        <p node-type="paragraph">Returns newly created <i node-type="i">type</i> keystore object.</p>
+        <p node-type="paragraph">Currently <code node-type="code">pkcs12</code>, <code node-type="code">jks</code> and <code node-type="code">jceks</code> are supported.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-length-policy_191">
-            <span>make-length-policy</span>
+          <span>Generic</span>
+          <a name="keystore-get-key_21">
+            <span>keystore-get-key</span>
             <span>
-              <i node-type="i">n</i>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+            <span>
+              <i node-type="i">keypass</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates a length policy of length <i node-type="i">n</i>.</p>
+        <p node-type="paragraph">The method shall return a private key associated with _alias_from <i node-type="i">keystore</i>. If there is no key entry associated with <i node-type="i">alias</i>
+then #f shall be returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
+        <p node-type="paragraph"><i node-type="i">keypass</i> shall be a string. It may or may not be used to decrypt
+the private key.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="password-policy-length_49">
-            <span>password-policy-length</span>
+          <span>Generic</span>
+          <a name="keystore-get-certificate_18">
+            <span>keystore-get-certificate</span>
             <span>
-              <i node-type="i">policy</i>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns length of the policy, iff <i node-type="i">policy</i> is a length policy or
-a composite policy which contains length policy, otherwise <code node-type="code">#f</code>.</p>
+        <p node-type="paragraph">The method shall return an X509 certificate associated with _alias_from <i node-type="i">keystore</i>. If there is no certificate entry associated with
+<i node-type="i">alias</i> then #f shall be returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="character-policy?_71">
-            <span>character-policy?</span>
+          <span>Generic</span>
+          <a name="keystore-get-certificate-chain_19">
+            <span>keystore-get-certificate-chain</span>
             <span>
-              <i node-type="i">obj</i>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a character policy, otherwise <code node-type="code">#f</code>.</p>
+        <p node-type="paragraph">The method shall return a list of key certificates associated
+with <i node-type="i">alias</i> from <i node-type="i">keystore</i>. If there is no certificate entries
+associated with <i node-type="i">alias</i> then #f shall be returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-character-policy_45">
-            <span>make-character-policy</span>
-            <span> (</span>
+          <span>Generic</span>
+          <a name="keystore-get-creation-date_20">
+            <span>keystore-get-creation-date</span>
             <span>
-              <i node-type="i">cset</i>
+              <i node-type="i">keystore</i>
             </span>
             <span>
-              <code node-type="code">char-set?</code>
-            </span>
-            <span>) </span>
-            <span>
-              <i node-type="i">at-least</i>
+              <i node-type="i">alias</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates a character policy of from <i node-type="i">cset</i> which requires at least <i node-type="i">at-least</i>
-characters.</p>
+        <p node-type="paragraph">The method shall return a date object of <i node-type="i">alias</i> associated entry.
+If there is no entry associated with <i node-type="i">alias</i> then #f shall be returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="password-policy-char-set_46">
-            <span>password-policy-char-set</span>
+          <span>Generic</span>
+          <a name="keystore-contains-alias?_16">
+            <span>keystore-contains-alias?</span>
             <span>
-              <i node-type="i">policy</i>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Returns charset of the policy, iff <i node-type="i">policy</i> is a character policy or
-a composite policy which contains character policy, otherwise <code node-type="code">#f</code>.</p>
-        <p node-type="paragraph">If the <i node-type="i">policy</i> contains multiple character policy, then the returning
-charset is a unioned charset.</p>
+        <p node-type="paragraph">The method shall return #t if <i node-type="i">keystore</i> contains an entry associated
+with <i node-type="i">alias</i>. Otherwise #f shall be returend.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-lower-case-policy_196">
-            <span>make-lower-case-policy</span>
+          <span>Generic</span>
+          <a name="keystore-aliases_15">
+            <span>keystore-aliases</span>
             <span>
-              <i node-type="i">at-least</i>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <since node-type="since">
+                <span node-type="since-version" version="0.9.12">0.9.12</span>
+              </since>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates a character policy of <code node-type="code">[a-z]</code> requires at least <i node-type="i">at-least</i>.</p>
+        <p node-type="paragraph">The method shall return all aliases in the given <i node-type="i">keystore</i> as a list.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-upper-case-policy_292">
-            <span>make-upper-case-policy</span>
+          <span>Generic</span>
+          <a name="store-keystore_256">
+            <span>store-keystore</span>
             <span>
-              <i node-type="i">at-least</i>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">output-port</i>
+            </span>
+            <span>
+              <i node-type="i">storepass</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates a character policy of <code node-type="code">[A-Z]</code> requires at least <i node-type="i">at-least</i>.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-symbol-policy_280">
-            <span>make-symbol-policy</span>
+          <span>Generic</span>
+          <a name="store-keystore-to-file_257">
+            <span>store-keystore-to-file</span>
             <span>
-              <i node-type="i">at-least</i>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">file</i>
+            </span>
+            <span>
+              <i node-type="i">storepass</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates a character policy of ASCII symbols requires at least <i node-type="i">at-least</i>.</p>
+        <p node-type="paragraph">The methods shall write <i node-type="i">keystore</i> to <i node-type="i">output-port</i> or
+<i node-type="i">file</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">store-keystore</code> shall write to given binary output port
+<i node-type="i">output-port</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">store-keystore-to-file</code> shall write to given file <i node-type="i">file</i>.</p>
+        <p node-type="paragraph"><i node-type="i">storepass</i> shall be a string and may or may not be used to encrypt
+whole contents.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="make-digit-policy_125">
-            <span>make-digit-policy</span>
+          <span>Generic</span>
+          <a name="keystore-set-key!_25">
+            <span>keystore-set-key!</span>
             <span>
-              <i node-type="i">at-least</i>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+            <span>
+              <i node-type="i">private-key</i>
+            </span>
+            <span>
+              <i node-type="i">keypass</i>
+            </span>
+            <span>
+              <i node-type="i">certs</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Creates a character policy of <code node-type="code">[0-9]</code> requires at least <i node-type="i">at-least</i>.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string represents the name of <i node-type="i">private-key</i> in
+the <i node-type="i">keystore</i>.</p>
+        <p node-type="paragraph"><i node-type="i">private-key</i> shall be an RSA private key.</p>
+        <p node-type="paragraph"><i node-type="i">key-pass</i> shall be a string and may or may not be used to encrypt
+given <i node-type="i">private-key</i>.</p>
+        <p node-type="paragraph"><i node-type="i">certs</i> shall be a list of X509 certificates which associated with
+<i node-type="i">private-key</i>.</p>
+        <p node-type="paragraph">The method shall store given <i node-type="i">private-key</i> to <i node-type="i">keystore</i>.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="generate-password_16">
-            <span>generate-password</span>
+          <span>Generic</span>
+          <a name="keystore-set-certificate!_24">
+            <span>keystore-set-certificate!</span>
             <span>
-              <i node-type="i">policy</i>
+              <i node-type="i">keystore</i>
             </span>
-            <span> :key </span>
             <span>
-              <i node-type="i">prng</i>
+              <i node-type="i">alias</i>
             </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Generates a password which is compliant to <i node-type="i">policy</i>.</p>
-        <p node-type="paragraph">If the keyword argument <i node-type="i">prng</i> is specified, then it must be a
-<code node-type="code">peudo-random-generator</code> defined in <code node-type="code">(sagittarius crypto random)</code>.</p>
-        <p node-type="paragraph">NOTE: using weak PRNG is not recommended. By default, the procedure
-uses ChaCha20</p>
-        <p node-type="paragraph">The procedure uses below parameter if the given <i node-type="i">policy</i> doesn't
-contain some policies.</p>
-        <div node-type="define" class="define">
-          <span>Parameter</span>
-          <a name="*password-policy:default-length*_155">
-            <span>*password-policy:default-length*</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Default password length, if the policy doesn't contain length policy.</p>
-        <div node-type="define" class="define">
-          <span>Parameter</span>
-          <a name="*password-policy:default-char-set*_154">
-            <span>*password-policy:default-char-set*</span>
-          </a>
-        </div>
-        <p node-type="paragraph">Default password charset, if the policy doesn't contain character policy.</p>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="password-policy-entropy_48">
-            <span>password-policy-entropy</span>
             <span>
-              <i node-type="i">policy</i>
+              <i node-type="i">cert</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">Calculates password entropy of the given <i node-type="i">policy</i>.</p>
-        <p node-type="paragraph">The calculation formula: <code node-type="code">log(expt(cs, l) 2)</code> where <code node-type="code">cs</code> is the
-number of possible characters of the <i node-type="i">policy</i>, and <code node-type="code">l</code> is the
-length of the password.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> shall be a string represents the name of <i node-type="i">cert</i> in
+the <i node-type="i">keystore</i>.</p>
+        <p node-type="paragraph"><i node-type="i">cert</i> shall be an X509 certificate.</p>
+        <p node-type="paragraph">The method shall store given <i node-type="i">cert</i> to <i node-type="i">keystore</i>.</p>
         <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="password-policy-&gt;predicate_45">
-            <span>password-policy-&gt;predicate</span>
+          <span>Generic</span>
+          <a name="keystore-delete-entry!_17">
+            <span>keystore-delete-entry!</span>
             <span>
-              <i node-type="i">policy</i>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
             </span>
           </a>
         </div>
-        <p node-type="paragraph">A convenient procedure. Returns a predicate which accepts a string
-and check if the given string is a compliant password or not.</p>
-      </section>
-      <section node-type="section">
-        <h3 node-type="header-3">
-          <a name="Generator-integration">Generator integration</a>
-        </h3>
-        <div node-type="define" class="define">
-          <span>Function</span>
-          <a name="password-policy-&gt;generator_44">
-            <span>password-policy-&gt;generator</span>
-            <span>
-              <i node-type="i">policy</i>
-            </span>
-          </a>
-        </div>
-        <p node-type="paragraph">Creates a generator which generates string. Generated strings are
-compliant to the given <i node-type="i">policy</i>.</p>
-        <p node-type="paragraph">This procedure can be used with <code node-type="code">(sagittarius generators)</code> library.
-Suppose, you want to generate 5 random password which are compliant
-to your password policy, then it can be written like this</p>
-        <pre lang="scheme" node-type="block"><code>(import (rnrs)
-        (security password))
-
-(define policy (password-policies
-                (make-length-policy 16)
-                (make-lower-case-policy 1)
-                (make-upper-case-policy 1)
-                (make-digit-policy 1)
-                (make-symbol-policy 1)))
-
-(let ((g (gtake (password-policy-&gt;generator policy) 5)))
-  (generator-&gt;list g))
-;; a list containing 5 elements, all of them are compliant to policy
-</code></pre>
+        <p node-type="paragraph">The method shall remove the entry associated with <i node-type="i">alias</i> from
+<i node-type="i">keystore</i>.</p>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
-      <a href="./section761.html">(security keystore) - Generic Keystore Access</a>
+      <a href="./section761.html">(rpc json) - JSON RPC library</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./section763.html">(text csv) - Comma separated values parser library</a>
+      <a href="./section763.html">(security password) - Password policy</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-02-14T14:28:03+0100</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2024-09-09T21:26:28+0200</i></p>
     </div>
   </body>
 </html>
