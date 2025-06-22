@@ -1,0 +1,527 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./pkcs.12.html">(rsa pkcs :12) - PKCS#12</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./record.builder.html">(record builder) - Record builder</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.queue">(util queue) - Queue</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(util queue)_201">
+          <span>(util queue)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides queue (FIFO) data structure and its operations.</p>
+      <p node-type="paragraph">You can create a simple queue, which is not thread-safe, or an MT queue, a
+thread-safe queue. Basic queue operations work on both type of queues. When
+a mtqueue is passed to the procedures listed in this section, each operation
+is done in atomic way, unless otherwise noted.</p>
+      <p node-type="paragraph">There are also a set of procedures for mtqueues that can be used for thread
+synchronisation; for example, you can let the consumer thread block if an
+mtqueue is empty, and/or the producer thread block if the number of items in
+the mtqueue reaches a specified limit. Using these procedures allows the
+program to use an mtqueue as a <i node-type="i">channel</i>.</p>
+      <p node-type="paragraph">The simple queue API is a super set of SLIB's queue implementation.</p>
+      <p node-type="paragraph">NOTE: <a href="util.deque.html#util.deque">(util deque)</a> is used as underlying library.</p>
+      <div node-type="define" class="define">
+        <span>Class</span>
+        <a name="<queue&gt;_57">
+          <span>&lt;queue&gt;</span>
+        </a>
+      </div>
+      <p node-type="paragraph">A class of simple queue.</p>
+      <div node-type="define" class="define">
+        <span>Class</span>
+        <a name="<mtqueue&gt;_50">
+          <span>&lt;mtqueue&gt;</span>
+        </a>
+      </div>
+      <p node-type="paragraph">A class of mtqueue. Inherits <code node-type="code">&lt;queue&gt;</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-queue_248">
+          <span>make-queue</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates and return an empty simple queue.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-mtqueue_229">
+          <span>make-mtqueue</span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">max-length</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates and return an empty mtqueue.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">max-length</i> specifies the maximum entry count of
+the queue. Negative number indicates unlimited number of entry. If the given
+number is zero then the queue cannot hold any item.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue?_12">
+          <span>queue?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is a queue (either a simple queue or an mtqueue).</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mtqueue?_432">
+          <span>mtqueue?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is an mtqueue.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-empty?_3">
+          <span>queue-empty?</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">queue</i> is an empty queue.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-length_5">
+          <span>queue-length</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the number of the items in the queue.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mtqueue-max-length_430">
+          <span>mtqueue-max-length</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the maximum number of items <i node-type="i">mtqueue</i> can hold.
+#f indicates unlimited.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="mtqueue-room_431">
+          <span>mtqueue-room</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the number of elements <i node-type="i">mtqueue</i> can accept at this moment
+before it hits its maximum length. If the queue has unlimited capacity then
+the procedure returns <code node-type="code">+inf.0</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="copy-queue_156">
+          <span>copy-queue</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a copy of <i node-type="i">queue</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="enqueue!_8">
+          <span>enqueue!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Adds <i node-type="i">obj</i> to the end of  <i node-type="i">queue</i>. You may give more than
+one object, and each of them are enqueued in order.</p>
+      <p node-type="paragraph">If <i node-type="i">queue</i> is an mtqueue, all the objects are enqueued atomically; no
+other objects from other threads can be inserted between the objects given
+to a single <code node-type="code">enqueue!</code> call. Besides, if the value of the result of
+<code node-type="code">mtqueue-max-length</code> is positive, and adding <i node-type="i">objs</i> makes the
+number of element in <i node-type="i">queue</i> exceeds it, an error is raised and
+<i node-type="i">queue</i> won't be modified. (If the maximum length is zero, this procedure
+always fail. Use <code node-type="code">enqueue/wait!</code> below.)</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-push!_8">
+          <span>queue-push!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Adds <i node-type="i">obj</i> to in front of <i node-type="i">queue</i>. You may give more than
+one object, and each of them are pushed in order.</p>
+      <p node-type="paragraph">Like <code node-type="code">enqueue!</code>, when <i node-type="i">queue</i> is an mtqueue, all objects are added
+atomically, and the value of max length is checked. See <code node-type="code">enqueue!</code> above
+for more detail.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="enqueue-unique!_9">
+          <span>enqueue-unique!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">eq-proc</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-push-unique!_9">
+          <span>queue-push-unique!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">eq-proc</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">more-objs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Like <code node-type="code">enqueue!</code> and <code node-type="code">queue-push!</code>, respectively, except that
+these don't modify <i node-type="i">queue</i> if it already contains <i node-type="i">objs</i> (elements are
+compared by two-argument procedure <i node-type="i">eq-proc</i>).</p>
+      <p node-type="paragraph">When <i node-type="i">queue</i> is an mtqueue, all objects are added atomically, and the max
+length is checked. See <code node-type="code">enqueue!</code> above for the detail.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="dequeue!_125">
+          <span>dequeue!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-pop!_6">
+          <span>queue-pop!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Take one object from the front of <i node-type="i">queue</i> and return it. Both
+function work the same, but <code node-type="code">queue-pop!</code> may be used to emphasize it
+works with <code node-type="code">queue-push!</code>.</p>
+      <p node-type="paragraph">If <i node-type="i">queue</i> is empty, <i node-type="i">fallback</i> is returned if give, otherwise an
+error is raised.</p>
+      <p node-type="paragraph">If <i node-type="i">queue</i> is mtqueue and its max length is zero, then the queue is
+always empty. Use <code node-type="code">dequeue/wait!</code> to use such a queue as a
+synchronisation device.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="dequeue-all!_126">
+          <span>dequeue-all!</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the whole content of <i node-type="i">queue</i> by a list, with emptying
+<i node-type="i">queue</i>. If <i node-type="i">queue</i> is empty, returns an empty list. See also
+<code node-type="code">queue-&gt;list</code> below.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-front_4">
+          <span>queue-front</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-rear_11">
+          <span>queue-rear</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">fallback</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Peek the head or the tail of <i node-type="i">queue</i> and return the object,
+respectively.</p>
+      <p node-type="paragraph">If <i node-type="i">queue</i> is empty, <i node-type="i">fallback</i> is returned if give, otherwise an
+error is raised.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="list-&gt;queue_31">
+          <span>list-&gt;queue</span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">class</i>
+          </span>
+          <span>
+            <i node-type="i">:rest</i>
+          </span>
+          <span>
+            <i node-type="i">initargs</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a new queue which content is the elements in <i node-type="i">list</i>, in
+the given order.</p>
+      <p node-type="paragraph">By default the created queue is a simple queue, but you can create mtqueue
+or instance of other subclass <code node-type="code">&lt;queue&gt;</code> by giving the class to the
+optional <i node-type="i">class</i> arguments. The optional <i node-type="i">initargs</i> arguments are
+passed to the constructor of <i node-type="i">class</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-&gt;list_2">
+          <span>queue-&gt;list</span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a list whose content is the items in <i node-type="i">queue</i> in order.
+Unlike <code node-type="code">dequeue-all!</code>, the content of <i node-type="i">queue</i> remains intact.
+The returning list is a copy of the content. So modifying the list won't
+affect <i node-type="i">queue</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="find-in-queue_37">
+          <span>find-in-queue</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the first item in <i node-type="i">queue</i> that satisfies a predicate
+<i node-type="i">pred</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="any-in-queue_42">
+          <span>any-in-queue</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Apply <i node-type="i">pred</i> on each item in <i node-type="i">queue</i> until it evaluates true,
+and returns that true value. If no item satisfies <i node-type="i">pred</i>, #f is returned.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="every-in-queue_43">
+          <span>every-in-queue</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Apply <i node-type="i">pred</i> on each item in <i node-type="i">queue</i>. If <i node-type="i">pred</i> returns #f,
+stops iteration and returns #f immediately. Otherwise, returns the result of
+<i node-type="i">pred</i> on the last item of <i node-type="i">queue</i>. If the queue is empty, #t is
+returned.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="remove-from-queue!_112">
+          <span>remove-from-queue!</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">queue</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Removes all items in <i node-type="i">queue</i> that satisfies <i node-type="i">pred</i>. Returns
+#t if any item is removed. Otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="enqueue/wait!_10">
+          <span>enqueue/wait!</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-push/wait!_10">
+          <span>queue-push/wait!</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="dequeue/wait!_127">
+          <span>dequeue/wait!</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="queue-pop/wait!_7">
+          <span>queue-pop/wait!</span>
+          <span>
+            <i node-type="i">mtqueue</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">timeout</i>
+          </span>
+          <span>
+            <i node-type="i">timeout-val</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">These synchronising variants work on an mtqueue and make the caller
+thread block when the mtqueue has reached its maximum length (for
+<code node-type="code">enqueue/wait!</code> and <i node-type="i">queue-push/wait!</i>), or the mtqueue is empty
+(for <code node-type="code">dequeue/wait!</code> and <i node-type="i">queue-pop/wait!</i>). The blocked caller
+thread is unblocked either the blocking condition is resolved, or the
+timeout condition is met.</p>
+      <p node-type="paragraph">The optional <i node-type="i">timeout</i> argument specifies the timeout condition. If it
+is #f, those procedure wait indefinitely. If it is a real number, they wait
+at least the given number of seconds.</p>
+      <p node-type="paragraph">In case the call is blocked then timed out, the value of <i node-type="i">timeout-val</i> is
+returned, which default value is #t.</p>
+      <p node-type="paragraph">When <code node-type="code">enqueue/wait!</code> and <code node-type="code">queue-push/wait!</code> succeeds without hitting
+timeout, they return #t.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./pkcs.12.html">(rsa pkcs :12) - PKCS#12</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./record.builder.html">(record builder) - Record builder</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

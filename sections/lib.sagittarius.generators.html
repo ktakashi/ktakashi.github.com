@@ -1,0 +1,770 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.debug.html">(sagittarius debug) - Debugging support</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.crypto.html">Cryptographic libraries</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.generators">(sagittarius generators) - Generators</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius generators)_101">
+          <span>(sagittarius generators)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides procedures for generator.</p>
+      <p node-type="paragraph">A generator is simply a procedure with no arguments that works as a source
+of a series of values. Every time it is called, it yields a value. Generators
+may be finite or infinite; a finite generator returns an EOF object to
+indicate that it is exhausted. For example, read-char is a generator that
+generates characters from the current input port. Generators provide
+lightweight laziness.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Generator-constructors">Generator constructors</a>
+        </h3>
+        <p node-type="paragraph">The following procedures creates a generator. Except <code node-type="code">null-generator</code>,
+all procedures have prefix <code node-type="code">'g'</code>. Arguments named _generator_indicates a generator.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="null-generator_32">
+            <span>null-generator</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which always returns EOF object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="circular-generator_102">
+            <span>circular-generator</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">obj*</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which repeats the given _obj_s.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="giota_73">
+            <span>giota</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(count</i>
+            </span>
+            <span>
+              <i node-type="i">+inf.0)</i>
+            </span>
+            <span>
+              <i node-type="i">(start</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+            <span>
+              <i node-type="i">(step</i>
+            </span>
+            <span>
+              <i node-type="i">1)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which returns <i node-type="i">count</i> number of numbers.
+The returning numbers start with <i node-type="i">start</i> and increased by <i node-type="i">step</i>.</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(generator-&gt;list (giota 5))</code></pre>
+            <span />
+            <span>(0 1 2 3 4)</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(generator-&gt;list (giota 5 10))</code></pre>
+            <span />
+            <span>(10 11 12 13 14)</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(generator-&gt;list (giota 5 10 2))</code></pre>
+            <span />
+            <span>(10 12 14 16 18)</span>
+          </div>
+        </p>
+        <p node-type="paragraph">If <i node-type="i">count</i> is not given, then the generator is inifinte.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="grange_78">
+            <span>grange</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(start</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+            <span>
+              <i node-type="i">(end</i>
+            </span>
+            <span>
+              <i node-type="i">+inf.0)</i>
+            </span>
+            <span>
+              <i node-type="i">(step</i>
+            </span>
+            <span>
+              <i node-type="i">1)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which returns numbers in range of <i node-type="i">start</i> and
+<i node-type="i">end</i>. The returning numbers are increased by <i node-type="i">step</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gunfold_86">
+            <span>gunfold</span>
+            <span>
+              <i node-type="i">stop?</i>
+            </span>
+            <span>
+              <i node-type="i">mapper</i>
+            </span>
+            <span>
+              <i node-type="i">successor</i>
+            </span>
+            <span>
+              <i node-type="i">seed</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(tail-gen</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A generator constructor similar to <code node-type="code">unfold</code>.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(generator-&gt;list (gunfold
+                      (lambda (s) (&gt; s 5))
+                      (lambda (s) (* s 2))
+                      (lambda (s) (+ s 1))
+                      0))
+</code></pre>
+          <span />
+          <span>(0 2 4 6 8 10)</span>
+        </div>
+        <p node-type="paragraph" />
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="list-&gt;generator_28">
+            <span>list-&gt;generator</span>
+            <span>
+              <i node-type="i">list</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="vector-&gt;generator_15">
+            <span>vector-&gt;generator</span>
+            <span>
+              <i node-type="i">vector</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="reverse-vector-&gt;generator_122">
+            <span>reverse-vector-&gt;generator</span>
+            <span>
+              <i node-type="i">vector</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-&gt;generator_266">
+            <span>string-&gt;generator</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="bytevector-&gt;generator_112">
+            <span>bytevector-&gt;generator</span>
+            <span>
+              <i node-type="i">bytevector</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Generator constructors. The returning generator returns the items
+taken from given argument from the beginning of the given sequence to
+the end. Except <code node-type="code">reverse-vector-&gt;generator</code> which return end to beginning.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="port-&gt;char-generator_113">
+            <span>port-&gt;char-generator</span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="port-&gt;byte-generator_112">
+            <span>port-&gt;byte-generator</span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Generator constructors. The returning generator returns the items read
+from the given <i node-type="i">port</i>. The <code node-type="code">port-&gt;char-generator</code> uses <code node-type="code">get-char</code>to read the port. The <code node-type="code">port-&gt;byte-generator</code> uses <code node-type="code">get-u8</code>.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="-&gt;generator_7">
+            <span>-&gt;generator</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Generic constructor of generators. By default, the following methods are
+defined and dispatched above generator constrocturs.</p>
+        <p node-type="paragraph"><code node-type="code">&lt;list&gt;</code>, <code node-type="code">&lt;vector&gt;</code>, <code node-type="code">&lt;string&gt;</code>, <code node-type="code">&lt;bytevector&gt;</code> and
+<code node-type="code">&lt;port&gt;</code>.</p>
+        <p node-type="paragraph">If the given argument is type of  <code node-type="code">&lt;vector&gt;</code>, then <code node-type="code">vector-&gt;generator</code>is used. If the given argument is type of <code node-type="code">&lt;port&gt;</code>, then it checks if
+it's binary or textual and dispatches apropriate procedure.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Generator-operations">Generator operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gcons*_5">
+            <span>gcons*</span>
+            <span>
+              <i node-type="i">object</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which adds _object_s in front of <i node-type="i">generator</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gappend_0">
+            <span>gappend</span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which yields values from the first _generator_and when it's exhausted continues to next.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gcombine_3">
+            <span>gcombine</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">seed</i>
+            </span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+            <span>
+              <i node-type="i">generators</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator for mapping with state. It yields a sequence of
+sub-folds over <i node-type="i">proc</i>.</p>
+        <p node-type="paragraph">The <i node-type="i">proc</i> argument is a procedure which takes as many arguments as
+the input generators plus one. It is called as
+<code node-type="code">(_proc_ _v1_ _v2_ ... _seed_)</code>, where
+<i node-type="i">v1</i>, <i node-type="i">v2</i>,<code node-type="code">...</code> are the values yielded from the input
+generators, and <i node-type="i">seed</i> is the current seed value. It must return two
+values, the yielding value and the next seed.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gfilter_70">
+            <span>gfilter</span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gremove_80">
+            <span>gremove</span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Return generators which yield the items from the source generator,
+except those on which <i node-type="i">pred</i> returns false or true respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gtake_83">
+            <span>gtake</span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">padding</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gdrop_8">
+            <span>gdrop</span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Return generators which take or drop <i node-type="i">k</i> items from <i node-type="i">generator</i>,
+respectively. Returning generators won't raise errors when it's exhausted
+before reaching <i node-type="i">k</i>.</p>
+        <p node-type="paragraph">Optional argument <i node-type="i">padding</i> for <code node-type="code">gtake</code> is passed, then the value
+is filled until the procedure reaches <i node-type="i">k</i>.</p>
+        <p node-type="paragraph">These procedures are analogues of SRFI-1 <code node-type="code">take</code> and <code node-type="code">drop</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gtake-while_84">
+            <span>gtake-while</span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gdrop-while_9">
+            <span>gdrop-while</span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Return generators which take or drop until procedure <i node-type="i">pred</i> returns
+false value respectively.</p>
+        <p node-type="paragraph">These procedures are analogues of SRFI-1 <code node-type="code">take-while</code>
+and <code node-type="code">drop-while</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gdelete_6">
+            <span>gdelete</span>
+            <span>
+              <i node-type="i">item</i>
+            </span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(=</i>
+            </span>
+            <span>
+              <i node-type="i">equal?)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which returns items <i node-type="i">generator</i> returns, except
+items which are the same as <i node-type="i">item</i> in sense of <i node-type="i">=</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gdelete-neighbor-dups_7">
+            <span>gdelete-neighbor-dups</span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(=</i>
+            </span>
+            <span>
+              <i node-type="i">equal?)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which returns items <i node-type="i">generator</i> returns, except
+items which are the same as the proceeding item in sense of <i node-type="i">=</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gselect_82">
+            <span>gselect</span>
+            <span>
+              <i node-type="i">value-generator</i>
+            </span>
+            <span>
+              <i node-type="i">index-generator</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which returns the items generated by
+<i node-type="i">value-generator</i> of specified by the indice generated by
+<i node-type="i">index-generator</i>. The indice must be non negative integer and
+increased strictly. Otherwise an error is raised.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(generator-&gt;list (gindex (list-&gt;generator '(a b c d e f))
+                 (list-&gt;generator '(0 2 4))))
+</code></pre>
+          <span />
+          <span>(a c e)</span>
+        </div>
+        <p node-type="paragraph" />
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gselect_81">
+            <span>gselect</span>
+            <span>
+              <i node-type="i">value-generator</i>
+            </span>
+            <span>
+              <i node-type="i">truth-generator</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which returns the items generated by
+<i node-type="i">value-generator</i> that correspond to the items generated by
+<i node-type="i">truth-generator</i>. If <i node-type="i">truth-generator</i> returns true value,
+then the current value of <i node-type="i">value-generator</i> is returned. Otherwise not.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(generator-&gt;list (gselect (list-&gt;generator '(a b c d e f))
+                          (list-&gt;generator '(#t #f #f #t #t #f))))
+</code></pre>
+          <span />
+          <span>(a d e)</span>
+        </div>
+        <p node-type="paragraph" />
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gconcatenate_4">
+            <span>gconcatenate</span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">generator</i> must be an generator generates generators.</p>
+        <p node-type="paragraph">Returns a generator which returns the items generated by the generators
+generated by given <i node-type="i">generator</i>. It is similar to the following:</p>
+        <pre lang="scheme" node-type="block"><code>(apply gappend (generator-&gt;list generator))
+</code></pre>
+        <p node-type="paragraph">The difference is that this procedure can handle infinite generator.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gflatten_72">
+            <span>gflatten</span>
+            <span>
+              <i node-type="i">generator</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">generator</i> must be a generator which returns lists as its items.</p>
+        <p node-type="paragraph">Returns a generator which flatten the items generated by given <i node-type="i">generator</i>.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(generator-&gt;list (gflatten (list-&gt;generator (list '(1 2 3 4)
+                                                  '(a b c d)
+                                                  '(A B C D)))))
+</code></pre>
+          <span />
+          <span>(1 2 3 4 a b c d A B C D)</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">If the <i node-type="i">generator</i> returns non list item, then it is ignored.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(generator-&gt;list (gflatten (list-&gt;generator (list 'ignored
+                                                  '(a b c d)
+                                                  'ignored
+                                                  '(A B C D)))))
+</code></pre>
+          <span />
+          <span>(a b c d A B C D)</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">This behaviour is an error behaviour so it might be changed in future.
+So users should not depend on this.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gmerge_77">
+            <span>gmerge</span>
+            <span>
+              <i node-type="i">compare</i>
+            </span>
+            <span>
+              <i node-type="i">generator1</i>
+            </span>
+            <span>
+              <i node-type="i">generator2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">compare</i> must be a procedure which accepts 2 arguments and returns
+boolean value. The procedure should compare the given 2 arguments and return
+true value if the first argument is smaller than the second argument.</p>
+        <p node-type="paragraph">Returns a generator which returns the ordered items determined by _compare_procedure. If the <code node-type="code">gmerge</code> procedure is called only one argument, then
+it simply returns a generator (if <i node-type="i">generator1</i> isn't a generator then
+it is coerced).</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(generator-&gt;list (gmerge &lt; (list-&gt;generator '(1 4 5)) (list-&gt;generator '(0 2 3))))
+</code></pre>
+          <span />
+          <span>(0 1 2 3 4 5)</span>
+        </div>
+        <p node-type="paragraph" />
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gmap_76">
+            <span>gmap</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">generator1</i>
+            </span>
+            <span>
+              <i node-type="i">generator2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which returns the items returned by <code node-type="code">proc</code>.</p>
+        <p node-type="paragraph">The <code node-type="code">proc</code> is called with the items returned by <i node-type="i">generator1</i> and
+<i node-type="i">generator2</i> if it's given.</p>
+        <p node-type="paragraph">The <i node-type="i">gmap</i> procedure accepts uneven length of generators however one
+of the generator must be finite length, otherwise it won't be exhausted.</p>
+        <p node-type="paragraph">It is an analogy of <code node-type="code">map</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gfilter-map_71">
+            <span>gfilter-map</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">generator1</i>
+            </span>
+            <span>
+              <i node-type="i">generator2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a generator which returns the items returnd by <code node-type="code">proc</code>.</p>
+        <p node-type="paragraph">This procedure is similar with <code node-type="code">gmap</code>. The difference is that the
+returning item is filtered if the returning value of <i node-type="i">proc</i> is #f.</p>
+        <p node-type="paragraph">It is an analogy of <code node-type="code">filter-map</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="generate_10">
+            <span>generate</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a coroutine generator which return the item returned by
+<i node-type="i">proc</i>.</p>
+        <p node-type="paragraph">The given argument <i node-type="i">proc</i> must accept one argument, <i node-type="i">yield</i> which
+is a procedure accepts variable arguments. The <i node-type="i">proc</i> procedure can return
+values via <i node-type="i">yield</i> procedure.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(define g
+  (make-coroutine-generator
+    (lambda (yield) 
+      (let loop ((i 0))
+        (when (&lt; i 3) 
+          (yield i) 
+          (loop (+ i 1)))))))
+
+(generator-&gt;list g)
+</code></pre>
+          <span />
+          <span>(0 1 2)</span>
+        </div>
+        <p node-type="paragraph" />
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="glet*_74">
+            <span>glet*</span>
+            <span>
+              <i node-type="i">(bindings</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+            <span>
+              <i node-type="i">)</i>
+            </span>
+            <span>
+              <i node-type="i">body1</i>
+            </span>
+            <span>
+              <i node-type="i">body2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><code node-type="code">glet*</code> is a macro which is similar to <code node-type="code">let*</code>. The difference
+is that <code node-type="code">glet*</code> check if the bindings are EOF object or not and if it
+detects EOF object, then it returns EOF object immediately.</p>
+        <p node-type="paragraph"><i node-type="i">bindings</i> must be one of the following forms:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">(_var_ _gen-expr_)</code>
+            </p>
+          </li>
+          <li>
+            <p node-type="paragraph">
+              <code node-type="code">( _gen-expr_ )</code>
+            </p>
+          </li>
+        </ul>
+        <p node-type="paragraph">If the first form is used, then the <i node-type="i">gen-expr</i> is bound to <i node-type="i">var</i>.
+Otherwise the <code node-type="code">glet*</code> just check if the value is EOF or not.</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(define g (list-&gt;generator '(1 2 3)))
+
+(list 
+  (glet* ((a (g))) a)
+  (glet* ((a (g))) (define b 2) (+ a b))
+  (glet* ((a (g)) (b (g))) (+ a b)))
+</code></pre>
+          <span />
+          <span>(1 2 #\&lt;eof&gt;)</span>
+        </div>
+        <p node-type="paragraph" />
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="glet1_75">
+            <span>glet1</span>
+            <span>
+              <i node-type="i">var</i>
+            </span>
+            <span>
+              <i node-type="i">expr</i>
+            </span>
+            <span>
+              <i node-type="i">body1</i>
+            </span>
+            <span>
+              <i node-type="i">body2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Convenient macro for only one binding of <code node-type="code">glet*</code>. This is defined
+like the following:</p>
+        <pre lang="scheme" node-type="block"><code>(define-syntax glet1
+  (syntax-rules ()
+    ((_ var expr body body1 ...)
+     (glet* ((var expr)) body body1 ...))))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="do-generator_154">
+            <span>do-generator</span>
+            <span>
+              <i node-type="i">(var</i>
+            </span>
+            <span>
+              <i node-type="i">gen-expr)</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Iterates generator of then given <i node-type="i">gen-expr</i>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.debug.html">(sagittarius debug) - Debugging support</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.crypto.html">Cryptographic libraries</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

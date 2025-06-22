@@ -1,0 +1,3463 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section32.html">Top library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.unicode.6.html">Unicode</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rnrs.base.6">Base Library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rnrs base (6))_61">
+          <span>(rnrs base (6))</span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] This library exports many of the procedure and syntax bindings
+that are traditionally associated with Scheme.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="rnrs.base.6.variable.definitions">Variable definitions</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="define_64">
+            <span>define</span>
+            <span>
+              <i node-type="i">variable</i>
+            </span>
+            <span>
+              <i node-type="i">expression</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="define_63">
+            <span>define</span>
+            <span>
+              <i node-type="i">variable</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="define_62">
+            <span>define</span>
+            <span>
+              <i node-type="i">(variable</i>
+            </span>
+            <span>
+              <i node-type="i">formals)</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="define_61">
+            <span>define</span>
+            <span>
+              <i node-type="i">(variable</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">formal)</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] The <code node-type="code">define</code> form is a definition used to create variable
+bindings and may appear anywhere other definitions may appear.</p>
+        <p node-type="paragraph">The first from of <code node-type="code">define</code> binds <i node-type="i">variable</i> to a new location before
+assigning the value of <i node-type="i">expression</i> to it.</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(define add3 (lambda (x) (+ x 3)))</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(add3 3)</code></pre>
+            <span />
+            <span>6</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(define first car)</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(first '(1 2))</code></pre>
+            <span />
+            <span>1</span>
+          </div>
+        </p>
+        <p node-type="paragraph">The second form of <code node-type="code">define</code> is equivalent to</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(define _variable_ _unspecified_)</code></pre>
+        </p>
+        <p node-type="paragraph">where <i node-type="i">unspecified</i> is a side-effect-free expression returning an
+unspecified value.</p>
+        <p node-type="paragraph">In the third form of <code node-type="code">define</code>, <i node-type="i">formals</i> must be either a sequence of
+zero or more variables, or a sequence of one or more variables followed by a dot
+<code node-type="code">.</code> and another variable. This form is equivalent to</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(define _variable_ (lambda (_formals_) _body ..._))</code></pre>
+        </p>
+        <p node-type="paragraph">In the fourth form of <code node-type="code">define</code>, <i node-type="i">formal</i> must be a single variable.
+This form is equivalent to</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(define _variable_ (lambda _formal_ _body ..._))</code></pre>
+        </p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Syntax-definitions">Syntax definitions</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="define-syntax_92">
+            <span>define-syntax</span>
+            <span>
+              <i node-type="i">keyword</i>
+            </span>
+            <span>
+              <i node-type="i">expression</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] The <code node-type="code">define-syntax</code> form is a definition used to create keyword
+bindings and may appear anywhere other definitions may appear.</p>
+        <p node-type="paragraph">Binds <i node-type="i">keyword</i> to the value of <i node-type="i">expression</i>, which must evaluate,
+at macro-expansion time, to a transformer.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Quotation">Quotation</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="quote_13">
+            <span>quote</span>
+            <span>
+              <i node-type="i">datum</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <code node-type="code">quote</code> evaluates to the datum value represented by <i node-type="i">datum</i>.</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(quote a)</code></pre>
+            <span />
+            <span>a</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(quote #(a b c))</code></pre>
+            <span />
+            <span>#(a b c)</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(quote (+ 1 2))</code></pre>
+            <span />
+            <span>(+ 1 2)</span>
+          </div>
+        </p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Procedures">Procedures</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="lambda_0">
+            <span>lambda</span>
+            <span>
+              <i node-type="i">formals</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+]A <code node-type="code">lambda</code> expression evaluates to a procedure. The
+environment in effect when the lambda expression is evaluated is remembered as
+part of the procedure. When the procedure is later called with some arguments,
+the environment in which the <code node-type="code">lambda</code> expression was evaluated is extended
+by binding the variables in the parameter list to fresh locations, and the
+resulting argument values are stored in those locations. Then, the expressions
+in the <i node-type="i">body</i> of the <code node-type="code">lambda</code> expression are evaluated sequentially in
+the extended environment. The results of the last expression in the body are
+returned as the results of the procedure call.</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(lambda (x) (+ x x))</code></pre>
+            <span />
+            <span>a procedure</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>((lambda (x) (+ x x)) 4)</code></pre>
+            <span />
+            <span>8</span>
+          </div>
+        </p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>((lambda (x)
+   (define (p y) (+ y 1))
+   (+ (p x) x)) 5)
+</code></pre>
+          <span />
+          <span>11</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(define reverse-subtract (lambda (x y) (- y x)))</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(reverse-subtract 7 10)</code></pre>
+            <span />
+            <span>3</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(define add4 (let ((x 4)) (lambda (y) (+ x y))))</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(add4 6)</code></pre>
+            <span />
+            <span>10</span>
+          </div>
+        </p>
+        <p node-type="paragraph"><i node-type="i">Formals</i> must have one of the following forms:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">(<i node-type="i">&lt;variable1&gt;</i> ...)
+The procedure takes a fixed number of arguments; when the procedure is
+called, the arguments are stored in the bindings of the corresponding
+variables.</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><i node-type="i">&lt;variable&gt;</i> The procedure takes any number of arguments; when the procedure is called,
+the sequence of arguments is converted into a newly allocated list, and the
+list is stored in the binding of the <i node-type="i">&lt;variable&gt;</i>.</p>
+          </li>
+          <li>
+            <p node-type="paragraph">(<i node-type="i">&lt;variable1&gt;</i> ... <i node-type="i">&lt;variablen&gt;</i> . <i node-type="i">&lt;variablen+1&gt;</i>)
+If a period <code node-type="code">.</code> precedes the last variable, then the procedure takes
+<i node-type="i">n</i> or more arguments, where <i node-type="i">n</i> is the number of parameters before
+the period (there must be at least one). The value stored in the binding of
+the last variable is a newly allocated list of the arguments left over after
+all the other arguments have been matched up against the other
+parameters.
+<div node-type="snipet" class="snipet">
+              <pre lang="" node-type="snipet"><code>((lambda x x) 3 4 5 6)</code></pre>
+              <span />
+              <span>(3 4 5 6)</span>
+            </div>
+<div node-type="snipet" class="snipet">
+              <pre lang="" node-type="snipet"><code>((lambda (x y . z) z)  3 4 5 6)</code></pre>
+              <span />
+              <span>(5 6)</span>
+            </div>
+Any <i node-type="i">variable</i> must not appear more than once in <i node-type="i">formals</i>.</p>
+          </li>
+          <li>
+            <p node-type="paragraph">(<i node-type="i">&lt;variable&gt; ... <i node-type="i">&lt;extended-spec&gt;</i> ...</i>)</p>
+            <p node-type="paragraph">Extended argument specification. Zero or more variables that specifies
+required formal argument, followed by an <i node-type="i">&lt;extended-spec&gt;</i>, a list
+begginning with a keyword <code node-type="code">:optional</code>, <code node-type="code">:key</code> or <code node-type="code">:rest</code>.
+The <i node-type="i">&lt;extended-spec&gt;</i> part consists of the optional argument spec, the
+keyword argument spec and the rest argument spec. They can appear in any
+combinations.</p>
+            <dl node-type="dlist">
+              <dt>
+                <code node-type="code">:optional _optspec_ ...</code>
+              </dt>
+              <dd>
+                <p node-type="paragraph">ecifies optional arguments. Each <i node-type="i">optspec</i> can be either one of the
+following forms:
+<pre lang="" node-type="snipet"><code>_variable_</code></pre>
+<pre lang="" node-type="snipet"><code>(_variable_ _init-expr_)</code></pre>
+The <i node-type="i">variable</i> names the formal argument, which is bound to the value
+of the actual argument if given, or the value of the expression
+<i node-type="i">init-expr</i> otherwise. If <i node-type="i">optspec</i> is just a variable, and the
+actual argument is not given, then it will be unspecified value.
+The expression <i node-type="i">init-expr</i> is only evaluated if the actual argument is
+not given. The scope in which <i node-type="i">init-expr</i> is evaluated includes the
+preceding formal arguments.
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (a b :optional (c (+ a b))) (list a b c)) 1 2) </code></pre>
+                  <span />
+                  <span>(1 2 3)</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (a b :optional (c (+ a b))) (list a b c)) 1 2 -1) </code></pre>
+                  <span />
+                  <span>(1 2 -1)</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (a b :optional c) (list a b c)) 1 2) </code></pre>
+                  <span />
+                  <span>(1 2 #\&lt;unspecified&gt;)</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:optional (a 0) (b (+ a 1))) (list a b))) </code></pre>
+                  <span />
+                  <span>(1 2)</span>
+                </div>
+The procedure raises an <code node-type="code">&amp;serious</code> if more actual arguments than the
+number of required and optional arguments are given, unless it also has
+<code node-type="code">:key</code> or <code node-type="code">:rest</code> arguments spec.
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:optional a b) (list a b)) 1 2 3) </code></pre>
+                  <span />
+                  <span>&amp;serious</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:optional a b :rest r) (list a b r)) 1 2 3) </code></pre>
+                  <span />
+                  <span>(1 2 (3))</span>
+                </div>
+<code node-type="code">:key _keyspec_ ... [:allow-other-keys [_variable_]]</code></p>
+                <p node-type="paragraph">ecifies keyword arguments. Each <i node-type="i">keyspec</i> can be one of the
+following forms.
+<pre lang="" node-type="snipet"><code>_variable_</code></pre>
+<pre lang="" node-type="snipet"><code>(_variable_ _init-expr_)</code></pre>
+<pre lang="" node-type="snipet"><code>((_keyword_ _variable_) _init-expr_)</code></pre>
+<pre lang="" node-type="snipet"><code>(_variable_ _keyword_ _init-expr_)</code></pre>
+The <i node-type="i">variable</i> names the formal argument, which is bound to the actual
+argument given with the keyword of the same name as <i node-type="i">variable</i>. When
+the actual is not given, <i node-type="i">init-expr</i> is evaluated and the result is
+bound to <i node-type="i">variable</i> in the second, third and fourth form, or
+unspecified value is bound in the first form.</p>
+                <pre lang="scheme" node-type="block"><code>(define f (lambda (a :key (b (+ a 1)) (c (+ b 1)))
+      (list a b c)))
+</code></pre>
+                <p node-type="paragraph"><div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>(f 10)</code></pre>
+                  <span />
+                  <span>(10 11 12)</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>(f 10 :b 4)</code></pre>
+                  <span />
+                  <span>(10 4 5)</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>(f 10 :c 8)</code></pre>
+                  <span />
+                  <span>(10 11 8)</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>(f 10 :c 1 :b 3)</code></pre>
+                  <span />
+                  <span>(10 3 1)</span>
+                </div>
+With the third and fourth form you can name the formal argument
+differently from the keyword to specify the argument.
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:key ((:aa a) -1)) a) ::aa 2)</code></pre>
+                  <span />
+                  <span>2</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:key (a :aa -1)) a) ::aa 2)</code></pre>
+                  <span />
+                  <span>2</span>
+                </div>
+By default, the procedure with keyword argument spec raises
+<code node-type="code">&amp;serious</code> if a keyword argument with an unrecognized keyword is
+given. Giving <code node-type="code">:allow-other-keys</code> in the formals suppresses this
+behaviour. If you give <i node-type="i">variable</i> after <code node-type="code">:allow-other-keys</code>, the
+list of unrecognized keywords and their arguments are bound to it.
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:key a) a) :a 1 :b 2)</code></pre>
+                  <span />
+                  <span>&amp;serious</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:key a :allow-other-keys) a) :a 1 :b 2)</code></pre>
+                  <span />
+                  <span>1</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:key a :allow-other-keys z) (list a z)) :a 1 :b 2) </code></pre>
+                  <span />
+                  <span>(1 (b 2))</span>
+                </div>
+When used with <code node-type="code">:optional</code> argument spec, the keyword arguments are
+searched after all the optional arguments are bound.
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:optional a b :key c) (list a b c)) 1 2 :c 3) </code></pre>
+                  <span />
+                  <span>(1 2 3)</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:optional a b :key c) (list a b c)) :c 3) </code></pre>
+                  <span />
+                  <span>(c 3 #\&lt;unspecified&gt;)</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:optional a b :key c) (list a b c)) 1 :c 3) </code></pre>
+                  <span />
+                  <span>&amp;serious</span>
+                </div>
+<code node-type="code">:rest _variable_</code></p>
+                <p node-type="paragraph">ecifies the rest argument. If specified without <code node-type="code">:optional</code>      argument spec, a list of remaining arguments after required arguments are
+taken is bound to <i node-type="i">variable</i>. If specified with <code node-type="code">:optional</code>      argument spec, the actual arguments are first bound to required and all
+optional arguments, and the remaining arguments are bound to
+<i node-type="i">variable</i>.
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (a b :rest z) (list a b z)) 1 2 3 4 5) </code></pre>
+                  <span />
+                  <span>(1 2 (3 4 5))</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (a b :optional c d :rest z) (list a b z)) 1 2 3 4 5) </code></pre>
+                  <span />
+                  <span>(1 2 3 4 (5))</span>
+                </div>
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>     ((lambda (a b :optional c d :rest z) (list a b z)) 1 2 3)</code></pre>
+                  <span />
+                  <span>(1 2 3 #\&lt;unspecified&gt; ())</span>
+                </div>
+When the rest argument spec is used with the keyword argument spec, both
+accesses the same list of actual argument -- the remaining arguments after
+required and optional arguments are taken
+<div node-type="snipet" class="snipet">
+                  <pre lang="" node-type="snipet"><code>((lambda (:optional a :rest r :key k) (list a r k)) 1 :k 3) </code></pre>
+                  <span />
+                  <span>(1 (k 3) 3)</span>
+                </div></p>
+              </dd>
+            </dl>
+          </li>
+        </ul>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Conditionals">Conditionals</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="if_20">
+            <span>if</span>
+            <span>
+              <i node-type="i">test</i>
+            </span>
+            <span>
+              <i node-type="i">consequent</i>
+            </span>
+            <span>
+              <i node-type="i">alternate</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="if_19">
+            <span>if</span>
+            <span>
+              <i node-type="i">test</i>
+            </span>
+            <span>
+              <i node-type="i">consequent</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS]An <code node-type="code">if</code> expression is evaluated as follows: first, _test_is evaluated. If it yields a true value, then <i node-type="i">consequent</i> is evaluated and
+its values are returned. Otherwise <i node-type="i">alternate</i> is evaluated and its values
+are returned. If <i node-type="i">test</i> yields #f and no <i node-type="i">alternate</i> is specified, then
+the result of the expression is unspecified.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Assignment">Assignment</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="set!_33">
+            <span>set!</span>
+            <span>
+              <i node-type="i">variable</i>
+            </span>
+            <span>
+              <i node-type="i">expression</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Expression</i> is evaluated, and the resulting value is stored in
+the location to which <i node-type="i">variable</i> is bound. Variable must be bound either in
+some region enclosing the <code node-type="code">set!</code> expression or at the top level. The result
+of the <code node-type="code">set!</code> expression is unspecified.</p>
+        <p node-type="paragraph">Note: R6RS requires to throw syntax violation if <i node-type="i">variable</i> refers immutable
+binding. In Sagittarius, however, it won't throw any error.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Derived-conditionals">Derived conditionals</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="cond_126">
+            <span>cond</span>
+            <span>
+              <i node-type="i">clause</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Each <i node-type="i">clause</i> must be the form</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(_test_ _expression_ ...)</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(_test_ =&gt; _expression_)</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(else _expression_ ...)</code></pre>
+        </p>
+        <p node-type="paragraph">The last form can appear only in the last clause.</p>
+        <p node-type="paragraph">A <code node-type="code">cond</code> expression is evaluated by evaluating the <i node-type="i">test</i> expressions of
+successive <i node-type="i">clauses</i> in order until one of them evaluates to a true value.
+When a <i node-type="i">test</i> evaluates to a true value, then the remaining expressions in
+its <i node-type="i">clause</i> are evaluated in order, and the results of the last expression
+in the <i node-type="i">clause</i> are returned as the results of the entire <code node-type="code">cond</code> expression.
+If the selected <i node-type="i">clause</i> contains only the <i node-type="i">test</i> and no expressions,
+then the value of the <i node-type="i">test</i> is returned as the result. If the selected
+<i node-type="i">clause</i> uses the <code node-type="code">=&gt;</code> alternate form, then the expression is evaluated.
+Its value must be a procedure. This procedure should accept one argument; it is
+called on the value of the <i node-type="i">test</i> and the values returned by this procedure
+are returned by the <code node-type="code">cond</code> expression. If all <i node-type="i">tests</i> evaluate to #f,
+and there is no <code node-type="code">else</code> clause, then the conditional expression returns
+unspecified values; if there is an <code node-type="code">else</code> clause, then its expressions are
+evaluated, and the values of the last one are returned.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="case_37">
+            <span>case</span>
+            <span>
+              <i node-type="i">clause</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Key</i> must be an expression. Each <i node-type="i">clause</i> must have one of
+the following forms:</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>((_datum_ ...) _expression_ ...)</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(else _expression_ ...)</code></pre>
+        </p>
+        <p node-type="paragraph">The last form can appear only in the last clause.</p>
+        <p node-type="paragraph">A <code node-type="code">case</code> expression is evaluated as follows. <i node-type="i">Key</i> is evaluated and its
+result is compared using <code node-type="code">eqv?</code> against the data represented by the _datums_of each <i node-type="i">clause</i> in turn, proceeding in order from left to right through
+the set of clauses. If the result of evaluating <i node-type="i">key</i> is equivalent to a datum
+of a <i node-type="i">clause</i>, the corresponding expressions are evaluated from left to right
+and the results of the last expression in the <i node-type="i">clause</i> are returned as the
+results of the <code node-type="code">case</code> expression. Otherwise, the comparison process continues.
+If the result of evaluating <i node-type="i">key</i> is different from every datum in each set,
+then if there is an <code node-type="code">else</code> clause its expressions are evaluated and the
+results of the last are the results of the <code node-type="code">case</code> expression; otherwise the
+<code node-type="code">case</code> expression returns unspecified values.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="and_39">
+            <span>and</span>
+            <span>
+              <i node-type="i">test</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] If there are no <i node-type="i">tests</i>, #t is returned. Otherwise, the
+<i node-type="i">test</i> expressions are evaluated from left to right until a _test_returns #f or the last <i node-type="i">test</i> is reached. In the former case, the and
+expression returns #f without evaluating the remaining expressions. In the
+latter case, the last expression is evaluated and its values are returned.</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(and (= 2 2) (&gt; 2 1))</code></pre>
+            <span />
+            <span>#t</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(and (= 2 2) (&lt; 2 1))</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(and 1 2 'c '(f g))</code></pre>
+            <span />
+            <span>(f g)</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(and)</code></pre>
+            <span />
+            <span>#t</span>
+          </div>
+        </p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="or_59">
+            <span>or</span>
+            <span>
+              <i node-type="i">test</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] If there are no <i node-type="i">tests</i>, #f is returned. Otherwise, the _test_expressions are evaluated from left to right until a <i node-type="i">test</i> returns a true
+value or the last <i node-type="i">test</i> is reached. In the former case, the or expression
+returns val without evaluating the remaining expressions. In the latter case,
+the last expression is evaluated and its values are returned.</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(or (= 2 2) (&gt; 2 1))</code></pre>
+            <span />
+            <span>#t</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(or (= 2 2) (&lt; 2 1))</code></pre>
+            <span />
+            <span>#t</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(or #f #f #f)</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(or '(b c) (/ 3 0))</code></pre>
+            <span />
+            <span>(b c)</span>
+          </div>
+        </p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Binding-constructs">Binding constructs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="let_7">
+            <span>let</span>
+            <span>
+              <i node-type="i">bindings</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Bindings</i> must have the form</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>((_variable1_ _init1_) ...)</code></pre>
+        </p>
+        <p node-type="paragraph">where each <i node-type="i">init</i> is an expression. Any variable must not appear more than
+once in the <i node-type="i">variables</i>.</p>
+        <p node-type="paragraph">The <i node-type="i">inits</i> are evaluated in the current environment, the variables are bound
+to fresh locations holding the results, the <i node-type="i">body</i> is evaluated in the
+extended environment, and the values of the last expression of <i node-type="i">body</i> are
+returned. Each binding of a <i node-type="i">variable</i> has <i node-type="i">body</i> as its region.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="let*_8">
+            <span>let*</span>
+            <span>
+              <i node-type="i">bindings</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Bindings</i> must have the form</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>((_variable1_ _init1_) ...)</code></pre>
+        </p>
+        <p node-type="paragraph">The <code node-type="code">let*</code> form is similar to <code node-type="code">let</code>, but the <i node-type="i">inits</i> are evaluated
+and bindings created sequentially from left to right, with the region of each
+binding including the bindings to its right as well as <i node-type="i">body</i>. Thus the second
+<i node-type="i">init</i> is evaluated in an environment in which the first binding is visible
+and initialized, and so on.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="letrec_20">
+            <span>letrec</span>
+            <span>
+              <i node-type="i">bindings</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Bindings</i> must have the form</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>((_variable1_ _init1_) ...)</code></pre>
+        </p>
+        <p node-type="paragraph">where each <i node-type="i">init</i> is an expression. Any variable must not appear more than
+once in the <i node-type="i">variables</i>.</p>
+        <p node-type="paragraph">The <i node-type="i">variables</i> are bound to fresh locations, the <i node-type="i">inits</i> are evaluated
+in the resulting environment, each <i node-type="i">variable</i> is assigned to the result of
+the corresponding <i node-type="i">init</i>, the <i node-type="i">body</i> is evaluated in the resulting environment,
+and the values of the last expression in <i node-type="i">body</i> are returned. Each binding of
+a <i node-type="i">variable</i> has the entire <code node-type="code">letrec</code> expression as its region, making it
+possible to define mutually recursive procedures.</p>
+        <p node-type="paragraph">In the most common uses of <code node-type="code">letrec</code>, all the <i node-type="i">inits</i> are <code node-type="code">lambda</code>expressions and the restriction is satisfied automatically.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="letrec*_21">
+            <span>letrec*</span>
+            <span>
+              <i node-type="i">bindings</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Bindings</i> must have the form</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>((_variable1_ _init1_) ...)</code></pre>
+        </p>
+        <p node-type="paragraph">where each <i node-type="i">init</i> is an expression. Any variable must not appear more than
+once in the <i node-type="i">variables</i>.</p>
+        <p node-type="paragraph">The <i node-type="i">variables</i> are bound to fresh locations, each <i node-type="i">variable</i> is assigned
+in left-to-right order to the result of evaluating the corresponding <i node-type="i">init</i>,
+the <i node-type="i">body</i> is evaluated in the resulting environment, and the values of the
+last expression in <i node-type="i">body</i> are returned. Despite the left-to-right evaluation
+and assignment order, each binding of a <i node-type="i">variable</i> has the entire <code node-type="code">letrec*</code>expression as its region, making it possible to define mutually recursive procedures.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="let-values_18">
+            <span>let-values</span>
+            <span>
+              <i node-type="i">mv-bindings</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Mv-bindings</i> must have the form</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>((_formals_ _init1_) ...)</code></pre>
+        </p>
+        <p node-type="paragraph">where each <i node-type="i">init</i> is an expression. Any variable must not appear more than
+once in the set of <i node-type="i">formals</i>.</p>
+        <p node-type="paragraph">The <i node-type="i">inits</i> are evaluated in the current environment, and the variables
+occurring in the <i node-type="i">formals</i> are bound to fresh locations containing the values
+returned by the <i node-type="i">inits</i>, where the <i node-type="i">formals</i> are matched to the return
+values in the same way that the <i node-type="i">formals</i> in a <code node-type="code">lambda</code> expression are
+matched to the arguments in a procedure call. Then, the <i node-type="i">body</i> is evaluated
+in the extended environment, and the values of the last expression of _body_are returned. Each binding of a variable has <i node-type="i">body</i> as its region. If the
+<i node-type="i">formals</i> do not match, an exception with condition type <code node-type="code">&amp;assertion</code>is raised.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="let*-values_9">
+            <span>let*-values</span>
+            <span>
+              <i node-type="i">mv-bindings</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Mv-bindings</i> must have the form</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>((_formals_ _init1_) ...)</code></pre>
+        </p>
+        <p node-type="paragraph">where each <i node-type="i">init</i> is an expression. In each <i node-type="i">formals</i>, any variable must
+not appear more than once.</p>
+        <p node-type="paragraph">The <code node-type="code">let*-values</code> form is similar to <code node-type="code">let-values</code>, but the _inits_are evaluated and bindings created sequentially from left to right, with the
+region of the bindings of each <i node-type="i">formals</i> including the bindings to its right
+as well as <i node-type="i">body</i>. Thus the second <i node-type="i">init</i> is evaluated in an environment
+in which the bindings of the first <i node-type="i">formals</i> is visible and initialized, and
+so on.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Sequencing">Sequencing</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="begin_18">
+            <span>begin</span>
+            <span>
+              <i node-type="i">form</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="begin_17">
+            <span>begin</span>
+            <span>
+              <i node-type="i">expression</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS]The begin keyword has two different roles, depending on its context:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">It may appear as a form in a body , library body, or top-level body, or
+directly nested in a begin form that appears in a body. In this case, the begin
+form must have the shape specified in the first header line. This use of begin
+acts as a splicing form - the forms inside the body are spliced into the
+surrounding body, as if the begin wrapper were not actually present.
+A begin form in a body or library body must be non-empty if it appears after
+the first expression within the body.</p>
+          </li>
+          <li>
+            <p node-type="paragraph">It may appear as an ordinary expression and must have the shape specified
+in the second header line. In this case, the expressions are evaluated
+sequentially from left to right, and the values of the last expression are
+returned. This expression type is used to sequence side effects such as
+assignments or input and output.</p>
+          </li>
+        </ul>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Equivalence-predicates">Equivalence predicates</a>
+        </h3>
+        <p node-type="paragraph">A <code node-type="code">predicate</code> is a procedure that always returns a boolean value (#t or #f).
+An <code node-type="code">equivalence predicate</code> is the computational analogue of a mathematical
+equivalence relation (it is symmetric, reflexive, and transitive). Of the
+equivalence predicates described in this section, <code node-type="code">eq?</code> is the finest or
+most discriminating, and <code node-type="code">equal?</code> is the coarsest. The <code node-type="code">eqv?</code> predicate
+is slightly less discriminating than <code node-type="code">eq?</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="eq?_27">
+            <span>eq?</span>
+            <span>
+              <i node-type="i">obj1</i>
+            </span>
+            <span>
+              <i node-type="i">obj2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="eqv?_31">
+            <span>eqv?</span>
+            <span>
+              <i node-type="i">obj1</i>
+            </span>
+            <span>
+              <i node-type="i">obj2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="equal?_30">
+            <span>equal?</span>
+            <span>
+              <i node-type="i">obj1</i>
+            </span>
+            <span>
+              <i node-type="i">obj2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <code node-type="code">eq?</code> only sees if the given two objects are the same object
+or not, <code node-type="code">eqv?</code> compares numbers. <code node-type="code">equal?</code> compares the values
+equivalence.</p>
+        <p node-type="paragraph">On Sagittarius Scheme interned symbol, keyword(only compatible mode), character,
+literal string, boolean, fixnum, and '() are used as the same objects. If these
+objects indicates the same value then <code node-type="code">eq?</code> returns #t.</p>
+        <p node-type="paragraph">The following examples are not specified R6RS. But it is always good to know how
+it works.</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(let ((p (lambda (x) x))) (eqv? p p))</code></pre>
+            <span />
+            <span>#t</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(eqv? "" "")</code></pre>
+            <span />
+            <span>#t</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(eqv? "abc" "abc") ;; literal string are the same object</code></pre>
+            <span />
+            <span>#t</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(eqv? "abc" (list-&gt;string '(#\a #\b #\c)))</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(eqv? '#() '#())</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(eqv? (lambda (x) x) (lambda (x) x))</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(eqv? (lambda (x) x) (lambda (y) y))</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(eqv? +nan.0 +nan.0)</code></pre>
+        </p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Procedure-predicate">Procedure predicate</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="procedure?_146">
+            <span>procedure?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is a procedure, otherwise returns #f.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Numerical-type-predicates">Numerical type predicates</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="number?_39">
+            <span>number?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="complex?_123">
+            <span>complex?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="real?_62">
+            <span>real?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rational?_18">
+            <span>rational?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="integer?_70">
+            <span>integer?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These numerical type predicates can be applied to any kind of
+argument. They return #t if the object is a number object of the named type, and
+#f otherwise. In general, if a type predicate is true of a number object then
+all higher type predicates are also true of that number object. Consequently,
+if a type predicate is false of a number object, then all lower type predicates
+are also false of that number object.</p>
+        <p node-type="paragraph">If <i node-type="i">z</i> is a complex number object, then <code node-type="code">(real? _z_)</code> is true if and
+only if <code node-type="code">(zero? (imag-part _z_))</code> and <code node-type="code">(exact? (imag-part _z_))</code>are both true.</p>
+        <p node-type="paragraph">If <i node-type="i">x</i> is a real number object, then <code node-type="code">(rational? _x_)</code> is true if
+and only if there exist exact integer objects <i node-type="i">k1</i> and <i node-type="i">k2</i> such that
+<code node-type="code">(= _x_ (/ _k1_ _k2_))</code> and <code node-type="code">(= (numerator _x_) _k1_)</code>and <code node-type="code">(= (denominator _x_) _k2_)</code> are all true. Thus infinities and
+NaNs are not rational number objects.</p>
+        <p node-type="paragraph">If <i node-type="i">q</i> is a rational number objects, then <code node-type="code">(integer? _q_)</code> is true
+if and only if <code node-type="code">(= (denominator _q_) 1)</code> is true. If q is not a rational
+number object, then <code node-type="code">(integer? _q_)</code> is #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="real-valued?_61">
+            <span>real-valued?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rational-valued?_17">
+            <span>rational-valued?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="integer-valued?_69">
+            <span>integer-valued?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These numerical type predicates can be applied to any kind of argument.
+The <code node-type="code">real-valued?</code> procedure returns #t if the object is a number object and
+is equal in the sense of <code node-type="code">=</code> to some real number object, or if the object is
+a NaN, or a complex number object whose real part is a NaN and whose imaginary part
+is zero in the sense of zero?. The <code node-type="code">rational-valued?</code> and <code node-type="code">integer-valued?</code>procedures return #t if the object is a number object and is equal in the sense
+of <code node-type="code">=</code> to some object of the named type, and otherwise they return #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="exact?_47">
+            <span>exact?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="inexact?_57">
+            <span>inexact?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These numerical predicates provide tests for the exactness of a
+quantity. For any number object, precisely one of these predicates is true.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Generic-conversion">Generic conversion</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="exact_44">
+            <span>exact</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="inexact_55">
+            <span>inexact</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] The <code node-type="code">inexact</code> procedure returns an inexact representation of
+<i node-type="i">z</i>. If inexact number objects of the appropriate type have bounded precision,
+then the value returned is an inexact number object that is nearest to the argument.</p>
+        <p node-type="paragraph">The <code node-type="code">exact</code> procedure returns an exact representation of <i node-type="i">z</i>. The value
+returned is the exact number object that is numerically closest to the argument;
+in most cases, the result of this procedure should be numerically equal to its argument.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Arithmetic-operations">Arithmetic operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="=_0">
+            <span>=</span>
+            <span>
+              <i node-type="i">z1</i>
+            </span>
+            <span>
+              <i node-type="i">z2</i>
+            </span>
+            <span>
+              <i node-type="i">z3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="&gt;_0">
+            <span>&gt;</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+            <span>
+              <i node-type="i">x3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="<_0">
+            <span>&lt;</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+            <span>
+              <i node-type="i">x3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="&gt;=_1">
+            <span>&gt;=</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+            <span>
+              <i node-type="i">x3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="<=_2">
+            <span>&lt;=</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+            <span>
+              <i node-type="i">x3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return #t if their arguments are (respectively):
+equal, monotonically increasing, monotonically decreasing, monotonically
+nondecreasing, or monotonically nonincreasing, and #f otherwise.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="zero?_9">
+            <span>zero?</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="positive?_124">
+            <span>positive?</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="negative?_5">
+            <span>negative?</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="odd?_14">
+            <span>odd?</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="even?_41">
+            <span>even?</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="finite?_42">
+            <span>finite?</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="infinite?_58">
+            <span>infinite?</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="nan?_1">
+            <span>nan?</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These numerical predicates test a number object for a particular
+property, returning #t or #f.</p>
+        <p node-type="paragraph">The <code node-type="code">zero?</code> procedure tests if the number object is <code node-type="code">=</code> to zero.</p>
+        <p node-type="paragraph">The <code node-type="code">positive?</code> tests whether it is greater than zero.</p>
+        <p node-type="paragraph">The  <code node-type="code">negative?</code> tests whether it is less than zero.</p>
+        <p node-type="paragraph">The <code node-type="code">odd?</code> tests whether it is odd.</p>
+        <p node-type="paragraph">The <code node-type="code">even?</code> tests whether it is even</p>
+        <p node-type="paragraph">The <code node-type="code">finite?</code> tests whether it is not an infinity and not a NaN.</p>
+        <p node-type="paragraph">The <code node-type="code">infinite?</code> tests whether it is an infinity.</p>
+        <p node-type="paragraph">The <code node-type="code">nan?</code> tests whether it is a NaN.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="max_377">
+            <span>max</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="min_402">
+            <span>min</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the maximum or minimum of their arguments.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="+_0">
+            <span>+</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="*_0">
+            <span>*</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the sum or product of their arguments.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="-_1">
+            <span>-</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="-_0">
+            <span>-</span>
+            <span>
+              <i node-type="i">z1</i>
+            </span>
+            <span>
+              <i node-type="i">z2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] With two or more arguments, this procedures returns the difference
+of its arguments, associating to the left. With one argument, however, it returns
+the additive inverse of its argument.</p>
+        <p node-type="paragraph">If this procedure is applied to mixed non-rational real and non-real complex
+arguments, it returns an unspecified number object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="/_1">
+            <span>/</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="/_0">
+            <span>/</span>
+            <span>
+              <i node-type="i">z1</i>
+            </span>
+            <span>
+              <i node-type="i">z2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] If all of the arguments are exact, then the divisors must all be
+nonzero. With two or more arguments, this procedure returns the quotient of its
+arguments, associating to the left. With one argument, however, it returns the
+multiplicative inverse of its argument.</p>
+        <p node-type="paragraph">If this procedure is applied to mixed non-rational real and non-real complex
+arguments, it returns an unspecified number object.</p>
+        <p node-type="paragraph">In R6RS, it requires to raise <code node-type="code">&amp;assertion</code> when the divisor was 0, on
+Sagittarius, however, it returns NaN or infinite number when it is running with
+compatible mode. In R6RS mode it raises <code node-type="code">&amp;assertion</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="abs_2">
+            <span>abs</span>
+            <span>
+              <i node-type="i">x</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the absolute value of its argument.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="div-and-mod_148">
+            <span>div-and-mod</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="div_147">
+            <span>div</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mod_403">
+            <span>mod</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="div0-and-mod0_150">
+            <span>div0-and-mod0</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="div0_149">
+            <span>div0</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mod0_408">
+            <span>mod0</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures implement number-theoretic integer division and
+return the results of the corresponding mathematical operations. In each case,
+<i node-type="i">x1</i> must be neither infinite nor a NaN, and <i node-type="i">x2</i> must be nonzero;
+otherwise, an exception with condition type <code node-type="code">&amp;assertion</code> is raised.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="gcd_2">
+            <span>gcd</span>
+            <span>
+              <i node-type="i">n1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="lcm_2">
+            <span>lcm</span>
+            <span>
+              <i node-type="i">n1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the greatest common divisor or least common
+multiple of their arguments. The result is always non-negative.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="numerator_40">
+            <span>numerator</span>
+            <span>
+              <i node-type="i">q</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="denominator_105">
+            <span>denominator</span>
+            <span>
+              <i node-type="i">q</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return the numerator or denominator of their
+argument; the result is computed as if the argument was represented as a fraction
+in lowest terms. The denominator is always positive. The denominator of 0 is
+defined to be 1.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="floor_81">
+            <span>floor</span>
+            <span>
+              <i node-type="i">x</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="ceiling_43">
+            <span>ceiling</span>
+            <span>
+              <i node-type="i">x</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="truncate_126">
+            <span>truncate</span>
+            <span>
+              <i node-type="i">x</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="round_142">
+            <span>round</span>
+            <span>
+              <i node-type="i">x</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures return inexact integer objects for inexact arguments
+that are not infinities or NaNs, and exact integer objects for exact rational
+arguments. For such arguments, <code node-type="code">floor</code> returns the largest integer object
+not larger than <i node-type="i">x</i>. The <code node-type="code">ceiling</code> procedure returns the smallest
+integer object not smaller than <i node-type="i">x</i>. The <code node-type="code">truncate</code> procedure returns
+the integer object closest to <i node-type="i">x</i> whose absolute value is not larger than
+the absolute value of <i node-type="i">x</i>. The <code node-type="code">round</code> procedure returns the closest
+integer object to <i node-type="i">x</i>, rounding to even when <i node-type="i">x</i> represents a number
+halfway between two integers.</p>
+        <p node-type="paragraph">Although infinities and NaNs are not integer objects, these procedures return
+an infinity when given an infinity as an argument, and a NaN when given a NaN.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="rationalize_19">
+            <span>rationalize</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] The <code node-type="code">rationalize</code> procedure returns the a number object
+representing the simplest rational number differing from <i node-type="i">x1</i> by no more than
+<i node-type="i">x2</i>. A rational number <i node-type="i">r1</i> is simpler than another rational number
+<i node-type="i">r2</i> if <i node-type="i">r1</i> = <i node-type="i">p1</i>/<i node-type="i">q1</i> and <i node-type="i">r2</i> = <i node-type="i">p2</i>/<i node-type="i">q2</i> (in
+lowest terms) and |<i node-type="i">p1</i>| ≤ |<i node-type="i">p2</i>| and |<i node-type="i">q1</i>| ≤ |<i node-type="i">q2</i>|. Thus 3/5
+is simpler than 4/7. Although not all rationals are comparable in this ordering
+(consider 2/7 and 3/5) any interval contains a rational number that is simpler
+than every other rational number in that interval (the simpler 2/5 lies between
+2/7 and 3/5). Note that 0 = 0/1 is the simplest rational of all.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="exp_57">
+            <span>exp</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="log_59">
+            <span>log</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="log_58">
+            <span>log</span>
+            <span>
+              <i node-type="i">z1</i>
+            </span>
+            <span>
+              <i node-type="i">z2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sin_113">
+            <span>sin</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cos_157">
+            <span>cos</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="tan_5">
+            <span>tan</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="asin_57">
+            <span>asin</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="acos_5">
+            <span>acos</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="atan_88">
+            <span>atan</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="atan_87">
+            <span>atan</span>
+            <span>
+              <i node-type="i">z1</i>
+            </span>
+            <span>
+              <i node-type="i">z2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures compute the usual transcendental functions. The
+<code node-type="code">exp</code> procedure computes the base-e exponential of <i node-type="i">z</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">log</code> procedure with a single argument computes the natural logarithm
+of <i node-type="i">z</i> (not the base-ten logarithm); <code node-type="code">(log _z1_ _z2_)</code> computes
+the base-<i node-type="i">z2</i> logarithm of <i node-type="i">z1</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">asin</code>, <code node-type="code">acos</code>, and <code node-type="code">atan</code> procedures compute arcsine,
+arccosine, and arctangent, respectively.</p>
+        <p node-type="paragraph">The two-argument variant of <code node-type="code">atan</code> computes
+<code node-type="code">(angle (make-rectangular _x2_ _x1_))</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sqrt_224">
+            <span>sqrt</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the principal square root of <i node-type="i">z</i>. For rational <i node-type="i">z</i>,
+the result has either positive real part, or zero real part and non-negative imaginary part.</p>
+        <p node-type="paragraph">The <i node-type="i">sqrt</i> procedure may return an inexact result even when given an exact argument.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="expt_82">
+            <span>expt</span>
+            <span>
+              <i node-type="i">z1</i>
+            </span>
+            <span>
+              <i node-type="i">z2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns <i node-type="i">z1</i> raised to the power <i node-type="i">z2</i>. For nonzero <i node-type="i">z1</i>,
+this is <i node-type="i">e^{z2 log z1}</i>. 0.0z is 1.0 if z = 0.0, and 0.0 if <code node-type="code">(real-part _z_)</code> is
+positive. For other cases in which the first argument is zero, an unspecified
+number object(<code node-type="code">+nan.0+nan.0i</code>) is returned.</p>
+        <p node-type="paragraph">For an exact real number object <i node-type="i">z1</i> and an exact integer object <i node-type="i">z2</i>,
+<code node-type="code">(expt _z1_ _z2_)</code> must return an exact result. For all other values
+of <i node-type="i">z1</i> and <i node-type="i">z2</i>, <code node-type="code">(expt _z1_ _z2_)</code> may return an inexact
+result, even when both <i node-type="i">z1</i> and <i node-type="i">z2</i> are exact.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-rectangular_255">
+            <span>make-rectangular</span>
+            <span>
+              <i node-type="i">x1</i>
+            </span>
+            <span>
+              <i node-type="i">x2</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-polar_246">
+            <span>make-polar</span>
+            <span>
+              <i node-type="i">x3</i>
+            </span>
+            <span>
+              <i node-type="i">x4</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="real-part_60">
+            <span>real-part</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="imag-part_23">
+            <span>imag-part</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="magnitude_14">
+            <span>magnitude</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="angle_40">
+            <span>angle</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Suppose <i node-type="i">a1</i>, <i node-type="i">a2</i>, <i node-type="i">a3</i>, and <i node-type="i">a4</i> are real numbers,
+and <i node-type="i">c</i> is a complex number such that the following holds:</p>
+        <p node-type="paragraph">_c = a1 + a2 ^ i = a3 e ^ ia4_Then, if <i node-type="i">x1</i>, <i node-type="i">x2</i>, <i node-type="i">x3</i>, and <i node-type="i">x4</i> are number objects representing
+<i node-type="i">a1</i>, <i node-type="i">a2</i>, <i node-type="i">a3</i>, and <i node-type="i">a4</i>, respectively,
+<code node-type="code">(make-rectangular _x1_ _x2_)</code> returns <i node-type="i">c</i>, and
+<code node-type="code">(make-polar _x3_ _x4_)</code> returns <i node-type="i">c</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Numerical-input-and-output">Numerical input and output</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="number-&gt;string_38">
+            <span>number-&gt;string</span>
+            <span>
+              <i node-type="i">z</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">radix</i>
+            </span>
+            <span>
+              <i node-type="i">precision</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] <i node-type="i">Radix</i> must be an exact integer object, between 2, and 32. If
+omitted, <i node-type="i">radix</i> defaults to 10. In Sagittarius <i node-type="i">precision</i> will be
+ignored. The <code node-type="code">number-&gt;string</code> procedure takes a number object and a radix
+and returns as a string an external representation of the given number object in
+the given <i node-type="i">radix</i> such that</p>
+        <pre lang="scheme" node-type="block"><code>(let ((number _z_) (radix _radix_))
+  (eqv? (string-&gt;number
+          (number-&gt;string number radix)
+          radix)
+        number))
+</code></pre>
+        <p node-type="paragraph">is true.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="number-&gt;string_37">
+            <span>number-&gt;string</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">radix</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] Returns a number object with maximally precise representation
+expressed by the given <i node-type="i">string</i>. <i node-type="i">Radix</i> must be an exact integer object,
+between 2, and 32. If supplied, <i node-type="i">radix</i> is a default radix that may be
+overridden by an explicit radix prefix in <i node-type="i">string</i> (e.g., "#o177"). If
+<i node-type="i">radix</i> is not supplied, then the default radix is 10. If <i node-type="i">string</i> is
+not a syntactically valid notation for a number object or a notation for a
+rational number object with a zero denominator, then <code node-type="code">string-&gt;number</code>returns #f.</p>
+        <p node-type="paragraph">These <code node-type="code">number-&gt;string</code> and <code node-type="code">string-&gt;number</code>'s resolutions of radix are
+taken from Gauche.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Booleans">Booleans</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="not_27">
+            <span>not</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is #f, and returns #f otherwise.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="boolean?_100">
+            <span>boolean?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is either #t or #f and returns #f otherwise.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="boolean=?_99">
+            <span>boolean=?</span>
+            <span>
+              <i node-type="i">bool1</i>
+            </span>
+            <span>
+              <i node-type="i">bool2</i>
+            </span>
+            <span>
+              <i node-type="i">bool3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if the booleans are the same.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Pairs-and-lists">Pairs and lists</a>
+        </h3>
+        <p node-type="paragraph">A <i node-type="i">pair</i> is a compound structure with two fields called the car and cdr fields
+(for historical reasons). Pairs are created by the procedure <code node-type="code">cons</code>. The car
+and cdr fields are accessed by the procedures <code node-type="code">car</code> and <code node-type="code">cdr</code>.</p>
+        <p node-type="paragraph">Pairs are used primarily to represent lists. A list can be defined recursively as
+either the empty list or a pair whose cdr is a list. More precisely, the set of
+lists is defined as the smallest set <i node-type="i">X</i> such that</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">The empty list is in</p>
+          </li>
+          <li>
+            <p node-type="paragraph">If list is in <i node-type="i">X</i>, then any pair whose cdr field contains _list_is also in <i node-type="i">X</i>.</p>
+          </li>
+        </ul>
+        <p node-type="paragraph">The objects in the car fields of successive pairs of a list are the elements of
+the list. For example, a two-element list is a pair whose car is the first element
+and whose cdr is a pair whose car is the second element and whose cdr is the empty
+list. The length of a list is the number of elements, which is the same as the
+number of pairs.</p>
+        <p node-type="paragraph">The empty listis a special object of its own type. It is not a pair. It has no
+elements and its length is zero.</p>
+        <p node-type="paragraph">A chain of pairs not ending in the empty list is called an <i node-type="i">improper list</i>.
+Note that an improper list is not a list. The list and dotted notations can be
+combined to represent improper lists:</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(a b c . d)</code></pre>
+        </p>
+        <p node-type="paragraph">is equivalent to</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(a . (b . (c . d)))</code></pre>
+        </p>
+        <p node-type="paragraph">Whether a given pair is a list depends upon what is stored in the cdr field.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pair?_7">
+            <span>pair?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is a pair, and otherwise returns #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cons_148">
+            <span>cons</span>
+            <span>
+              <i node-type="i">obj1</i>
+            </span>
+            <span>
+              <i node-type="i">obj2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a newly allocated pair whose car is <i node-type="i">obj1</i> and whose
+cdr is <i node-type="i">obj2</i>. The pair is guaranteed to be different (in the sense of
+<code node-type="code">eqv?</code>) from every existing object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="car_35">
+            <span>car</span>
+            <span>
+              <i node-type="i">pair</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cdr_42">
+            <span>cdr</span>
+            <span>
+              <i node-type="i">pair</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the contents of the car/cdr field of <i node-type="i">pair</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="caar_6">
+            <span>caar</span>
+            <span>
+              <i node-type="i">pair</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cadr_8">
+            <span>cadr</span>
+            <span>
+              <i node-type="i">pair</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">:</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cadddr_7">
+            <span>cadddr</span>
+            <span>
+              <i node-type="i">pair</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="cddddr_41">
+            <span>cddddr</span>
+            <span>
+              <i node-type="i">pair</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures are compositions of <code node-type="code">car</code> and <code node-type="code">cdr</code>,
+where for example <code node-type="code">caddr</code> could be defined by</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(define caddr (lambda (x) (car (cdr (cdr x)))))</code></pre>
+        </p>
+        <p node-type="paragraph">.</p>
+        <p node-type="paragraph">Arbitrary compositions, up to four deep, are provided. There are twenty-eight
+of these procedures in all.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="null?_35">
+            <span>null?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is the empty list, #f otherwise.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="list?_40">
+            <span>list?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is a list, #f otherwise. By definition, all
+lists are chains of pairs that have finite length and are terminated by the
+empty list.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="list_26">
+            <span>list</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a newly allocated list of its arguments.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="length_4">
+            <span>length</span>
+            <span>
+              <i node-type="i">list</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] Returns the length of <i node-type="i">list</i>. If the <i node-type="i">list</i> is improper
+list, it returns -1 If the <i node-type="i">list</i> is infinite list , it returns -2.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="append_43">
+            <span>append</span>
+            <span>
+              <i node-type="i">list</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a possibly improper list consisting of the elements of the
+first <i node-type="i">list</i> followed by the elements of the other <i node-type="i">lists</i>, with _obj_as the cdr of the final pair. An improper list results if <i node-type="i">obj</i> is not a list.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="reverse_120">
+            <span>reverse</span>
+            <span>
+              <i node-type="i">list</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a newly allocated list consisting of the elements of
+<i node-type="i">list</i> in reverse order.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="list-tail_39">
+            <span>list-tail</span>
+            <span>
+              <i node-type="i">list</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">:optaionl</i>
+            </span>
+            <span>
+              <i node-type="i">fallback</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] The <code node-type="code">list-tail</code> procedure returns the subchain of pairs of
+<i node-type="i">list</i> obtained by omitting the first <i node-type="i">k</i> elements. If _fallback_is given and <i node-type="i">k</i> is out of range, it returns <i node-type="i">fallback</i> otherwise
+<code node-type="code">&amp;assertion</code> is raised.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="list-ref_36">
+            <span>list-ref</span>
+            <span>
+              <i node-type="i">list</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">:optaionl</i>
+            </span>
+            <span>
+              <i node-type="i">fallback</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] The <code node-type="code">list-ref</code> procedure returns the _k_th element of
+<i node-type="i">list</i>. If <i node-type="i">fallback</i> is given and <i node-type="i">k</i> is out of range, it returns
+<i node-type="i">fallback</i> otherwise <code node-type="code">&amp;assertion</code> is raised.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="map_344">
+            <span>map</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">list1</i>
+            </span>
+            <span>
+              <i node-type="i">list2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+ SRFI-1] The <code node-type="code">map</code> procedure applies <i node-type="i">proc</i> element-wise to
+the elements of the <i node-type="i">lists</i> and returns a list of the results, in order. The
+order in which <i node-type="i">proc</i> is applied to the elements of the lists is unspecified.
+If multiple returns occur from <code node-type="code">map</code>, the values returned by earlier returns
+are not mutated. If the given <i node-type="i">lists</i> are not the same length, when the
+shortest list is processed the <code node-type="code">map</code> will stop.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="for-each_98">
+            <span>for-each</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">list1</i>
+            </span>
+            <span>
+              <i node-type="i">list2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+ SRFI-1] The <code node-type="code">for-each</code> procedure applies <i node-type="i">proc</i> element-wise
+to the elements of the <i node-type="i">lists</i> for its side effects, in order from the first
+elements to the last. The return values of <code node-type="code">for-each</code> are unspecified. If
+the given <i node-type="i">lists</i> are not the same length, when the shortest list is
+processed the <code node-type="code">for-each</code> will stop.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Symbols">Symbols</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="symbol?_360">
+            <span>symbol?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is a symbol, otherwise returns #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="symbol-&gt;string_353">
+            <span>symbol-&gt;string</span>
+            <span>
+              <i node-type="i">symbol</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the name of <i node-type="i">symbol</i> as an immutable string.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="symbol=?_357">
+            <span>symbol=?</span>
+            <span>
+              <i node-type="i">symbol1</i>
+            </span>
+            <span>
+              <i node-type="i">symbol2</i>
+            </span>
+            <span>
+              <i node-type="i">symbol3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if the <i node-type="i">symbols</i> are the same, i.e., if their names
+are spelled the same.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-&gt;symbol_271">
+            <span>string-&gt;symbol</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the symbol whose name is <i node-type="i">string</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Characters">Characters</a>
+        </h3>
+        <p node-type="paragraph"><i node-type="i">Characters</i> are objects that represent Unicode scalar values.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="char?_70">
+            <span>char?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is a character, otherwise returns #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="char-&gt;integer_46">
+            <span>char-&gt;integer</span>
+            <span>
+              <i node-type="i">char</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="integer-&gt;char_67">
+            <span>integer-&gt;char</span>
+            <span>
+              <i node-type="i">sv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Sv</i> must be a Unicode scalar value, i.e., a non-negative exact
+integer object in [0, #xD7FF] ∪ [#xE000, #x10FFFF].</p>
+        <p node-type="paragraph">Given a character, <code node-type="code">char-&gt;integer</code> returns its Unicode scalar value as an
+exact integer object. For a Unicode scalar value <i node-type="i">sv</i>, <code node-type="code">integer-&gt;char</code>returns its associated character.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="char=?_67">
+            <span>char=?</span>
+            <span>
+              <i node-type="i">char1</i>
+            </span>
+            <span>
+              <i node-type="i">char2</i>
+            </span>
+            <span>
+              <i node-type="i">char3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="char<?_66">
+            <span>char&lt;?</span>
+            <span>
+              <i node-type="i">char1</i>
+            </span>
+            <span>
+              <i node-type="i">char2</i>
+            </span>
+            <span>
+              <i node-type="i">char3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="char&gt;?_69">
+            <span>char&gt;?</span>
+            <span>
+              <i node-type="i">char1</i>
+            </span>
+            <span>
+              <i node-type="i">char2</i>
+            </span>
+            <span>
+              <i node-type="i">char3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="char<=?_65">
+            <span>char&lt;=?</span>
+            <span>
+              <i node-type="i">char1</i>
+            </span>
+            <span>
+              <i node-type="i">char2</i>
+            </span>
+            <span>
+              <i node-type="i">char3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="char&gt;=?_68">
+            <span>char&gt;=?</span>
+            <span>
+              <i node-type="i">char1</i>
+            </span>
+            <span>
+              <i node-type="i">char2</i>
+            </span>
+            <span>
+              <i node-type="i">char3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures impose a total ordering on the set of characters
+according to their Unicode scalar values.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Strings">Strings</a>
+        </h3>
+        <p node-type="paragraph">Strings are sequences of characters.
+The <i node-type="i">length</i> of a string is the number of characters that it contains. This
+number is fixed when the string is created. The <i node-type="i">valid indices</i> of a string
+are the integers less than the length of the string. The first character of a
+string has index 0, the second has index 1, and so on.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string?_313">
+            <span>string?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is a string, otherwise returns #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-string_302">
+            <span>make-string</span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">char</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a newly allocated string of length <i node-type="i">k</i>. If _char_is given, then all elements of the string are initialized to <i node-type="i">char</i>, otherwise
+the contents of the string are <code node-type="code">#\space</code>.</p>
+        <p node-type="paragraph">These are equivalence:
+<div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(make-string 10)</code></pre>
+          <span />
+          <span>(code (make-string 10 #\\space))</span>
+        </div></p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string_264">
+            <span>string</span>
+            <span>
+              <i node-type="i">char</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a newly allocated string composed of the arguments.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-length_294">
+            <span>string-length</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the number of characters in the given <i node-type="i">string</i> as an
+exact integer object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-ref_301">
+            <span>string-ref</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">fallback</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] The <code node-type="code">string-ref</code> procedure returns character. If a third
+argument is given ant <i node-type="i">k</i> is not a valid index, it returns <i node-type="i">fallback</i>,
+otherwise raises <code node-type="code">&amp;assertion</code>.</p>
+        <p node-type="paragraph"><i node-type="i">k</i> of string using zero-origin indexing.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string=?_310">
+            <span>string=?</span>
+            <span>
+              <i node-type="i">string1</i>
+            </span>
+            <span>
+              <i node-type="i">string2</i>
+            </span>
+            <span>
+              <i node-type="i">string3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if the <i node-type="i">strings</i> are the same length and contain the
+same characters in the same positions. Otherwise, the <code node-type="code">string=?</code> procedure
+returns #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string<?_309">
+            <span>string&lt;?</span>
+            <span>
+              <i node-type="i">string1</i>
+            </span>
+            <span>
+              <i node-type="i">string2</i>
+            </span>
+            <span>
+              <i node-type="i">string3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string&gt;?_312">
+            <span>string&gt;?</span>
+            <span>
+              <i node-type="i">string1</i>
+            </span>
+            <span>
+              <i node-type="i">string2</i>
+            </span>
+            <span>
+              <i node-type="i">string3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string<=?_308">
+            <span>string&lt;=?</span>
+            <span>
+              <i node-type="i">string1</i>
+            </span>
+            <span>
+              <i node-type="i">string2</i>
+            </span>
+            <span>
+              <i node-type="i">string3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string&gt;=?_311">
+            <span>string&gt;=?</span>
+            <span>
+              <i node-type="i">string1</i>
+            </span>
+            <span>
+              <i node-type="i">string2</i>
+            </span>
+            <span>
+              <i node-type="i">string3</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These procedures are the lexicographic extensions to strings of the
+corresponding orderings on characters. For example, <code node-type="code">string&lt;?</code> is the
+lexicographic ordering on strings induced by the ordering <code node-type="code">char&lt;?</code> on
+characters. If two strings differ in length but are the same up to the length of
+the shorter string, the shorter string is considered to be lexicographically less
+than the longer string.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="substring_317">
+            <span>substring</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">start</i>
+            </span>
+            <span>
+              <i node-type="i">end</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">String</i> must be a string, and <i node-type="i">start</i> and <i node-type="i">end</i> must
+be exact integer objects satisfying</p>
+        <p node-type="paragraph">0 ≤ <i node-type="i">start</i> ≤ <i node-type="i">end</i> ≤ <code node-type="code">(string-length _string_)</code>.</p>
+        <p node-type="paragraph">The <code node-type="code">substring</code> procedure returns a newly allocated string formed from the
+characters of string beginning with index <i node-type="i">start</i> (inclusive) and ending with
+index <i node-type="i">end</i> (exclusive).</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-append_279">
+            <span>string-append</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a newly allocated string whose characters form the
+concatenation of the given <i node-type="i">strings</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-&gt;list_269">
+            <span>string-&gt;list</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="list-&gt;string_32">
+            <span>list-&gt;string</span>
+            <span>
+              <i node-type="i">list</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] <i node-type="i">List</i> must be a list of characters.</p>
+        <p node-type="paragraph">The <code node-type="code">string-&gt;list</code> procedure returns a newly allocated list of the
+characters that make up the given <i node-type="i">string</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">list-&gt;string</code> procedure returns a newly allocated string formed from
+the characters in <i node-type="i">list</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">string-&gt;list</code> and <code node-type="code">list-&gt;string</code> procedures are inverses so far
+as <code node-type="code">equal?</code> is concerned.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">start</i> and <i node-type="i">end</i> are given, it restrict the
+conversion range. It convert from <i node-type="i">start</i> (inclusive) to <i node-type="i">end</i>(exclusive).</p>
+        <p node-type="paragraph">If only <i node-type="i">start</i> is given, then the <i node-type="i">end</i> is the length of given string.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-for-each_292">
+            <span>string-for-each</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">string1</i>
+            </span>
+            <span>
+              <i node-type="i">string2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] <i node-type="i">Proc</i> should accept as many arguments as there are <i node-type="i">strings</i>.
+The <code node-type="code">string-for-each</code> procedure applies <i node-type="i">proc</i> element-wise to the
+characters of the <i node-type="i">strings</i> for its side effects, in order from the first
+characters to the last. The return values of <code node-type="code">string-for-each</code> are unspecified.</p>
+        <p node-type="paragraph">Analogous to for-each.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-copy_287">
+            <span>string-copy</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(start</i>
+            </span>
+            <span>
+              <i node-type="i">0)</i>
+            </span>
+            <span>
+              <i node-type="i">(end</i>
+            </span>
+            <span>
+              <i node-type="i">-1)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] Returns a newly allocated copy of the given <i node-type="i">string</i>.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">start</i> was given, the procedure copies from the given
+<i node-type="i">start</i> index.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">end</i> was given, the procedure copies to the given
+<i node-type="i">end</i> index (exclusive).</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Vectors">Vectors</a>
+        </h3>
+        <p node-type="paragraph">Vectors are heterogeneous structures whose elements are indexed by integers. A
+vector typically occupies less space than a list of the same length, and the
+average time needed to access a randomly chosen element is typically less for the
+vector than for the list.</p>
+        <p node-type="paragraph">The <i node-type="i">length</i> of a vector is the number of elements that it contains. This
+number is a non-negative integer that is fixed when the vector is created. The
+<i node-type="i">valid indices</i> of a vector are the exact non-negative integer objects less
+than the length of the vector. The first element in a vector is indexed by zero,
+and the last element is indexed by one less than the length of the vector.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="vector?_37">
+            <span>vector?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is a vector. Otherwise returns #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-vector_324">
+            <span>make-vector</span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">fill</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a newly allocated vector of <i node-type="i">k</i> elements. If a second
+argument is given, then each element is initialized to <i node-type="i">fill</i>. Otherwise the
+initial contents of each element is unspecified.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="vector_14">
+            <span>vector</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a newly allocated vector whose elements contain the given
+arguments. Analogous to <code node-type="code">list</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="vector-length_28">
+            <span>vector-length</span>
+            <span>
+              <i node-type="i">vector</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the number of elements in <i node-type="i">vector</i> as an exact integer
+object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="vector-ref_31">
+            <span>vector-ref</span>
+            <span>
+              <i node-type="i">vector</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">fallback</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] The <code node-type="code">vector-ref</code> procedure returns the contents of element
+<i node-type="i">k</i> of <i node-type="i">vector</i>. If a third argument is given and <i node-type="i">k</i> is not a valid
+index, it returns <i node-type="i">fallback</i>, otherwise raises <code node-type="code">&amp;assertion</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="vector-ref_30">
+            <span>vector-ref</span>
+            <span>
+              <i node-type="i">vector</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">K</i> must be a valid index of <i node-type="i">vector</i>. The <code node-type="code">vector-set!</code>procedure stores <i node-type="i">obj</i> in element <i node-type="i">k</i> of <i node-type="i">vector</i>, and returns
+unspecified values.</p>
+        <p node-type="paragraph">It raises <code node-type="code">&amp;assertion</code> when it attempt to modify immutable vector on R6RS
+mode.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="vector-&gt;list_16">
+            <span>vector-&gt;list</span>
+            <span>
+              <i node-type="i">vector</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">start</i>
+            </span>
+            <span>
+              <i node-type="i">end</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="list-&gt;vector_33">
+            <span>list-&gt;vector</span>
+            <span>
+              <i node-type="i">list</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">start</i>
+            </span>
+            <span>
+              <i node-type="i">end</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] The <code node-type="code">vector-&gt;list</code> procedure returns a newly allocated list
+of the objects contained in the elements of <i node-type="i">vector</i>. The <code node-type="code">list-&gt;vector</code>procedure returns a newly created vector initialized to the elements of the list
+<i node-type="i">list</i>. The optional <i node-type="i">start</i> and <i node-type="i">end</i> arguments limit the range of
+the source.</p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(vector-&gt;list '#(1 2 3 4 5))</code></pre>
+            <span />
+            <span>(1 2 3 4 5)</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(list-&gt;vector '(1 2 3 4 5))</code></pre>
+            <span />
+            <span>#(1 2 3 4 5)</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(vector-&gt;list '#(1 2 3 4 5) 2 4)</code></pre>
+            <span />
+            <span>(3 4)</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(list-&gt;vector (circular-list 'a 'b 'c) 1 6)</code></pre>
+            <span />
+            <span>#(b c a b c)</span>
+          </div>
+        </p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="vector-fill!_24">
+            <span>vector-fill!</span>
+            <span>
+              <i node-type="i">vector</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">start</i>
+            </span>
+            <span>
+              <i node-type="i">end</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] Stores <i node-type="i">fill</i> in every element of <i node-type="i">vector</i> and returns
+unspecified values. Optional <i node-type="i">start</i> and <i node-type="i">end</i> limits the range of effect
+between <i node-type="i">start</i>-th index (inclusive) to <i node-type="i">end</i>-th index (exclusive).
+<i node-type="i">Start</i> defaults to zero, and <i node-type="i">end</i> defaults to the length of <i node-type="i">vector</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="vector-map_29">
+            <span>vector-map</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">vector1</i>
+            </span>
+            <span>
+              <i node-type="i">vactor2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] <i node-type="i">Proc</i> should accept as many arguments as there are <i node-type="i">vectors</i>.
+The <code node-type="code">vector-map</code> procedure applies <i node-type="i">proc</i> element-wise to the elements
+of the <i node-type="i">vectors</i> and returns a vector of the results, in order. If multiple
+returns occur from <code node-type="code">vector-map</code>, the return values returned by earlier
+returns are not mutated.</p>
+        <p node-type="paragraph">Analogous to <code node-type="code">map</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="vector-for-each_27">
+            <span>vector-for-each</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">vector1</i>
+            </span>
+            <span>
+              <i node-type="i">vactor2</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] <i node-type="i">Proc</i> should accept as many arguments as there are <i node-type="i">vectors</i>.
+The <code node-type="code">vector-for-each</code> procedure applies <i node-type="i">proc</i> element-wise to the
+elements of the <i node-type="i">vectors</i> for its side effects, in order from the first
+elements to the last. The return values of <code node-type="code">vector-for-each</code> are unspecified.</p>
+        <p node-type="paragraph">Analogous to <code node-type="code">for-each</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Errors-and-violations">Errors and violations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="error_33">
+            <span>error</span>
+            <span>
+              <i node-type="i">who</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">irritant</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="assertion-violation_60">
+            <span>assertion-violation</span>
+            <span>
+              <i node-type="i">who</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+            <span>
+              <i node-type="i">irritant</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Who</i> must be a string or a symbol or #f. <i node-type="i">Message</i> must be
+a string. The <i node-type="i">irritants</i> are arbitrary objects.</p>
+        <p node-type="paragraph">These procedures raise an exception. The <code node-type="code">error</code> procedure should be called
+when an error has occurred, typically caused by something that has gone wrong in
+the interaction of the program with the external world or the user. The
+<code node-type="code">assertion-violation</code> procedure should be called when an invalid call to a
+procedure was made, either passing an invalid number of arguments, or passing an
+argument that it is not specified to handle.</p>
+        <p node-type="paragraph">The <i node-type="i">who</i> argument should describe the procedure or operation that detected
+the exception. The <i node-type="i">message</i> argument should describe the exceptional situation.
+The <i node-type="i">irritants</i> should be the arguments to the operation that detected the
+operation.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Control-features">Control features</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="apply_50">
+            <span>apply</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">arg1</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+            <span>
+              <i node-type="i">rest-args</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Rest-args</i> must be a list. <i node-type="i">Proc</i> should accept n arguments,
+where n is number of <i node-type="i">args</i> plus the length of <i node-type="i">rest-args</i>. The <code node-type="code">apply</code>procedure calls <i node-type="i">proc</i> with the elements of the list
+<code node-type="code">(append (list _arg1_ ...) _rest-args_)</code> as the actual arguments.</p>
+        <p node-type="paragraph">If a call to <code node-type="code">apply</code> occurs in a tail context, the call to <code node-type="code">proc</code> is
+also in a tail context.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-current-continuation_16">
+            <span>call-with-current-continuation</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call/cc_33">
+            <span>call/cc</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Proc</i> should accept one argument. The procedure
+<code node-type="code">call-with-current-continuation</code> (which is the same as the procedure
+<code node-type="code">call/cc</code>) packages the current continuation as an "escape procedure" and
+passes it as an argument to <i node-type="i">proc</i>. The escape procedure is a Scheme procedure
+that, if it is later called, will abandon whatever continuation is in effect a
+that later time and will instead reinstate the continuation that was in effect
+when the escape procedure was created. Calling the escape procedure may cause
+the invocation of <i node-type="i">before</i> and <i node-type="i">after</i> procedures installed using
+<code node-type="code">dynamic-wind</code>.</p>
+        <p node-type="paragraph">The escape procedure accepts the same number of arguments as the continuation
+of the original call to <code node-type="code">call-with-current-continuation</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="values_13">
+            <span>values</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns <i node-type="i">objs</i> as multiple values.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-values_32">
+            <span>call-with-values</span>
+            <span>
+              <i node-type="i">producer</i>
+            </span>
+            <span>
+              <i node-type="i">consumer</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Producer</i> must be a procedure and should accept zero arguments.
+<i node-type="i">Consumer</i> must be a procedure and should accept as many values as
+<i node-type="i">producer</i> returns. The <code node-type="code">call-with-values</code> procedure calls _producer_with no arguments and a continuation that, when passed some values, calls the
+<i node-type="i">consumer</i> procedure with those values as arguments. The continuation for
+the call to <i node-type="i">consumer</i> is the continuation of the call to <code node-type="code">call-with-values</code>.</p>
+        <p node-type="paragraph">If a call to <code node-type="code">call-with-values</code> occurs in a tail context, the call to
+<i node-type="i">consumer</i> is also in a tail context.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="dynamic-wind_167">
+            <span>dynamic-wind</span>
+            <span>
+              <i node-type="i">before</i>
+            </span>
+            <span>
+              <i node-type="i">thunk</i>
+            </span>
+            <span>
+              <i node-type="i">after</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Before</i>, <i node-type="i">thunk</i>, and <i node-type="i">after</i> must be procedures, and
+each should accept zero arguments. These procedures may return any number of
+values. The <code node-type="code">dynamic-wind</code> procedure calls <i node-type="i">thunk</i> without arguments,
+returning the results of this call. Moreover, <code node-type="code">dynamic-wind</code> calls _before_without arguments whenever the dynamic extent of the call to <i node-type="i">thunk</i> is
+entered, and <i node-type="i">after</i> without arguments whenever the dynamic extent of the
+call to <i node-type="i">thunk</i> is exited. Thus, in the absence of calls to escape procedures
+created by <code node-type="code">call-with-current-continuation</code>, <code node-type="code">dynamic-wind</code> calls
+<i node-type="i">before</i>, <i node-type="i">thunk</i>, and <i node-type="i">after</i>, in that order.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Iteration">Iteration</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="let_6">
+            <span>let</span>
+            <span>
+              <i node-type="i">variable</i>
+            </span>
+            <span>
+              <i node-type="i">bindings</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] “Named let” is a variant on the syntax of <code node-type="code">let</code> that provides
+a general looping construct and may also be used to express recursion. It has
+the same syntax and semantics as ordinary <code node-type="code">let</code> except that _variable_is bound within <i node-type="i">body</i> to a procedure whose parameters are the bound variables
+and whose body is <i node-type="i">body</i>. Thus the execution of <i node-type="i">body</i> may be repeated
+by invoking the procedure named by <i node-type="i">variable</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Quasiquote">Quasiquote</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="quasiquote_0">
+            <span>quasiquote</span>
+            <span>
+              <i node-type="i">qq-template</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary Syntax</span>
+          <a name="unquote_13">
+            <span>unquote</span>
+            <span>
+              <i node-type="i">qq-template</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Auxiliary Syntax</span>
+          <a name="unquote-splicing_14">
+            <span>unquote-splicing</span>
+            <span>
+              <i node-type="i">qq-template</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] "Quasiquote" expressions is useful for constructing a list or
+vector structure when some but not all of the desired structure is known in
+advance.</p>
+        <p node-type="paragraph"><i node-type="i">Qq-template</i> should be as specified by the grammar at the end of this entry.</p>
+        <p node-type="paragraph">If no <code node-type="code">unquote</code> or <code node-type="code">unquote-splicing</code> forms appear within the
+<i node-type="i">qq-template</i>, the result of evaluating <code node-type="code">(quasiquote _qq-template_)</code>is equivalent to the result of evaluating <code node-type="code">(quote _qq-template_)</code>.</p>
+        <p node-type="paragraph">If an <code node-type="code">(unquote _expression_ ...)</code> form appears inside a <i node-type="i">qq-template</i>,
+however, the expressions are evaluated <code node-type="code">("unquoted")</code> and their results are
+inserted into the structure instead of the <code node-type="code">unquote</code> form.</p>
+        <p node-type="paragraph">If an <code node-type="code">(unquote-splicing _expression_ ...)</code> form appears inside a
+<i node-type="i">qq-template</i>, then the expressions must evaluate to lists; the opening and
+closing parentheses of the lists are then "stripped away" and the elements of
+the lists are inserted in place of the <code node-type="code">unquote-splicing</code> form.</p>
+        <p node-type="paragraph">Any <code node-type="code">unquote-splicing</code> or multi-operand unquote form must appear only within
+a list or vector <i node-type="i">qq-template</i>.</p>
+        <p node-type="paragraph">Note: even though <code node-type="code">unquote</code> and <code node-type="code">unquote-splicing</code> are bounded, however
+it does not work with import prefix nor renamed import. This may be fixed in future.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Binding-constructs-for-syntactic-keywords">Binding constructs for syntactic keywords</a>
+        </h3>
+        <p node-type="paragraph">The <code node-type="code">let-syntax</code> and <code node-type="code">letrec-syntax</code> forms bind keywords. On R6RS mode
+it works like a <code node-type="code">begin</code> form, a <code node-type="code">let-syntax</code> or <code node-type="code">letrec-syntax</code>form may appear in a definition context, in which case it is treated as a
+definition, and the forms in the body must also be definitions. A <code node-type="code">let-syntax</code>or <code node-type="code">letrec-syntax</code> form may also appear in an expression context, in which
+case the forms within their bodies must be expressions.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="let-syntax_17">
+            <span>let-syntax</span>
+            <span>
+              <i node-type="i">bindings</i>
+            </span>
+            <span>
+              <i node-type="i">form</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Bindings</i> must have the form</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>((_keyword_ _expression_) ...)</code></pre>
+        </p>
+        <p node-type="paragraph">Each <i node-type="i">keyword</i> is an identifier, and each <i node-type="i">expression</i> is an expression
+that evaluates, at macro-expansion time, to a transformer. Transformers may be
+created by <code node-type="code">syntax-rules</code> or <code node-type="code">identifier-syntax</code> or by one of the other
+mechanisms described in library chapter on <a href="rnrs.syntax-case.6.html#rnrs.syntax-case.6">"syntax-case"</a>.
+It is a syntax violation for <i node-type="i">keyword</i> to appear more than once in the list
+of keywords being bound.</p>
+        <p node-type="paragraph">The <i node-type="i">forms</i> are expanded in the syntactic environment obtained by extending
+the syntactic environment of the <code node-type="code">let-syntax</code> form with macros whose keywords
+are the <i node-type="i">keywords</i>, bound to the specified transformers. Each binding of a
+<i node-type="i">keyword</i> has the <i node-type="i">forms</i> as its region.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="letrec-syntax_23">
+            <span>letrec-syntax</span>
+            <span>
+              <i node-type="i">bindings</i>
+            </span>
+            <span>
+              <i node-type="i">form</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Bindings</i> must have the form</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>((_keyword_ _expression_) ...)</code></pre>
+        </p>
+        <p node-type="paragraph">Each <i node-type="i">keyword</i> is an identifier, and each <i node-type="i">expression</i> is an expression
+that evaluates, at macro-expansion time, to a transformer. Transformers may be
+created by <code node-type="code">syntax-rules</code> or <code node-type="code">identifier-syntax</code> or by one of the other
+mechanisms described in library chapter on <a href="rnrs.syntax-case.6.html#rnrs.syntax-case.6">"syntax-case"</a>.
+It is a syntax violation for <i node-type="i">keyword</i> to appear more than once in the list
+of keywords being bound.</p>
+        <p node-type="paragraph">The <i node-type="i">forms</i> are expanded in the syntactic environment obtained by extending
+the syntactic environment of the <code node-type="code">letrec-syntax</code> form with macros whose
+keywords are the <i node-type="i">keywords</i>, bound to the specified transformers. Each
+binding of a <i node-type="i">keyword</i> has the bindings as well as the <i node-type="i">forms</i> within its
+region, so the transformers can transcribe <i node-type="i">forms</i> into uses of the macros
+introduced by the <code node-type="code">letrec-syntax</code> form.</p>
+        <p node-type="paragraph">Note: The <i node-type="i">forms</i> of a <code node-type="code">let-syntax</code> and a <code node-type="code">letrec-syntax</code> form are
+treated, whether in definition or expression context, as if wrapped in an implicit
+<code node-type="code">begin</code> on R6RS mode, it is, then, treated as if wrapped in an implicit
+<code node-type="code">let</code> on compatible mode. Thus on compatible mode, it creates a scope.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Macro-transformers">Macro transformers</a>
+        </h3>
+        <p node-type="paragraph">In R6RS, it requires <code node-type="code">'_'</code> <code node-type="code">'...'</code> as bounded symbols but in Sagittarius
+these are not bound. And if import clause has rename or prefix these auxiliary
+syntax are not be renamed or prefixed. This behaivour may be fixed in future.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="syntax-rules_372">
+            <span>syntax-rules</span>
+            <span>
+              <i node-type="i">(literal</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+            <span>
+              <i node-type="i">)</i>
+            </span>
+            <span>
+              <i node-type="i">rule</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Each <i node-type="i">literal</i> must be an identifier. Each <i node-type="i">rule</i> must have
+the following form:</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(srpattern template)</code></pre>
+        </p>
+        <p node-type="paragraph">An <i node-type="i">srpattern</i> is a restricted form of <i node-type="i">pattern</i>, namely, a nonempty
+<i node-type="i">pattern</i> in one of four parenthesized forms below whose first subform is
+an identifier or an underscore <code node-type="code">_</code>. A <i node-type="i">pattern</i> is an identifier,
+constant, or one of the following.</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">(pattern ...)</p>
+          </li>
+          <li>
+            <p node-type="paragraph">(pattern pattern ... . pattern)</p>
+          </li>
+          <li>
+            <p node-type="paragraph">(pattern ... pattern ellipsis pattern ...)</p>
+          </li>
+          <li>
+            <p node-type="paragraph">(pattern ... pattern ellipsis pattern ... . pattern)</p>
+          </li>
+          <li>
+            <p node-type="paragraph">#(pattern ...)</p>
+          </li>
+          <li>
+            <p node-type="paragraph">#(pattern ... pattern ellipsis pattern ...)</p>
+          </li>
+        </ul>
+        <p node-type="paragraph">An <i node-type="i">ellipsis</i> is the identifier <code node-type="code">"..."</code> (three periods).</p>
+        <p node-type="paragraph">A <i node-type="i">template</i> is a pattern variable, an identifier that is not a pattern
+variable, a pattern datum, or one of the following.</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph">(subtemplate ...)</p>
+          </li>
+          <li>
+            <p node-type="paragraph">(subtemplate ... . template)</p>
+          </li>
+          <li>
+            <p node-type="paragraph">#(subtemplate ...)</p>
+          </li>
+        </ul>
+        <p node-type="paragraph">A <i node-type="i">subtemplate</i> is a <i node-type="i">template</i> followed by zero or more ellipses.</p>
+        <p node-type="paragraph">An instance of <code node-type="code">syntax-rules</code> evaluates, at macro-expansion time, to a new
+macro transformer by specifying a sequence of hygienic rewrite rules. A use of a
+macro whose keyword is associated with a transformer specified by <code node-type="code">syntax-rules</code>is matched against the patterns contained in the <i node-type="i">rules</i>, beginning with the
+leftmost <i node-type="i">rule</i>. When a match is found, the macro use is transcribed hygienically
+according to the <i node-type="i">template</i>. It is a syntax violation when no match is found.</p>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="identifier-syntax_17">
+            <span>identifier-syntax</span>
+            <span>
+              <i node-type="i">template</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Syntax</span>
+          <a name="identifier-syntax_16">
+            <span>identifier-syntax</span>
+            <span>
+              <i node-type="i">(id1</i>
+            </span>
+            <span>
+              <i node-type="i">template1)</i>
+            </span>
+            <span>
+              <i node-type="i">(set!</i>
+            </span>
+            <span>
+              <i node-type="i">id2</i>
+            </span>
+            <span>
+              <i node-type="i">pattern)</i>
+            </span>
+            <span>
+              <i node-type="i">template2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] The <i node-type="i">ids</i> must be identifiers. The <i node-type="i">templates</i> must be as
+for <code node-type="code">syntax-rules</code>.</p>
+        <p node-type="paragraph">When a keyword is bound to a transformer produced by the first form of
+<code node-type="code">identifier-syntax</code>, references to the keyword within the scope of the
+binding are replaced by <i node-type="i">template</i>.</p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(define p (cons 4 5))</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(define-syntax p.car (identifier-syntax (car p)))</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>p.car</code></pre>
+            <span />
+            <span>4</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>(set! p.car 15)</code></pre>
+            <span />
+            <span>&amp;syntax exception</span>
+          </div>
+        </p>
+        <p node-type="paragraph">The second, more general, form of <code node-type="code">identifier-syntax</code> permits the transformer
+to determine what happens when <code node-type="code">set!</code> is used. In this case, uses of the
+identifier by itself are replaced by <i node-type="i">template1</i>, and uses of <code node-type="code">set!</code> with
+the identifier are replaced by <i node-type="i">template2</i><pre lang="" node-type="snipet"><code>(define p (cons 4 5))</code></pre></p>
+        <pre lang="scheme" node-type="block"><code>(define-syntax p.car
+  (identifier-syntax
+    (_ (car p))
+    ((set! _ e) (set-car! p e))))
+</code></pre>
+        <p node-type="paragraph">
+          <pre lang="" node-type="snipet"><code>(set! p.car 15)</code></pre>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>p.car</code></pre>
+            <span />
+            <span>15</span>
+          </div>
+        </p>
+        <p node-type="paragraph">
+          <div node-type="snipet" class="snipet">
+            <pre lang="" node-type="snipet"><code>p</code></pre>
+            <span />
+            <span>(15 5)</span>
+          </div>
+        </p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./section32.html">Top library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.unicode.6.html">Unicode</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

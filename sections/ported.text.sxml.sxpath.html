@@ -1,0 +1,978 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./ported.text.sxml.ssax.html">(text sxml ssax) - Functional XML parser</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./ported.packrat.html">(packrat) -- Packrat parser library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="ported.text.sxml.sxpath">(text sxml sxpath) - Functional XML parser</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(text sxml sxpath)_177">
+          <span>(text sxml sxpath)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library is ported from Kirill Lisovsky's SXPath which is based on
+Oleg Kiselyov's SXPath. The documents are from the original file.</p>
+      <p node-type="paragraph">SXPath is a query language for SXML, an instance of XML Information
+set (Infoset) in the form of s-expressions. See SSAX.scm for the
+definition of SXML and more details. SXPath is also a translation into
+Scheme of an XML Path Language, XPath:</p>
+      <blockquote node-type="blockquote">
+        <p node-type="paragraph">http://www.w3.org/TR/xpath</p>
+      </blockquote>
+      <p node-type="paragraph">XPath and SXPath describe means of selecting a set of Infoset's items
+or their properties.</p>
+      <p node-type="paragraph">To facilitate queries, XPath maps the XML Infoset into an explicit
+tree, and introduces important notions of a location path and a
+current, context node. A location path denotes a selection of a set of
+nodes relative to a context node. Any XPath tree has a distinguished,
+root node -- which serves as the context node for absolute location
+paths. Location path is recursively defined as a location step joined
+with a location path. A location step is a simple query of the
+database relative to a context node. A step may include expressions
+that further filter the selected set. Each node in the resulting set
+is used as a context node for the adjoining location path. The result
+of the step is a union of the sets returned by the latter location
+paths.</p>
+      <p node-type="paragraph">The SXML representation of the XML Infoset (see SSAX.scm) is rather
+suitable for querying as it is. Bowing to the XPath specification,
+we will refer to SXML information items as 'Nodes':</p>
+      <pre lang="scheme" node-type="block"><code>	&lt;Node&gt; ::= &lt;Element&gt; | &lt;attributes-coll&gt; | &lt;attrib&gt;
+		   | "text string" | &lt;PI&gt;
+</code></pre>
+      <p node-type="paragraph">This production can also be described as</p>
+      <pre lang="scheme" node-type="block"><code>	&lt;Node&gt; ::= (name . &lt;Nodelist&gt;) | "text string"
+</code></pre>
+      <p node-type="paragraph">An (ordered) set of nodes is just a list of the constituent nodes:</p>
+      <pre lang="scheme" node-type="block"><code>	&lt;Nodelist&gt; ::= (&lt;Node&gt; ...)
+</code></pre>
+      <p node-type="paragraph">Nodelists, and Nodes other than text strings are both lists. A
+&lt;Nodelist&gt; however is either an empty list, or a list whose head is not
+a symbol.  A symbol at the head of a node is either an XML name (in
+which case it's a tag of an XML element), or an administrative name
+such as '@'.  This uniform list representation makes processing rather
+simple and elegant, while avoiding confusion. The multi-branch tree
+structure formed by the mutually-recursive datatypes &lt;Node&gt; and
+&lt;Nodelist&gt; lends itself well to processing by functional languages.</p>
+      <p node-type="paragraph">A location path is in fact a composite query over an XPath tree or
+its branch. A singe step is a combination of a projection, selection
+or a transitive closure. Multiple steps are combined via join and
+union operations. This insight allows us to <i node-type="i">elegantly</i> implement
+XPath as a sequence of projection and filtering primitives --
+converters -- joined by <i node-type="i">combinators</i>. Each converter takes a node
+and returns a nodelist which is the result of the corresponding query
+relative to that node. A converter can also be called on a set of
+nodes. In that case it returns a union of the corresponding queries over
+each node in the set. The union is easily implemented as a list
+append operation as all nodes in a SXML tree are considered
+distinct, by XPath conventions. We also preserve the order of the
+members in the union. Query combinators are high-order functions:
+they take converter(s) (which is a Node|Nodelist -&gt; Nodelist function)
+and compose or otherwise combine them. We will be concerned with
+only relative location paths [XPath]: an absolute location path is a
+relative path applied to the root node.</p>
+      <p node-type="paragraph">Similarly to XPath, SXPath defines full and abbreviated notations
+for location paths. In both cases, the abbreviated notation can be
+mechanically expanded into the full form by simple rewriting
+rules. In case of SXPath the corresponding rules are given as
+comments to a sxpath function, below. The regression test suite at
+the end of this file shows a representative sample of SXPaths in
+both notations, juxtaposed with the corresponding XPath
+expressions. Most of the samples are borrowed literally from the
+XPath specification, while the others are adjusted for our running
+example, tree1.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Basic-converters-and-applicators">Basic converters and applicators</a>
+        </h3>
+        <p node-type="paragraph">A converter is a function</p>
+        <pre lang="scheme" node-type="block"><code>	type Converter = Node|Nodelist -&gt; Nodelist
+</code></pre>
+        <p node-type="paragraph">A converter can also play a role of a predicate: in that case, if a
+converter, applied to a node or a nodelist, yields a non-empty
+nodelist, the converter-predicate is deemed satisfied. Throughout
+this file a nil nodelist is equivalent to #f in denoting a failure.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="nodeset?_22">
+            <span>nodeset?</span>
+            <span>
+              <i node-type="i">x</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given object is a nodelist</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="as-nodeset_56">
+            <span>as-nodeset</span>
+            <span>
+              <i node-type="i">x</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">If x is a nodelist - returns it as is, otherwise wrap it in a list.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:element?_333">
+            <span>sxml:element?</span>
+            <span>
+              <i node-type="i">x</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Predicate which returns #t if &lt;obj&gt; is SXML element, otherwise returns #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="ntype-names??_29">
+            <span>ntype-names??</span>
+            <span>
+              <i node-type="i">crit</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The function ntype-names?? takes a list of acceptable node names as a
+criterion and returns a function, which, when applied to a node,
+will return #t if the node name is present in criterion list and #f
+otherwise.</p>
+        <pre lang="scheme" node-type="block"><code>	ntype-names?? :: ListOfNames -&gt; Node -&gt; Boolean
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="ntype-names??_28">
+            <span>ntype-names??</span>
+            <span>
+              <i node-type="i">crit</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The function ntype?? takes a type criterion and returns
+a function, which, when applied to a node, will tell if the node satisfies
+the test.</p>
+        <pre lang="scheme" node-type="block"><code>	ntype?? :: Crit -&gt; Node -&gt; Boolean
+</code></pre>
+        <p node-type="paragraph">The criterion 'crit' is
+one of the following symbols:</p>
+        <dl node-type="dlist">
+          <dt>id</dt>
+          <dd>
+            <p node-type="paragraph">tests if the Node has the right name (id)</p>
+          </dd>
+          <dt>@</dt>
+          <dd>
+            <p node-type="paragraph">tests if the Node is an &lt;attributes-list&gt;</p>
+          </dd>
+          <dt>*</dt>
+          <dd>
+            <p node-type="paragraph">tests if the Node is an &lt;Element&gt;</p>
+          </dd>
+          <dt>*text*</dt>
+          <dd>
+            <p node-type="paragraph">tests if the Node is a text node</p>
+          </dd>
+          <dt>*data*</dt>
+          <dd>
+            <p node-type="paragraph">tests if the Node is a data node (text, number, boolean,
+etc., but not pair)</p>
+          </dd>
+          <dt>*PI*</dt>
+          <dd>
+            <p node-type="paragraph">tests if the Node is a PI node</p>
+          </dd>
+          <dt>*COMMENT*</dt>
+          <dd>
+            <p node-type="paragraph">tests if the Node is a COMMENT node</p>
+          </dd>
+          <dt>*ENTITY*</dt>
+          <dd>
+            <p node-type="paragraph">tests if the Node is a ENTITY node</p>
+          </dd>
+          <dt>*any*</dt>
+          <dd>
+            <p node-type="paragraph">#t for any type of Node</p>
+          </dd>
+        </dl>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="ntype-namespace-id??_30">
+            <span>ntype-namespace-id??</span>
+            <span>
+              <i node-type="i">ns-id</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">This function takes a namespace-id, and returns a predicate
+Node -&gt; Boolean, which is #t for nodes with this very namespace-id.
+<i node-type="i">ns-id</i> is a string</p>
+        <p node-type="paragraph"><code node-type="code">(ntype-namespace-id?? #f)</code> will be #t for nodes with non-qualified names.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:complement_330">
+            <span>sxml:complement</span>
+            <span>
+              <i node-type="i">pred</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">This function takes a predicate and returns it complemented
+That is if the given predicate yelds #f or '() the complemented one<br>yields the given node (#t) and vice versa.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="node-eq?_14">
+            <span>node-eq?</span>
+            <span>
+              <i node-type="i">other</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="node-equal?_15">
+            <span>node-equal?</span>
+            <span>
+              <i node-type="i">other</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Curried equivalence converter-predicates</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mode-pos_412">
+            <span>mode-pos</span>
+            <span>
+              <i node-type="i">n</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">node-pos:: N -&gt; Nodelist -&gt; Nodelist, or</p>
+        <p node-type="paragraph">node-pos:: N -&gt; Converter</p>
+        <p node-type="paragraph">Select the N'th element of a Nodelist and return as a singular Nodelist;
+Return an empty nodelist if the Nth element does not exist.</p>
+        <p node-type="paragraph">((node-pos 1) Nodelist) selects the node at the head of the Nodelist,
+if exists; ((node-pos 2) Nodelist) selects the Node after that, if
+exists.</p>
+        <p node-type="paragraph">N can also be a negative number: in that case the node is picked from
+the tail of the list.</p>
+        <p node-type="paragraph">((node-pos -1) Nodelist) selects the last node of a non-empty nodelist;
+((node-pos -2) Nodelist) selects the last but one node, if exists.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:filter_336">
+            <span>sxml:filter</span>
+            <span>
+              <i node-type="i">pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">filter:: Converter -&gt; Converter</p>
+        <p node-type="paragraph">A filter applicator, which introduces a filtering context. The argument
+converter is considered a predicate, with either #f or nil result meaning
+failure.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="take-until_4">
+            <span>take-until</span>
+            <span>
+              <i node-type="i">pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">take-until:: Converter -&gt; Converter, or</p>
+        <p node-type="paragraph">take-until:: Pred -&gt; Node|Nodelist -&gt; Nodelist</p>
+        <p node-type="paragraph">Given a converter-predicate and a nodelist, apply the predicate to
+each element of the nodelist, until the predicate yields anything but #f or
+nil. Return the elements of the input nodelist that have been processed
+till that moment (that is, which fail the predicate).</p>
+        <p node-type="paragraph">take-until is a variation of the filter above: take-until passes
+elements of an ordered input set till (but not including) the first
+element that satisfies the predicate.</p>
+        <p node-type="paragraph">The nodelist returned by ((take-until (not pred)) nset) is a subset --
+to be more precise, a prefix -- of the nodelist returned by
+((filter pred) nset)</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="take-after_3">
+            <span>take-after</span>
+            <span>
+              <i node-type="i">pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">take-after:: Converter -&gt; Converter, or</p>
+        <p node-type="paragraph">take-after:: Pred -&gt; Node|Nodelist -&gt; Nodelist</p>
+        <p node-type="paragraph">Given a converter-predicate and a nodelist, apply the predicate to
+each element of the nodelist, until the predicate yields anything but #f or
+nil. Return the elements of the input nodelist that have not been processed:
+that is, return the elements of the input nodelist that follow the first
+element that satisfied the predicate.</p>
+        <p node-type="paragraph">take-after along with take-until partition an input nodelist into three
+parts: the first element that satisfies a predicate, all preceding
+elements and all following elements.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="map-union_345">
+            <span>map-union</span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">lst</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Apply proc to each element of lst and return the list of results.
+if proc returns a nodelist, splice it into the result</p>
+        <p node-type="paragraph">From another point of view, map-union is a function Converter-&gt;Converter,
+which places an argument-converter in a joining context.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="node-reverse_19">
+            <span>node-reverse</span>
+            <span>
+              <i node-type="i">node-or-nodelist</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">node-reverse :: Converter, or</p>
+        <p node-type="paragraph">node-reverse:: Node|Nodelist -&gt; Nodelist</p>
+        <p node-type="paragraph">Reverses the order of nodes in the nodelist
+This basic converter is needed to implement a reverse document order
+(see the XPath Recommendation).</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="node-trace_21">
+            <span>node-trace</span>
+            <span>
+              <i node-type="i">title</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">node-trace:: String -&gt; Converter</p>
+        <p node-type="paragraph">(node-trace title) is an identity converter. In addition it prints out
+a node or nodelist it is applied to, prefixed with the 'title'.
+This converter is very useful for debugging.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Converter-combinators">Converter combinators</a>
+        </h3>
+        <p node-type="paragraph">Combinators are higher-order functions that transmogrify a converter
+or glue a sequence of converters into a single, non-trivial
+converter. The goal is to arrive at converters that correspond to
+XPath location paths.</p>
+        <p node-type="paragraph">From a different point of view, a combinator is a fixed, named
+<i node-type="i">pattern</i> of applying converters. Given below is a complete set of
+such patterns that together implement XPath location path
+specification. As it turns out, all these combinators can be built
+from a small number of basic blocks: regular functional composition,
+map-union and filter applicators, and the nodelist union.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="select-kids_15">
+            <span>select-kids</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">select-kids:: Pred -&gt; Node -&gt; Nodelist</p>
+        <p node-type="paragraph">Given a Node, return an (ordered) subset its children that satisfy
+the Pred (a converter, actually)</p>
+        <p node-type="paragraph">select-kids:: Pred -&gt; Nodelist -&gt; Nodelist</p>
+        <p node-type="paragraph">The same as above, but select among children of all the nodes in
+the Nodelist</p>
+        <p node-type="paragraph">More succinctly, the signature of this function is
+select-kids:: Converter -&gt; Converter</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="node-self_20">
+            <span>node-self</span>
+            <span>
+              <i node-type="i">pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">node-self:: Pred -&gt; Node -&gt; Nodelist, or</p>
+        <p node-type="paragraph">node-self:: Converter -&gt; Converter</p>
+        <p node-type="paragraph">Similar to select-kids but apply to the Node itself rather
+than to its children. The resulting Nodelist will contain either one
+component, or will be empty (if the Node failed the Pred).</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="node-join_16">
+            <span>node-join</span>
+            <span>
+              <i node-type="i">selectors</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">node-join:: [LocPath] -&gt; Node|Nodelist -&gt; Nodelist, or</p>
+        <p node-type="paragraph">node-join:: [Converter] -&gt; Converter</p>
+        <p node-type="paragraph">join the sequence of location steps or paths as described
+in the title comments above.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="node-reduce_18">
+            <span>node-reduce</span>
+            <span>
+              <i node-type="i">converters</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">node-reduce:: [LocPath] -&gt; Node|Nodelist -&gt; Nodelist, or</p>
+        <p node-type="paragraph">node-reduce:: [Converter] -&gt; Converter</p>
+        <p node-type="paragraph">A regular functional composition of converters.
+From a different point of view,
+<pre lang="" node-type="snipet"><code>((apply node-reduce converters) nodelist)</code></pre></p>
+        <p node-type="paragraph">is equivalent to
+<pre lang="" node-type="snipet"><code>(foldl apply nodelist converters)</code></pre></p>
+        <p node-type="paragraph">i.e., folding, or reducing, a list of converters with the nodelist
+as a seed.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="node-or_17">
+            <span>node-or</span>
+            <span>
+              <i node-type="i">converters</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">node-or:: [Converter] -&gt; Converter</p>
+        <p node-type="paragraph">This combinator applies all converters to a given node and
+produces the union of their results.</p>
+        <p node-type="paragraph">This combinator corresponds to a union, '|' operation for XPath
+location paths.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="node-closure_13">
+            <span>node-closure</span>
+            <span>
+              <i node-type="i">test-pred</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">node-closure:: Converter -&gt; Converter</p>
+        <p node-type="paragraph">Select all <i node-type="i">descendants</i> of a node that satisfy a converter-predicate.
+This combinator is similar to select-kids but applies to
+grand... children as well.
+This combinator implements the "descendant::" XPath axis
+Conceptually, this combinator can be expressed as</p>
+        <pre lang="scheme" node-type="block"><code>(define (node-closure f)
+     (node-or
+       (select-kids f)
+	 (node-reduce (select-kids (ntype?? '*)) (node-closure f))))
+</code></pre>
+        <p node-type="paragraph">This definition, as written, looks somewhat like a fixpoint, and it
+will run forever. It is obvious however that sooner or later
+(select-kids (ntype?? '*)) will return an empty nodelist. At
+this point further iterations will no longer affect the result and
+can be stopped.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Extensions">Extensions</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:node? node_342">
+            <span>sxml:node? node</span>
+          </a>
+        </div>
+        <p node-type="paragraph">According to XPath specification 2.3, this test is true for any
+XPath node.</p>
+        <p node-type="paragraph">For SXML auxiliary lists and lists of attributes has to be excluded.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:attr-list_324">
+            <span>sxml:attr-list</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the list of attributes for a given SXML node
+Empty list is returned if the given node os not an element,
+or if it has no list of attributes</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:attribute_325">
+            <span>sxml:attribute</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Attribute axis</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:child_327">
+            <span>sxml:child</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Child axis</p>
+        <p node-type="paragraph">This function is similar to 'select-kids', but it returns an empty
+child-list for PI, Comment and Entity nodes</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:parent_345">
+            <span>sxml:parent</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Parent axis
+Given a predicate, it returns a function</p>
+        <p node-type="paragraph">RootNode -&gt; Converter</p>
+        <p node-type="paragraph">which which yields a</p>
+        <p node-type="paragraph">node -&gt; parent</p>
+        <p node-type="paragraph">converter then applied to a rootnode.
+Thus, such a converter may be constructed using
+<pre lang="" node-type="snipet"><code>((sxml:parent test-pred) rootnode)</code></pre></p>
+        <p node-type="paragraph">and returns a parent of a node it is applied to.
+If applied to a nodelist, it returns the
+list of parents of nodes in the nodelist. The rootnode does not have
+to be the root node of the whole SXML tree -- it may be a root node
+of a branch of interest.
+The parent:: axis can be used with any SXML node.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Popular-short-cuts">Popular short cuts</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="sxml:child-nodes_329">
+              <span>sxml:child-nodes</span>
+              <span>
+                <i node-type="i">test-pred?</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">
+            <pre lang="" node-type="snipet"><code>(sxml:child sxml:node?)</code></pre>
+          </p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="sxml:child-elements_328">
+              <span>sxml:child-elements</span>
+              <span>
+                <i node-type="i">test-pred?</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">
+            <pre lang="" node-type="snipet"><code>(select-kids sxml:element)</code></pre>
+          </p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Abbreviated-SXPath">Abbreviated SXPath</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxpath_351">
+            <span>sxpath</span>
+            <span>
+              <i node-type="i">path</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">ns-binding</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Evaluate an abbreviated SXPath</p>
+        <pre lang="scheme" node-type="block"><code>	sxpath:: AbbrPath -&gt; Converter, or
+	sxpath:: AbbrPath -&gt; Node|Nodeset -&gt; Nodeset
+</code></pre>
+        <p node-type="paragraph">AbbrPath is a list. It is translated to the full SXPath according
+to the following rewriting rules</p>
+        <pre lang="scheme" node-type="block"><code>(sxpath '()) -&gt; (node-join)
+(sxpath '(path-component ...)) -&gt;
+		(node-join (sxpath1 path-component) (sxpath '(...)))
+(sxpath1 '//) -&gt; (sxml:descendant-or-self sxml:node?)
+(sxpath1 '(equal? x)) -&gt; (select-kids (node-equal? x))
+(sxpath1 '(eq? x))    -&gt; (select-kids (node-eq? x))
+(sxpath1 '(*or* ...))  -&gt; (select-kids (ntype-names??
+                                         (cdr '(*or* ...))))
+(sxpath1 '(*not* ...)) -&gt; (select-kids (sxml:complement 
+                                        (ntype-names??
+                                         (cdr '(*not* ...)))))
+(sxpath1 '(ns-id:* x)) -&gt; (select-kids 
+                                     (ntype-namespace-id?? x))
+(sxpath1 ?symbol)     -&gt; (select-kids (ntype?? ?symbol))
+(sxpath1 ?string)     -&gt; (txpath ?string)
+(sxpath1 procedure)   -&gt; procedure
+(sxpath1 '(?symbol ...)) -&gt; (sxpath1 '((?symbol) ...))
+(sxpath1 '(path reducer ...)) -&gt;
+		(node-reduce (sxpath path) (sxpathr reducer) ...)
+(sxpathr number)      -&gt; (node-pos number)
+(sxpathr path-filter) -&gt; (filter (sxpath path-filter))
+</code></pre>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Wrappers">Wrappers</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="if-sxpath_22">
+              <span>if-sxpath</span>
+              <span>
+                <i node-type="i">path</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">sxpath always returns a list, which is #t in Scheme
+if-sxpath returns #f instead of empty list</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="if-car-sxpath_21">
+              <span>if-car-sxpath</span>
+              <span>
+                <i node-type="i">path</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns first node found, if any.
+Otherwise returns #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="car-sxpath_36">
+              <span>car-sxpath</span>
+              <span>
+                <i node-type="i">path</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns first node found, if any.
+Otherwise returns empty list.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="lookup-by-a-value-of-ID-type-attribute">lookup by a value of ID type attribute</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:id-alist_340">
+            <span>sxml:id-alist</span>
+            <span>
+              <i node-type="i">node</i>
+            </span>
+            <span>
+              <i node-type="i">paths</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Built an index as a list of (ID_value . element) pairs for given
+node. lpaths are location paths for attributes of type ID.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="SXML-counterparts-to-W3C-XPath-Core-Functions">SXML counterparts to W3C XPath Core Functions</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:string_349">
+            <span>sxml:string</span>
+            <span>
+              <i node-type="i">object</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The counterpart to XPath 'string' function (section 4.2 XPath Rec.)
+Converts a given object to a string</p>
+        <blockquote node-type="blockquote">
+          <p node-type="paragraph">NOTE:</p>
+          <ol node-type="ordered-list" start="1">
+            <li>
+              <p node-type="paragraph">When converting a nodeset - a document order is not preserved</p>
+            </li>
+            <li>
+              <p node-type="paragraph">number-&gt;string function returns the result in a form which is slightly</p>
+            </li>
+          </ol>
+        </blockquote>
+        <p node-type="paragraph">different from XPath Rec. specification</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:boolean_326">
+            <span>sxml:boolean</span>
+            <span>
+              <i node-type="i">object</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The counterpart to XPath 'boolean' function (section 4.3 XPath Rec.)
+Converts its argument to a boolean</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:number_344">
+            <span>sxml:number</span>
+            <span>
+              <i node-type="i">object</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The counterpart to XPath 'number' function (section 4.4 XPath Rec.)
+Converts its argument to a number</p>
+        <blockquote node-type="blockquote">
+          <p node-type="paragraph">NOTE:</p>
+          <ol node-type="ordered-list" start="1">
+            <li>
+              <p node-type="paragraph">The argument is not optional (yet?)</p>
+            </li>
+            <li>
+              <p node-type="paragraph">string-&gt;number conversion is not IEEE 754 round-to-nearest</p>
+            </li>
+            <li>
+              <p node-type="paragraph">NaN is represented as 0</p>
+            </li>
+          </ol>
+        </blockquote>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:string-value_350">
+            <span>sxml:string-value</span>
+            <span>
+              <i node-type="i">object</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns a string value for a given node in accordance to
+XPath Rec. 5.1 - 5.7</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:id_339">
+            <span>sxml:id</span>
+            <span>
+              <i node-type="i">object</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Select SXML element by its unique IDs
+XPath Rec. 4.1</p>
+        <blockquote node-type="blockquote">
+          <p node-type="paragraph">object - a nodeset or a datatype which can be converted to a string by means</p>
+        </blockquote>
+        <p node-type="paragraph">of a 'string' function</p>
+        <blockquote node-type="blockquote">
+          <p node-type="paragraph">id-index = ( (id-value . element) (id-value . element) ... )</p>
+        </blockquote>
+        <p node-type="paragraph">This index is used for selection of an element by its unique ID.
+The result is a nodeset</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Comparators-for-XPath-objects">Comparators for XPath objects</a>
+        </h3>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Equality-comparison">Equality comparison</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="sxml:equality-cmp_335">
+              <span>sxml:equality-cmp</span>
+              <span>
+                <i node-type="i">bool-op</i>
+              </span>
+              <span>
+                <i node-type="i">number-op</i>
+              </span>
+              <span>
+                <i node-type="i">string-op</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">A helper for XPath equality operations: = , !=
+'bool-op', 'number-op' and 'string-op' are comparison operations for
+a pair of booleans,  numbers and strings respectively</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="sxml:equal?_334">
+              <span>sxml:equal?</span>
+              <span>
+                <i node-type="i">obj1</i>
+              </span>
+              <span>
+                <i node-type="i">obj2</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">(sxml:equality-cmp eq? = string=?)</p>
+          <p node-type="paragraph">Compares given <i node-type="i">obj1</i> and <i node-type="i">obj2</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="sxml:not-equal?_343">
+              <span>sxml:not-equal?</span>
+              <span>
+                <i node-type="i">obj1</i>
+              </span>
+              <span>
+                <i node-type="i">obj2</i>
+              </span>
+            </a>
+          </div>
+          <pre lang="scheme" node-type="block"><code>(sxml:equality-cmp
+   (lambda (bool1 bool2) (not (eq? bool1 bool2)))
+   (lambda (num1 num2) (not (= num1 num2)))
+   (lambda (str1 str2) (not (string=? str1 str2))))
+</code></pre>
+          <p node-type="paragraph">Counterparts of <code node-type="code">sxml:equal?</code>.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Relational-comparison">Relational comparison</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="sxml:relational-cmp_348">
+              <span>sxml:relational-cmp</span>
+              <span>
+                <i node-type="i">op</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Relational operation ( &lt; , &gt; , &lt;= , &gt;= ) for two XPath objects
+op is comparison procedure: &lt; , &gt; , &lt;= or &gt;=</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="XPath-axes-An-order-in-resulting-nodeset-is-preserved">XPath axes. An order in resulting nodeset is preserved</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:ancestor_322">
+            <span>sxml:ancestor</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Ancestor axis</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:ancestor-or-self_323">
+            <span>sxml:ancestor-or-self</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Ancestor-or-self axis</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:descendant_331">
+            <span>sxml:descendant</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Descendant axis</p>
+        <p node-type="paragraph">It's similar to original 'node-closure' a resulting nodeset is
+in depth-first order rather than breadth-first
+Fix: din't descend in non-element nodes!</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:descendant-or-self_332">
+            <span>sxml:descendant-or-self</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Descendant-or-self axis</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:following_337">
+            <span>sxml:following</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Following axis</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:following-sibling_338">
+            <span>sxml:following-sibling</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Following-sibling axis</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:namespace_341">
+            <span>sxml:namespace</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Namespace axis</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:preceding_346">
+            <span>sxml:preceding</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Preceding axis</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sxml:preceding-sibling_347">
+            <span>sxml:preceding-sibling</span>
+            <span>
+              <i node-type="i">test-pred?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Preceding-sibling axis</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./ported.text.sxml.ssax.html">(text sxml ssax) - Functional XML parser</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./ported.packrat.html">(packrat) -- Packrat parser library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

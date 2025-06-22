@@ -1,0 +1,416 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rnrs.syntax-case.6.html">Syntax-case</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.enums.6.html">Enumerations</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rnrs.hashtables.6">Hashtables</a>
+      </h2>
+      <p node-type="paragraph">The <code node-type="code">(rnrs hashtables (6))</code>library provides a set of operations on
+hashtables. A <i node-type="i">hashtable</i> is a data structure that associates keys with
+values. Any object can be used as a key, provided a <i node-type="i">hash function</i> and a
+suitable <i node-type="i">equivalence function</i> is available. A hash function is a
+procedure that maps keys to exact integer objects. It is the programmer's
+responsibility to ensure that the hash function is compatible with the
+equivalence function, which is a procedure that accepts two keys and returns
+true if they are equivalent and #f otherwise. Standard hashtables for arbitrary
+objects based on the <code node-type="code">eq?</code> and <code node-type="code">eqv?</code> predicates are provided. Also,
+hash functions for arbitrary objects, strings, and symbols are provided.</p>
+      <p node-type="paragraph">This section uses the <i node-type="i">hashtable</i> parameter name for arguments that must be
+hashtables, and the <i node-type="i">key</i> parameter name for arguments that must be
+hashtable keys.</p>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rnrs hashtable (6))_69">
+          <span>(rnrs hashtable (6))</span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] This library exports a set of operations on hashtables.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Constructors">Constructors</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-eq-hashtable_158">
+            <span>make-eq-hashtable</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">weakness</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-eqv-hashtable_160">
+            <span>make-eqv-hashtable</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">weakness</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] Returns a newly allocated mutable hashtable that accepts arbitrary
+objects as keys, and compares those keys with <code node-type="code">eq?</code>(<code node-type="code">make-eq-hashtable</code>) or <code node-type="code">eqv?</code> (<code node-type="code">make-eqv-hashtable</code>).</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">k</i> is given, it must be exact non-negative integer or
+<code node-type="code">#f</code>. If it's <code node-type="code">#f</code>, then the procedure picks up default initial
+capacity, otherwise the initial capacity of the hashtable is set to
+approximately <i node-type="i">k</i> elements.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">weakness</i> is given, then it must be one of the
+symbols <code node-type="code">key</code>, <code node-type="code">value</code> or <code node-type="code">both</code>, or <code node-type="code">#f</code>. If the value is
+one of the symbols, then the procedure creates weak hashtable of given symbol's
+weakness. If the symbol is <code node-type="code">key</code>, then entries whose keys are refered only
+from this hashtable might be removed when garbage collection is
+occurred. <code node-type="code">value</code> is for entry values. <code node-type="code">both</code> is for both.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-hashtable_174">
+            <span>make-hashtable</span>
+            <span>
+              <i node-type="i">hash-function</i>
+            </span>
+            <span>
+              <i node-type="i">equiv</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+            <span>
+              <i node-type="i">weakness</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] <i node-type="i">Hash-function</i> and <i node-type="i">equiv</i> must be procedures.</p>
+        <p node-type="paragraph"><i node-type="i">Hash-function</i> should accept a key as an argument and should return a
+non-negative exact integer object. <i node-type="i">Equiv</i> should accept two keys as
+arguments and return a single value.</p>
+        <p node-type="paragraph">The <code node-type="code">make-hashtable</code> procedure returns a newly allocated mutable hashtable
+using <i node-type="i">hash-function</i> as the hash function and <i node-type="i">equiv</i> as the
+equivalence function used to compare keys.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">k</i> and <i node-type="i">weakness</i> are the same as
+<code node-type="code">make-eq-hashtable</code> and <code node-type="code">make-eqv-hashtable</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Procedures">Procedures</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable?_31">
+            <span>hashtable?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is a hashtable, #f otherwise.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-size_25">
+            <span>hashtable-size</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the number of keys contained in <i node-type="i">hashtable</i> as an exact
+integer object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-ref_23">
+            <span>hashtable-ref</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(default</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] Returns the value in <i node-type="i">hashtable</i> associated with <i node-type="i">key</i>. If
+<i node-type="i">hashtable</i> does not contain an association for <i node-type="i">key</i>, <i node-type="i">default</i> is
+returned.</p>
+        <p node-type="paragraph">Since Sagittarius version 0.3.4, this procedure's <i node-type="i">default</i> argument is
+optional to implement SRFI-17 efficiently.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-set!_24">
+            <span>hashtable-set!</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Changes <i node-type="i">hashtable</i> to associate <i node-type="i">key</i> with <i node-type="i">obj</i>,
+adding a new association or replacing any existing association for <i node-type="i">key</i>,
+and returns unspecified values.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-delete!_13">
+            <span>hashtable-delete!</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Removes any association for <i node-type="i">key</i> within <i node-type="i">hashtable</i> and
+returns unspecified values.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-contains?_11">
+            <span>hashtable-contains?</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">hashtable</i> contains an association for <i node-type="i">key</i>, #f
+otherwise.</p>
+        <p node-type="paragraph">Note: On Sagittarius, <code node-type="code">hashtable-ref</code> and <code node-type="code">hashtable-contains?</code> do
+not make any difference fot the performance.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-update!_27">
+            <span>hashtable-update!</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">default</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">desc{[R6RS] <i node-type="i">Proc</i> should accept one argument, should return a single
+value.</p>
+        <p node-type="paragraph">The <code node-type="code">hashtable-update!</code> procedure applies <i node-type="i">proc</i> to the value in
+<i node-type="i">hashtable</i> associated with <i node-type="i">key</i>, or to <i node-type="i">default</i> if
+<i node-type="i">hashtable</i> does not contain an association for <i node-type="i">key</i>. The
+<i node-type="i">hashtable</i> is then changed to associate <i node-type="i">key</i> with the value returned
+by <i node-type="i">proc</i>.
+}</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-copy_12">
+            <span>hashtable-copy</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">mutable</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a copy of <i node-type="i">hashtable</i>. If the <i node-type="i">mutable</i> argument
+is provided and is true, the returned hashtable is mutable; otherwise it is
+immutable.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-clear_10">
+            <span>hashtable-clear</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">k</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Removes all associations from <i node-type="i">hashtable</i> and returns
+unspecified values.</p>
+        <p node-type="paragraph">If a second argument is given, the current capacity of the hashtable is reset
+to approximately <i node-type="i">k</i> elements.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-keys_19">
+            <span>hashtable-keys</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-entries_14">
+            <span>hashtable-entries</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns a vector of all keys or entries in <i node-type="i">hashtable</i>,
+respectively. The order of the vector is unspecified.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Inspection">Inspection</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-equivalence-function_15">
+            <span>hashtable-equivalence-function</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-hash-function_18">
+            <span>hashtable-hash-function</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns the equivalence or hash function used by _hashtable_respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hashtable-mutable?_22">
+            <span>hashtable-mutable?</span>
+            <span>
+              <i node-type="i">hashtable</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">hashtable</i> is mutable, otherwise #f.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Hash-functions">Hash functions</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="equal-hash_28">
+            <span>equal-hash</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="symbol-hash_354">
+            <span>symbol-hash</span>
+            <span>
+              <i node-type="i">symbol</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Returns hash value of given argument. Each procedures return
+the hash values suitable for <code node-type="code">equal?</code> and symbols.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-hash_293">
+            <span>string-hash</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">bound</i>
+            </span>
+            <span>
+              <i node-type="i">start</i>
+            </span>
+            <span>
+              <i node-type="i">end</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-ci-hash_280">
+            <span>string-ci-hash</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">bound</i>
+            </span>
+            <span>
+              <i node-type="i">start</i>
+            </span>
+            <span>
+              <i node-type="i">end</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+][SRFI-13] Returns hash value of given argument. Each procedures
+return the hash values suitable for <code node-type="code">string=?</code> and <code node-type="code">string-ci=?</code>.</p>
+        <p node-type="paragraph">If the optional argument <i node-type="i">start</i> and <i node-type="i">end</i> is given, then the given
+string will be substringed with <i node-type="i">start</i> and <i node-type="i">end</i>.</p>
+        <p node-type="paragraph">If the optional argument <i node-type="i">bound</i> is given, it must be exact integer and hash
+function will also use the given value.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rnrs.syntax-case.6.html">Syntax-case</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.enums.6.html">Enumerations</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,689 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rfc.jwe.html">(rfc jwe) - Json Web Encryption</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rfc.jws.html">(rfc jws) - Json Web Signature</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rfc.jwk">(rfc jwk) - Json Web Key</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rfc jwk)_43">
+          <span>(rfc jwk)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides Json Web Key (JWK) APIs. JWS is defined in
+<a href="https://datatracker.ietf.org/doc/html/rfc7517">RFC 7517</a>.</p>
+      <p node-type="paragraph">This library also supports OKP defined in
+<a href="https://datatracker.ietf.org/doc/html/rfc8037">RFC 8037</a>.</p>
+      <p node-type="paragraph">This library also supports curve <code node-type="code">secp256k1</code>
+<a href="https://datatracker.ietf.org/doc/html/rfc8812">RFC 8812</a>,
+as well as the <code node-type="code">P-256K</code> which is defined in the draft 00 of the RFC.</p>
+      <p node-type="paragraph">The following examples show how to interact with keys from
+<code node-type="code">(sagittarius crypto keys)</code> library.</p>
+      <pre lang="scheme" node-type="block"><code>;; (sagittarius crypto keys) keys to JWK/JWKS
+(import (rnrs)
+        (sagittarius crypto keys)
+        (rfc jwk))
+
+(define keypair (generate-key-pair *key:ed25519*))
+
+(define private-key (key-pair-private keypair))
+
+(define jwk-config (jwk-config-builder (kid "my key id")))
+
+(let ((jwks (make-jwk-set (list (key-&gt;jwk private-key jwk-config)))))
+  (jwk-set-&gt;json-string jwks) ;; -&gt; {"keys":[{"kid":"my key id",...}]}
+  (jwk-set:find-key jwks (jwk-matcher:kid "my key id")) ;; -&gt; #&lt;jwk&gt;
+  (jwk-set-&gt;public-jwk-set jwks)) ;; -&gt; #&lt;jwk-set&gt; contains only public key
+</code></pre>
+      <pre lang="scheme" node-type="block"><code>;; JWK/JWKS to (sagittarius crypto keys) key
+(import (rnrs)
+        (sagittarius crypto keys)
+        (rfc jwk))
+
+;; JWKS with EC private key
+(define jwks-json
+  #(("keys"
+     #(("kty" . "EC")
+       ("crv" . "P-256")
+       ("x"   . "MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4")
+       ("y"   . "4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM")
+       ("d"   . "870MB6gfuTJ4HtUnUvYMyJpr5eUZNP4Bk43bVdj3eAE")
+       ("use" . "enc")
+       ("kid" . "1")))))
+(define jwks (json-&gt;jwk-set jwks-json))
+(define kid-matcher (jwk-matcher:kid "1"))
+
+(define jwk (jwk-set:find-key jwks kid-matcher))
+
+(jwk-&gt;public-key jwk)   ;; -&gt; ECDSA public key
+(jwk-&gt;private-key jwk)  ;; -&gt; ECDSA private key
+</code></pre>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="JWK-Set">JWK Set</a>
+        </h3>
+        <p node-type="paragraph">JWK Set (JWKS) is an object represents a set of JWKs.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-set?_102">
+            <span>jwk-set?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a JWKS object otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-jwk-set_204">
+            <span>make-jwk-set</span>
+            <span>
+              <i node-type="i">keys</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Construct a newly allocated JWKS object whose keys are <i node-type="i">keys</i>.</p>
+        <p node-type="paragraph"><i node-type="i">keys</i> must be a list of JWK objects.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-set-keys_100">
+            <span>jwk-set-keys</span>
+            <span>
+              <i node-type="i">jwk-set</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves a list of JWKs from the given <i node-type="i">jwk-set</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-&gt;jwk-set_10">
+            <span>json-&gt;jwk-set</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-jwk-set_39">
+            <span>read-jwk-set</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-jwk-set_38">
+            <span>read-jwk-set</span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-string-&gt;jwk-set_46">
+            <span>json-string-&gt;jwk-set</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Construct JWKS from S-exp JSON representation of <i node-type="i">obj</i>,
+from input port <i node-type="i">port</i> or a string <i node-type="i">string</i>.</p>
+        <p node-type="paragraph">If the first form of <code node-type="code">read-jwk-set</code> is used, then it reads from
+current input port.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-set-&gt;json_98">
+            <span>jwk-set-&gt;json</span>
+            <span>
+              <i node-type="i">jwk-set</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="write-jwk-set_70">
+            <span>write-jwk-set</span>
+            <span>
+              <i node-type="i">jwk-set</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="write-jwk-set_69">
+            <span>write-jwk-set</span>
+            <span>
+              <i node-type="i">jwk-set</i>
+            </span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-set-&gt;json-string_99">
+            <span>jwk-set-&gt;json-string</span>
+            <span>
+              <i node-type="i">jwk-set</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Serialize the given <i node-type="i">jwk-set</i> to a S-exp representaion,
+to <i node-type="i">port</i> or string.</p>
+        <p node-type="paragraph">If first form of <code node-type="code">write-jwk-set</code> is used, then it writes the
+serialized JWK set to current output port.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-set:find-key_101">
+            <span>jwk-set:find-key</span>
+            <span>
+              <i node-type="i">jwk-set</i>
+            </span>
+            <span>
+              <i node-type="i">jwk-matcher</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Finds a key which matches to <i node-type="i">jwk-matcher</i> from given <i node-type="i">jwk-set</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="JWK-Matcher">JWK Matcher</a>
+        </h3>
+        <p node-type="paragraph">A JWK matcher is a procedure takes one argument, <i node-type="i">jwk</i>, and returns
+the given <i node-type="i">jwk</i> if it matches the condition otherwise returns #f.</p>
+        <p node-type="paragraph">The matchers provided by this library complies to the above so that
+users can compose matchers like this:</p>
+        <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (rfc jwk)
+        (sagittarius combinators))
+
+(define kid/alg-matcher
+ (compose (jwk-matcher:kid "kid") (jwk-matcher:alg 'EdDSA)))
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:kty_91">
+            <span>jwk-matcher:kty</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:use_95">
+            <span>jwk-matcher:use</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:alg_86">
+            <span>jwk-matcher:alg</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:kid_90">
+            <span>jwk-matcher:kid</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:x5t_96">
+            <span>jwk-matcher:x5t</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:x5t-s256_97">
+            <span>jwk-matcher:x5t-s256</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:crv_87">
+            <span>jwk-matcher:crv</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a JWK matcher which checks <code node-type="code">kty</code>, <code node-type="code">use</code>, <code node-type="code">alg</code>,
+<code node-type="code">kid</code>, <code node-type="code">x5t</code>, <code node-type="code">x5t-s256</code> or <code node-type="code">crv</code> field of the
+target JWK is equal to <i node-type="i">obj</i>, respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:key-ops_89">
+            <span>jwk-matcher:key-ops</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a JWK matcher which checks <code node-type="code">key-ops</code> field of the
+target JWK contains given <i node-type="i">obj</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:rsa_94">
+            <span>jwk-matcher:rsa</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:ec_88">
+            <span>jwk-matcher:ec</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:oct_92">
+            <span>jwk-matcher:oct</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-matcher:okp_93">
+            <span>jwk-matcher:okp</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Convenient JWK matchers which check <code node-type="code">kty</code> to be <code node-type="code">RSA</code>,
+<code node-type="code">EC</code>, <code node-type="code">oct</code> or <code node-type="code">OKP</code>, respectively.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="JWK">JWK</a>
+        </h3>
+        <p node-type="paragraph">JWK is an object which contains key information. The object contains
+the following fields:</p>
+        <ul node-type="bullet-list">
+          <li>
+            <p node-type="paragraph"><code node-type="code">kty</code>: key type, symbol</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">use</code>: key usage, symbol, must be either <code node-type="code">sig</code> or <code node-type="code">enc</code></p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">key-ops</code>: key operation, a list of symbols</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">alg</code>: key algorithm, symbol</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">kid</code>: key ID</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">x5u</code>: URL of certificate</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">x5c</code>: Certificate chain, list of x509 certificate</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">x5t</code>: SHA-1 certificate finger print, bytevector</p>
+          </li>
+          <li>
+            <p node-type="paragraph"><code node-type="code">x5t-s256</code>: SHA-256 certificate finger print, bytevector</p>
+          </li>
+        </ul>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk?_109">
+            <span>jwk?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a JWK object otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-kty_85">
+            <span>jwk-kty</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-use_103">
+            <span>jwk-use</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-key-ops_83">
+            <span>jwk-key-ops</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-alg_81">
+            <span>jwk-alg</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-kid_84">
+            <span>jwk-kid</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-x5u_107">
+            <span>jwk-x5u</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-x5c_104">
+            <span>jwk-x5c</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-x5t_105">
+            <span>jwk-x5t</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-x5t-s256_106">
+            <span>jwk-x5t-s256</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves the field value of <i node-type="i">jwk</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-&gt;jwk_9">
+            <span>json-&gt;jwk</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-jwk_37">
+            <span>read-jwk</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-jwk_36">
+            <span>read-jwk</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="json-string-&gt;jwk_45">
+            <span>json-string-&gt;jwk</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Construct JWK from S-exp JSON representation of <i node-type="i">obj</i>,
+from input port <i node-type="i">port</i> or a string <i node-type="i">string</i>.</p>
+        <p node-type="paragraph">If the first form of <code node-type="code">read-jwk</code> is used, then it reads from
+current input port.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-&gt;json_74">
+            <span>jwk-&gt;json</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="write-jwk_68">
+            <span>write-jwk</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="write-jwk_67">
+            <span>write-jwk</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="jwk-&gt;json-string_75">
+            <span>jwk-&gt;json-string</span>
+            <span>
+              <i node-type="i">jwk</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Serialize the given <i node-type="i">jwk</i> to a S-exp representaion,
+to <i node-type="i">port</i> or string.</p>
+        <p node-type="paragraph">If first form of <code node-type="code">write-jwk</code> is used, then it writes the
+serialized JWK to current output port.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="From-JWK-Conversion">From JWK Conversion</a>
+          </h4>
+          <p node-type="paragraph">The below conversion procedures raise an error if the conversion is
+not possible. For example, key type <code node-type="code">oct</code> can't be public key.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jwk-&gt;public-key_80">
+              <span>jwk-&gt;public-key</span>
+              <span>
+                <i node-type="i">jwk</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jwk-&gt;private-key_78">
+              <span>jwk-&gt;private-key</span>
+              <span>
+                <i node-type="i">jwk</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Convert given <i node-type="i">jwk</i> to <code node-type="code">(sagittarius crypto keys)</code> public key and private key,
+respectively.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jwk-&gt;octet-key_77">
+              <span>jwk-&gt;octet-key</span>
+              <span>
+                <i node-type="i">jwk</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Convert given <i node-type="i">jwk</i> to octet key bytevector.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jwk-&gt;public-jwk_79">
+              <span>jwk-&gt;public-jwk</span>
+              <span>
+                <i node-type="i">jwk</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Convert given <i node-type="i">jwk</i> to JWK which only contains public key
+information.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="To-JWK-Conversion">To JWK Conversion</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jwk:config?_108">
+              <span>jwk:config?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the given <i node-type="i">obj</i> is a JWK config object otherwise #f.</p>
+          <p node-type="paragraph">JWK may contain meta data, such as <code node-type="code">kid</code>, to provide the information,
+users can use JWK config object. The object has the below fields:</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph"><code node-type="code">use</code>: key usage, symbol, must be either <code node-type="code">sig</code> or <code node-type="code">enc</code></p>
+            </li>
+            <li>
+              <p node-type="paragraph"><code node-type="code">kid</code>: key ID</p>
+            </li>
+            <li>
+              <p node-type="paragraph"><code node-type="code">key-ops</code>: key operation, a list of symbols</p>
+            </li>
+            <li>
+              <p node-type="paragraph"><code node-type="code">alg</code>: key algorithm, symbol</p>
+            </li>
+            <li>
+              <p node-type="paragraph"><code node-type="code">x5u</code>: URL of certificate</p>
+            </li>
+            <li>
+              <p node-type="paragraph"><code node-type="code">x5c</code>: Certificate chain, list of x509 certificate</p>
+            </li>
+            <li>
+              <p node-type="paragraph"><code node-type="code">e</code>: RSA public key exponent</p>
+            </li>
+          </ul>
+          <p node-type="paragraph"><code node-type="code">e</code> is provided due to the historical reason of not to have public
+exponent in non CRT RSA private key. By default, the value is 65537.</p>
+          <div node-type="define" class="define">
+            <span>Macro</span>
+            <a name="jwk-config-builder_82">
+              <span>jwk-config-builder</span>
+            </a>
+          </div>
+          <p node-type="paragraph">A builder macro of JWK config. The macro is generated by
+<code node-type="code">(record builder)</code>. see <a href="record.builder.html#record.builder">(record builder)</a>for more details.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="jwk-&gt;jwk-config_76">
+              <span>jwk-&gt;jwk-config</span>
+              <span>
+                <i node-type="i">jwk</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Construct JWK config from given <i node-type="i">jwk</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="key-&gt;jwk_2">
+              <span>key-&gt;jwk</span>
+              <span>
+                <i node-type="i">key</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="key-&gt;jwk_1">
+              <span>key-&gt;jwk</span>
+              <span>
+                <i node-type="i">key</i>
+              </span>
+              <span>
+                <i node-type="i">jwk-config</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Converts given <i node-type="i">key</i> to JWK object.</p>
+          <p node-type="paragraph">If the second form is used, then the returning JWK contains the configured
+information.</p>
+          <p node-type="paragraph">The <i node-type="i">key</i> must be one of public key, private key, or secret key of
+<code node-type="code">(sagittarius crypto keys)</code>.</p>
+        </section>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rfc.jwe.html">(rfc jwe) - Json Web Encryption</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rfc.jws.html">(rfc jws) - Json Web Signature</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

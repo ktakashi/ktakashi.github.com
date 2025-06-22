@@ -1,0 +1,617 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./net.http-client.html">(net http-client) - Modern HTTP client</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./net.mqtt.html">(net mq mqtt) - MQTT library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="net.http">(net http) - Async HTTP client</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(net http)_19">
+          <span>(net http)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides a wrapper of <code node-type="code">(net http-client)</code> library,
+for convenience especially scripting purpose.</p>
+      <p node-type="paragraph">To simplify the document, here we use <strong node-type="strong">methods</strong>, <strong node-type="strong">nobody-methods</strong>
+and <strong node-type="strong">bodied-methods</strong> to refer sets of HTTP methods. The mapping
+of the methods are blow:</p>
+      <dl node-type="dlist">
+        <dt>
+          <strong node-type="strong">methods</strong>
+        </dt>
+        <dd>
+          <p node-type="paragraph">All HTTP methods, at this moment we support the below methods:</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">GET</p>
+            </li>
+            <li>
+              <p node-type="paragraph">HEAD</p>
+            </li>
+            <li>
+              <p node-type="paragraph">OPTIONS</p>
+            </li>
+            <li>
+              <p node-type="paragraph">POST</p>
+            </li>
+            <li>
+              <p node-type="paragraph">PUT</p>
+            </li>
+            <li>
+              <p node-type="paragraph">PATCH</p>
+            </li>
+            <li>
+              <p node-type="paragraph">DELETE</p>
+            </li>
+          </ul>
+          <p node-type="paragraph">
+            <strong node-type="strong">nobody-methods</strong>
+          </p>
+          <p node-type="paragraph">HTTP methods which don't have body, these are the ones:</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">GET</p>
+            </li>
+            <li>
+              <p node-type="paragraph">HEAD</p>
+            </li>
+            <li>
+              <p node-type="paragraph">OPTIONS</p>
+            </li>
+          </ul>
+          <p node-type="paragraph">
+            <strong node-type="strong">bodied-methods</strong>
+          </p>
+          <p node-type="paragraph">HTTP methods which may have body, these are the ones:</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">POST</p>
+            </li>
+            <li>
+              <p node-type="paragraph">PUT</p>
+            </li>
+            <li>
+              <p node-type="paragraph">PATCH</p>
+            </li>
+            <li>
+              <p node-type="paragraph">DELETE</p>
+            </li>
+          </ul>
+        </dd>
+      </dl>
+      <p node-type="paragraph">If these names are used in the procedure names, then lower cased
+names are used. e.g. <code node-type="code">http-{nobody-methods}</code> will be <code node-type="code">http-get</code> and others.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="HTTP-request-procedures">HTTP request procedures</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="http-{nobody-methods}_119">
+            <span>http-{nobody-methods}</span>
+            <span>
+              <i node-type="i">request-context</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="http-{nobody-methods}_118">
+            <span>http-{nobody-methods}</span>
+            <span>
+              <i node-type="i">uri</i>
+            </span>
+            <span>
+              <i node-type="i">callback</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="http-{bodied-methods}_117">
+            <span>http-{bodied-methods}</span>
+            <span>
+              <i node-type="i">request-context</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="http-{bodied-methods}_116">
+            <span>http-{bodied-methods}</span>
+            <span>
+              <i node-type="i">uri</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="http-{bodied-methods}_115">
+            <span>http-{bodied-methods}</span>
+            <span>
+              <i node-type="i">uri</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">callback</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">request-context</i> must be a HTTP request context.<br><i node-type="i">uri</i> must be a string representation of HTTP URI.--
+<i node-type="i">callback</i> must be a procedure which accepts one argument of HTTP response.<br><i node-type="i">body</i> must be a bytevector, HTTP request payload or <code node-type="code">#f</code>.</p>
+        <p node-type="paragraph">Synchronous HTTP request procedure. <i node-type="i">callback</i> is called when the response
+is received.</p>
+        <p node-type="paragraph">These procedure blocks the process.</p>
+        <p node-type="paragraph">If the <i node-type="i">body</i> is a bytevector, then it is sent with content type of
+<code node-type="code">application/octet-stream</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-{nobody-methods}_82">
+            <span>async-http-{nobody-methods}</span>
+            <span>
+              <i node-type="i">request-context</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-{nobody-methods}_81">
+            <span>async-http-{nobody-methods}</span>
+            <span>
+              <i node-type="i">uri</i>
+            </span>
+            <span>
+              <i node-type="i">callback</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-{bodied-methods}_77">
+            <span>async-http-{bodied-methods}</span>
+            <span>
+              <i node-type="i">request-context</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-{bodied-methods}_76">
+            <span>async-http-{bodied-methods}</span>
+            <span>
+              <i node-type="i">uri</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-{bodied-methods}_75">
+            <span>async-http-{bodied-methods}</span>
+            <span>
+              <i node-type="i">uri</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">callback</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Asynchronous version of HTTP request procedures. The return value is
+future object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-{nobody-methods}/client_84">
+            <span>async-http-{nobody-methods}/client</span>
+            <span>
+              <i node-type="i">http-client</i>
+            </span>
+            <span>
+              <i node-type="i">request-context</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-{nobody-methods}/client_83">
+            <span>async-http-{nobody-methods}/client</span>
+            <span>
+              <i node-type="i">http-client</i>
+            </span>
+            <span>
+              <i node-type="i">uri</i>
+            </span>
+            <span>
+              <i node-type="i">callback</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-{bodied-methods}/client_80">
+            <span>async-http-{bodied-methods}/client</span>
+            <span>
+              <i node-type="i">http-client</i>
+            </span>
+            <span>
+              <i node-type="i">request-context</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-{bodied-methods}/client_79">
+            <span>async-http-{bodied-methods}/client</span>
+            <span>
+              <i node-type="i">http-client</i>
+            </span>
+            <span>
+              <i node-type="i">uri</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-{bodied-methods}/client_78">
+            <span>async-http-{bodied-methods}/client</span>
+            <span>
+              <i node-type="i">http-client</i>
+            </span>
+            <span>
+              <i node-type="i">uri</i>
+            </span>
+            <span>
+              <i node-type="i">body</i>
+            </span>
+            <span>
+              <i node-type="i">callback</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The same as asynchronous version of HTTP request procedures, this procedures
+accept HTTP client instead of using default one provided by this library.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-request_73">
+            <span>async-http-request</span>
+            <span>
+              <i node-type="i">request-context</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="async-http-request/client_74">
+            <span>async-http-request/client</span>
+            <span>
+              <i node-type="i">http-client</i>
+            </span>
+            <span>
+              <i node-type="i">request-context</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Underlying HTTP requesting procedure of all the above per method procedure.
+These procedures can be used not to write manual dispatch by the HTTP method.</p>
+        <p node-type="paragraph">The <code node-type="code">async-http-request</code> uses default HTTP client as underlying HTTP client,
+described below section.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Default-HTTP-client">Default HTTP client</a>
+          </h4>
+          <p node-type="paragraph">The default HTTP client is configured as below specification:</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">Having pooling connection manager of max connection per route of <code node-type="code">100</code></p>
+            </li>
+            <li>
+              <p node-type="paragraph">DNS timeout of <code node-type="code">30</code> seconds</p>
+            </li>
+            <li>
+              <p node-type="paragraph">Connection timeout of <code node-type="code">60</code> seconds</p>
+            </li>
+            <li>
+              <p node-type="paragraph">Read timeout of <code node-type="code">120</code> seconds</p>
+            </li>
+            <li>
+              <p node-type="paragraph">Always follows redirection</p>
+            </li>
+          </ul>
+        </section>
+      </section>
+      <section node-type="section">
+        <h4 node-type="header-4">
+          <a name="HTTP-request-context">HTTP request context</a>
+        </h4>
+        <p node-type="paragraph">A HTTP request context is a sub record of <code node-type="code">&lt;http:request&gt;</code> defined in
+<code node-type="code">(net http-client)</code>. It has extra fields <code node-type="code">payload</code> and <code node-type="code">callback</code>.</p>
+        <p node-type="paragraph"><code node-type="code">payload</code> fields provides a convenient access to the <code node-type="code">content-type</code> and
+<code node-type="code">body</code> fields of the <code node-type="code">&lt;http:request&gt;</code>.</p>
+        <p node-type="paragraph"><code node-type="code">callback</code> fields provides a callback for the response.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="http-request-context?_108">
+            <span>http-request-context?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a HTTP request context, otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Macro</span>
+          <a name="http-request-context-builder_107">
+            <span>http-request-context-builder</span>
+            <span>
+              <i node-type="i">field*</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Builds a HTTP request context. For the detail of <i node-type="i">field</i>,
+see <a href="net.http-client.html#net.http-client">
+          <code node-type="code">(net http-client)</code>
+        </a>.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="HTTP-request-payload">HTTP request payload</a>
+          </h4>
+          <p node-type="paragraph">The library provides a convenient framework to compose HTTP request body
+and associated content type. HTTP request payload is a record which
+contains 3 fields; <code node-type="code">content-type</code>, <code node-type="code">content</code> and <code node-type="code">converter</code>.
+The <code node-type="code">content-type</code> is the content type value to be sent. The <code node-type="code">content</code>
+is the raw content of the reuqest payload, for example, a list of
+key and value pairs. Then the <code node-type="code">converter</code> convers the <code node-type="code">content</code> to
+a bytevector.</p>
+          <p node-type="paragraph">The library provides generic binary payload and 3 most used content types:</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">
+                <code node-type="code">application/octet-stream</code>
+              </p>
+            </li>
+            <li>
+              <p node-type="paragraph">
+                <code node-type="code">application/json</code>
+              </p>
+            </li>
+            <li>
+              <p node-type="paragraph">
+                <code node-type="code">application/x-www-form-urlencoded</code>
+              </p>
+            </li>
+          </ul>
+          <p node-type="paragraph">Users can make own request payload as well.</p>
+          <div node-type="define" class="define">
+            <span>Record type</span>
+            <a name="<http-request-payload&gt;_33">
+              <span>&lt;http-request-payload&gt;</span>
+            </a>
+          </div>
+          <p node-type="paragraph">The base record of HTTP request payload. The record has below 3 fields;</p>
+          <dl node-type="dlist">
+            <dt>
+              <code node-type="code">content-type</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">Accessor <code node-type="code">http-request-payload-content-type</code></p>
+            </dd>
+            <dt>
+              <code node-type="code">content</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">Accessor <code node-type="code">http-request-payload-content</code></p>
+            </dd>
+            <dt>
+              <code node-type="code">converter</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">Accessor <code node-type="code">http-request-payload-converter</code></p>
+            </dd>
+          </dl>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="http-request-payload?_109">
+              <span>http-request-payload?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is HTTP request payload, otherwise <code node-type="code">#f</code>.</p>
+          <p node-type="paragraph">One of the supporting payload, <code node-type="code">&lt;json-request-payload&gt;</code> is defined like this:</p>
+          <pre lang="scheme" node-type="block"><code>(define-record-type &lt;json-request-payload&gt;
+  (parent &lt;http-request-payload&gt;)
+  (protocol (lambda (p)
+              (define (json-&gt;string json)
+                (let-values (((out e) (open-string-output-port)))
+                  (json-write/normalized json out)
+                  (e)))
+              (define (json-&gt;bytevector json) (string-&gt;utf8 (json-&gt;string json)))
+              (lambda (json)
+                ((p "application/json" json json-&gt;bytevector))))))
+</code></pre>
+          <div node-type="define" class="define">
+            <span>Record type</span>
+            <a name="<binary-request-payload&gt;_10">
+              <span>&lt;binary-request-payload&gt;</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-request-payload?_49">
+              <span>binary-request-payload?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-payload_21">
+              <span>binary-payload</span>
+              <span> (</span>
+              <span>
+                <i node-type="i">binary</i>
+              </span>
+              <span> (or </span>
+              <span>
+                <code node-type="code">bytevector?</code>
+              </span>
+              <span>
+                <code node-type="code">binary-port?</code>
+              </span>
+              <span>)) :optional (</span>
+              <span>
+                <i node-type="i">content-type</i>
+              </span>
+              <span>
+                <code node-type="code">"application/octet-stream"</code>
+              </span>
+              <span>)</span>
+            </a>
+          </div>
+          <p node-type="paragraph">HTTP request payload for binary input.</p>
+          <p node-type="paragraph">If you already have a binary data ready to be sent, then this payload
+can be the most convenient one to use.</p>
+          <div node-type="define" class="define">
+            <span>Record type</span>
+            <a name="<octet-stream-request-payload&gt;_51">
+              <span>&lt;octet-stream-request-payload&gt;</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="octet-stream-request-payload?_10">
+              <span>octet-stream-request-payload?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="octet-stream-payload_9">
+              <span>octet-stream-payload</span>
+              <span> (</span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span> (or </span>
+              <span>
+                <code node-type="code">bytevector?</code>
+              </span>
+              <span>
+                <code node-type="code">binary-port?</code>
+              </span>
+              <span>))</span>
+            </a>
+          </div>
+          <p node-type="paragraph">HTTP request payload for octet stream.</p>
+          <div node-type="define" class="define">
+            <span>Record type</span>
+            <a name="<json-request-payload&gt;_35">
+              <span>&lt;json-request-payload&gt;</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="json-request-payload?_35">
+              <span>json-request-payload?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="json-payload_26">
+              <span>json-payload</span>
+              <span>
+                <i node-type="i">json-sexp</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">HTTP request payload for JSON object. The <i node-type="i">json-sexp</i> must be a valid
+JSON S-expression.</p>
+          <p node-type="paragraph">NOTE: On Sagittarius, JSON S-expression is Chicken's egg style, it's not
+the same as SRFI JSON. For more detail, see <a href="text.json.html#text.json">
+            <code node-type="code">(text json)</code>
+          </a></p>
+          <div node-type="define" class="define">
+            <span>Record type</span>
+            <a name="<x-www-form-urlencoded-request-payload&gt;_70">
+              <span>&lt;x-www-form-urlencoded-request-payload&gt;</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="x-www-form-urlencoded-request-payload?_2">
+              <span>x-www-form-urlencoded-request-payload?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="x-www-form-urlencoded-payload_1">
+              <span>x-www-form-urlencoded-payload</span>
+              <span>
+                <i node-type="i">kv</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">HTTP request payload for <code node-type="code">application/x-www-form-urlencoded</code>.</p>
+          <p node-type="paragraph"><i node-type="i">kv</i> must be a list of key/value pair.</p>
+          <p node-type="paragraph">Example:</p>
+          <pre lang="scheme" node-type="block"><code>(x-www-form-urlencoded-payload '(("key0" . "value0") ("key1" . "value1")))
+;; -&gt; represents `key0=value0&amp;key1=value1`
+</code></pre>
+          <p node-type="paragraph">Both key and value are encoded when it's converted to a bytevector.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h4 node-type="header-4">
+          <a name="HTTP-response">HTTP response</a>
+        </h4>
+        <p node-type="paragraph">HTTP response related procedures are re-export from <code node-type="code">(net http-client)</code>,
+for more details, see <a href="net.http-client.html#net.http-client.request">HTTP request and response</a></p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./net.http-client.html">(net http-client) - Modern HTTP client</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./net.mqtt.html">(net mq mqtt) - MQTT library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

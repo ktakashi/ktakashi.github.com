@@ -1,0 +1,310 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.ffi.html">(sagittarius ffi) - Foreign Function Interface</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./sagittarius.io.html">(sagittarius io) - Extra IO library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.filewatch">(sagittarius filewatch) - Monitoring filesystem</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius filewatch)_100">
+          <span>(sagittarius filewatch)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Monitoring filesystem cannot be done efficiently without support of
+underlying operating system. This library provides unified interface of the
+mechanism.</p>
+      <p node-type="paragraph">The following simple <code node-type="code">tail (1)</code> like script shows how it works:</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (getopt) (sagittarius filewatch) (prefix (binary io) binary:))
+
+(define (tail file offset)
+  (define watcher (make-filesystem-watcher))
+  (define in (open-file-input-port file))
+  ;; dump contents to stdout
+  (define (dump)
+    (let loop ()
+      (let ((line (binary:get-line in)))
+        (unless (eof-object? line) 
+          (put-bytevector (standard-output-port) line)
+          (put-bytevector (standard-output-port) #vu8(10))
+          (loop)))))
+  (define size (file-size-in-bytes file))
+  ;; move port position if the size if more than offset
+  (when (&gt; size offset) (set-port-position! in (- size offset)))
+  ;; dump first
+  (dump)
+  ;; add path to file watcher
+  (filesystem-watcher-add-path! watcher file '(modify) 
+                                (lambda (path event) (dump)))
+  ;; monitor on foreground.
+  (filesystem-watcher-start-monitoring! watcher :background #f))
+
+;; this tail is not line oriented
+;; it shows tail of the file from the given offset.
+(define (main args)
+  (with-args (cdr args)
+      ((offset (#\o "offset") #t "1024")
+       . rest)
+    (tail (car rest) (string-&gt;number offset))))
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-filesystem-watcher_168">
+          <span>make-filesystem-watcher</span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">error-handler</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates and returns filesystem watcher object.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">error-handler</i> is specified, which must be a
+procedure accepts one argument, then it is called with a condition
+when monitoring handler raised an error.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="release-filesystem-watcher!_104">
+          <span>release-filesystem-watcher!</span>
+          <span>
+            <i node-type="i">watcher</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Releasing the <i node-type="i">watcher</i>.</p>
+      <p node-type="paragraph">Released filesystem watcher can not be reused.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="filesystem-watcher?_32">
+          <span>filesystem-watcher?</span>
+          <span>
+            <i node-type="i">o</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if the given <i node-type="i">o</i> is a filesystem watcher object, otherwise
+#f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="filesystem-watcher-add-path!_28">
+          <span>filesystem-watcher-add-path!</span>
+          <span>
+            <i node-type="i">watcher</i>
+          </span>
+          <span>
+            <i node-type="i">path</i>
+          </span>
+          <span>
+            <i node-type="i">flags</i>
+          </span>
+          <span>
+            <i node-type="i">monitoring-handler</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Adds monitoring targets to the <i node-type="i">watcher</i>.</p>
+      <p node-type="paragraph">The <i node-type="i">path</i> must be a string and indicating existing path.</p>
+      <p node-type="paragraph">The <i node-type="i">flags</i> must be one of the following symbols or list of the symbols:</p>
+      <dl node-type="dlist">
+        <dt>
+          <code node-type="code">access</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Checks if the <i node-type="i">path</i> is accessed.</p>
+        </dd>
+        <dt>
+          <code node-type="code">modify</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Checks if the <i node-type="i">path</i> is modified.</p>
+        </dd>
+        <dt>
+          <code node-type="code">delete</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Checks if the <i node-type="i">path</i> is deleted.</p>
+        </dd>
+        <dt>
+          <code node-type="code">move</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Checks if the <i node-type="i">path</i> is moved.</p>
+        </dd>
+        <dt>
+          <code node-type="code">attribute</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Checks if the <i node-type="i">path</i>'s attribute is changed.</p>
+        </dd>
+      </dl>
+      <p node-type="paragraph">NOTE: The flags might not be supported depending on the platform. See
+<a href="lib.sagittarius.filewatch.html#filewatch.limit">implementation limitation</a> section for more details.</p>
+      <p node-type="paragraph">The <i node-type="i">monitoring-handler</i> must be a procedure accepts 2 arguments. The
+procedure is called if the <i node-type="i">path</i> gets an event specified <i node-type="i">flags</i>.
+When the <i node-type="i">monitoring-handler</i> is invoked, then the path and a symbol
+of the invoking event are passed respectively. The possible event symbols
+are the followings:</p>
+      <dl node-type="dlist">
+        <dt>
+          <code node-type="code">accessed</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Checks if the <i node-type="i">path</i> is accessed.</p>
+        </dd>
+        <dt>
+          <code node-type="code">modified</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Checks if the <i node-type="i">path</i> is modified.</p>
+        </dd>
+        <dt>
+          <code node-type="code">deleted</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Checks if the <i node-type="i">path</i> is deleted.</p>
+        </dd>
+        <dt>
+          <code node-type="code">moved</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Checks if the <i node-type="i">path</i> is moved.</p>
+        </dd>
+        <dt>
+          <code node-type="code">attribute</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Checks if the <i node-type="i">path</i>'s attribute is changed.</p>
+        </dd>
+      </dl>
+      <p node-type="paragraph">The procedure <i node-type="i">filesystem-watcher-add-path!</i> returns the <i node-type="i">watcher</i>.</p>
+      <p node-type="paragraph">If the <i node-type="i">watcher</i> started monitoring, then the procedure raises
+<code node-type="code">&amp;assertion</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="filesystem-watcher-remove-path!_29">
+          <span>filesystem-watcher-remove-path!</span>
+          <span>
+            <i node-type="i">watcher</i>
+          </span>
+          <span>
+            <i node-type="i">path</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Removes given <i node-type="i">path</i> from the <i node-type="i">watcher</i>. And returns
+<i node-type="i">watcher</i>,</p>
+      <p node-type="paragraph">If the <i node-type="i">watcher</i> started monitoring, then the procedure raises
+<code node-type="code">&amp;assertion</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="filesystem-watcher-start-monitoring!_30">
+          <span>filesystem-watcher-start-monitoring!</span>
+          <span>
+            <i node-type="i">watcher</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(background</i>
+          </span>
+          <span>
+            <i node-type="i">#t)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Starts monitoring filesystem on given <i node-type="i">watcher</i>.</p>
+      <p node-type="paragraph">If the keyword argument <i node-type="i">background</i> is true value, then the procedure
+creates a thread and let the thread monitor the filesystem. (So the procedure
+returns after the thread invocation.) Otherwise, the procedure blocks and
+wait until other thread calls <code node-type="code">filesystem-watcher-stop-monitoring!</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="filesystem-watcher-stop-monitoring!_31">
+          <span>filesystem-watcher-stop-monitoring!</span>
+          <span>
+            <i node-type="i">watcher</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Stops monitoring of given <i node-type="i">watcher</i>.</p>
+      <p node-type="paragraph">If the <i node-type="i">watcher</i> is started on background, then the monitoring thread
+may not stop immediately.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="filewatch.limit">Implementation limitation</a>
+        </h3>
+        <p node-type="paragraph">Even the library provides unified APIs however users still should know the
+limitations per operating system to avoid unexpected behaviours. The following
+sections describes the known limitations.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Linux">Linux</a>
+          </h4>
+          <p node-type="paragraph">On Linux, the library is constructed on top of <code node-type="code">inotify (7)</code> and
+<code node-type="code">poll (2)</code>. If users add too many paths, then it may reach the
+maximum number of watch descriptor.</p>
+          <p node-type="paragraph">The <code node-type="code">IN_MOVED_FROM</code> and <code node-type="code">IN_MOVED_TO</code> flags are passed as
+<code node-type="code">moved</code>. So it is users responsibility to detect which file is
+<i node-type="i">moved from</i> and which file is <i node-type="i">moved to</i>.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="bsd.limitation">BSD Unix</a>
+          </h4>
+          <p node-type="paragraph">On BSD Unix, the library is constructed on top of <code node-type="code">kqueue (2)</code>. This
+implementation contains 3 major issues. Possibility of number of file
+descriptor explosion, not <code node-type="code">access</code> flag support, and no support of
+directory monitoring.</p>
+          <p node-type="paragraph">The <code node-type="code">kqueue</code> requires file descriptor per monitoring path. Thus if
+the number of paths is large, then it reaches the maxinum number of file
+descriptors. (NB: <code node-type="code">kern.maxfiles</code> on FreeBSD).</p>
+          <p node-type="paragraph"><code node-type="code">kqueue</code> doesn't support path access monitoring (e.g. <code node-type="code">IN_ACCESS</code>
+on <code node-type="code">inotify</code>). So it is impossible to monitor file access.</p>
+          <p node-type="paragraph">Current implementation of <code node-type="code">(sagittarius filewatch)</code> using <code node-type="code">kqueue</code>doesn't allow users to monitor directory. This is because by default,
+<code node-type="code">kqueue</code> doesn't provide facility to detect which file is added.
+To do it, we need manual management. To keep our code as simple as possible,
+we decided not to do it for now. This decision may be changed if there's
+enough demands.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="OS-X">OS X</a>
+          </h4>
+          <p node-type="paragraph">On OS X, the library is constructed on top of <code node-type="code">kqueue</code>, thus the
+same limitation as <a href="lib.sagittarius.filewatch.html#bsd.limitation">BSD Unix</a> is applied.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Windows">Windows</a>
+          </h4>
+          <p node-type="paragraph">Staring Windows Vista, Microsoft decided not to change timestamp just accessing
+the file or directory by default. So <code node-type="code">access</code> flag may or may not work on
+Windows depending on the configuration of the platform.</p>
+          <p node-type="paragraph">Due to the lack of deletion detect, <code node-type="code">delete</code> and <code node-type="code">move</code> work the
+same. Thus the monitoring handler may get both <code node-type="code">deleted</code> and <code node-type="code">moved</code>even though it's only specified <code node-type="code">delete</code> or <code node-type="code">move</code>.</p>
+        </section>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.ffi.html">(sagittarius ffi) - Foreign Function Interface</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./sagittarius.io.html">(sagittarius io) - Extra IO library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

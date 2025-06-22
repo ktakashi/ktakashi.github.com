@@ -1,0 +1,766 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./crypto.html">(crypto) - Cryptographic library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./dbm.html">(dbm) - Generic DBM interface</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="dbi">(dbi) - Database independent access layer</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(dbi)_9">
+          <span>(dbi)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides database independent access procedures. The
+database specific operations are provided in database driver (DBD) libraries.</p>
+      <p node-type="paragraph">Following example describes how to query a database using <code node-type="code">(dbd odbc)</code>DBD library.</p>
+      <pre lang="scheme" node-type="block"><code>(import (dbi))
+(define conn (dbi-connect "dbi:odbc:server=XE"
+                          :username "username"
+                          :password "password"))
+(let* ((query (dbi-prepare conn "SELECT * FROM table WHERE id &gt; ?"))
+       (result (dbi-execute-query! query 1)))
+  (do ((row (dbi-fetch! result) (dbi-fetch! result)))
+      ((not row))
+   (vector-for-each (lambda (col) (print col)) row)))
+</code></pre>
+      <p node-type="paragraph">There is nothing specific to the underlying database system except the
+argument <code node-type="code">"dbi:odbc:server=XE"</code> passed to <code node-type="code">dbi-connect</code>, from which
+<code node-type="code">dbi</code> library figures out that it is an access to <code node-type="code">odbc</code>, loads
+<code node-type="code">(dbd odbc)</code> library and let it handle the specific operations.</p>
+      <p node-type="paragraph">If you want to use other database named <i node-type="i">boo</i>, then you just need to pass
+<code node-type="code">"dbi:_boo_:_parameter_"</code> to <code node-type="code">dbi-connect</code> instead. As long
+as you have <code node-type="code">(dbd boo)</code> installed then everything stays the same.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="DBI-user-APIs">DBI user APIs</a>
+        </h3>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Database-connection">Database connection</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="dbi-connect_16">
+              <span>dbi-connect</span>
+              <span>
+                <i node-type="i">dsn</i>
+              </span>
+              <span>
+                <i node-type="i">.</i>
+              </span>
+              <span>
+                <i node-type="i">rest</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Connects to a database using a data source specified by <i node-type="i">dsn</i>
+(data source name). <i node-type="i">dsn</i> is a string with the following syntax.</p>
+          <p node-type="paragraph"><code node-type="code">dbi:_driver_:_options_</code><i node-type="i">driver</i> part names a specific driver. You need to have a corresponding
+driver library, <code node-type="code">(dbd _driver_)</code>, installed in your system.</p>
+          <p node-type="paragraph">Interpretation of the <i node-type="i">options</i> part is up to the driver. Usually it is
+in the form of <code node-type="code">key1=value1;key2=value2;...</code>. However the DBD
+implementations can have different format so you need to check the document
+of each driver for exact specification of <i node-type="i">options</i>.</p>
+          <p node-type="paragraph"><i node-type="i">rest</i> argument will be passed to the underlying procedure.</p>
+          <p node-type="paragraph">NOTE: <i node-type="i">username</i>, <i node-type="i">password</i> and <i node-type="i">auto-commit</i> are strongly
+encouraged to be implemented in the DBD library.</p>
+          <p node-type="paragraph">If a connection to the database is successfully established, a connection
+object is returned.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-open?_29">
+              <span>dbi-open?</span>
+              <span>
+                <i node-type="i">c</i>
+              </span>
+              <span>
+                <i node-type="i">
+                  <dbi-connection>
+                </i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Checks if the given connection is still open.</p>
+          <p node-type="paragraph">The method shall return #t if the given connection is still open, otherwise
+it shall return #f.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-close_9">
+              <span>dbi-close</span>
+              <span>
+                <i node-type="i">c</i>
+              </span>
+              <span>
+                <i node-type="i">
+                  <dbi-connection>
+                </i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Closes a connection to the database.</p>
+          <p node-type="paragraph">NOTE: Users are strongly encouraged to close a connection explicitly. DBD
+might not close opened connections automatically.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-commit!_15">
+              <span>dbi-commit!</span>
+              <span>
+                <i node-type="i">(c</i>
+              </span>
+              <span>
+                <i node-type="i"><dbi-connection>)</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-rollback!_35">
+              <span>dbi-rollback!</span>
+              <span>
+                <i node-type="i">(c</i>
+              </span>
+              <span>
+                <i node-type="i"><dbi-connection>)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Commits or rollback transactions on the given connection, respectively.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Preparing-and-executing-queries">Preparing and executing queries</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-prepare_31">
+              <span>dbi-prepare</span>
+              <span>
+                <i node-type="i">conn</i>
+              </span>
+              <span>
+                <i node-type="i">sql</i>
+              </span>
+              <span>
+                <i node-type="i">.</i>
+              </span>
+              <span>
+                <i node-type="i">args</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">From a string representation of SQL <i node-type="i">sql</i>, creates and returns a
+query object for the database connection <i node-type="i">conn</i>.</p>
+          <p node-type="paragraph"><i node-type="i">sql</i> may contain parameter slot, denoted by <code node-type="code">?</code>.</p>
+          <p node-type="paragraph">
+            <pre lang="" node-type="snipet"><code>(dbi-prepare conn "insert into tab (col1, col2) values (?, ?)")</code></pre>
+          </p>
+          <p node-type="paragraph">
+            <pre lang="" node-type="snipet"><code>(dbi-prepare conn "select * from tab where col1 = ?")</code></pre>
+          </p>
+          <p node-type="paragraph">If <i node-type="i">args</i> is not null, then the procedure shall bind given parameters
+to the place holder.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-open?_28">
+              <span>dbi-open?</span>
+              <span>
+                <i node-type="i">(query</i>
+              </span>
+              <span>
+                <i node-type="i"><dbi-query>)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Checks if the given query is still open.</p>
+          <p node-type="paragraph">The method shall return #t if the given query is still open, otherwise
+it shall return #f.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-close_8">
+              <span>dbi-close</span>
+              <span>
+                <i node-type="i">(query</i>
+              </span>
+              <span>
+                <i node-type="i"><dbi-query>)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Closes a query.</p>
+          <p node-type="paragraph">NOTE: Users are strongly encouraged to close a query explicitly. DBD
+might not close opened query automatically.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-bind-parameter!_5">
+              <span>dbi-bind-parameter!</span>
+              <span>
+                <i node-type="i">query</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">value</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Binds the given <i node-type="i">value</i> to <i node-type="i">query</i> at <i node-type="i">index</i>.</p>
+          <p node-type="paragraph">The procedure shall accept integer <i node-type="i">index</i> and may accept other type of
+<i node-type="i">index</i>.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-execute!_20">
+              <span>dbi-execute!</span>
+              <span>
+                <i node-type="i">query</i>
+              </span>
+              <span>
+                <i node-type="i">.</i>
+              </span>
+              <span>
+                <i node-type="i">args</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-execute-query!_21">
+              <span>dbi-execute-query!</span>
+              <span>
+                <i node-type="i">query</i>
+              </span>
+              <span>
+                <i node-type="i">.</i>
+              </span>
+              <span>
+                <i node-type="i">args</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Executes given <i node-type="i">query</i>. If the <i node-type="i">args</i> is not null, then
+procedure shall bind the given <i node-type="i">args</i> as its parameters.</p>
+          <p node-type="paragraph">The <code node-type="code">dbi-execute!</code> shall return a integer value representing affected
+row count.</p>
+          <p node-type="paragraph">The <code node-type="code">dbi-execute-query!</code> shall return a result set object which can be
+used with <code node-type="code">dbi-fetch!</code> or <code node-type="code">dbi-fetch-all!</code>. The implementation may
+allow to return a specific result set object and it is users' responsibility
+to use it with fetching the result.</p>
+          <p node-type="paragraph">NOTE: There is a default implementation of <code node-type="code">dbi-execute-query!</code> and
+returns the given <i node-type="i">query</i> as a result set object.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-fetch!_23">
+              <span>dbi-fetch!</span>
+              <span>
+                <i node-type="i">query</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-fetch-all!_24">
+              <span>dbi-fetch-all!</span>
+              <span>
+                <i node-type="i">query</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Fetches a row or all rows from the given <i node-type="i">query</i>.</p>
+          <p node-type="paragraph">The <code node-type="code">dbi-fetch!</code> shall return a vector representing the query result, if
+there is no more data available it shall return #f.</p>
+          <p node-type="paragraph">The <code node-type="code">dbi-fetch-all!</code> shall return a list of vectors representing the
+query result.</p>
+          <p node-type="paragraph">NOTE: There is a default implementation of <code node-type="code">dbi-fetch-all!</code>, it calls
+<code node-type="code">dbi-fetch!</code> until it returns #f.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-commit!_14">
+              <span>dbi-commit!</span>
+              <span>
+                <i node-type="i">(query</i>
+              </span>
+              <span>
+                <i node-type="i"><dbi-query>)</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-rollback!_34">
+              <span>dbi-rollback!</span>
+              <span>
+                <i node-type="i">(query</i>
+              </span>
+              <span>
+                <i node-type="i"><dbi-query>)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Commits or rollback transactions on the given query, respectively.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-columns_11">
+              <span>dbi-columns</span>
+              <span>
+                <i node-type="i">query</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns a column names affected by the given <i node-type="i">query</i>.</p>
+          <p node-type="paragraph">The procedure shall return a vector as its result.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Conditions">Conditions</a>
+          </h4>
+          <p node-type="paragraph">The DBI library provides some of conditions which should be raised by
+underlying DBD implementations.</p>
+          <p node-type="paragraph">NOTE: The listed conditions may or may not be raised by underlying DBD
+implementation.</p>
+          <div node-type="define" class="define">
+            <span>Condition</span>
+            <a name="&amp;dbi-error_3">
+              <span>&amp;dbi-error</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="dbi-error?_18">
+              <span>dbi-error?</span>
+              <span>
+                <i node-type="i">object</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-dbi-error_85">
+              <span>make-dbi-error</span>
+            </a>
+          </div>
+          <p node-type="paragraph">Root condition of DBI condition. <code node-type="code">&amp;dbi-error</code> is a sub condition
+of <code node-type="code">&amp;error</code>.</p>
+          <p node-type="paragraph">All DBI related condition should inherit this condition.</p>
+          <div node-type="define" class="define">
+            <span>Condition</span>
+            <a name="&amp;dbi-driver-not-exist_2">
+              <span>&amp;dbi-driver-not-exist</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="dbi-driver-not-exist?_17">
+              <span>dbi-driver-not-exist?</span>
+              <span>
+                <i node-type="i">object</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="condition-driver-name_132">
+              <span>condition-driver-name</span>
+              <span>
+                <i node-type="i">condition</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This condition is raised when DBD implementation can't be found.</p>
+          <p node-type="paragraph"><code node-type="code">condition-driver-name</code> returns missing driver name.</p>
+          <div node-type="define" class="define">
+            <span>Condition</span>
+            <a name="&amp;dbi-unsupported_5">
+              <span>&amp;dbi-unsupported</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="dbi-unsupported?_38">
+              <span>dbi-unsupported?</span>
+              <span>
+                <i node-type="i">object</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-dbi-unsupported_87">
+              <span>make-dbi-unsupported</span>
+            </a>
+          </div>
+          <p node-type="paragraph">This condition indicates that DBI feature is not supported.</p>
+          <p node-type="paragraph">Implementations should raise this condition when methods can't be
+implemented on the target DBMS.</p>
+          <div node-type="define" class="define">
+            <span>Condition</span>
+            <a name="&amp;dbi-sql-error_4">
+              <span>&amp;dbi-sql-error</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="dbi-sql-error?_37">
+              <span>dbi-sql-error?</span>
+              <span>
+                <i node-type="i">object</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-dbi-sql-error_86">
+              <span>make-dbi-sql-error</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="dbi-sql-error-code_36">
+              <span>dbi-sql-error-code</span>
+            </a>
+          </div>
+          <p node-type="paragraph">This condition holds SQL status code.</p>
+          <p node-type="paragraph">Implementations should raise this condition when SQL execution is failed
+with SQL status code.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Writing-drivers-for-DBI">Writing drivers for DBI</a>
+        </h3>
+        <p node-type="paragraph">Writing a driver for specific data base system means implementing a library
+<code node-type="code">(dbd _foo_)</code> where <i node-type="i">foo</i> is the name of the driver.</p>
+        <p node-type="paragraph">The library have to implement a creating a driver procedure and several
+classes and methods as explained below.</p>
+        <p node-type="paragraph">The method described above section must behave as it expected there, especially
+behaviours described with <strong node-type="strong">shall</strong>.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="DBI-driver-procedure">DBI driver procedure</a>
+          </h4>
+          <p node-type="paragraph">The driver will be created by the procedure named <code node-type="code">make-_foo_-driver</code>.
+And it is strongly encouraged to be implemented as a subclass of
+<code node-type="code">&lt;dbi-driver&gt;</code> for future extension.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="DBI-classes-to-implement">DBI classes to implement</a>
+          </h4>
+          <p node-type="paragraph">You have to define the following classes.</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">Subclass <code node-type="code">&lt;dbi-connection&gt;</code>. An instance of this class is created
+by <code node-type="code">dbi-make-connection</code>. It needs to keep the information about the
+actual connections.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">Optional: subclass <code node-type="code">&lt;dbi-driver&gt;</code> for actual driver instance.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">Optional: subclass <code node-type="code">&lt;dbi-query&gt;</code> to keep driver specific information
+of prepared statement.</p>
+            </li>
+          </ul>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="DBI-methods-to-implement">DBI methods to implement</a>
+          </h4>
+          <p node-type="paragraph">The driver needs to implement the following methods.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-make-connection_25">
+              <span>dbi-make-connection</span>
+              <span>
+                <i node-type="i">driver</i>
+              </span>
+              <span>
+                <i node-type="i">(options</i>
+              </span>
+              <span>
+                <i node-type="i"><string>)</i>
+              </span>
+              <span>
+                <i node-type="i">(options-alist</i>
+              </span>
+              <span>
+                <i node-type="i"><list>)</i>
+              </span>
+              <span>
+                <i node-type="i">.</i>
+              </span>
+              <span>
+                <i node-type="i">rest</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This method is called from <code node-type="code">dbi-connect</code>, and responsible to connect
+to the database and to create a connection object. It must return a connection
+object or raise an error which should be a sub condition of <code node-type="code">&amp;dbi-error</code>.</p>
+          <p node-type="paragraph"><i node-type="i">options</i> is the option part of the data source name (DSN) given to
+<code node-type="code">dbi-connect</code>. <i node-type="i">options-alist</i> is an assoc list of the result of
+parsing <i node-type="i">options</i>. Both are provided so that the driver may interpret
+<i node-type="i">options</i> string in nontrivial way.</p>
+          <p node-type="paragraph">For example, given <code node-type="code">"dbi:foo:myaddressbook;host=dbhost;port=8998"</code>
+as DSN, foo's <code node-type="code">dbi-make-connection</code> will receive
+<code node-type="code">"myaddressbook;host=dbhost;port=8998"</code> as <i node-type="i">options</i>, and
+<code node-type="code">(("myaddressbook" . #t) ("host" . "dbhost") ("port" . "8998"))</code> as
+<i node-type="i">options-alist</i>.</p>
+          <p node-type="paragraph">After <i node-type="i">options-alist</i>, whatever given to <code node-type="code">dbi-connect</code> are passed.
+The driver is strongly encouraged to implement <code node-type="code">:username</code>,
+<code node-type="code">:password</code> and <code node-type="code">:auto-commit</code> (if the database is supported)
+keyword arguments to specify the authentication information and commit mode.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-prepare_30">
+              <span>dbi-prepare</span>
+              <span>
+                <i node-type="i">(c</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-connection>)</i>
+              </span>
+              <span>
+                <i node-type="i">(sql</i>
+              </span>
+              <span>
+                <i node-type="i"><string>)</i>
+              </span>
+              <span>
+                <i node-type="i">.</i>
+              </span>
+              <span>
+                <i node-type="i">rest</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">The method must create and return a prepared query object which is an
+instance of <code node-type="code">&lt;dbi-query&gt;</code> or its subclass.</p>
+          <p node-type="paragraph"><i node-type="i">sql</i> is an SQL statement. It may contain placeholders represented by
+<code node-type="code">'?'</code>. The implementation must accept it to keep DBI portable even though
+the database doesn't.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-bind-parameter!_4">
+              <span>dbi-bind-parameter!</span>
+              <span>
+                <i node-type="i">(q</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-query>)</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">value</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Binds a parameter <i node-type="i">value</i> at the place <i node-type="i">index</i>.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-open?_27">
+              <span>dbi-open?</span>
+              <span>
+                <i node-type="i">(c</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-connection>)</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-open?_26">
+              <span>dbi-open?</span>
+              <span>
+                <i node-type="i">(q</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-query>)</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-close_7">
+              <span>dbi-close</span>
+              <span>
+                <i node-type="i">(c</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-connection>)</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-close_6">
+              <span>dbi-close</span>
+              <span>
+                <i node-type="i">(q</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-query>)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Queries open/close status of a connection and a query, and closes
+a connection and a query. The close method should cause releasing resources
+used by connection/query. The driver has to allow <code node-type="code">dbi-close</code> to be
+called on a connection or a query which has already been closed.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-commit!_13">
+              <span>dbi-commit!</span>
+              <span>
+                <i node-type="i">(c</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-connection>)</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-commit!_12">
+              <span>dbi-commit!</span>
+              <span>
+                <i node-type="i">(q</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-query>)</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-rollback!_33">
+              <span>dbi-rollback!</span>
+              <span>
+                <i node-type="i">(c</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-connection>)</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-rollback_32">
+              <span>dbi-rollback</span>
+              <span>
+                <i node-type="i">(q</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-query>)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Commits/rollbacks a connection or a query.</p>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-execute!_19">
+              <span>dbi-execute!</span>
+              <span>
+                <i node-type="i">(q</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-query>)</i>
+              </span>
+              <span>
+                <i node-type="i">.</i>
+              </span>
+              <span>
+                <i node-type="i">args</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-fetch!_22">
+              <span>dbi-fetch!</span>
+              <span>
+                <i node-type="i">(q</i>
+              </span>
+              <span>
+                <i node-type="i"><foo-query>)</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Method</span>
+            <a name="dbi-columns_10">
+              <span>dbi-columns</span>
+              <span>
+                <i node-type="i">q</i>
+              </span>
+              <span>
+                <i node-type="i">
+                  <foo-query>
+                </i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Implementation must behave as described above section.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Data-conversion-guide">Data conversion guide</a>
+          </h4>
+          <p node-type="paragraph">Database data type and Scheme type are usually not the same. However to keep
+DBI portable it is important to follow a guideline. Here I suggest the data
+conversion between a database and Scheme object.</p>
+          <p node-type="paragraph">Following is database data type to Scheme type conversion guideline. The driver
+implementation should follow.</p>
+          <dl node-type="dlist">
+            <dt>Text (VARCHAR2 etc)</dt>
+            <dd>
+              <p node-type="paragraph">String</p>
+            </dd>
+            <dt>Binary (BINARY etc)</dt>
+            <dd>
+              <p node-type="paragraph">Bytevector</p>
+            </dd>
+            <dt>Date</dt>
+            <dd>
+              <p node-type="paragraph">Date from SRFI-19</p>
+            </dd>
+            <dt>Time and Timestamp</dt>
+            <dd>
+              <p node-type="paragraph">Time from SRFI-19</p>
+            </dd>
+            <dt>Blob</dt>
+            <dd>
+              <p node-type="paragraph">Binary port, preferably not retrieving all data at once.</p>
+            </dd>
+            <dt>Clob</dt>
+            <dd>
+              <p node-type="paragraph">Textual port, preferably not retrieving all data at once.</p>
+            </dd>
+          </dl>
+        </section>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./crypto.html">(crypto) - Cryptographic library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./dbm.html">(dbm) - Generic DBM interface</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

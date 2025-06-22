@@ -1,0 +1,230 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.threads.html">(sagittarius threads) - Thread</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.debug.html">(sagittarius debug) - Debugging support</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.timezone">(sagittarius timezone) - Timezone</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius timezone)_113">
+          <span>(sagittarius timezone)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides timezone related procedures. The timezone database
+is from
+<a href="https://www.iana.org/time-zones">IANA - Time Zone Database</a>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timezone?_74">
+          <span>timezone?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a timezone object, otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timezone_67">
+          <span>timezone</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Retrieves timezone object related to <i node-type="i">name</i>. The _name_must be a string and proper name of TZID such as <code node-type="code">Europe/Amsterdam</code>.
+If the given name is not found, then <code node-type="code">GMT</code> is returned as the fallback.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timezone-offset_71">
+          <span>timezone-offset</span>
+          <span>
+            <i node-type="i">tz</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">when</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns give offset of timezone <i node-type="i">tz</i>.</p>
+      <p node-type="paragraph">If optional argument <i node-type="i">when</i> is specified, it must be a time object,
+then the offset is calculated the specified time. Otherwise <code node-type="code">current-time</code>,
+is used.</p>
+      <p node-type="paragraph">This procedure considers daylight saving time (DST). Means, if the timezone
+has DST, then the return value is depending on the <i node-type="i">when</i>. For example,
+<code node-type="code">Europe/Amsterdam</code> has DST so if the <i node-type="i">when</i> is in DST, then the
+returning offset is <code node-type="code">7200</code>, otherwise <code node-type="code">3600</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timezone-dst?_68">
+          <span>timezone-dst?</span>
+          <span>
+            <i node-type="i">tz</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(when</i>
+          </span>
+          <span>
+            <i node-type="i">(current-time))</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns #t if <i node-type="i">when</i> is in DST, otherwise #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timezone-short-name_73">
+          <span>timezone-short-name</span>
+          <span>
+            <i node-type="i">tz</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(when</i>
+          </span>
+          <span>
+            <i node-type="i">(current-time))</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the short name of given timezone <i node-type="i">tz</i>.</p>
+      <p node-type="paragraph">This procedure considers DST. Means if <i node-type="i">when</i> is in DST, then short name
+is DST name, otherwise standard name. For example, timezone
+<code node-type="code">Europe/Amsterdam</code> has 2 names, <code node-type="code">CET</code> and <code node-type="code">CEST</code>. If the
+given <i node-type="i">when</i> is in DST, then <code node-type="code">CEST</code> is returned, otherwise <code node-type="code">CET</code>is returned.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timezone-raw-offset_72">
+          <span>timezone-raw-offset</span>
+          <span>
+            <i node-type="i">tz</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">when</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns GMT offset of given timezone <i node-type="i">tz</i>.</p>
+      <p node-type="paragraph">If optional argument <i node-type="i">when</i> is given and must be a time object, then
+the returning offset is the historical offset. If it's not given, then
+the procedure reutnrs current timezone offset.</p>
+      <p node-type="paragraph">Above procedures also considers when the timezone is started. Means, given
+timezone has histories, such as when the daylight saving time is starting
+or ending, when that timezone started, etc. It may return different value
+according to the <i node-type="i">when</i>. Following is the example of timezone history:</p>
+      <pre lang="scheme" node-type="block"><code>(let ((tz (timezone "Europe/Dublin"))
+      (now (date-&gt;time-utc (make-date 0 0 0 0 24 7 2015 0)))
+      ;; 1:00	-	IST	1971 Oct 31  2:00u
+      (no-rule-past (date-&gt;time-utc (make-date 0 0 0 0 24 7 1971 0)))
+      ;; 0:00	GB-Eire	GMT/IST	1968 Oct 27
+      (rule-past (date-&gt;time-utc (make-date 0 0 0 0 24 7 1968 0))))
+  (timezone-short-name tz now)          ;; =&gt; "GMT/IST"
+  (timezone-short-name tz no-rule-past) ;; =&gt; "IST"
+
+  ;; no DST
+  (timezone-offset tz no-rule-past)     ;; =&gt; 3600 
+
+  (timezone-raw-offset tz)              ;; =&gt; 0
+  (timezone-raw-offset tz no-rule-past) ;; =&gt; 3600
+  (timezone-raw-offset tz rule-past)    ;; =&gt; 0
+
+  (timezone-short-name tz rule-past)    ;; =&gt; "GMT/IST"
+  )
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timezone-name_69">
+          <span>timezone-name</span>
+          <span>
+            <i node-type="i">tz</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns TZID of given timezone <i node-type="i">tz</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="timezone-name-list_70">
+          <span>timezone-name-list</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns supported TZIDs.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="zone-offset-&gt;timezones_12">
+          <span>zone-offset-&gt;timezones</span>
+          <span>
+            <i node-type="i">offset</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">when</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns list of timezones whose offsets matched <i node-type="i">offset</i>.</p>
+      <p node-type="paragraph">This procedure considers the time. For example, if the given <i node-type="i">offset</i> is
+<code node-type="code">3600</code> which is UTC+1 however if it's summer time, then the returning
+list doesn't contain some of timezones (e.g. Amsterdam).</p>
+      <p node-type="paragraph">The optional argument <i node-type="i">when</i> specifies the time to consider. If it's not
+specified, then the returning value of <code node-type="code">current-time</code> is used.</p>
+      <pre lang="scheme" node-type="block"><code>(zone-offset-&gt;timezones 3600) ;; =&gt; '(#&lt;timezone Etc/GMT-1&gt; ...)
+;; offset +15:00 doesn't exist
+(zone-offset-&gt;timezones (* 15 3600)) ;; =&gt; '()
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="zone-offset-&gt;timezones*_13">
+          <span>zone-offset-&gt;timezones*</span>
+          <span>
+            <i node-type="i">offset</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">when</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Similar with <code node-type="code">zone-offset-&gt;timezones*</code>, the difference is
+this procedure creates an anonymous timezone if there's no registered timezone
+matching with the given <i node-type="i">offset</i>.</p>
+      <pre lang="scheme" node-type="block"><code>(zone-offset-&gt;timezones* 3600) ;; =&gt; '(#&lt;timezone Etc/GMT-1&gt; ...)
+;; offset +15:00 doesn't exist
+(zone-offset-&gt;timezones* (* 15 3600)) ;; =&gt; '(#&lt;timezone +15:00&gt;)
+</code></pre>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.threads.html">(sagittarius threads) - Thread</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.debug.html">(sagittarius debug) - Debugging support</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

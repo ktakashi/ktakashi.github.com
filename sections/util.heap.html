@@ -1,0 +1,415 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./util.hashtables.html">(util hashtables) - Hashtable utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.list.html">(util list) - Extra list utility library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.heap">(util heap) - Heap</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(util heap)_198">
+          <span>(util heap)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides heap data structure and its operations. The
+implementation of heap is Fibonacci heap. Running time of heap operations
+are followings;</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">Insert(key, data): O(1)</p>
+        </li>
+        <li>
+          <p node-type="paragraph">FindMin(): O(1)</p>
+        </li>
+        <li>
+          <p node-type="paragraph">DeleteMin(): Amortized O(log n)</p>
+        </li>
+        <li>
+          <p node-type="paragraph">Delete(node): Amortized O(log n)</p>
+        </li>
+        <li>
+          <p node-type="paragraph">DecreaseKey(node): Amortized O(1)</p>
+        </li>
+        <li>
+          <p node-type="paragraph">Merge(heap1, heap2): O(1)</p>
+        </li>
+        <li>
+          <p node-type="paragraph">Search(key): O(n)</p>
+        </li>
+      </ul>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Constructors-predicates-and-accessors">Constructors, predicates and accessors</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<heap&gt;_32">
+            <span>&lt;heap&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">A class of Fibonacci heap.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap?_49">
+            <span>heap?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Return #t if <i node-type="i">obj</i> is a heap, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-heap_175">
+            <span>make-heap</span>
+            <span>
+              <i node-type="i">compare</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">compare</i> must be a procedure which takes 2 argument and
+returns an exact integer indicates the order of given arguments.</p>
+        <p node-type="paragraph">Creates a heap.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="copy-heap_155">
+            <span>copy-heap</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates copy of <i node-type="i">heap</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="alist-&gt;heap_29">
+            <span>alist-&gt;heap</span>
+            <span>
+              <i node-type="i">compare</i>
+            </span>
+            <span>
+              <i node-type="i">alist</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">compare</i> must be a procedure which takes 2 argument and
+returns an exact integer indicates the order of given arguments.</p>
+        <p node-type="paragraph">Creates a heap whose keys and values are car/cdr part of <i node-type="i">alist</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-empty?_36">
+            <span>heap-empty?</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if <i node-type="i">heap</i> is empty, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-size_47">
+            <span>heap-size</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the number of entries of <i node-type="i">heap</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-compare_33">
+            <span>heap-compare</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns comparison procedure of <i node-type="i">heap</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-entry?_40">
+            <span>heap-entry?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is a heap entry, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-entry-key_37">
+            <span>heap-entry-key</span>
+            <span>
+              <i node-type="i">entry</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-entry-value_38">
+            <span>heap-entry-value</span>
+            <span>
+              <i node-type="i">entry</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns key and value of <i node-type="i">entry</i>, respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-entry-value-set!_39">
+            <span>heap-entry-value-set!</span>
+            <span>
+              <i node-type="i">entry</i>
+            </span>
+            <span>
+              <i node-type="i">value</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Sets <i node-type="i">value</i> as <i node-type="i">entry</i>'s value.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Heap-operations">Heap operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-min_43">
+            <span>heap-min</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the smallest entry of <i node-type="i">heap</i>. If <i node-type="i">heap</i> is empty,
+then #f is returned.</p>
+        <p node-type="paragraph">To get the key and value from the returning entry, use <code node-type="code">heap-entry-key</code>and <code node-type="code">heap-entry-value</code> procedures, respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-set!_46">
+            <span>heap-set!</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">value</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Inserts an entry whose key is <i node-type="i">key</i>, value is <i node-type="i">value</i> and
+returns the entry.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-extract-min!_41">
+            <span>heap-extract-min!</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Removes smallest entry and returns it. It is an error if _heap_is empty.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-delete!_35">
+            <span>heap-delete!</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+            <span>
+              <i node-type="i">entry/key</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Removes target <i node-type="i">entry/key</i> from <i node-type="i">heap</i> and returns the
+removed entry.</p>
+        <p node-type="paragraph">If <i node-type="i">entry/key</i> is an entry then this operation is done in amortized
+O(log n). If not, then O(n).</p>
+        <p node-type="paragraph">NOTE: If <i node-type="i">entry/key</i> is an entry, then it must exist in <i node-type="i">heap</i>.
+However the procedure won't check so it is user's responsibility to
+make sure.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-delete!_34">
+            <span>heap-delete!</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+            <span>
+              <i node-type="i">entry/key</i>
+            </span>
+            <span>
+              <i node-type="i">new-key</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Change the key value of given <i node-type="i">entry/key</i> to <i node-type="i">new-key</i>. The
+<i node-type="i">new-key</i> must be smaller than current key in sense of the returning
+value of <code node-type="code">heap-compare</code>, otherwise it's an error.</p>
+        <p node-type="paragraph">If <i node-type="i">entry/key</i> is an entry then this operation is done in amortized
+O(log n). If not, then O(n).</p>
+        <p node-type="paragraph">NOTE: If <i node-type="i">entry/key</i> is an entry, then it must exist in <i node-type="i">heap</i>.
+However the procedure won't check so it is user's responsibility to
+make sure.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-clear!_32">
+            <span>heap-clear!</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Clears all entry of <i node-type="i">heap</i> and returns <i node-type="i">heap</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-merge!_42">
+            <span>heap-merge!</span>
+            <span>
+              <i node-type="i">heap1</i>
+            </span>
+            <span>
+              <i node-type="i">heap2</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Merge <i node-type="i">heap2</i> into <i node-type="i">heap1</i> and empty it. Then returns <i node-type="i">heap1</i>.</p>
+        <p node-type="paragraph">This procedure changes both heaps destructively, if you want to kepp
+<i node-type="i">heap2</i> intact, use <code node-type="code">merge-heaps</code> or <code node-type="code">merge-heaps!</code> instead.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="merge-heaps_387">
+            <span>merge-heaps</span>
+            <span>
+              <i node-type="i">heap1</i>
+            </span>
+            <span>
+              <i node-type="i">heap2</i>
+            </span>
+            <span>
+              <i node-type="i">more</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="merge-heaps!_388">
+            <span>merge-heaps!</span>
+            <span>
+              <i node-type="i">heap1</i>
+            </span>
+            <span>
+              <i node-type="i">heap2</i>
+            </span>
+            <span>
+              <i node-type="i">more</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Merges heap and returns merged heap.</p>
+        <p node-type="paragraph">If the first procedure is used then the returning heap is freshly created
+according to <i node-type="i">heap1</i>. The second form merged the rest of heaps to
+<i node-type="i">heap1</i>.</p>
+        <p node-type="paragraph">The running time of these procedures is O(nm) where m is number of heaps to
+merge.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-ref_44">
+            <span>heap-ref</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(fallback</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns entry value associated with <i node-type="i">key</i> in <i node-type="i">heap</i>. If there
+is no entry, then <i node-type="i">fallback</i> is returned.</p>
+        <p node-type="paragraph">The running time of this procedures is O(n).</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-update!_48">
+            <span>heap-update!</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">default</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">proc</i> must be a procedure accepts one argument.</p>
+        <p node-type="paragraph">Updates the entry value associated to <i node-type="i">key</i> with the returned value of
+<i node-type="i">proc</i>. If the entry doesn't exist then <i node-type="i">default</i> will be passed to
+the <i node-type="i">proc</i>.</p>
+        <p node-type="paragraph">The running time of this procedures is O(n).</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="heap-search_45">
+            <span>heap-search</span>
+            <span>
+              <i node-type="i">heap</i>
+            </span>
+            <span>
+              <i node-type="i">key</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">finish</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Searches the entry associated to <i node-type="i">key</i> and returns it. If there is
+no entry then #f is returned.</p>
+        <p node-type="paragraph">If optional argument <i node-type="i">finish</i> given then it must be a procedure which
+takes one argument. The procedure is called when search process is finished.
+The given argument is either an entry of #f.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./util.hashtables.html">(util hashtables) - Hashtable utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.list.html">(util list) - Extra list utility library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

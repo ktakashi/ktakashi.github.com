@@ -1,0 +1,609 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rnrs.control.6.html">Control structures</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.records.procedural.6.html">Records procedural layer</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rnrs.records.syntactic.6">Records syntactic layer</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rnrs records syntactic (6))_79">
+          <span>(rnrs records syntactic (6))</span>
+        </a>
+      </div>
+      <p node-type="paragraph">The <code node-type="code">(rnrs records syntactic (6))</code>library. Some details of the
+specification are explained in terms of the specification of the procedural
+layer below.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-record-type_88">
+          <span>define-record-type</span>
+          <span>
+            <i node-type="i">name-spec</i>
+          </span>
+          <span>
+            <i node-type="i">record-clase</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Auxiliary syntax</span>
+        <a name="fields_6">
+          <span>fields</span>
+          <span>
+            <i node-type="i">field-spec</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Auxiliary syntax</span>
+        <a name="parent_10">
+          <span>parent</span>
+          <span>
+            <i node-type="i">parent-name</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Auxiliary syntax</span>
+        <a name="protocol_156">
+          <span>protocol</span>
+          <span>
+            <i node-type="i">expression</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Auxiliary syntax</span>
+        <a name="sealed_9">
+          <span>sealed</span>
+          <span>
+            <i node-type="i">boolean</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Auxiliary syntax</span>
+        <a name="opaque_18">
+          <span>opaque</span>
+          <span>
+            <i node-type="i">boolean</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Auxiliary syntax</span>
+        <a name="nongenerative_26">
+          <span>nongenerative</span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">uid</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Auxiliary syntax</span>
+        <a name="parent-rtd_11">
+          <span>parent-rtd</span>
+          <span>
+            <i node-type="i">parent-rtd</i>
+          </span>
+          <span>
+            <i node-type="i">parent-cd</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] A <code node-type="code">define-record-type</code> form defines a record type along with
+associated constructor descriptor and constructor, predicate, field accessors,
+and field mutators. The <code node-type="code">define-record-type</code> form expands into a set of
+definitions in the environment where <code node-type="code">define-record-type</code> appears; hence,
+it is possible to refer to the bindings (except for that of the record type
+itself) recursively.</p>
+      <p node-type="paragraph">The <i node-type="i">name-spec</i> specifies the names of the record type, constructor, and
+predicate. It must take one of the following forms:</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(_record-name_ _constructor-name_ _predicate-name_)</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>_record-name_</code></pre>
+      </p>
+      <p node-type="paragraph"><i node-type="i">Record-name</i>, <i node-type="i">constructor-name</i>, and <i node-type="i">predicate-name</i> must all be
+identifiers.
+<i node-type="i">Record-name</i>, taken as a symbol, becomes the name of the record type.
+(See the description of <code node-type="code">make-record-type-descriptor</code>.) Additionally, it is
+bound by this definition to an expand-time or run-time representation of the
+record type and can be used as parent name in syntactic record-type definitions
+that extend this definition. It can also be used as a handle to gain access to
+the underlying record-type descriptor and constructor descriptor
+(see <code node-type="code">record-type-descriptor</code> and <code node-type="code">record-constructor-descriptor</code>).</p>
+      <p node-type="paragraph"><i node-type="i">Constructor-name</i> is defined by this definition to be a constructor for the
+defined record type, with a protocol specified by the <code node-type="code">protocol</code> clause, or,
+in its absence, using a default protocol. For details, see the description of the
+<code node-type="code">protocol</code> clause below.</p>
+      <p node-type="paragraph"><i node-type="i">Predicate-name</i> is defined by this definition to a predicate for the defined
+record type.</p>
+      <p node-type="paragraph">The second form of <i node-type="i">name-spec</i> is an abbreviation for the first form, where
+the name of the constructor is generated by prefixing the record name with
+<code node-type="code">make-</code>, and the predicate name is generated by adding a question mark
+(<code node-type="code">?</code>) to the end of the record name. For example, if the record name is
+<code node-type="code">frob</code>, the name of the constructor is <code node-type="code">make-frob</code>, and the predicate
+name is <code node-type="code">frob?</code>.
+Each <i node-type="i">record-clause</i> must take one of the auxiliary syntax forms; it is a
+syntax violation if multiple <i node-type="i">record-clauses</i> of the same kind appear in a
+<code node-type="code">define-record-type</code> form.</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(fields _field-spec_*)</code></pre>
+      </p>
+      <p node-type="paragraph">Each <i node-type="i">field-spec</i> has one of the following forms</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(immutable _field-name_ _accessor-name_)</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(mutable _field-name_ _accessor-name_ _mutator-name_)</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(immutable _field-name_)</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(mutable _field-name_)</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>_field-name_</code></pre>
+      </p>
+      <p node-type="paragraph"><i node-type="i">Field-name</i>, <i node-type="i">accessor-name</i>, and <i node-type="i">mutator-name</i> must all be identifiers.
+The first form declares an immutable field called field-name&gt;, with the corresponding
+accessor named <i node-type="i">accessor-name</i>. The second form declares a mutable field called
+<i node-type="i">field-name</i>, with the corresponding accessor named <i node-type="i">accessor-name</i>, and
+with the corresponding mutator named <i node-type="i">mutator-name</i>.</p>
+      <p node-type="paragraph">If <i node-type="i">field-spec</i> takes the third or fourth form, the accessor name is generated
+by appending the record name and field name with a hyphen separator, and the mutator
+name (for a mutable field) is generated by adding a <code node-type="code">-set!</code> suffix to the
+accessor name. For example, if the record name is <code node-type="code">frob</code> and the field name
+is <code node-type="code">widget</code>, the accessor name is <code node-type="code">frob-widget</code> and the mutator name is
+<code node-type="code">frob-widget-set!</code>.</p>
+      <p node-type="paragraph">If <i node-type="i">field-spec</i> is just a <i node-type="i">field-name</i> form, it is an abbreviation for
+<code node-type="code">(immutable _field-name_)</code>.</p>
+      <p node-type="paragraph">The <i node-type="i">field-names</i> become, as symbols, the names of the fields in the
+<code node-type="code">record-type</code> descriptor being created, in the same order.</p>
+      <p node-type="paragraph">The <code node-type="code">fields</code> clause may be absent; this is equivalent to an empty <code node-type="code">fields</code>clause.</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(parent _parent-name_)</code></pre>
+      </p>
+      <p node-type="paragraph">Specifies that the record type is to have parent type <i node-type="i">parent-name</i>, where
+<i node-type="i">parent-name</i> is the <i node-type="i">record-name</i> of a record type previously defined
+using <code node-type="code">define-record-type</code>. The record-type definition associated with
+<i node-type="i">parent-name</i> must not be sealed. If no parent clause and no <code node-type="code">parent-rtd</code>(see below) clause is present, the record type is a base type.</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(protocol _expression_)</code></pre>
+      </p>
+      <p node-type="paragraph"><i node-type="i">Expression</i> is evaluated in the same environment as the <code node-type="code">define-record-type</code>form, and must evaluate to a protocol appropriate for the record type being defined.</p>
+      <p node-type="paragraph">The protocol is used to create a record-constructor descriptor as described below.
+If no <code node-type="code">protocol</code> clause is specified, a constructor descriptor is still created
+using a default protocol. The clause can be absent only if the record type being
+defined has no parent type, or if the parent definition does not specify a protocol.</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(sealed _boolean_)</code></pre>
+      </p>
+      <p node-type="paragraph">If this option is specified with operand #t, the defined record type is sealed,
+i.e., no extensions of the record type can be created. If this option is specified
+with operand #f, or is absent, the defined record type is not sealed.</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(opaque _boolean_)</code></pre>
+      </p>
+      <p node-type="paragraph">If this option is specified with operand #t, or if an opaque parent record type is
+specified, the defined record type is opaque. Otherwise, the defined record type is
+not opaque. See the specification of record-rtd below for details.</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(nongenerative _uid_)</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(nongenerative)</code></pre>
+      </p>
+      <p node-type="paragraph">This specifies that the record type is nongenerative with uid <i node-type="i">uid</i>, which must
+be an identifier. If <i node-type="i">uid</i> is absent, a unique uid is generated at macro-expansion
+time. If two record-type definitions specify the same uid, then the record-type
+definitions should be equivalent, i.e., the implied arguments to
+<code node-type="code">make-record-type-descriptor</code> must be equivalent as described under
+<code node-type="code">make-record-type-descriptor</code>. If this condition is not met, it is either
+considered a syntax violation or an exception with condition type <code node-type="code">&amp;assertion</code>is raised. If the condition is met, a single record type is generated for both
+definitions.</p>
+      <p node-type="paragraph">In the absence of a <code node-type="code">nongenerative</code> clause, a new record type is generated
+every time a <code node-type="code">define-record-type</code> form is evaluated:</p>
+      <pre lang="scheme" node-type="block"><code>(let ((f (lambda (x)
+           (define-record-type r ...)
+           (if x r? (make-r ...)))))
+  ((f #t) (f #f)))
+</code></pre>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(parent-rtd _parent-rtd_ _parent-cd_)</code></pre>
+      </p>
+      <p node-type="paragraph">Specifies that the record type is to have its parent type specified by
+<i node-type="i">parent-rtd</i>, which should be an expression evaluating to a record-type
+descriptor, and <i node-type="i">parent-cd</i>, which should be an expression evaluating to a
+constructor descriptor. The record-type definition associated with the value of
+<i node-type="i">parent-rtd</i> must not be sealed. Moreover, a record-type definition must not
+have both a <code node-type="code">parent</code> and a <code node-type="code">parent-rtd</code> clause.</p>
+      <p node-type="paragraph">All bindings created by <code node-type="code">define-record-typ</code>e (for the record type, the
+constructor, the predicate, the accessors, and the mutators) must have names that
+are pairwise distinct.</p>
+      <p node-type="paragraph">The constructor created by a <code node-type="code">define-record-type</code> form is a procedure as
+follows:</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">If there is no <code node-type="code">parent</code> clause and no <code node-type="code">protocol</code> clause, the
+constructor accepts as many arguments as there are fields, in the same order
+as they appear in the <code node-type="code">fields</code> clause, and returns a record object with
+the fields initialized to the corresponding arguments.</p>
+        </li>
+        <li>
+          <p node-type="paragraph">If there is no <code node-type="code">parent</code> or <code node-type="code">parent-rtd</code> clause and a <code node-type="code">protocol</code>clause, the protocol expression must evaluate to a procedure that accepts a
+single argument. The protocol procedure is called once during the evaluation of
+the <code node-type="code">define-record-type</code> form with a procedure <i node-type="i">p</i> as its argument. It
+should return a procedure, which will become the constructor bound to
+<i node-type="i">constructor-name</i>. The procedure <i node-type="i">p</i> accepts as many arguments as there
+are fields, in the same order as they appear in the fields clause, and returns
+a record object with the fields initialized to the corresponding arguments.
+The constructor returned by the protocol procedure can accept an arbitrary number
+of arguments, and should call <i node-type="i">p</i> once to construct a record object, and
+return that record object.
+For example, the following protocol expression for a record-type definition with
+three fields creates a constructor that accepts values for all fields, and
+initialized them in the reverse order of the arguments:</p>
+          <pre lang="scheme" node-type="block"><code>(lambda (p)
+  (lambda (v1 v2 v3)
+    (p v3 v2 v1)))
+</code></pre>
+        </li>
+        <li>
+          <p node-type="paragraph">If there is both a <code node-type="code">parent</code> clause and a <code node-type="code">protocol</code> clause, then
+the protocol procedure is called once with a procedure _n_as its argument.
+As in the previous case, the protocol procedure should return a procedure, which
+will become the constructor bound to <i node-type="i">constructor-name</i>. However, <i node-type="i">n</i> is
+different from <i node-type="i">p</i> in the previous case: It accepts arguments corresponding
+to the arguments of the constructor of the parent type. It then returns a procedure
+<i node-type="i">p</i> that accepts as many arguments as there are (additional) fields in this
+type, in the same order as in the <code node-type="code">fields</code> clause, and returns a record object
+with the fields of the parent record types initialized according to their constructors
+and the arguments to <i node-type="i">n</i>, and the fields of this record type initialized to
+its arguments of <i node-type="i">p</i>.
+The constructor returned by the protocol procedure can accept an arbitrary number
+of arguments, and should call <i node-type="i">n</i> once to construct the procedure <i node-type="i">p</i>,
+and call <i node-type="i">p</i> once to create the record object, and finally return that record
+object.
+For example, the following protocol expression assumes that the constructor of
+the parent type takes three arguments:</p>
+          <pre lang="scheme" node-type="block"><code>(lambda (n)
+  (lambda (v1 v2 v3 x1 x2 x3 x4)
+    (let ((p (n v1 v2 v3)))
+      (p x1 x2 x3 x4))))
+</code></pre>
+          <p node-type="paragraph">The resulting constructor accepts seven arguments, and initializes the fields of
+the parent types according to the constructor of the parent type, with <code node-type="code">v1</code>,
+<code node-type="code">v2</code>, and <code node-type="code">v3</code> as arguments. It also initializes the fields of this
+record type to the values of <code node-type="code">x1</code>, ..., <code node-type="code">x4</code>.</p>
+        </li>
+        <li>
+          <p node-type="paragraph">If there is a <code node-type="code">parent</code> clause, but no <code node-type="code">protocol</code> clause, then the
+parent type must not have a <code node-type="code">protocol</code> clause itself. The constructor bound
+to <i node-type="i">constructor-name</i> is a procedure that accepts arguments corresponding to
+the parent types' constructor first, and then one argument for each field in the
+same order as in the <code node-type="code">fields</code> clause. The constructor returns a record object
+with the fields initialized to the corresponding arguments.</p>
+        </li>
+        <li>
+          <p node-type="paragraph">If there is a <code node-type="code">parent-rtd</code> clause, then the constructor is as with a
+<code node-type="code">parent</code> clause, except that the constructor of the parent type is determined
+by the constructor descriptor of the <code node-type="code">parent-rtd</code> clause.</p>
+        </li>
+      </ul>
+      <p node-type="paragraph">A protocol may perform other actions consistent with the requirements described
+above, including mutation of the new record or other side effects, before returning
+the record.</p>
+      <p node-type="paragraph">Any definition that takes advantage of implicit naming for the constructor,
+predicate, accessor, and mutator names can be rewritten trivially to a definition
+that specifies all names explicitly. For example, the implicit-naming record
+definition:</p>
+      <pre lang="scheme" node-type="block"><code>(define-record-type frob
+  (fields (mutable widget))
+  (protocol
+    (lambda (p)
+      (lambda (n) (p (make-widget n))))))
+</code></pre>
+      <p node-type="paragraph">is equivalent to the following explicit-naming record definition.</p>
+      <pre lang="scheme" node-type="block"><code>(define-record-type (frob make-frob frob?)
+  (fields (mutable widget
+                   frob-widget
+                   frob-widget-set!))
+  (protocol
+    (lambda (p)
+      (lambda (n) (p (make-widget n))))))
+</code></pre>
+      <p node-type="paragraph">Also, the implicit-naming record definition:</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(define-record-type point (fields x y))</code></pre>
+      </p>
+      <p node-type="paragraph">is equivalent to the following explicit-naming record definition:</p>
+      <pre lang="scheme" node-type="block"><code>(define-record-type (point make-point point?)
+  (fields 
+    (immutable x point-x)
+    (immutable y point-y)))
+</code></pre>
+      <p node-type="paragraph">With implicit naming, it is still possible to specify some of the names explicitly;
+for example, the following overrides the choice of accessor and mutator names for
+the widget field.</p>
+      <pre lang="scheme" node-type="block"><code>(define-record-type frob
+  (fields (mutable widget getwid setwid!))
+  (protocol
+    (lambda (p)
+      (lambda (n) (p (make-widget n))))))
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="record-type-descriptor_71">
+          <span>record-type-descriptor</span>
+          <span>
+            <i node-type="i">record-name</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] Evaluates to the record-type descriptor (see
+<a href="rnrs.records.procedural.6.html#rnrs.records.procedural.6">Records procedural layer</a>) associated with the type specified by
+<i node-type="i">record-name</i>.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="record-constructor-descriptor_67">
+          <span>record-constructor-descriptor</span>
+          <span>
+            <i node-type="i">record-name</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] Evaluates to the record-type constructor (see
+<a href="rnrs.records.procedural.6.html#rnrs.records.procedural.6">Records procedural layer</a>) associated with the type specified by
+<i node-type="i">record-name</i>.</p>
+      <p node-type="paragraph">The following example uses the <code node-type="code">record?</code> procedure from the
+<code node-type="code">(rnrs records inspection (6))</code> library:</p>
+      <pre lang="scheme" node-type="block"><code>(define-record-type (point make-point point?)
+  (fields (immutable x point-x)
+           (mutable y point-y set-point-y!))
+  (nongenerative point-4893d957-e00b-11d9-817f-00111175eb9e))
+</code></pre>
+      <pre lang="scheme" node-type="block"><code>(define-record-type (cpoint make-cpoint cpoint?)
+  (parent point)
+  (protocol (lambda (n)
+                 (lambda (x y c) 
+                   ((n x y) (color-&gt;rgb c)))))
+  (fields (mutable rgb cpoint-rgb cpoint-rgb-set!)))
+</code></pre>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(define (color-&gt;rgb c) (cons 'rgb c))</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(define p1 (make-point 1 2))</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(define p2 (make-cpoint 3 4 'red))</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(point? p1)</code></pre>
+          <span />
+          <span>#t</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(point? p2)</code></pre>
+          <span />
+          <span>#t</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(point? (vector))</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(point? (cons 'a 'b))</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(cpoint? p1)</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(cpoint? p2)</code></pre>
+          <span />
+          <span>#t</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(point-x p1)</code></pre>
+          <span />
+          <span>1</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(point-y p1)</code></pre>
+          <span />
+          <span>2</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(point-x p2)</code></pre>
+          <span />
+          <span>3</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(point-y p2)</code></pre>
+          <span />
+          <span>4</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(cpoint-rgb p2)</code></pre>
+          <span />
+          <span>(rgb . red)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(set-point-y! p1 17)</code></pre>
+          <span />
+          <span>unspecified</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(point-y p1)</code></pre>
+          <span />
+          <span>17</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(record-rtd p1)</code></pre>
+          <span />
+          <span>(record-type-descriptor point)</span>
+        </div>
+      </p>
+      <pre lang="scheme" node-type="block"><code>(define-record-type (ex1 make-ex1 ex1?)
+  (protocol (lambda (p) (lambda a (p a))))
+  (fields (immutable f ex1-f)))
+</code></pre>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(define ex1-i1 (make-ex1 1 2 3))</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(ex1-f ex1-i1)</code></pre>
+          <span />
+          <span>(1 2 3)</span>
+        </div>
+      </p>
+      <pre lang="scheme" node-type="block"><code>(define-record-type (ex2 make-ex2 ex2?)
+  (protocol
+    (lambda (p) (lambda (a . b) (p a b))))
+  (fields (immutable a ex2-a)
+           (immutable b ex2-b)))
+</code></pre>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(define ex2-i1 (make-ex2 1 2 3))</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(ex2-a ex2-i1)</code></pre>
+          <span />
+          <span>1</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(ex2-b ex2-i1)</code></pre>
+          <span />
+          <span>(2 3)</span>
+        </div>
+      </p>
+      <pre lang="scheme" node-type="block"><code>(define-record-type (unit-vector make-unit-vector unit-vector?)
+  (protocol (lambda (p)
+                 (lambda (x y z)
+                   (let ((length (sqrt (+ (* x x) (* y y) (* z z)))))
+                         (p (/ x length) (/ y length) (/ z length))))))
+  (fields (immutable x unit-vector-x)
+           (immutable y unit-vector-y)
+           (immutable z unit-vector-z)))
+</code></pre>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(define *ex3-instance* #f)</code></pre>
+      </p>
+      <pre lang="scheme" node-type="block"><code>(define-record-type ex3
+  (parent cpoint)
+  (protocol (lambda (n)
+                 (lambda (x y t)
+                   (let ((r ((n x y 'red) t)))
+                     (set! *ex3-instance* r)
+                     r))))
+  (fields  (mutable thickness))
+  (sealed #t) (opaque #t))
+</code></pre>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(define ex3-i1 (make-ex3 1 2 17))</code></pre>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(ex3? ex3-i1)</code></pre>
+          <span />
+          <span>#t</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(cpoint-rgb ex3-i1)</code></pre>
+          <span />
+          <span>(rgb . red)</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(ex3-thickness ex3-i1)</code></pre>
+          <span />
+          <span>17</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(ex3-thickness-set! ex3-i1 18)</code></pre>
+          <span />
+          <span>unspecified</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(ex3-thickness ex3-i1)</code></pre>
+          <span />
+          <span>18</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>*ex3-instance*</code></pre>
+          <span />
+          <span>ex3-i1</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(record? ex3-i1)</code></pre>
+      </p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rnrs.control.6.html">Control structures</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.records.procedural.6.html">Records procedural layer</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

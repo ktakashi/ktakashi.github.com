@@ -1,0 +1,622 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.process.html">(sagittarius process) - Process  library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.record.html">(sagittarius record) - Extra record inspection library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.reader">(sagittarius reader) - reader macro library</a>
+      </h2>
+      <p node-type="paragraph">Sagittarius provides functionalities to modify its reader like Common
+Lisp. It makes the reader programable. However it has some restriction
+to use. The following examples explain it.</p>
+      <p node-type="paragraph">Using reader macro</p>
+      <pre lang="scheme" node-type="block"><code>#!read-macro=sagittarius/regex
+(import (sagittarius regex)) ;; usual import for procedures
+#/regex/i                    ;; (sagittarius regex) defines #/regex/ form
+                             ;; reader macro in it. it converts it
+                             ;; (comple-regex "regex" CASE-INSENSITIVE)
+</code></pre>
+      <p node-type="paragraph">Writing reader macro on toplevel</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs) (sagittarius reader))
+(set-macro-character #\$
+ (lambda (port c) (error '$-reader "invliad close paren appeared")))
+(set-macro-character #\! (lambda (port c) (read-delimited-list #\$ port)))
+!define test !lambda !$ !display "hello reader macro"$$$
+!test$ ;; prints "hello reader macro"
+</code></pre>
+      <p node-type="paragraph">Writing reader macro in library and export it</p>
+      <pre lang="scheme" node-type="block"><code>#!compatible ;; make sure Sagittarius can read keyword
+(library (reader macro test)
+    ;; :export-reader-macro keyword must be in export clause
+    (export :export-reader-macro)
+    (import (rnrs) (sagittarius reader))
+
+  (define-reader-macro $-reader #\$
+    (lambda (port c)
+      (error '$-reader "unexpected close paren appeared")))
+
+  (define-reader-macro !-reader #\!
+    (lambda (port c)
+      (read-delimited-list #\$ port)))
+)
+
+#!read-macro=reader/macro/test  ;; imports reader macro
+!define test !lambda !$ !display "hello reader macro"$$$
+!test$    ;; prints "hello reader macro"
+</code></pre>
+      <p node-type="paragraph">If you need to use reader macro in your library code, you need to define it
+outside of the library. The library syntax is just one huge list so Sagittarius
+can not execute the definition of reader macro inside during reading it.</p>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius reader)_108">
+          <span>(sagittarius reader)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides reader macro procedures and macros.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-reader-macro_87">
+          <span>define-reader-macro</span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+          <span>
+            <i node-type="i">(name</i>
+          </span>
+          <span>
+            <i node-type="i">args</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-reader-macro_86">
+          <span>define-reader-macro</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-reader-macro_85">
+          <span>define-reader-macro</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">non-term?</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Name</i> must be self evaluated expression. <i node-type="i">Proc</i> must accept 2 or
+3 arguments, the first one is a port, the second one is a character which is
+defined as reader macro character, and the third one which is an optional
+argument is a read context.</p>
+      <p node-type="paragraph"><code node-type="code">define-reader-macro</code> macro associates <i node-type="i">char</i> and <i node-type="i">proc</i> as a
+reader macro. Once it is associated and Sagittarius' reader reads it, then
+dispatches to the <i node-type="i">proc</i> with 2 arguments.</p>
+      <p node-type="paragraph">If <i node-type="i">non-term?</i> argument is given and not #f, the <i node-type="i">char</i> is marked as
+non terminated character. So reader reads as one identifier even it it contains
+the given <i node-type="i">char</i> in it.</p>
+      <p node-type="paragraph">The first form is a convenient form. Users can write a reader macro without
+explicitly writing <code node-type="code">lambda</code>. The form is expanded to like this:</p>
+      <pre lang="scheme" node-type="block"><code>(define-reader-macro #\$ ($-reader args ...) body ...)
+;; -&gt; (define-reader-macro $-reader #\$ (lambda (args ...) body ...))
+</code></pre>
+      <p node-type="paragraph">Note: the <i node-type="i">name</i> is only for error message. It does not affect anything.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-dispatch-macro_74">
+          <span>define-dispatch-macro</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+          <span>
+            <i node-type="i">subchar</i>
+          </span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-dispatch-macro_73">
+          <span>define-dispatch-macro</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">subchar</i>
+          </span>
+          <span>
+            <i node-type="i">non-term?</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">Name</i> must be self evaluated expression.
+<i node-type="i">Proc</i> must accept three arguments, the first one is a port, the second one
+is a character which is defined as reader macro character and the third one is
+a macro parameter.</p>
+      <p node-type="paragraph"><code node-type="code">define-dispatch-macro</code> creates macro dispatch macro character
+_char_if there is not dispatch macro yet, and associates <i node-type="i">subchar</i> and
+_proc_as a reader macro.</p>
+      <p node-type="paragraph">If <i node-type="i">non-term?</i> argument is given and not #f, the <i node-type="i">char</i> is marked as non
+terminated character. So reader reads as one identifier even it it contains the
+given <i node-type="i">char</i> in it.</p>
+      <p node-type="paragraph">Note: the <i node-type="i">name</i> is only for error message. It does not affect anything.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="get-macro-character_47">
+          <span>get-macro-character</span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns 2 values if <i node-type="i">char</i> is macro character; one is associated
+procedure other one is boolean if the <i node-type="i">char</i> is terminated character or not.
+Otherwise returns 2 #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="set-macro-character_40">
+          <span>set-macro-character</span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">non-term?</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Mark given <i node-type="i">char</i> as macro character and sets the <i node-type="i">proc</i> as its
+reader.
+If <i node-type="i">non-term?</i> is given and not #f, the <i node-type="i">char</i> will be marked as non
+terminated macro character.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-dispatch-macro-character_146">
+          <span>make-dispatch-macro-character</span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">non-term?</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a new dispatch macro character with given <i node-type="i">char</i> if it is not
+a dispatch macro character yet.
+If <i node-type="i">non-term?</i> is given and not #f, the <i node-type="i">char</i> will be marked as non
+terminated macro character.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="get-dispatch-macro-character_38">
+          <span>get-dispatch-macro-character</span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+          <span>
+            <i node-type="i">subchar</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns a procedure which is associated with <i node-type="i">char</i> and _subchar_as a
+reader macro. If nothing is associated, it returns #f.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="set-dispatch-macro-character_37">
+          <span>set-dispatch-macro-character</span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+          <span>
+            <i node-type="i">subchar</i>
+          </span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Sets <i node-type="i">proc</i> as a reader of <i node-type="i">subchar</i> under the dispatch macro
+character of <i node-type="i">char</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="read-delimited-list_31">
+          <span>read-delimited-list</span>
+          <span>
+            <i node-type="i">char</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(port</i>
+          </span>
+          <span>
+            <i node-type="i">(current-input-port))</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Reads a list until given <i node-type="i">char</i> appears.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="lib.sagittarius.reader.predefined">Predefined reader macros</a>
+        </h3>
+        <p node-type="paragraph">The following table explains predefined reader macros.</p>
+        <table node-type="table">
+          <tr>
+            <th>Macro character</th>
+            <th>Terminated</th>
+            <th>Explanation</th>
+          </tr>
+          <tr>
+            <td>#\(</td>
+            <td>#t</td>
+            <td>Reads a list until reader reads #\).</td>
+          </tr>
+          <tr>
+            <td>#\[</td>
+            <td>#t</td>
+            <td>Reads a list until reader reads #\].</td>
+          </tr>
+          <tr>
+            <td>#\)</td>
+            <td>#t</td>
+            <td>Raises read error.</td>
+          </tr>
+          <tr>
+            <td>#\]</td>
+            <td>#t</td>
+            <td>Raises read error.</td>
+          </tr>
+          <tr>
+            <td>#\|</td>
+            <td>#t</td>
+            <td>Reads an escaped symbol until reader reads #\|.</td>
+          </tr>
+          <tr>
+            <td>#\"</td>
+            <td>#t</td>
+            <td>Reads a string until reader reads #\".</td>
+          </tr>
+          <tr>
+            <td>#\'</td>
+            <td>#t</td>
+            <td>Reads a symbol until reader reads delimited character.</td>
+          </tr>
+          <tr>
+            <td>#\;</td>
+            <td>#t</td>
+            <td>Discards read characters until reader reads a linefeed.</td>
+          </tr>
+          <tr>
+            <td>#\`</td>
+            <td>#t</td>
+            <td>Reads a next expression and returns <code node-type="code">(quasiquote _expr_)</code></td>
+          </tr>
+          <tr>
+            <td>#\,</td>
+            <td>#t</td>
+            <td>Check next character if it is <code node-type="code">@</code> and reads a next expression.<br><br> Returns <code node-type="code">(unquote-splicing _expr_)</code> if next character was<br> <code node-type="code">@</code>, otherwise <code node-type="code">(unquote _expr_)</code></td>
+          </tr>
+          <tr>
+            <td>#\:</td>
+            <td>#f</td>
+            <td>Only compatible mode. Reads a next expression and returns a keyword.</td>
+          </tr>
+          <tr>
+            <td>#\#</td>
+            <td>#t(R6RS mode)</td>
+            <td>Dispatch macro character.</td>
+          </tr>
+        </table>
+        <table node-type="table">
+          <tr>
+            <th>Sub character</th>
+            <th>Explanation</th>
+          </tr>
+          <tr>
+            <td>#\'</td>
+            <td>Reads a next expression and returns <code node-type="code">(syntax _expr_)</code>.</td>
+          </tr>
+          <tr>
+            <td>#\`</td>
+            <td>Reads a next expression and returns <code node-type="code">(quasisyntax _expr_)</code></td>
+          </tr>
+          <tr>
+            <td>#\,</td>
+            <td>Check next character if it is <code node-type="code">@</code> and reads a next expression.<br><br>Returns <code node-type="code">(unsyntax-splicing _expr_)</code> if next character was<br><code node-type="code">@</code>, otherwise <code node-type="code">(unsyntax _expr_)</code></td>
+          </tr>
+          <tr>
+            <td>#\!</td>
+            <td>Reads next expression and set flags.<br>     The details are described the below section</td>
+          </tr>
+          <tr>
+            <td>#\v</td>
+            <td>Checks if the next 2 characters are <code node-type="code">u</code> and <code node-type="code">8</code> and reads<br> a bytevector.</td>
+          </tr>
+          <tr>
+            <td>#\u</td>
+            <td>Only compatible mode. Checks if the next character is <code node-type="code">8</code> and reads<br> a bytevector.</td>
+          </tr>
+          <tr>
+            <td>#\t and #\T</td>
+            <td>Returns #t.</td>
+          </tr>
+          <tr>
+            <td>#\f and #\F</td>
+            <td>Returns #f.</td>
+          </tr>
+          <tr>
+            <td>#\b and #\B</td>
+            <td>Reads a binary number.</td>
+          </tr>
+          <tr>
+            <td>#\o and #\O</td>
+            <td>Reads a octet number.</td>
+          </tr>
+          <tr>
+            <td>#\d and #\D</td>
+            <td>Reads a decimal number.</td>
+          </tr>
+          <tr>
+            <td>#\x and #\X</td>
+            <td>Reads a hex number.</td>
+          </tr>
+          <tr>
+            <td>#\i and #\I</td>
+            <td>Reads a inexact number.</td>
+          </tr>
+          <tr>
+            <td>#\e and #\E</td>
+            <td>Reads a exact number.</td>
+          </tr>
+          <tr>
+            <td>#\(</td>
+            <td>Reads a next list and convert it to a vector.</td>
+          </tr>
+          <tr>
+            <td>#\;</td>
+            <td>Reads a next expression and discards it.</td>
+          </tr>
+          <tr>
+            <td>#\|</td>
+            <td>Discards the following characters until reader reads <code node-type="code">|#</code></td>
+          </tr>
+          <tr>
+            <td>#\\</td>
+            <td>Reads a character.</td>
+          </tr>
+          <tr>
+            <td>#\=</td>
+            <td>Starts reading SRFI-38 style shared object.</td>
+          </tr>
+          <tr>
+            <td>#\#</td>
+            <td>Refers SRFI-38 style shared object.</td>
+          </tr>
+        </table>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="---Switching-mode">#! - Switching mode</a>
+          </h4>
+          <p node-type="paragraph">Sagittarius has multiple reader and VM modes and users can switch these modes
+with <code node-type="code">#!</code>. Following describes details of those modes;</p>
+          <dl node-type="dlist">
+            <dt><code node-type="code">#!r6rs</code>: R6RS mode</dt>
+            <dd>
+              <p node-type="paragraph">Symbols are read according to R6RS specification and VM sets the
+<code node-type="code">no-overwrite</code> and <code node-type="code">nounbound</code> flag. With this mode, keywords are
+read as symbols; for example, <code node-type="code">:key</code> is just a symbol and users can
+not use extended <code node-type="code">lambda</code> syntax.</p>
+            </dd>
+            <dt><code node-type="code">#!r7rs</code>: R7RS mode</dt>
+            <dd>
+              <p node-type="paragraph">The mode for new specification of Scheme. This mode is
+less strict than R6RS mode described above. The reader can read keyword and VM
+sets the <code node-type="code">no-overwrite</code> flag.</p>
+            </dd>
+            <dt><code node-type="code">#!compatible</code>: Compatible mode</dt>
+            <dd>
+              <p node-type="paragraph">This mode is least strict mode. In other words, it
+does not have any restrictions such as described above.</p>
+            </dd>
+          </dl>
+          <p node-type="paragraph">NOTE: If you import reader macro with <code node-type="code">#!read-macro=</code> form and let
+reader reads above hash-bang, the read table will be reset. So
+following code will raise a read error;</p>
+          <pre lang="scheme" node-type="block"><code>#!read-macro=sagittarius/regex
+#!r6rs
+#/regular expression/ ;; &lt;- &amp;lexical
+</code></pre>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Replacing-reader">Replacing reader</a>
+        </h3>
+        <p node-type="paragraph">Since 0.3.7, users can replace default reader. Following example describes how
+to replace reader.</p>
+        <pre lang="scheme" node-type="block"><code>#!reader=srfi/:49
+define
+  fac n
+  if (zero? n) 1
+    * n
+      fac (- n 1)
+
+(print (fac 10))
+</code></pre>
+        <p node-type="paragraph"><code node-type="code">#!reader=</code> specifies which reader will be used. For this example, it will
+use the one defined in <code node-type="code">(srfi :49)</code> library. For compatibility of the other
+Scheme implementation, we chose not to use the library name itself but a bit
+converted name.</p>
+        <p node-type="paragraph">This is the list of <code node-type="code">#!</code> flags:</p>
+        <dl node-type="dlist">
+          <dt>
+            <code node-type="code">#!r6rs</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Switches to R6RS mode</p>
+          </dd>
+          <dt>
+            <code node-type="code">#!r7rs</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Switches to R7RS mode</p>
+          </dd>
+          <dt>
+            <code node-type="code">#!compatible</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Switches to compatible mode</p>
+          </dd>
+          <dt>
+            <code node-type="code">#!no-overwrite</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Sets no-overwrite flag that does not allow user
+to overwrite exported variables.</p>
+          </dd>
+          <dt>
+            <code node-type="code">#!nocache</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Sets disable cache flag on the current loading file</p>
+          </dd>
+          <dt>
+            <code node-type="code">#!deprecated</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Display warning message of deprecated library.</p>
+          </dd>
+          <dt>
+            <code node-type="code">#!reader=name</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph">Replace reader with library <i node-type="i">name</i>. The <i node-type="i">name</i> must be converted
+with the naming convention described below. For more details, see
+<a href="lib.sagittarius.reader.html#sagittarius.name.convention">Naming convention</a></p>
+          </dd>
+          <dt>
+            <code node-type="code">#!read-macro=name</code>
+          </dt>
+          <dd>
+            <p node-type="paragraph"><i node-type="i">name</i> must be converted with the naming convention described below.
+For more details, see	
+<a href="lib.sagittarius.reader.html#sagittarius.name.convention">Naming convention</a></p>
+          </dd>
+        </dl>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="sagittarius.name.convention">Naming convention</a>
+          </h4>
+          <p node-type="paragraph">The naming convention is really easy. For example, replacing with
+<code node-type="code">(srfi :49)</code>, first remove all parentheses or brackets then replace spaces
+to <code node-type="code">/</code>. Then you get <code node-type="code">srfi/:49</code>.</p>
+          <div node-type="define" class="define">
+            <span>Macro</span>
+            <a name="define-reader_84">
+              <span>define-reader</span>
+              <span>
+                <i node-type="i">name</i>
+              </span>
+              <span>
+                <i node-type="i">expr</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Macro</span>
+            <a name="define-reader_83">
+              <span>define-reader</span>
+              <span>
+                <i node-type="i">(name</i>
+              </span>
+              <span>
+                <i node-type="i">port)</i>
+              </span>
+              <span>
+                <i node-type="i">expr</i>
+              </span>
+              <span>
+                <i node-type="i">...</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">This macro defines replaceable reader.</p>
+          <p node-type="paragraph">The forms are similar with <code node-type="code">define</code>. However if you use the first form
+then <i node-type="i">expr</i> must be <code node-type="code">lambda</code> and it accept one argument.</p>
+          <p node-type="paragraph">The defined reader will be used on read time, so it needs to return valid
+expression as a return value of the reader.</p>
+          <p node-type="paragraph">NOTE: Only one reader can be defined in one library. If you define more than
+once the later one will be used.</p>
+          <p node-type="paragraph">NOTE: If you want to export user defined reader to other library, you need to
+put <code node-type="code">:export-reader</code> keyword to the library export clause.</p>
+        </section>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.process.html">(sagittarius process) - Process  library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.record.html">(sagittarius record) - Extra record inspection library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

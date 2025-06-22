@@ -1,0 +1,155 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./sagittarius.io.html">(sagittarius io) - Extra IO library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.object.html">(sagittarius object) - Convenient refs and coercion procedures</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="sagittarius.mop">Sagittarius MOP</a>
+      </h2>
+      <p node-type="paragraph">MOP is "meta object protocol". As far as I know, there is no standard
+specification even the name is really famous and most of CLOS is implemented
+on MOP.</p>
+      <p node-type="paragraph">Then we decided to take the APIs and its behaviour from Tiny CLOS. The following
+libraries are implemented with the APIs and can be examples for Sagittarius'
+MOP.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="sagittarius.mop.allocation">(sagittarius mop allocation)</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(sagittarius mop allocation)_103">
+            <span>(sagittarius mop allocation)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Supporting <code node-type="code">:allocation</code> option for <code node-type="code">define-class</code>.</p>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<allocation-meta&gt;_3">
+            <span>&lt;allocation-meta&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<allocation-mixin&gt;_4">
+            <span>&lt;allocation-mixin&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Meta class and mixin class to support <code node-type="code">:allocation</code> option for
+class slot definition, respectively.</p>
+        <p node-type="paragraph">The meta class must be used with <code node-type="code">:metaclass</code> option of
+<code node-type="code">define-class</code>.</p>
+        <p node-type="paragraph">The mixin class must be a parent class.</p>
+        <p node-type="paragraph">Currently, we only support <code node-type="code">:instance</code> and <code node-type="code">:class</code> keywords.</p>
+        <p node-type="paragraph">The following code is the whole definition of this classes.</p>
+        <pre lang="scheme" node-type="block"><code>(define-class &lt;allocation-meta&gt; (&lt;class&gt;) ())
+(define-method compute-getter-and-setter ((class &lt;allocation-meta&gt;) slot)
+  (cond ((slot-definition-option slot :allocation :instance)
+         =&gt; (lambda (type)
+              (case type
+                ((:instance) '())
+                ((:class)
+                 (let* ((init-value (slot-definition-option
+                                     slot :init-value #f))
+                        (init-thunk (slot-definition-option 
+                                     slot :init-thunk #f))
+                        (def (if init-thunk (init-thunk) init-value)))
+                   (list
+                    (lambda (o) def)
+                    (lambda (o v) (set! def v)))))
+                (else
+                 (assertion-violation '&lt;allocation-meta&gt;
+                                      "unknown :allocation type"
+                                      type)))))
+        (else (call-next-method))))
+
+(define-class &lt;allocation-mixin&gt; () () :metaclass &lt;allocation-meta&gt;)
+</code></pre>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="sagittarius-mop-validator">(sagittarius mop validator)</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(sagittarius mop validator)_105">
+            <span>(sagittarius mop validator)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Supporting <code node-type="code">:validator</code> and <code node-type="code">observer</code> options for
+<code node-type="code">define-class</code>.</p>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<validator-meta&gt;_68">
+            <span>&lt;validator-meta&gt;</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<validator-mixin&gt;_69">
+            <span>&lt;validator-mixin&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Make user be able to add own validation mechanism to slots.</p>
+        <p node-type="paragraph"><code node-type="code">:validator</code> is for before set the value to the slot so that user can check
+the value if it's correct or not.</p>
+        <p node-type="paragraph"><code node-type="code">:observer</code> is for after set the value to the slot so that user can check
+which value is set to the slot.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="sagittarius-mop-eql">(sagittarius mop eql)</a>
+        </h3>
+        <p node-type="paragraph">The eql specializer is now builtin so this library is only for backward
+compatibility.</p>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(sagittarius mop eql)_104">
+            <span>(sagittarius mop eql)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Supporting eql specializer methods.</p>
+        <p node-type="paragraph">The following code describes how to use;</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(import (clos user) (sagittarius mop eql))
+(define-generic eql-fact :class &lt;eql-specializable-generic&gt;)
+(define-method eql-fact ((n (eql 0))) 1)
+(define-method eql-fact ((n &lt;integer&gt;)) (* n (eql-fact (- n 1))))
+(eql-fact 10)
+</code></pre>
+          <span />
+          <span>3628800</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">Note: The eql specializer is really slow approximately 200 time slower than
+usual procedure call.</p>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<eql-specializable-generic&gt;_25">
+            <span>&lt;eql-specializable-generic&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Subclass of <code node-type="code">&lt;generic&gt;</code>.</p>
+        <p node-type="paragraph">To use eql specializer, generic functions must have this class as a metaclass.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./sagittarius.io.html">(sagittarius io) - Extra IO library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.object.html">(sagittarius object) - Convenient refs and coercion procedures</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

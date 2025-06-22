@@ -1,0 +1,180 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./util.timer.html">(util timer) - Timer</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.treemap.html">(util treemap) - Treemap</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.tlv">(tlv) - TLV library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(tlv)_182">
+          <span>(tlv)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides TLV (tag length value) data operation procedures.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="High-level-APIs">High level APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-emv-tlv-parser_156">
+            <span>make-emv-tlv-parser</span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(object-builder</i>
+            </span>
+            <span>
+              <i node-type="i">tlv-builder)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates EMV type TLV parser.</p>
+        <p node-type="paragraph">This procedure returns a procedure which accepts a binary port as its argument.</p>
+        <p node-type="paragraph">The keyword argument <code node-type="code">object-builder</code> specifies how to construct a TLV
+object. The default value is <code node-type="code">tlv-builder</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="tlv-object?_95">
+            <span>tlv-object?</span>
+            <span>
+              <i node-type="i">o</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if the given object is TLV object otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="tlv-tag_96">
+            <span>tlv-tag</span>
+            <span>
+              <i node-type="i">tlv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns TLV tag of given TLV object <i node-type="i">tlv</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="tlv-data_94">
+            <span>tlv-data</span>
+            <span>
+              <i node-type="i">tlv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns TLV binary data if the given TLV object <i node-type="i">tlv</i> is not
+constructed, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="tlv-components_93">
+            <span>tlv-components</span>
+            <span>
+              <i node-type="i">tlv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns TLV components of given TLV object <i node-type="i">tlv</i>. If the _tlv_is not constructed, this returns <code node-type="code">()</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="tlv-&gt;bytevector_91">
+            <span>tlv-&gt;bytevector</span>
+            <span>
+              <i node-type="i">tlv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Converts given TLV object <i node-type="i">tlv</i> to bytevector.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="write-tlv_82">
+            <span>write-tlv</span>
+            <span>
+              <i node-type="i">tlv</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(out</i>
+            </span>
+            <span>
+              <i node-type="i">(current-output-port))</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">out</i> must be binary output port.</p>
+        <p node-type="paragraph">Writes given TLV object <i node-type="i">tlv</i> to <i node-type="i">out</i> as TLV data.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="dump-tlv_160">
+            <span>dump-tlv</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(out</i>
+            </span>
+            <span>
+              <i node-type="i">(current-output-port))</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Dump given TLV object <i node-type="i">tlv</i> as human readable form.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Custom-object-builder">Custom object builder</a>
+        </h3>
+        <p node-type="paragraph">Sometimes default TLV object is not convenient to use. Then users can create
+own object from TLV data passing own object builder to the
+<code node-type="code">make-emv-tlv-parser</code> procedure.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="tlv-builder_92">
+            <span>tlv-builder</span>
+            <span>
+              <i node-type="i">first-byte</i>
+            </span>
+            <span>
+              <i node-type="i">tag</i>
+            </span>
+            <span>
+              <i node-type="i">data</i>
+            </span>
+            <span>
+              <i node-type="i">constructed?</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Default TLV object builder. User should not use this procedure directly.</p>
+        <p node-type="paragraph"><i node-type="i">first-byte</i> is the first byte of the leading TLV object.</p>
+        <p node-type="paragraph"><i node-type="i">tag</i> is the read tag of the TLV object.</p>
+        <p node-type="paragraph"><i node-type="i">data</i> is either a list of TLV object or bytevector. User can check it with
+<i node-type="i">constructed?</i> argument.</p>
+        <p node-type="paragraph"><i node-type="i">constructed?</i> indicates if the TLV object is constructed or not. If this is
+#t then <i node-type="i">data</i> is a list of TLV objects.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./util.timer.html">(util timer) - Timer</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.treemap.html">(util treemap) - Treemap</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

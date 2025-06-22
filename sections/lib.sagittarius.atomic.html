@@ -1,0 +1,596 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.crypto.html">Cryptographic libraries</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./utils.html">Utility libraries</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.atomic">(sagittarius atomic) - Atomic operation</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius atomic)_87">
+          <span>(sagittarius atomic)</span>
+          <span>
+            <since node-type="since">
+              <span node-type="since-version" version="0.9.13">0.9.13</span>
+            </since>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides atomic operation. The underlying implementation
+of this library can be either <code node-type="code">stdatomic</code> from C11 or <code node-type="code">&lt;atomic&gt;</code> from C++11.
+If the platform supports the first one, then that'd be chosen, otherwise
+the latter one.</p>
+      <p node-type="paragraph">NOTE: if the platform doesn't support none of them, then compilation error.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic?_128">
+          <span>atomic?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is an atomic object, otherwise <code node-type="code">#f</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-atomic_32">
+          <span>make-atomic</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a fresh atomic object whoes initial value is <i node-type="i">obj</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-flag?_118">
+          <span>atomic-flag?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is an atomic flag object, otherwise <code node-type="code">#f</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-atomic-flag_36">
+          <span>make-atomic-flag</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a fresh atomic flag. The flag is unset.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum?_116">
+          <span>atomic-fixnum?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is an atomic fixnum object, otherwise <code node-type="code">#f</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-atomic-fixnum_34">
+          <span>make-atomic-fixnum</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+          <span>
+            <code node-type="code">fixnum?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a fresh atomic fixnum object whoes initial value is <i node-type="i">n</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-pair?_122">
+          <span>atomic-pair?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is an atomic pair object, otherwise <code node-type="code">#f</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-atomic-pair_38">
+          <span>make-atomic-pair</span>
+          <span>
+            <i node-type="i">head</i>
+          </span>
+          <span>
+            <i node-type="i">tail</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates a fresh atomic pair object whoes initial values are <i node-type="i">first</i> and <i node-type="i">tail</i>.</p>
+      <p node-type="paragraph">This is double word atomic object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="memory-order?_383">
+          <span>memory-order?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a fixnum and value of memory order.</p>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="*memory-order:relaxed*_156">
+          <span>*memory-order:relaxed*</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="*memory-order:consume*_154">
+          <span>*memory-order:consume*</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="*memory-order:acquire*_152">
+          <span>*memory-order:acquire*</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="*memory-order:release*_158">
+          <span>*memory-order:release*</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="*memory-order:acq-rel*_150">
+          <span>*memory-order:acq-rel*</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Constant</span>
+        <a name="*memory-order:seq-cst*_160">
+          <span>*memory-order:seq-cst*</span>
+        </a>
+      </div>
+      <p node-type="paragraph">The memory order values. The meanings are the same as C11.</p>
+      <p node-type="paragraph">If the <code node-type="code">libatomic_ops</code> is used as underlying implementation, then it
+translate them with the best effort.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-load_120">
+          <span>atomic-load</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Loads the current value of the given atomic of <i node-type="i">a</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-store!_124">
+          <span>atomic-store!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic?</code>
+          </span>
+          <span>) </span>
+          <span>
+            <i node-type="i">v</i>
+          </span>
+          <span> :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Stores the given value <i node-type="i">v</i> into the atomic <i node-type="i">a</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum-load_108">
+          <span>atomic-fixnum-load</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic-fixnum?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Loads the current value of the given atomic of <i node-type="i">a</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum-store!_110">
+          <span>atomic-fixnum-store!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic-fixnum?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+          <span>
+            <code node-type="code">fixnum?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Stores the given value <i node-type="i">n</i> into the atomic <i node-type="i">a</i>.
+The return value is unspecified.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum-add!_96">
+          <span>atomic-fixnum-add!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic-fixnum?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+          <span>
+            <code node-type="code">fixnum?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum-sub!_112">
+          <span>atomic-fixnum-sub!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic-fixnum?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+          <span>
+            <code node-type="code">fixnum?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum-ior!_106">
+          <span>atomic-fixnum-ior!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic-fixnum?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+          <span>
+            <code node-type="code">fixnum?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum-xor!_114">
+          <span>atomic-fixnum-xor!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic-fixnum?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+          <span>
+            <code node-type="code">fixnum?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum-and!_98">
+          <span>atomic-fixnum-and!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic-fixnum?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+          <span>
+            <code node-type="code">fixnum?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Operates the addition, subtraction, bitwise or, bitwise xor and bitwise and
+against the value of atomic <i node-type="i">a</i> with given <i node-type="i">n</i> and updates the value of <i node-type="i">a</i>
+and returns the previous value of <i node-type="i">a</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-exchange!_92">
+          <span>atomic-exchange!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic?</code>
+          </span>
+          <span>) </span>
+          <span>
+            <i node-type="i">v</i>
+          </span>
+          <span> :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum-exchange!_102">
+          <span>atomic-fixnum-exchange!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic-fixnum?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">n</i>
+          </span>
+          <span>
+            <code node-type="code">fixnum?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Exchange the value of <i node-type="i">a</i> with given <i node-type="i">v</i> or <i node-type="i">n</i> and returns the old value
+of <i node-type="i">a</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-compare-and-swap!_90">
+          <span>atomic-compare-and-swap!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic?</code>
+          </span>
+          <span>) </span>
+          <span>
+            <i node-type="i">e</i>
+          </span>
+          <span>
+            <i node-type="i">v</i>
+          </span>
+          <span> :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">CAS operation. Returns <code node-type="code">#t</code> if the operation succeed, otherwise <code node-type="code">#f</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fetch-compare-and-swap!_94">
+          <span>atomic-fetch-compare-and-swap!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic?</code>
+          </span>
+          <span>) </span>
+          <span>
+            <i node-type="i">e</i>
+          </span>
+          <span>
+            <i node-type="i">v</i>
+          </span>
+          <span> :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">CAS operation. Returns previously set value if the operation <strong node-type="strong">failed</strong>,
+otherwise the <i node-type="i">e</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum-inc!_104">
+          <span>atomic-fixnum-inc!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic-fixnum?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-fixnum-dec!_100">
+          <span>atomic-fixnum-dec!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">a</i>
+          </span>
+          <span>
+            <code node-type="code">atomic-fixnum?</code>
+          </span>
+          <span>) :optional (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Increment or decrement the value of given <i node-type="i">a</i> and updates the value.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="atomic-thread-fence_126">
+          <span>atomic-thread-fence</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">order</i>
+          </span>
+          <span>
+            <code node-type="code">memory-order?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Establishes memory synchronization ordering of non-atomic and relaxed
+atomic accesses.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.crypto.html">Cryptographic libraries</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./utils.html">Utility libraries</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

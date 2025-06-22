@@ -1,0 +1,306 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./math.html">(math) - Mathematics library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./net.http-client.html">(net http-client) - Modern HTTP client</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="net.amqp">(net mq amqp) - AMQP library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(net mq amqp)_21">
+          <span>(net mq amqp)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Providing APIs for <a href="http://www.amqp.org">AMQP</a>,
+Advanced Message Queuing Protocol.</p>
+      <p node-type="paragraph">Currently, the library lacks security layer such as TLS and SAML, and
+transaction support.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Example">Example</a>
+        </h3>
+        <p node-type="paragraph">Following examples describes how to send and receive messages from
+remote queues.</p>
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (net mq amqp api))
+
+;; Sends text message to SAMPLE.QUEUE on localhost:5672
+(call-with-amqp-connection "localhost" "5672"
+  (lambda (conn)
+    (call-with-amqp-session conn
+      (lambda (session)
+        (let ((sender (create-amqp-sender session "SAMPLE.QUEUE"))
+              (message (create-amqp-text-message "Hello AMQP!!")))
+          (send-amqp-message sender message)
+          (destroy-amqp-sender sender))))))
+
+;; Receives text message from SAMPLE.QUEUE on localhost:5672
+(call-with-amqp-connection "localhost" "5672"
+  (lambda (conn)
+    (call-with-amqp-session conn
+      (lambda (session)
+        (let* ((receiver (create-amqp-receiver session "SAMPLE.QUEUE"))
+               (message (receive-amqp-message receiver)
+          (destroy-amqp-sender receiver)
+          message)))))))
+</code></pre>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="High-level-APIs">High level APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="amqp-connection?_34">
+            <span>amqp-connection?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is AMQP connection. Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-amqp-connection_19">
+            <span>open-amqp-connection</span>
+            <span>
+              <i node-type="i">host</i>
+            </span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an AMQP connection object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="close-amqp-connection!_105">
+            <span>close-amqp-connection!</span>
+            <span>
+              <i node-type="i">connection</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Closes given AMQP connection.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-amqp-connection_14">
+            <span>call-with-amqp-connection</span>
+            <span>
+              <i node-type="i">host</i>
+            </span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an AMQP connection and pass it to <i node-type="i">proc</i>. Then returns
+the result of <i node-type="i">proc</i>.</p>
+        <p node-type="paragraph">The created connection will be closed both <i node-type="i">proc</i> returns or raises
+an error. Thus Invoking captured continuation inside of <i node-type="i">proc</i> would not
+work.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="amqp-session?_38">
+            <span>amqp-session?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is AMQP session. Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="begin-amqp-session!_19">
+            <span>begin-amqp-session!</span>
+            <span>
+              <i node-type="i">connection</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Starts AMQP session on the given <i node-type="i">connection</i></p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="end-amqp-session!_6">
+            <span>end-amqp-session!</span>
+            <span>
+              <i node-type="i">session</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Ends given AMQP session.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-amqp-connection_13">
+            <span>call-with-amqp-connection</span>
+            <span>
+              <i node-type="i">connection</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Starts an AMQP session and pass it to <i node-type="i">proc</i>. Then returns
+the result of <i node-type="i">proc</i>.</p>
+        <p node-type="paragraph">The stated session will be ended both <i node-type="i">proc</i> returns or raises
+an error. Thus Invoking captured continuation inside of <i node-type="i">proc</i> would not
+work.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="amqp-sender?_37">
+            <span>amqp-sender?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="amqp-receiver?_36">
+            <span>amqp-receiver?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is AMQP sender and receiver, respectively.
+Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-amqp-sender_164">
+            <span>create-amqp-sender</span>
+            <span>
+              <i node-type="i">session</i>
+            </span>
+            <span>
+              <i node-type="i">source-queue</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-amqp-receiver_163">
+            <span>create-amqp-receiver</span>
+            <span>
+              <i node-type="i">session</i>
+            </span>
+            <span>
+              <i node-type="i">target-queue</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an AMQP sender or receiver, respectively.</p>
+        <p node-type="paragraph"><i node-type="i">source-queue</i> and <i node-type="i">target-queue</i> must be strings and indicating
+queue names on the remote server.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="destroy-amqp-sender_135">
+            <span>destroy-amqp-sender</span>
+            <span>
+              <i node-type="i">sender</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="destroy-amqp-receiver_134">
+            <span>destroy-amqp-receiver</span>
+            <span>
+              <i node-type="i">receiver</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Destory given <i node-type="i">sender</i> and <i node-type="i">receiver</i>, respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="send-amqp-message_22">
+            <span>send-amqp-message</span>
+            <span>
+              <i node-type="i">sender</i>
+            </span>
+            <span>
+              <i node-type="i">message</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Sends <i node-type="i">message</i> to <i node-type="i">sender</i>'s queue.</p>
+        <p node-type="paragraph"><i node-type="i">message</i> must be am AMQP message object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="receive-amqp-message_64">
+            <span>receive-amqp-message</span>
+            <span>
+              <i node-type="i">receiver</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(timeout</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Receives an AMQP message from <i node-type="i">receiver</i>'s queue.</p>
+        <p node-type="paragraph">Keyword argument <i node-type="i">timeout</i> must be #f or integer. If this is specified
+then the procedure waits only specified milliseconds.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="amqp-message?_35">
+            <span>amqp-message?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is AMQP message. Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-amqp-text-message text_165">
+            <span>create-amqp-text-message text</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-amqp-binary-message data_161">
+            <span>create-amqp-binary-message data</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="create-amqp-mime-message content-type data_162">
+            <span>create-amqp-mime-message content-type data</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates an AMQP text message, binary message and data message,
+respectively.</p>
+        <p node-type="paragraph"><i node-type="i">text</i> must be a string. <i node-type="i">data</i> must be a bytevector.
+<i node-type="i">content-type</i> must be a string.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./math.html">(math) - Mathematics library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./net.http-client.html">(net http-client) - Modern HTTP client</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

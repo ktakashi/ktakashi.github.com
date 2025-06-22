@@ -1,0 +1,356 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./util.binary.data.html">(binary data) - Binary data read/write</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.binary.pack.html">(binary pack) - Packing binary data</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.binary.io">(binary io) - Binary I/O utilities</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(binary data)_2">
+          <span>(binary data)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Binary I/O utility. In real world you sometimes want to treat
+binary port like textual port (e.g. <code node-type="code">get-line</code> for binary port).
+This library exports those convenient procedures</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Binary-IO">Binary I/O</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="get-line_44">
+            <span>get-line</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">eol</i>
+            </span>
+            <span>
+              <i node-type="i">(transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">in</i> must be binary input port.</p>
+        <p node-type="paragraph">Reads a bytevector from <i node-type="i">in</i> until it hits the <i node-type="i">eol</i> data. _eol_can be multiple length such as <code node-type="code">#vu8(#x0d #x0a)</code>. Default value is
+<code node-type="code">#vu8(#x0a)</code>If keyword argument <i node-type="i">transcoder</i> is given, then returning value will be
+converted to string.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="put-u16_179">
+            <span>put-u16</span>
+            <span>
+              <i node-type="i">out</i>
+            </span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="put-s16_173">
+            <span>put-s16</span>
+            <span>
+              <i node-type="i">out</i>
+            </span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="put-u32_181">
+            <span>put-u32</span>
+            <span>
+              <i node-type="i">out</i>
+            </span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="put-s32_175">
+            <span>put-s32</span>
+            <span>
+              <i node-type="i">out</i>
+            </span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Re-exported procedure from <code node-type="code">(sagittarius)</code> for convenience. See
+<a href="sections/ext.sagittarius.html#ext.sagittarius">Sagittarius extensions</a>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="put-u64_183">
+            <span>put-u64</span>
+            <span>
+              <i node-type="i">out</i>
+            </span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="put-s64_177">
+            <span>put-s64</span>
+            <span>
+              <i node-type="i">out</i>
+            </span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="put-f32_171">
+            <span>put-f32</span>
+            <span>
+              <i node-type="i">out</i>
+            </span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="put-f64_172">
+            <span>put-f64</span>
+            <span>
+              <i node-type="i">out</i>
+            </span>
+            <span>
+              <i node-type="i">v</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">out</i> must be binary output port. <i node-type="i">endian</i> must be a value
+returned from <code node-type="code">endianness</code> macro.</p>
+        <p node-type="paragraph">Write <i node-type="i">v</i> to <i node-type="i">out</i> as unsigned/signed 16/32/64 bit integer or
+32/64 bit floating number.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="get-u16_62">
+            <span>get-u16</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="get-s16_53">
+            <span>get-s16</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="get-u32_64">
+            <span>get-u32</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="get-s32_55">
+            <span>get-s32</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Re-exported procedure from <code node-type="code">(sagittarius)</code> for convenience. See
+<a href="sections/ext.sagittarius.html#ext.sagittarius">Sagittarius extensions</a>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="get-u64_66">
+            <span>get-u64</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="get-s64_57">
+            <span>get-s64</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="get-f32_41">
+            <span>get-f32</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="get-f64_42">
+            <span>get-f64</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span>
+              <i node-type="i">endian</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">in</i> must be binary input port. <i node-type="i">endian</i> must be a value
+returned from <code node-type="code">endianness</code> macro.</p>
+        <p node-type="paragraph">Read a number from <i node-type="i">in</i> as unsigned/signed 16/32/64 bit integer or
+32/64 bit floating number.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Chunk-buffered-port">Chunk buffered port</a>
+        </h3>
+        <p node-type="paragraph">Default binary input port requires bytevector however if users want to
+handle bigger data then it would not be suitable. Chunk buffered port
+is a buffered port which buffer is chunks of bytevector so that it doesn't
+allocate huge memory.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="-&gt;chunked-binary-input-port_6">
+            <span>-&gt;chunked-binary-input-port</span>
+            <span>
+              <i node-type="i">-&gt;chunks</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">chunk-size</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates chunk buffered port.</p>
+        <p node-type="paragraph"><i node-type="i">-&gt;chunks</i> must be a procedure which takes one argument, <i node-type="i">chunk-size</i>.
+And must return a list of bytevectors which size is <i node-type="i">chunk-size</i> except
+the last element.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">chunk-size</i> is specified then it must be a positive
+integer. By default <code node-type="code">+default-chunk-size+</code> is used.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="+default-chunk-size+_3">
+            <span>+default-chunk-size+</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Default chunk size of chunk buffered port.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="input-port-&gt;chunked-binary-input-port_61">
+            <span>input-port-&gt;chunked-binary-input-port</span>
+            <span>
+              <i node-type="i">iport</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">chunk-size</i>
+            </span>
+            <span>
+              <i node-type="i">threshold</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates chunk buffered port from given <i node-type="i">iport</i>.</p>
+        <p node-type="paragraph"><i node-type="i">iport</i> must be a binary input port.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">threshold</i> is specified, it must be a positive
+integer, then the procedure only reads the number of <i node-type="i">threshold</i> bytes
+from <i node-type="i">iport</i>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./util.binary.data.html">(binary data) - Binary data read/write</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.binary.pack.html">(binary pack) - Packing binary data</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

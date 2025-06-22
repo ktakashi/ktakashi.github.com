@@ -1,0 +1,753 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./archive.html">(archive) - Generic archive interface</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.binary.data.html">(binary data) - Binary data read/write</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="asn.1">(asn.1) - Abstract Syntas Notation One library</a>
+      </h2>
+      <p node-type="paragraph">This section describes <code node-type="code">(asn.1)</code> library. The library supports DER and BER
+formats. We do not describe DER or BER format here.</p>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(asn.1)_1">
+          <span>(asn.1)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Top most library of asn.1 procedure collection libraries. There are
+multiple of related libraries, however we do not mention those because it might
+be changed in future. So do not use the child libraries directly, use this.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="High-level-user-APIs">High level user APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="encode_3">
+            <span>encode</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(encoder</i>
+            </span>
+            <span>
+              <i node-type="i">der-encode)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">obj</i> must be asn.1-object which described below sections.</p>
+        <p node-type="paragraph">If you specify keyword argument <i node-type="i">encoder</i>, it must be generic function
+which accepts an object and a binary output port respectively.</p>
+        <p node-type="paragraph">Encodes given <i node-type="i">obj</i> to bytevector. If <i node-type="i">obj</i> contains BER object, the
+procedure encodes it to BER. This might be changed in future to configure which
+format this should encode.</p>
+        <p node-type="paragraph">If you want to encode to other format such as CER or XER, then you need to
+implement an encoder. This procedure does not check given arguments type, just
+pass <i node-type="i">obj</i> to <i node-type="i">encoder</i> with binary output port.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-asn.1-object_27">
+            <span>read-asn.1-object</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">in</i> must be binary input port.</p>
+        <p node-type="paragraph">Reads asn.1-object from given port. The port must be DER or BER encoded stream
+otherwise it raises <code node-type="code">&amp;assertion</code></p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Middle-level-user-APIs">Middle level user APIs</a>
+        </h3>
+        <p node-type="paragraph">This section is incompleted.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-application-specific_92">
+            <span>make-der-application-specific</span>
+            <span>
+              <i node-type="i">&lt;boolean&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-application-specific_91">
+            <span>make-der-application-specific</span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-application-specific_90">
+            <span>make-der-application-specific</span>
+            <span>
+              <i node-type="i">&lt;boolean&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;der-encodable&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-application-specific_89">
+            <span>make-der-application-specific</span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;der-encodable&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER application specific object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-bit-string_94">
+            <span>make-der-bit-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-bit-string_93">
+            <span>make-der-bit-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER bit string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-bmp-string_96">
+            <span>make-der-bmp-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-bmp-string_95">
+            <span>make-der-bmp-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER bmp string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-octet-string_120">
+            <span>make-der-octet-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-octet-string_119">
+            <span>make-der-octet-string</span>
+            <span>
+              <i node-type="i">&lt;der-encodable&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER octet string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-general-string_104">
+            <span>make-der-general-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-general-string_103">
+            <span>make-der-general-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER general string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-ia5-string_110">
+            <span>make-der-ia5-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-ia5-string_109">
+            <span>make-der-ia5-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;boolean&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-ia5-string_108">
+            <span>make-der-ia5-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER IA5 string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-numeric-string_116">
+            <span>make-der-numeric-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-numeric-string_115">
+            <span>make-der-numeric-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;boolean&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-numeric-string_114">
+            <span>make-der-numeric-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER numeric string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-printable-string_123">
+            <span>make-der-printable-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-printable-string_122">
+            <span>make-der-printable-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;boolean&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-printable-string_121">
+            <span>make-der-printable-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER printable string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-t61-string_131">
+            <span>make-der-t61-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-t61-string_130">
+            <span>make-der-t61-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER T61 string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-universal-string_135">
+            <span>make-der-universal-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER universal string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-utf8-string_140">
+            <span>make-der-utf8-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-utf8-string_139">
+            <span>make-der-utf8-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER UTF8 string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-visible-string_142">
+            <span>make-der-visible-string</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-visible-string_141">
+            <span>make-der-visible-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER visible string object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-boolean_98">
+            <span>make-der-boolean</span>
+            <span>
+              <i node-type="i">&lt;boolean&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-boolean_97">
+            <span>make-der-boolean</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER boolean object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-enumerated_100">
+            <span>make-der-enumerated</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-enumerated_99">
+            <span>make-der-enumerated</span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER enumerated object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-integer_112">
+            <span>make-der-integer</span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-integer_111">
+            <span>make-der-integer</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER integer object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-object-identifier_118">
+            <span>make-der-object-identifier</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-object-identifier_117">
+            <span>make-der-object-identifier</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER OID object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-sequence_126">
+            <span>make-der-sequence</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-sequence_125">
+            <span>make-der-sequence</span>
+            <span>
+              <i node-type="i">&lt;der-encodable&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-sequence_124">
+            <span>make-der-sequence</span>
+            <span>
+              <i node-type="i">o</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER sequence object.</p>
+        <p node-type="paragraph">If the third form is used, _o_s must be list of <code node-type="code">&lt;der-encodable&gt;</code>.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-set_129">
+            <span>make-der-set</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-set_128">
+            <span>make-der-set</span>
+            <span>
+              <i node-type="i">&lt;der-encodable&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-set_127">
+            <span>make-der-set</span>
+            <span>
+              <i node-type="i">o</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER set object.</p>
+        <p node-type="paragraph">If the third form is used, _o_s must be list of <code node-type="code">&lt;der-encodable&gt;</code>.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-null_113">
+            <span>make-der-null</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER null object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-generalized-time_107">
+            <span>make-der-generalized-time</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-generalized-time_106">
+            <span>make-der-generalized-time</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-generalized-time_105">
+            <span>make-der-generalized-time</span>
+            <span>
+              <i node-type="i">&lt;date&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER generalized time object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-utc-time_138">
+            <span>make-der-utc-time</span>
+            <span>
+              <i node-type="i">&lt;string&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-utc-time_137">
+            <span>make-der-utc-time</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-utc-time_136">
+            <span>make-der-utc-time</span>
+            <span>
+              <i node-type="i">&lt;date&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER UTC time object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-tagged-object_134">
+            <span>make-der-tagged-object</span>
+            <span>
+              <i node-type="i">&lt;boolean&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;der-encodable&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-tagged-object_133">
+            <span>make-der-tagged-object</span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;der-encodable&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-tagged-object_132">
+            <span>make-der-tagged-object</span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER tagged object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-external_102">
+            <span>make-der-external</span>
+            <span>
+              <i node-type="i">&lt;der-object-identifier&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;der-integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;asn.1-object&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;der-tagged-object&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-der-external_101">
+            <span>make-der-external</span>
+            <span>
+              <i node-type="i">&lt;der-object-identifier&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;der-integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;asn.1-object&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;der-object&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a DER external object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-ber-constructed-octet-string_48">
+            <span>make-ber-constructed-octet-string</span>
+            <span>
+              <i node-type="i">&lt;bytevector&gt;</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-ber-constructed-octet-string_47">
+            <span>make-ber-constructed-octet-string</span>
+            <span>
+              <i node-type="i">l</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a BER constructed object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-ber-application-specific_46">
+            <span>make-ber-application-specific</span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">l</i>
+            </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a BER application specific object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-ber-tagged-object_52">
+            <span>make-ber-tagged-object</span>
+            <span>
+              <i node-type="i">&lt;boolean&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;integer&gt;</i>
+            </span>
+            <span>
+              <i node-type="i">&lt;der-encodable&gt;</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a BER tagged object.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-ber-sequence_50">
+            <span>make-ber-sequence</span>
+            <span>
+              <i node-type="i">l</i>
+            </span>
+            <span>
+              <strong node-type="strong">...</strong>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a BER sequence object.</p>
+        <p node-type="paragraph">_l_s must be list of <code node-type="code">&lt;der-encodable&gt;</code>.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-ber-set_51">
+            <span>make-ber-set</span>
+            <span>
+              <i node-type="i">l</i>
+            </span>
+            <span>
+              <strong node-type="strong">...</strong>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a BER set object.</p>
+        <p node-type="paragraph">_l_s must be list of <code node-type="code">&lt;der-encodable&gt;</code>.</p>
+        <div node-type="define" class="define">
+          <span>Generic</span>
+          <a name="make-ber-null_49">
+            <span>make-ber-null</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a BER null object.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Low-level-User-APIs">Low level User APIs</a>
+        </h3>
+        <p node-type="paragraph">This section is incompleted. Here must desribe classes defined in <code node-type="code">(asn.1)</code>library.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./archive.html">(archive) - Generic archive interface</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.binary.data.html">(binary data) - Binary data read/write</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

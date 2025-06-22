@@ -1,0 +1,946 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./util.logging.html">(util logging) - Logging utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./net.amqp.html">(net mq amqp) - AMQP library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="math">(math) - Mathematics library</a>
+      </h2>
+      <h3 node-type="header-3">
+        <a name="Deprecated-library">Deprecated library</a>
+      </h3>
+      <p node-type="paragraph">
+        <strong node-type="strong">This library is deprecated, please consider to use
+<a href="lib.sagittarius.crypto.html#lib.sagittarius.crypto">Cryptographic libraries</a> instead.</strong>
+      </p>
+      <p node-type="paragraph">This section describes matheatics operations which are used by
+<code node-type="code">(crypto)</code>library.</p>
+      <p node-type="paragraph">This library also uses <code node-type="code">libtomcrypt</code> as its implemention except prime
+number operations.</p>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(math)_18">
+          <span>(math)</span>
+          <span>
+            <deprecated node-type="deprecated" />
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">The top most level library of mathematics. It exports all of procedures
+from <code node-type="code">(math random)</code>, <code node-type="code">(math hash)</code>, <code node-type="code">(math prime)</code> and
+<code node-type="code">(math helper)</code></p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Random-number-operations">Random number operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(math random)_17">
+            <span>(math random)</span>
+            <span>
+              <deprecated node-type="deprecated" />
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">This library exports procedures for random numbers.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pseudo-random_157">
+            <span>pseudo-random</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(seed</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+            <span>
+              <i node-type="i">(reader</i>
+            </span>
+            <span>
+              <i node-type="i">#f)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">type</i> must be a string.</p>
+        <p node-type="paragraph">Creates a pseudo random object (prng). If keyword argument <i node-type="i">reader</i> is given
+it creates a custom prng. The <i node-type="i">reader</i> must be a procedure which accepts two
+argument, a bytevector and integer. It must fill the given bytevector with
+random numbers.</p>
+        <p node-type="paragraph"><i node-type="i">type</i> is used to specify the builtin pseudo random algorithm. The possible
+algorithms are below:</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="Yarrow_3">
+            <span>Yarrow</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="Fortuna_119">
+            <span>Fortuna</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="RC4_21">
+            <span>RC4</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SOBER-128_162">
+            <span>SOBER-128</span>
+          </a>
+        </div>
+        <p node-type="paragraph">The following is also a psuedo random but this may or may not be cryptographic
+random generator.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="System_377">
+            <span>System</span>
+          </a>
+        </div>
+        <p node-type="paragraph"><code node-type="code">System</code> prng uses platform random generator. For example, on
+Unix like environment, this uses <code node-type="code">/dev/urandom</code> or <code node-type="code">/dev/random</code> if
+the first option is not available.</p>
+        <p node-type="paragraph"><i node-type="i">seed</i> is entropy of the pseudo random.</p>
+        <p node-type="paragraph">Note: each time if you create pseudo random, it returns exactly the same value.
+For example:</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(do ((i 0 (+ i 1)) (r '() (cons (random (pseudo-random RC4) 10) r)))
+    ((= i 10) r))
+</code></pre>
+          <span />
+          <span>'(0 0 0 0 0 0 0 0 0 0)</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">So if you need different number as I believe, you need to reuse the prng object
+like this</p>
+        <div node-type="block" class="codeblock">
+          <pre lang="scheme" node-type="block"><code>(let ((rc (pseudo-random RC4)))
+  (do ((i 0 (+ i 1)) (r '() (cons (random rc 10) r)))
+      ((= i 10) r)))
+</code></pre>
+          <span />
+          <span>'(3 4 0 6 7 4 3 4 2 0)</span>
+        </div>
+        <p node-type="paragraph" />
+        <p node-type="paragraph">If you don't want to care this behaviour, use <code node-type="code">secure-random</code> below.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="secure-random_10">
+            <span>secure-random</span>
+            <span>
+              <i node-type="i">type</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(bits</i>
+            </span>
+            <span>
+              <i node-type="i">128)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">type</i> must be one of the pseudo random algorithms.</p>
+        <p node-type="paragraph">Creates secure random object.</p>
+        <p node-type="paragraph"><i node-type="i">bit</i> is initial entropy of the pseudo random. It must be in between 64 to
+1028.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="prng?_145">
+            <span>prng?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pseudo-random?_159">
+            <span>pseudo-random?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="secure-random?_13">
+            <span>secure-random?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is prng object, builtin pseudo random objcet,
+custom random object or secure random object respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="random-seed-set!_16">
+            <span>random-seed-set!</span>
+            <span>
+              <i node-type="i">prng</i>
+            </span>
+            <span>
+              <i node-type="i">seed</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">seed</i> must be a bytevector or integer.</p>
+        <p node-type="paragraph">Add entropy to given <i node-type="i">prng</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="random_7">
+            <span>random</span>
+            <span>
+              <i node-type="i">prng</i>
+            </span>
+            <span>
+              <i node-type="i">size</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(read-size</i>
+            </span>
+            <span>
+              <i node-type="i">100)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns random number according to given <i node-type="i">prng</i> algorithm. The result
+number will be less than <i node-type="i">size</i>.</p>
+        <p node-type="paragraph">Keyword argument <i node-type="i">read-size</i> will be passed to <code node-type="code">read-random-bytes</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="random_6">
+            <span>random</span>
+            <span>
+              <i node-type="i">prng</i>
+            </span>
+            <span>
+              <i node-type="i">size</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">size</i> must a positive fixnum.</p>
+        <p node-type="paragraph">Reads <i node-type="i">size</i> bytes of random byte from <i node-type="i">prng</i>.</p>
+        <div node-type="define" class="define">
+          <span>Method</span>
+          <a name="prng-state_144">
+            <span>prng-state</span>
+            <span>
+              <i node-type="i">(prng</i>
+            </span>
+            <span>
+              <i node-type="i"><prng>)</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns given <i node-type="i">prng</i>'s state if the pseudo random implementation
+allows.</p>
+        <p node-type="paragraph">For default built in pseudo randoms return #f.</p>
+        <p node-type="paragraph">NOTE: if &lt;secure-random&gt; is implemented, then the pseudo random implementation
+should not return the state.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-random-bytes_47">
+            <span>read-random-bytes</span>
+            <span>
+              <i node-type="i">prng</i>
+            </span>
+            <span>
+              <i node-type="i">size</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-random-bytes!_48">
+            <span>read-random-bytes!</span>
+            <span>
+              <i node-type="i">prng</i>
+            </span>
+            <span>
+              <i node-type="i">bv</i>
+            </span>
+            <span>
+              <i node-type="i">size</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Reads random bytes from given <i node-type="i">prng</i>.</p>
+        <p node-type="paragraph">The first form creates fresh bytevector with size <i node-type="i">size</i>.</p>
+        <p node-type="paragraph">The second form reads random bytes from <i node-type="i">prng</i> and sets the result into the
+given <i node-type="i">bv</i> destructively.</p>
+        <p node-type="paragraph">If the second form is used, <i node-type="i">bv</i> must have the length at least <i node-type="i">size</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-sys-random_51">
+            <span>read-sys-random</span>
+            <span>
+              <i node-type="i">bits</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns given the <code node-type="code">(+ (* bits 8) (if (zero? (mod bits 8)) 1 0))</code>
+bits of random bytevector.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-sys-random!_54">
+            <span>read-sys-random!</span>
+            <span>
+              <i node-type="i">bv</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-sys-random!_53">
+            <span>read-sys-random!</span>
+            <span>
+              <i node-type="i">bv</i>
+            </span>
+            <span>
+              <i node-type="i">start</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-sys-random!_52">
+            <span>read-sys-random!</span>
+            <span>
+              <i node-type="i">bv</i>
+            </span>
+            <span>
+              <i node-type="i">start</i>
+            </span>
+            <span>
+              <i node-type="i">len</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">bv</i> must be a bytevector.<br><i node-type="i">start</i> must be an exact non negative integer.<br><i node-type="i">len</i> must be an exact non negative integer.</p>
+        <p node-type="paragraph">Reads random bytes from a system random generator and store it into <i node-type="i">bv</i>.<br>If the second form is used, then it stores from the <i node-type="i">start</i> position.<br>If the third form is used, then it stores the <i node-type="i">len</i> bytes from the <i node-type="i">start</i>.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Custom-pseudo-random-operations">Custom pseudo random operations</a>
+          </h4>
+          <p node-type="paragraph">Since version 0.3.2, pseudo random also has custom operations. Similar with
+cipher spi or hash algorithm.</p>
+          <p node-type="paragraph">The following example describes how to make it.</p>
+          <pre lang="scheme" node-type="block"><code>;; the code snipet is from math/mt-random
+(define-class &lt;mersenne-twister&gt; (&lt;user-prng&gt;)
+  (;; The array for the state vector
+   ;; using bytevector, it needs to be 64 bit aligned.
+   (state :init-keyword :state :init-form (make-bytevector (* NN 8)))
+   ;; mti==NN+1 means MT[NN] is not initialized
+   (mti   :init-keyword :mti   :init-form (+ NN 1))))
+(define-method initialize ((o &lt;mersenne-twister&gt;) initargs)
+  (call-next-method)
+  (let ((seed (get-keyword :seed initargs #f)))
+    (slot-set! o 'set-seed! mt-set-seed)
+    (slot-set! o 'read-random! mt-read-random!)
+    (when seed
+      (mt-set-seed o seed))))
+</code></pre>
+          <p node-type="paragraph">User just need to set the slots <code node-type="code">set-seed!</code> and <code node-type="code">read-random!</code>. Then
+other process is done by lower layer.</p>
+          <p node-type="paragraph">Following describes the meaning of these slots.</p>
+          <p node-type="paragraph">The slot <code node-type="code">set-seed!</code> requires a procedure which accepts 2 arguments,
+target pseudo random and <i node-type="i">seed</i>. <i node-type="i">seed</i> must be bytevector.</p>
+          <p node-type="paragraph">The slot <code node-type="code">read-random!</code> requires a pseudo which accepts 3 arguments,
+target pseudo random <i node-type="i">buffer</i> and <i node-type="i">bytes</i>. <i node-type="i">buffer</i> must be a
+bytevector and have bigger size than given <i node-type="i">bytes</i>. <i node-type="i">bytes</i> must be
+a non negative fixnum.</p>
+          <p node-type="paragraph">NOTE: The custom pseudo random interface has been changed since version 0.3.6.
+Make sure which version of Sagittarius your application using.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="math.hash">Hash operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(math hash)_14">
+            <span>(math hash)</span>
+            <span>
+              <deprecated node-type="deprecated" />
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">This library exports procedures for hash (digest) operations.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hash-algorithm_1">
+            <span>hash-algorithm</span>
+            <span>
+              <i node-type="i">name</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">name</i> must be a string.</p>
+        <p node-type="paragraph">Creates a hash-algorithm object. <i node-type="i">name</i> specifies its algorithm. The
+predefined algorithms are blow:</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="WHIRLPOOL_46">
+            <span>WHIRLPOOL</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-512_68">
+            <span>SHA-512</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-384_67">
+            <span>SHA-384</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-256_62">
+            <span>SHA-256</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-224_61">
+            <span>SHA-224</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-512/256_70">
+            <span>SHA-512/256</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-512/224_69">
+            <span>SHA-512/224</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="Tiger-192_56">
+            <span>Tiger-192</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-1_60">
+            <span>SHA-1</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="RIPEMD-320_138">
+            <span>RIPEMD-320</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="RIPEMD-256_137">
+            <span>RIPEMD-256</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="RIPEMD-160_136">
+            <span>RIPEMD-160</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="RIPEMD-128_135">
+            <span>RIPEMD-128</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="MD5_380">
+            <span>MD5</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="MD4_379">
+            <span>MD4</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="MD2_378">
+            <span>MD2</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-3-224_63">
+            <span>SHA-3-224</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-3-256_64">
+            <span>SHA-3-256</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-3-384_65">
+            <span>SHA-3-384</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="SHA-3-512_66">
+            <span>SHA-3-512</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="BLAKE2s-128_72">
+            <span>BLAKE2s-128</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="BLAKE2s-160_73">
+            <span>BLAKE2s-160</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="BLAKE2s-224_74">
+            <span>BLAKE2s-224</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="BLAKE2s-256_75">
+            <span>BLAKE2s-256</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="BLAKE2b-160_68">
+            <span>BLAKE2b-160</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="BLAKE2b-256_69">
+            <span>BLAKE2b-256</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="BLAKE2b-384_70">
+            <span>BLAKE2b-384</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="BLAKE2b-512_71">
+            <span>BLAKE2b-512</span>
+          </a>
+        </div>
+        <p node-type="paragraph">If you want to use other hash algorithm, you can also create a new hash
+algorithm. It is described the section
+<a href="math.html#custom.hash">Custom hash algorithm</a>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hash-algorithm?_2">
+            <span>hash-algorithm?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Return #t if <i node-type="i">obj</i> is hash-algorithm object otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="hash-oid_6">
+            <span>hash-oid</span>
+            <span>
+              <i node-type="i">hash-algorithm</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Return OID of given <i node-type="i">hash-algorithm</i> if it has otherwise #f.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="User-level-APIs-of-hash-operations">User level APIs of hash operations</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="hash_0">
+              <span>hash</span>
+              <span>
+                <i node-type="i">type</i>
+              </span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">.</i>
+              </span>
+              <span>
+                <i node-type="i">options</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph"><i node-type="i">type</i> must be a string which specifies hash algorithms or
+hash-algorithm object.</p>
+          <p node-type="paragraph">The <code node-type="code">hash</code> procedure generates digest from given bytevector _bv_according to the given algorithm. The result digest will be a bytevector.</p>
+          <p node-type="paragraph">If <i node-type="i">type</i> is not a hash algorithm object nor predefined hash algorithm,
+then <i node-type="i">options</i> will be passed to the custom hash algorithm creation.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="hash-size_8">
+              <span>hash-size</span>
+              <span>
+                <i node-type="i">hash-algorithm</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns hash size of given <i node-type="i">hash-algorithm</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="hash-block-size_3">
+              <span>hash-block-size</span>
+              <span>
+                <i node-type="i">hash-algorithm</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns hash block size of given <i node-type="i">hash-algorithm</i>.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Low-level-APIs-of-hash-operations">Low level APIs of hash operations</a>
+          </h4>
+          <p node-type="paragraph">Most of the time User level APIs are sufficient enough, however for some cases,
+for example multiple input datas, you might need to use these low leve APIs.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="hash-init!_5">
+              <span>hash-init!</span>
+              <span>
+                <i node-type="i">hash-algorithm</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Initialise given <i node-type="i">hash-algorithm</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="hash-process!_7">
+              <span>hash-process!</span>
+              <span>
+                <i node-type="i">hash-algorithm</i>
+              </span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(start</i>
+              </span>
+              <span>
+                <i node-type="i">0)</i>
+              </span>
+              <span>
+                <i node-type="i">(end</i>
+              </span>
+              <span>
+                <i node-type="i">(bytevector-length</i>
+              </span>
+              <span>
+                <i node-type="i">bv))</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph"><i node-type="i">bv</i> must be a bytevector.</p>
+          <p node-type="paragraph">Process hash process with input data <i node-type="i">bv</i>. The result will be stored in the
+<i node-type="i">hash-algorithm</i>.</p>
+          <p node-type="paragraph">Optional arguments <i node-type="i">start</i> and <i node-type="i">end</i> limits the input <i node-type="i">bv</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="hash-done!_4">
+              <span>hash-done!</span>
+              <span>
+                <i node-type="i">hash-algorithm</i>
+              </span>
+              <span>
+                <i node-type="i">out</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(start</i>
+              </span>
+              <span>
+                <i node-type="i">0)</i>
+              </span>
+              <span>
+                <i node-type="i">(end</i>
+              </span>
+              <span>
+                <i node-type="i">(bytevector-length</i>
+              </span>
+              <span>
+                <i node-type="i">bv))</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph"><i node-type="i">out</i> must be a bytevector and must have hash size which the
+<code node-type="code">hash-size</code> procedure returns.</p>
+          <p node-type="paragraph">Flushes stored hash result in <i node-type="i">hash-algorithm</i> into <i node-type="i">out</i>.</p>
+          <p node-type="paragraph">Once this procedure is called <i node-type="i">hash-algorithm</i>'s state will be changed. If
+you want to reuse it, you need to call <code node-type="code">hash-init!</code>.</p>
+          <p node-type="paragraph">Optional arguments <i node-type="i">start</i> and <i node-type="i">end</i> specifies the offset of
+output bytevector.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="custom.hash">Custom hash algorithm</a>
+          </h4>
+          <p node-type="paragraph">Since version 0.3.1, user can create a custom hash algorithm. Similar with
+cipher spi described section <a href="crypto.html#custom.cipher">Creating own cipher</a>.</p>
+          <p node-type="paragraph">The following example describes how to make it.</p>
+          <pre lang="scheme" node-type="block"><code>(import (rnrs) (sagittarius) (math) (clos user))
+;; hash operations
+(define (foo-init hash) #t)
+(define (foo-process hash bv)
+  (let ((len (bytevector-length bv)))
+    (bytevector-copy! bv 0 (slot-ref hash 'buffer) 0 (min len 16))))
+(define (foo-done hash out)
+  (let ((v (integer-&gt;bytevector (equal-hash (slot-ref hash 'buffer)))))
+    (bytevector-copy! v 0 out 0 (min 8 (bytevector-length v)))))
+
+(define-class &lt;foo-hash&gt; (&lt;user-hash-algorithm&gt;)
+  ((buffer :init-form (make-bytevector 16))))
+(define-method initialize ((o &lt;foo-hash&gt;) initargs)
+  (call-next-method)
+  (slot-set! o 'init foo-init)
+  (slot-set! o 'process foo-process)
+  (slot-set! o 'done foo-done)
+  (slot-set! o 'block-size 16)
+  (slot-set! o 'hash-size 8)
+  (slot-set! o 'oid #f)
+  (slot-set! o 'state #f))
+;; marker
+(define-class &lt;foo-marker&gt; () ())
+(define FOO (make &lt;foo-marker&gt;))
+(register-hash FOO &lt;foo-hash&gt;)
+
+;; use with APIs
+(hash FOO (string-&gt;utf8 "hash")) ;; -&gt; #vu8(245 221 54 232 0 0 0 0)
+</code></pre>
+          <p node-type="paragraph">The slots <code node-type="code">init</code>, <code node-type="code">process</code> and <code node-type="code">done</code> must be set with a
+procedure which will be called by <code node-type="code">hash-init!</code>, <code node-type="code">hash-process!</code> and
+<code node-type="code">hash-done!</code> respectively.</p>
+          <p node-type="paragraph">The procedure set to <code node-type="code">process</code> and <code node-type="code">done</code>  must accept 2 or 4
+arguments. If it can accept 4 arguments, then optional argumens _start_and <i node-type="i">end</i> are passed. Implementation can use these information to
+ptimise memory allocation. If it can accept 2 argumens, then framework
+handles the range. In this case, uneccesarry allocation may happen.</p>
+          <p node-type="paragraph">The slots <code node-type="code">block-size</code> and <code node-type="code">hash-size</code> must be non negative exact
+integer and will be returned by <code node-type="code">hash-block-size</code> and <code node-type="code">hash-size</code>procedures respectively.</p>
+          <p node-type="paragraph">The slot <code node-type="code">oid</code> must be set #f or string which represent OID of the custom
+hash algorithm. If you don't have it, it's better to set #f.</p>
+          <p node-type="paragraph">The slot <code node-type="code">state</code> can be anything, this slot is for storing the hash state
+if you need.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Prime-number-operations">Prime number operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(math prime)_16">
+            <span>(math prime)</span>
+            <span>
+              <deprecated node-type="deprecated" />
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">This library exports procedures for prime number operations.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="prime?_135">
+            <span>prime?</span>
+            <span>
+              <i node-type="i">q</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(k</i>
+            </span>
+            <span>
+              <i node-type="i">50)</i>
+            </span>
+            <span>
+              <i node-type="i">(rand</i>
+            </span>
+            <span>
+              <i node-type="i">(secure-random</i>
+            </span>
+            <span>
+              <i node-type="i">RC4))</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="is-prime?_80">
+            <span>is-prime?</span>
+            <span>
+              <i node-type="i">q</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">(k</i>
+            </span>
+            <span>
+              <i node-type="i">50)</i>
+            </span>
+            <span>
+              <i node-type="i">(rand</i>
+            </span>
+            <span>
+              <i node-type="i">(secure-random</i>
+            </span>
+            <span>
+              <i node-type="i">RC4))</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Tests if given <i node-type="i">q</i> is a prime number or not.</p>
+        <p node-type="paragraph">This procedure uses Miller Rabin primality test. So there is slight possibility
+to pass non prim number.</p>
+        <p node-type="paragraph">The optional argument <i node-type="i">k</i> is the test times. The default 50 makes failure
+ratio very low. And <i node-type="i">rand</i> specifies whith pseudo random algorithm uses in
+the test.</p>
+        <p node-type="paragraph">The latter form is for backward compatibility.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="random-prime_15">
+            <span>random-prime</span>
+            <span>
+              <i node-type="i">size</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(prng</i>
+            </span>
+            <span>
+              <i node-type="i">(secure-random</i>
+            </span>
+            <span>
+              <i node-type="i">RC4))</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Find a prime number from <i node-type="i">size</i> bytes. So the minimum range will be
+<code node-type="code">1 &lt;= p &lt;= 251</code>.</p>
+        <p node-type="paragraph">Keyword argument <i node-type="i">prng</i> specifies which pseudo random uses to find a prime
+number.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Misc-arithmetic-operations">Misc arithmetic operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(math helper)_15">
+            <span>(math helper)</span>
+            <span>
+              <deprecated node-type="deprecated" />
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">This library exports procedures for misc arithmetic operations.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mod-inverse_406">
+            <span>mod-inverse</span>
+            <span>
+              <i node-type="i">x</i>
+            </span>
+            <span>
+              <i node-type="i">m</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Re exporting <code node-type="code">mod-inverse</code> defined in <code node-type="code">(sagittarius)</code> library.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mod-expt_404">
+            <span>mod-expt</span>
+            <span>
+              <i node-type="i">x</i>
+            </span>
+            <span>
+              <i node-type="i">e</i>
+            </span>
+            <span>
+              <i node-type="i">m</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Re exporting <code node-type="code">mod-expt</code> defined in <code node-type="code">(sagittarius)</code> library.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./util.logging.html">(util logging) - Logging utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./net.amqp.html">(net mq amqp) - AMQP library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

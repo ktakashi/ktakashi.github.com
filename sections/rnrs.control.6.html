@@ -1,0 +1,184 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rnrs.sorting.6.html">Sorting</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.records.syntactic.6.html">Records syntactic layer</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rnrs.control.6">Control structures</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rnrs control (6))_64">
+          <span>(rnrs control (6))</span>
+        </a>
+      </div>
+      <p node-type="paragraph">The <code node-type="code">(rnrs control (6))</code>library, which provides useful control structures.</p>
+      <div node-type="define" class="define">
+        <span>Syntax</span>
+        <a name="when_45">
+          <span>when</span>
+          <span>
+            <i node-type="i">test</i>
+          </span>
+          <span>
+            <i node-type="i">expression</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Syntax</span>
+        <a name="unless_10">
+          <span>unless</span>
+          <span>
+            <i node-type="i">test</i>
+          </span>
+          <span>
+            <i node-type="i">expression</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] <i node-type="i">Test</i> must be an expression.</p>
+      <p node-type="paragraph">A <code node-type="code">when</code> expression is evaluated by evaluating the <i node-type="i">test</i> expression.
+If <i node-type="i">test</i> evaluates to a true value, the remaining <i node-type="i">expressions</i> are
+evaluated in order, and the results of the last <i node-type="i">expression</i> are returned as
+the results of the entire <code node-type="code">when</code> expression. Otherwise, the <code node-type="code">when</code>expression returns unspecified values. An <code node-type="code">unless</code> expression is evaluated
+by evaluating the <i node-type="i">test</i> expression. If <i node-type="i">test</i> evaluates to #f, the
+remaining <i node-type="i">expressions</i> are evaluated in order, and the results of the last
+<i node-type="i">expression</i> are returned as the results of the entire <code node-type="code">unless</code>expression. Otherwise, the <code node-type="code">unless</code> expression returns unspecified values.</p>
+      <div node-type="define" class="define">
+        <span>Syntax</span>
+        <a name="do_151">
+          <span>do</span>
+          <span>
+            <i node-type="i">((variable</i>
+          </span>
+          <span>
+            <i node-type="i">init</i>
+          </span>
+          <span>
+            <i node-type="i">step)</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+          <span>
+            <i node-type="i">(test</i>
+          </span>
+          <span>
+            <i node-type="i">expression</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+          <span>
+            <i node-type="i">commend</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] The <i node-type="i">inits</i>, <i node-type="i">steps</i>, <i node-type="i">tests</i>, and <i node-type="i">commands</i> must
+be expressions. The <i node-type="i">variables</i> must be pairwise distinct variables.</p>
+      <p node-type="paragraph">The <code node-type="code">do</code> expression is an iteration construct. It specifies a set of variables
+to be bound, how they are to be initialized at the start, and how they are to be
+updated on each iteration.</p>
+      <p node-type="paragraph">A <code node-type="code">do</code> expression is evaluated as follows: The <i node-type="i">init</i> expressions are
+evaluated (in some unspecified order), the <i node-type="i">variables</i> are bound to fresh
+locations, the results of the <i node-type="i">init</i> expressions are stored in the bindings
+of the <i node-type="i">variables</i>, and then the iteration phase begins.</p>
+      <p node-type="paragraph">Each iteration begins by evaluating <i node-type="i">test</i> if the result is #f, then the
+<i node-type="i">commands</i> are evaluated in order for effect, the <i node-type="i">step</i> expressions are
+evaluated in some unspecified order, the <i node-type="i">variables</i> are bound to fresh
+locations holding the results, and the next iteration begins.</p>
+      <p node-type="paragraph">If <i node-type="i">test</i> evaluates to a true value, the <i node-type="i">expressions</i> are evaluated from
+left to right and the values of the last <i node-type="i">expression</i> are returned. If no
+<i node-type="i">expressions</i> are present, then the <code node-type="code">do</code> expression returns unspecified
+values.</p>
+      <p node-type="paragraph">The region of the binding of a <i node-type="i">variable</i> consists of the entire <code node-type="code">do</code>expression except for the <i node-type="i">inits</i>.</p>
+      <p node-type="paragraph">A <i node-type="i">step</i> may be omitted, in which case the effect is the same as if
+(<i node-type="i">variable</i> <i node-type="i">init</i> <i node-type="i">variable</i>) had been written instead of
+(<i node-type="i">variable</i> <i node-type="i">init</i>).</p>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(do ((vec (make-vector 5))
+      (i 0 (+ i 1)))
+     ((= i 5) vec)
+  (vector-set! vec i i))
+</code></pre>
+        <span />
+        <span>#(0 1 2 3 4)</span>
+      </div>
+      <p node-type="paragraph" />
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>(let ((x '(1 3 5 7 9)))
+  (do ((x x (cdr x))
+        (sum 0 (+ sum (car x))))
+       ((null? x) sum)))
+</code></pre>
+        <span />
+        <span>25</span>
+      </div>
+      <p node-type="paragraph" />
+      <div node-type="define" class="define">
+        <span>Syntax</span>
+        <a name="case-lambda_38">
+          <span>case-lambda</span>
+          <span>
+            <i node-type="i">case-lambda-clause</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] Each <i node-type="i">case-lambda-clause</i> must be of the form</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(_formals_ _body_)</code></pre>
+      </p>
+      <p node-type="paragraph"><i node-type="i">Formals</i> must be as in a <code node-type="code">lambda</code> form.</p>
+      <p node-type="paragraph">A <code node-type="code">case-lambda</code> expression evaluates to a procedure. This procedure, when
+applied, tries to match its arguments to the <code node-type="code">case-lambda-clauses</code> in order.
+The arguments match a clause if one of the following conditions is fulfilled:</p>
+      <p node-type="paragraph"><i node-type="i">Formals</i> has the form <code node-type="code">(_variable_ ...)</code> and the number of
+arguments is the same as the number of formal parameters in <i node-type="i">formals</i>.</p>
+      <p node-type="paragraph"><i node-type="i">Formals</i> has the form</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(_variable1_ ... _variablen_ . _variablen+1_)</code></pre>
+      </p>
+      <p node-type="paragraph">and the number of arguments is at least <i node-type="i">n</i>.</p>
+      <p node-type="paragraph"><i node-type="i">Formals</i> has the form <i node-type="i">variable</i>.</p>
+      <p node-type="paragraph">For the first clause matched by the arguments, the variables of the _formals_are bound to fresh locations containing the argument values in the same arrangement
+as with <code node-type="code">lambda</code>.</p>
+      <p node-type="paragraph">The last expression of a body in a <code node-type="code">case-lambda</code> expression is in tail context.</p>
+      <p node-type="paragraph">If the arguments match none of the clauses, an exception with condition type
+<code node-type="code">&amp;assertion</code> is raised.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rnrs.sorting.6.html">Sorting</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.records.syntactic.6.html">Records syntactic layer</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

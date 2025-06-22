@@ -1,0 +1,252 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./asn.1.html">(asn.1) - Abstract Syntas Notation One library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.binary.io.html">(binary io) - Binary I/O utilities</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.binary.data">(binary data) - Binary data read/write</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(binary data)_3">
+          <span>(binary data)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides yet another binary data structure read/write. The
+difference between <a href="util.binary.pack.html#util.binary.pack">(binary pack)</a> and this is the
+level of abstraction. This library provides higher abstraction layer of the
+way how to handle binary data.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-simple-datum-define_91">
+          <span>define-simple-datum-define</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">reader</i>
+          </span>
+          <span>
+            <i node-type="i">writer</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-composite-data-define_70">
+          <span>define-composite-data-define</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">reader</i>
+          </span>
+          <span>
+            <i node-type="i">writer</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Defines a macro named <i node-type="i">name</i> to read binary data by generic method
+<i node-type="i">reader</i> and write binary data by <i node-type="i">writer</i>.</p>
+      <p node-type="paragraph">To use defining macros effectively, both forms' <i node-type="i">reader</i> and _writer_should be the same name.</p>
+      <p node-type="paragraph">The first form defines a macro which takes 5 required arguments and optional
+keyword arguments. Let's say the <i node-type="i">name</i> is <code node-type="code">define-simple</code>, the
+<i node-type="i">reader</i> is <code node-type="code">simple-read</code> and the <i node-type="i">write</i> is <code node-type="code">simple-write</code>,
+Then the definition of defined macro would be like this;</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-simple_90">
+          <span>define-simple</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">parents</i>
+          </span>
+          <span>
+            <i node-type="i">slots</i>
+          </span>
+          <span>
+            <i node-type="i">read-proc</i>
+          </span>
+          <span>
+            <i node-type="i">write-proc</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(parent-metaclass</i>
+          </span>
+          <span>
+            <i node-type="i"><class>)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Defines <i node-type="i">name</i> class whose parent classes are <i node-type="i">parents</i> and slots
+are <i node-type="i">slots</i>.</p>
+      <p node-type="paragraph"><i node-type="i">read-proc</i> must be a procedure which takes one argument, a input port and
+return number of slots values.</p>
+      <p node-type="paragraph"><i node-type="i">write-proc</i> must be a procedure which takes number of slots plus 1
+arguments. The first one is an output port and the rest are the value of the
+slots of the defined class' instance.</p>
+      <p node-type="paragraph">The keyword argument <i node-type="i">parent-metaclass</i> is a parent class of the metaclass
+of this class.</p>
+      <p node-type="paragraph">The <i node-type="i">slots</i> form must be a list of slot definitions which must be
+followings;</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">name</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">(name)</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">(name default)</i>
+          </p>
+        </li>
+      </ul>
+      <p node-type="paragraph">The first and second form define a slot which name is <i node-type="i">name</i> and its
+initial value is #f. The third form defines a slot which name is _name_and its initial is <i node-type="i">default</i>.</p>
+      <p node-type="paragraph">Note that current implemenation does not handle parent classes slots. This is
+only for seamless operations with other CLOS class.</p>
+      <p node-type="paragraph">The second form defines a macro which takes 3 required arguments and optional
+keyword arguments. Let's say the <i node-type="i">name</i> is <code node-type="code">define-composite</code>, the
+<i node-type="i">reader</i> is <code node-type="code">simple-read</code> and the <i node-type="i">write</i> is <code node-type="code">simple-write</code>,
+Then the definition of defined macro would be like this;</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-simple_89">
+          <span>define-simple</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">parents</i>
+          </span>
+          <span>
+            <i node-type="i">slots</i>
+          </span>
+          <span>
+            <i node-type="i">:key</i>
+          </span>
+          <span>
+            <i node-type="i">(parent-metaclass</i>
+          </span>
+          <span>
+            <i node-type="i"><class>)</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Defines a composite data class named <i node-type="i">name</i> whose parent classes are
+<i node-type="i">parents</i> and slots are <i node-type="i">slots</i>.</p>
+      <p node-type="paragraph">It is similar form with <code node-type="code">define-class</code> however <i node-type="i">slots</i> must be a list
+of one of the followings.</p>
+      <ul node-type="bullet-list">
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">(name type)</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">(name type default)</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">(name (type count))</i>
+          </p>
+        </li>
+        <li>
+          <p node-type="paragraph">
+            <i node-type="i">(name (type count) default)</i>
+          </p>
+        </li>
+      </ul>
+      <p node-type="paragraph"><i node-type="i">name</i> must be a symbol which represents the slot name.</p>
+      <p node-type="paragraph"><i node-type="i">type</i> can be class name or <code node-type="code">eqv?</code> comparable datum. e.g. keyword.</p>
+      <p node-type="paragraph"><i node-type="i">default</i> can be any object.</p>
+      <p node-type="paragraph"><i node-type="i">count</i> must be a non negative exact integer.</p>
+      <p node-type="paragraph">The first form is equivalent with the following form;
+<code node-type="code">(name type #f)</code>.
+And the third form is equivalent with the following form;
+<code node-type="code">(name (type count) #f)</code>.</p>
+      <p node-type="paragraph">The first 2 forms defines a datum slot which the datum is read by _reader_passing <i node-type="i">type</i> and written by <i node-type="i">writer</i>.</p>
+      <p node-type="paragraph">The rest forms defines an array data represented by a vector.</p>
+      <p node-type="paragraph">If the <i node-type="i">type</i> is not defined by neither of the definition forms, then
+it is users responsibility to define a method which handles the <i node-type="i">type</i>.</p>
+      <p node-type="paragraph">Following is the simple example to show how to use the macros above.</p>
+      <pre lang="scheme" node-type="block"><code>(import (clos user) (binary data))
+
+;; use the same name of reader and writer
+(define-simple-datum-define   define-simple    sample-read sample-write)
+(define-composite-data-define define-composite sample-read sample-write)
+
+(define-simple &lt;simple&gt; ()
+  (a b (c 0))
+  (lambda (in) (values (get-u8 in) (get-u8 in) (get-u8 in)))
+  (lambda (out a b c) (put-u8 out a) (put-u8 out b) (put-u8 out c)))
+
+(define-composite &lt;composite&gt; ()
+  ((d :byte 1)
+   (e (:byte 4) #vu8(1 2 3 4))
+   (f &lt;simple&gt;)))
+
+;; :byte reader and writer
+(define-method sample-read ((o (eql :byte)) in array-size?)
+  (if array-size?
+      (get-bytevector-n in array-size?)
+      (get-u8 in)))
+
+(define-method sample-write ((type (eql :byte)) o out array-size?)
+  (if array-size?
+     (put-bytevector out o)
+     (put-u8 out o)))
+</code></pre>
+      <p node-type="paragraph">How to use the defined data structure.</p>
+      <pre lang="scheme" node-type="block"><code>;; read as a &lt;composite&gt; object
+;; "deeeeabc" in ascii
+(define bv #vu8(#x64 #x65 #x65 #x65 #x65 #x61 #x62 #x63))
+(call-with-port (open-bytevector-input-port bv)
+  (lambda (in)
+    (let ((s (sample-read &lt;composite&gt; in)))
+      (slot-ref s 'd) ;; =&gt; #\d
+      (slot-ref s 'f) ;; =&gt; &lt;simple&gt;
+      )))
+
+;; write &lt;composite&gt; object
+(call-with-bytevector-output-port
+  (lambda (out)
+    (let* ((s (make &lt;simple&gt; :a 10 :b 20))
+           (c (make &lt;composite&gt; :f s)))
+      ;; this can be written like this as well (sample-write o out)
+      (sample-write &lt;composite&gt; c out))))
+;; =&gt; #vu8(1 1 2 3 4 10 20 0)
+</code></pre>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./asn.1.html">(asn.1) - Abstract Syntas Notation One library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.binary.io.html">(binary io) - Binary I/O utilities</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

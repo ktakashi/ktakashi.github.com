@@ -1,0 +1,557 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.socket.html">(sagittarius socket) - socket library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.timezone.html">(sagittarius timezone) - Timezone</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.threads">(sagittarius threads) - Thread</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius threads)_112">
+          <span>(sagittarius threads)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">The library provides thread related procedures. The procedures provided
+this library is based on <a href="http://srfi.schemers.org/srfi-18/srfi-18.html">SRFI-18 Multithreading support</a> and Sagittarius specific procedures.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Thread-APIs">Thread APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread?_53">
+            <span>thread?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns #t if given <i node-type="i">obj</i> is a thread, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="current-thread_193">
+            <span>current-thread</span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns the current thread.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-thread_310">
+            <span>make-thread</span>
+            <span>
+              <i node-type="i">thunk</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">name</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns a new thread. The created thread is not executed.
+To run it, users must explicitly call the <code node-type="code">thread-start!</code> procedure.</p>
+        <p node-type="paragraph">The optional argument <i node-type="i">name</i> gives the thread a name. The name can be
+retrieved calling <code node-type="code">thread-name</code> procedure. If the argument is not given,
+then the <code node-type="code">make-thread</code> procedures creates an unique name.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-name_26">
+            <span>thread-name</span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns the name of <i node-type="i">thread</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-state_48">
+            <span>thread-state</span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the current state of <i node-type="i">thread</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-specific_45">
+            <span>thread-specific</span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns the content of the <i node-type="i">thread</i>'s specific slot.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-specific-set!_46">
+            <span>thread-specific-set!</span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Stores <i node-type="i">obj</i> into the <i node-type="i">thread</i>'s specific slot and
+returns unspecified value.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-start!_47">
+            <span>thread-start!</span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Executes the given <i node-type="i">thread</i> and returns <i node-type="i">thread</i></p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-yield!_51">
+            <span>thread-yield!</span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] The current thread exits the running state if its quantum
+had expired.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-sleep!_43">
+            <span>thread-sleep!</span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] The current thread waits until the timeout is reached.</p>
+        <p node-type="paragraph"><i node-type="i">timeout</i> must be either a time object or an exact integer. The first case,
+it represents absolute time of the future. The latter case represents second
+from current time.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-terminate!_50">
+            <span>thread-terminate!</span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Causes an abnormal termination of the <i node-type="i">thread</i>. If
+the <i node-type="i">thread</i> is not already terminated, all mutexes owned by the
+<i node-type="i">thread</i> become unlocked/abandoned and a "terminated thread exception"
+object is stored in the <i node-type="i">thread</i>'s end-exception field. If _thread_is the current thread, <code node-type="code">thread-terminate!</code> does not return. Otherwise
+<code node-type="code">thread-terminate!</code> returns an unspecified value; the termination of
+the thread will occur before <code node-type="code">thread-terminate!</code> returns.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-join!_24">
+            <span>thread-join!</span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+            <span>
+              <i node-type="i">timeout-val</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] The current thread waits until the <i node-type="i">thread</i> terminates
+(normal or not) or until the <i node-type="i">timeout</i> is reached if <i node-type="i">timeout</i> is
+specified. If the <i node-type="i">timeout</i> is reached, <code node-type="code">thread-join!</code> returns
+<i node-type="i">timeout-val</i> if it is supplied, otherwise a "join timeout exception"
+is raised. If the <i node-type="i">thread</i> terminated normally, the content of the
+end-result field is returned, otherwise the content of the end-exception
+field is raised.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-suspend!_49">
+            <span>thread-suspend!</span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+            <span>
+              <i node-type="i">timeout-val</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Suspends execution of the <i node-type="i">thread</i>. Users can resume the _thread_by calling <code node-type="code">thread-resume!</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-resume!_42">
+            <span>thread-resume!</span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Resumes execution of the <i node-type="i">thread</i>.</p>
+        <p node-type="paragraph">If the caller thread is not the one stopped the target thread, then
+the procedure raises an error.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="thread-interrupt!_23">
+            <span>thread-interrupt!</span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Interrupts blocking system call.</p>
+        <p node-type="paragraph">This procedure causes <code node-type="code">EINTR</code> and cancels blocking system call such
+as <code node-type="code">select (2)</code>. Currently the only relevant procedure for this is
+<code node-type="code">socket-select</code> related procedures. See
+<a href="lib.sagittarius.socket.html#socket.low.level">socket library - Low level APIs</a>.</p>
+        <p node-type="paragraph">Currently the procedure uses <code node-type="code">SIGALRM</code> on POSIX environment. This
+might be changed in future, so do not depend on the signal to interrupt
+the call from outside of Sagittarius process.</p>
+        <p node-type="paragraph">On Windows, the procedure uses combination of <code node-type="code">WSAEventSelect</code> and
+<code node-type="code">WaitForMultipleObjects</code>. So there is no way to interrupt from
+outside of Sagittarius process.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Mutex-APIs">Mutex APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mutex?_454">
+            <span>mutex?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns #t if given <i node-type="i">obj</i> is a mutex, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-mutex_230">
+            <span>make-mutex</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">name</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns a new mutex.</p>
+        <p node-type="paragraph">The optional argument <i node-type="i">name</i> gives the mutex a name. If it's not specified,
+then the procedure makes an unique name.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mutex-name_449">
+            <span>mutex-name</span>
+            <span>
+              <i node-type="i">mutex</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns the name of given <i node-type="i">mutex</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mutex-specific_450">
+            <span>mutex-specific</span>
+            <span>
+              <i node-type="i">mutex</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns the content of specific slot of given <i node-type="i">mutex</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mutex-specific-set!_451">
+            <span>mutex-specific-set!</span>
+            <span>
+              <i node-type="i">mutex</i>
+            </span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Stores the <i node-type="i">obj</i> to given <i node-type="i">mutex</i>'s specific slot.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mutex-state_452">
+            <span>mutex-state</span>
+            <span>
+              <i node-type="i">mutex</i>
+            </span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns the state of given <i node-type="i">mutex</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mutex-lock!_448">
+            <span>mutex-lock!</span>
+            <span>
+              <i node-type="i">mutex</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+            <span>
+              <i node-type="i">thread</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Locks the given <i node-type="i">mutex</i>. If the <i node-type="i">mutex</i> is currently
+locked, the current thread waits the <i node-type="i">mutex</i> is unlocked or until the
+<i node-type="i">timeout</i> is reached. If <i node-type="i">timeout</i> is reached, the procedure returns
+#f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="mutex-unlock!_453">
+            <span>mutex-unlock!</span>
+            <span>
+              <i node-type="i">mutex</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">cv</i>
+            </span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Unlocks the given <i node-type="i">mutex</i>. If condition variable _cv_is specified, the current thread is blocked and added to the <i node-type="i">cv</i> before
+unlocking <i node-type="i">mutex</i>, the thread can unblock at any time but no later than
+when an appropriate call to <code node-type="code">condition-variable-signal!</code> or
+<code node-type="code">condition-variable-broadcast!</code> is performed, and no later than the
+<i node-type="i">timeout</i>, if it's given.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Condition-variable-APIs">Condition variable APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-variable?_142">
+            <span>condition-variable?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns #t if given <i node-type="i">obj</i> is a condition variable,
+otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-condition-variable_73">
+            <span>make-condition-variable</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">name</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns a new condition variable.</p>
+        <p node-type="paragraph">The optional argument <i node-type="i">name</i> gives the condition variable a name. If
+it's not specified, then the procedure makes an unique name.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-variable-name_138">
+            <span>condition-variable-name</span>
+            <span>
+              <i node-type="i">cv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns the name of given <i node-type="i">cv</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-variable-specific_140">
+            <span>condition-variable-specific</span>
+            <span>
+              <i node-type="i">cv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Returns the content of specific slot of given <i node-type="i">cv</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-variable-specific-set!_141">
+            <span>condition-variable-specific-set!</span>
+            <span>
+              <i node-type="i">cv</i>
+            </span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Stores the <i node-type="i">obj</i> to given <i node-type="i">cv</i>'s specific slot.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-variable-signal_139">
+            <span>condition-variable-signal</span>
+            <span>
+              <i node-type="i">cv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] If there are thread blocked on <i node-type="i">cv</i>, the scheduler selects
+a thread and unblocks it.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="condition-variable-broadcast!_137">
+            <span>condition-variable-broadcast!</span>
+            <span>
+              <i node-type="i">cv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[SRFI-18] Unblocks all the threads blocked on the <i node-type="i">cv</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Semaphore-APIs">Semaphore APIs</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="semaphore?_21">
+            <span>semaphore?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a semaphore, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-semaphore_268">
+            <span>make-semaphore</span>
+            <span>
+              <i node-type="i">name</i>
+            </span>
+            <span>
+              <i node-type="i">initial</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a new semaphore with initial count <i node-type="i">initial__name</i> must be either #f or string which represents semaphore name.
+If the value is #f, then the returning semaphore is memory based semaphore.</p>
+        <p node-type="paragraph"><i node-type="i">initial</i> must be non negative integer.</p>
+        <p node-type="paragraph">If there is already the semaphore has the same name, then this procedure
+returns that semaphore instead of creating new one.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-semaphore_54">
+            <span>open-semaphore</span>
+            <span>
+              <i node-type="i">name</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Opens semaphore which has <i node-type="i">name</i>.</p>
+        <p node-type="paragraph">If there is no such semaphore, then the procedure raises
+<code node-type="code">&amp;i/o-file-does-not-exist</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="semaphore-name_18">
+            <span>semaphore-name</span>
+            <span>
+              <i node-type="i">semaphore</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns the name of given <i node-type="i">semaphore</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="semaphore-wait!_20">
+            <span>semaphore-wait!</span>
+            <span>
+              <i node-type="i">semaphore</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">timeout</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Locks the <i node-type="i">semaphore</i>. If the current count of _semaphore_is 0, then the procedure waits.</p>
+        <p node-type="paragraph">The optional argument <i node-type="i">timeout</i> is specified, which it must be #f, integer
+or time object, then the procedure only waits the given <i node-type="i">timeout</i> amount.
+#f means inifinite.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="semaphore-post!_19">
+            <span>semaphore-post!</span>
+            <span>
+              <i node-type="i">semaphore</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Unlock the <i node-type="i">semaphore</i>. This procedure increase the count
+of <i node-type="i">semaphore</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="semaphore-close!_16">
+            <span>semaphore-close!</span>
+            <span>
+              <i node-type="i">semaphore</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Closes the semaphore.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="semaphore-destroy!_17">
+            <span>semaphore-destroy!</span>
+            <span>
+              <i node-type="i">semaphore</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Removes the semaphore.</p>
+        <p node-type="paragraph">NOTE: the <code node-type="code">semaphore-close!</code> and <code node-type="code">semaphore-destroy!</code> behaves the
+same on Windows.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.socket.html">(sagittarius socket) - socket library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.timezone.html">(sagittarius timezone) - Timezone</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

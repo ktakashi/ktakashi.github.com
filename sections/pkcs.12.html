@@ -1,0 +1,290 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./pkcs.5.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.queue.html">(util queue) - Queue</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="pkcs.12">(rsa pkcs :12) - PKCS#12</a>
+      </h2>
+      <p node-type="paragraph">This section describes the implementation of PKCS#12 specification library.
+However we do not describe PKCS#12 itself and I don't think it is necessary to
+know it if you just want to use it.</p>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="rsa pkcs :12_159">
+          <span>rsa pkcs :12</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides procedures for PKCS#12 operations.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Keystore-APIs">Keystore APIs</a>
+        </h3>
+        <p node-type="paragraph">The example shows how to use keystore APIs:</p>
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (rsa pkcs :12))
+
+(define keystore (load-pkcs12-keystore-file "keystore.p12" "pass"))
+
+(pkcs12-keystore-get-key keystore "key-name" "key-pass")
+;; -&gt; &lt;private-key&gt;
+
+(pkcs12-keystore-get-certificate keystore "cert-name")
+;; -&gt; &lt;x509-certificate&gt;
+
+;; certs are list of X509 certificate associated with given private-key
+(pkcs12-keystore-set-key! keystore "key-name2" private-key "key-pass2" certs)
+
+;; cert must be an X509 certificate
+(pkcs12-keystore-set-certificate! keystore "cert-name2" cert)
+
+(store-pkcs12-keystore-to-file keystore "keystore2.p12" "pass2")
+</code></pre>
+        <div node-type="define" class="define">
+          <span>Class</span>
+          <a name="<pkcs12-keystore&gt;_53">
+            <span>&lt;pkcs12-keystore&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">PKCS#12 keystore class.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs12-keystore?_97">
+            <span>pkcs12-keystore?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is PKCS#12 keystore object, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-pkcs12-keystore_244">
+            <span>make-pkcs12-keystore</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns newly created PKCS#12 keystore object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="load-pkcs12-keystore_46">
+            <span>load-pkcs12-keystore</span>
+            <span>
+              <i node-type="i">input-port</i>
+            </span>
+            <span>
+              <i node-type="i">storepass</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="load-pkcs12-keystore-file_47">
+            <span>load-pkcs12-keystore-file</span>
+            <span>
+              <i node-type="i">file</i>
+            </span>
+            <span>
+              <i node-type="i">storepass</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Loads PKCS#12 keystore from given <i node-type="i">input-port</i> or <i node-type="i">file</i> and
+returns newly created keystore object.</p>
+        <p node-type="paragraph">The <code node-type="code">load-pkcs12-keystore</code> loads from given binary input port.</p>
+        <p node-type="paragraph">The <code node-type="code">load-pkcs12-keystore-file</code> loads from given file.</p>
+        <p node-type="paragraph"><i node-type="i">storepass</i> must be a string and a password for given keystore.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs12-keystore-get-key_92">
+            <span>pkcs12-keystore-get-key</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+            <span>
+              <i node-type="i">keypass</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrives a private key associated with <i node-type="i">alias</i> from <i node-type="i">keystore</i>.
+If there is no key entry associated with <i node-type="i">alias</i> then #f is returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> must be a string.</p>
+        <p node-type="paragraph"><i node-type="i">keypass</i> must be a string. It is used to decrypt the private key and
+it is <strong node-type="strong">not</strong> allowed to pass empty password.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs12-keystore-get-certificate_90">
+            <span>pkcs12-keystore-get-certificate</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrives a certificate associated with <i node-type="i">alias</i> from <i node-type="i">keystore</i>.
+If there is no certificate entry associated with <i node-type="i">alias</i> then #f is
+returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> must be a string.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs12-keystore-get-certificate-chain_91">
+            <span>pkcs12-keystore-get-certificate-chain</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrives certificate chain associated with given key alias _alias_from <i node-type="i">keystore</i>. If there is no certificate chain then <code node-type="code">'()</code> is
+returned.</p>
+        <p node-type="paragraph"><i node-type="i">alias</i> must be a string.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs12-keystore-contains-alias?_86">
+            <span>pkcs12-keystore-contains-alias?</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if <i node-type="i">keystore</i> contains <i node-type="i">alias</i>. Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="store-pkcs12-keystore_259">
+            <span>store-pkcs12-keystore</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">output-port</i>
+            </span>
+            <span>
+              <i node-type="i">storepass</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="store-pkcs12-keystore-to-file_260">
+            <span>store-pkcs12-keystore-to-file</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">file</i>
+            </span>
+            <span>
+              <i node-type="i">storepass</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Writes given <i node-type="i">keystore</i> to <i node-type="i">output-port</i> or <i node-type="i">file</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">store-pkcs12-keystore</code> writes to given binary output port
+<i node-type="i">output-port</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">store-pkcs12-keystore-to-file</code> writes to given file <i node-type="i">file</i>.</p>
+        <p node-type="paragraph"><i node-type="i">storepass</i> must be a string and is used to encrypt whole contents.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs12-keystore-set-key!_96">
+            <span>pkcs12-keystore-set-key!</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+            <span>
+              <i node-type="i">private-key</i>
+            </span>
+            <span>
+              <i node-type="i">key-pass</i>
+            </span>
+            <span>
+              <i node-type="i">certs</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">alias</i> must be a string represents the name of <i node-type="i">private-key</i> in
+the <i node-type="i">keystore</i>.</p>
+        <p node-type="paragraph"><i node-type="i">private-key</i> must be an RSA private key.</p>
+        <p node-type="paragraph"><i node-type="i">key-pass</i> must be a string and is used to encrypt given <i node-type="i">private-key</i>.</p>
+        <p node-type="paragraph"><i node-type="i">certs</i> must be a list of X509 certificates which associated with
+<i node-type="i">private-key</i>.</p>
+        <p node-type="paragraph">Stores given <i node-type="i">private-key</i> to <i node-type="i">keystore</i>.</p>
+        <p node-type="paragraph">The implementation allows users to set separate password from storepass.
+Be aware that current implementation of Bouncy Castle JCE uses the same
+password as storepass to encrypt a private key. Thus if you use different
+password, then it is not compatible with Bouncy Castle.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs12-keystore-set-certificate!_95">
+            <span>pkcs12-keystore-set-certificate!</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+            <span>
+              <i node-type="i">cert</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">alias</i> must be a string represents the name of <i node-type="i">cert</i> in
+<i node-type="i">keystore</i>.</p>
+        <p node-type="paragraph"><i node-type="i">cert</i> must be an X509 certificate.</p>
+        <p node-type="paragraph">Stores given <i node-type="i">cert</i> to <i node-type="i">keystore</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs12-keystore-delete-entry!_88">
+            <span>pkcs12-keystore-delete-entry!</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+            <span>
+              <i node-type="i">alias</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">alias</i> must be a string.</p>
+        <p node-type="paragraph">Removes the entry associated with <i node-type="i">alias</i> in <i node-type="i">keystore</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pkcs12-keystore-aliases_82">
+            <span>pkcs12-keystore-aliases</span>
+            <span>
+              <i node-type="i">keystore</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns all defined names in <i node-type="i">keystore</i>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./pkcs.5.html">(rsa pkcs :5) - Password Based Cryptography library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.queue.html">(util queue) - Queue</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

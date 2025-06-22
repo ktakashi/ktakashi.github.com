@@ -1,0 +1,2305 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rnrs.conditions.6.html">Conditions</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.files.6.html">File system</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="io.condition.types">I/O condition types</a>
+      </h2>
+      <p node-type="paragraph">The condition types and corresponding predicates and accessors are exported by
+both the <code node-type="code">(rnrs io ports (6))</code> and <code node-type="code">(rnrs io simple (6))</code> libraries.
+They are also exported by the <code node-type="code">(rnrs files (6))</code> library.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;i/o_14">
+          <span>&amp;i/o</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-i/o-error_187">
+          <span>make-i/o-error</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-error?_5">
+          <span>i/o-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] This is a supertype for a set of more specific I/O errors.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;i/o-read_24">
+          <span>&amp;i/o-read</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-i/o-read-error_195">
+          <span>make-i/o-read-error</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-read-error?_13">
+          <span>i/o-read-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] This condition type describes read errors that occurred during an
+I/O operation.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;i/o-write_25">
+          <span>&amp;i/o-write</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-i/o-write-error_196">
+          <span>make-i/o-write-error</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-write-error?_14">
+          <span>i/o-write-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] This condition type describes write errors that occurred during an
+I/O operation.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;i/o-invalid-position_22">
+          <span>&amp;i/o-invalid-position</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-i/o-invalid-position-error_193">
+          <span>make-i/o-invalid-position-error</span>
+          <span>
+            <i node-type="i">position</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-invalid-position-error?_11">
+          <span>i/o-invalid-position-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-error-position_4">
+          <span>i/o-error-position</span>
+          <span>
+            <i node-type="i">condition</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] This condition type describes attempts to set the file position to
+an invalid position. <i node-type="i">Position</i> should be the file position that the program
+intended to set. This condition describes a range error, but not an assertion
+violation.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;i/o-filename_21">
+          <span>&amp;i/o-filename</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-i/o-filename-error_192">
+          <span>make-i/o-filename-error</span>
+          <span>
+            <i node-type="i">filename</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-filename-error?_10">
+          <span>i/o-filename-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-error-filename_2">
+          <span>i/o-error-filename</span>
+          <span>
+            <i node-type="i">condition</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] This condition type describes an I/O error that occurred during an
+operation on a named file. <i node-type="i">Filename</i> should be the name of the file.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;i/o-file-protection_20">
+          <span>&amp;i/o-file-protection</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-i/o-file-protection-error_191">
+          <span>make-i/o-file-protection-error</span>
+          <span>
+            <i node-type="i">filename</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-file-protection-error?_9">
+          <span>i/o-file-protection-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] A condition of this type specifies that an operation tried to
+operate on a named file with insufficient access rights.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;i/o-file-is-read-only_19">
+          <span>&amp;i/o-file-is-read-only</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-i/o-file-is-read-only-error_190">
+          <span>make-i/o-file-is-read-only-error</span>
+          <span>
+            <i node-type="i">filename</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-file-is-read-only-error?_8">
+          <span>i/o-file-is-read-only-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] A condition of this type specifies that an operation tried to
+operate on a named read-only file under the assumption that it is writeable.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;i/o-file-already-exists_17">
+          <span>&amp;i/o-file-already-exists</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-i/o-file-already-exists-error_188">
+          <span>make-i/o-file-already-exists-error</span>
+          <span>
+            <i node-type="i">filename</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-file-already-exists-error?_6">
+          <span>i/o-file-already-exists-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] A condition of this type specifies that an operation tried to
+operate on an existing named file under the assumption that it did not exist.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;i/o-file-does-not-exist_18">
+          <span>&amp;i/o-file-does-not-exist</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-i/o-file-does-not-exist-error_189">
+          <span>make-i/o-file-does-not-exist-error</span>
+          <span>
+            <i node-type="i">filename</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-file-does-not-exist-error?_7">
+          <span>i/o-file-does-not-exist-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] A condition of this type specifies that an operation tried to
+operate on an non-existent named file under the assumption that it existed.</p>
+      <div node-type="define" class="define">
+        <span>Condition Type</span>
+        <a name="&amp;i/o-port_23">
+          <span>&amp;i/o-port</span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-i/o-port-error_194">
+          <span>make-i/o-port-error</span>
+          <span>
+            <i node-type="i">port</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-port-error?_12">
+          <span>i/o-port-error?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="i/o-error-port_3">
+          <span>i/o-error-port</span>
+          <span>
+            <i node-type="i">condition</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS] This condition type specifies the port with which an I/O error
+is associated. <i node-type="i">Port</i> should be the port. Conditions raised by procedures
+accepting a port as an argument should include an <code node-type="code">&amp;i/o-port-error</code>condition.</p>
+      <p node-type="paragraph">Here I describe the conditions hierarchy.</p>
+      <pre lang="scheme" node-type="block"><code>+ &amp;error([See (rnrs conditions (6))](#rnrs.conditions.6))
+    + &amp;i/o
+          + &amp;i/o-read
+          + &amp;i/o-write
+          + &amp;i/o-invalid-position
+          + &amp;i/o-filename
+                + &amp;i/o-file-protection
+                      + &amp;i/o-file-is-read-only
+                + &amp;i/o-file-already-exists
+                + &amp;i/o-file-does-not-exist
+          + &amp;i/o-port-error
+</code></pre>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="rnrs.io.ports.6">Port I/O</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(rnrs io ports (6))_70">
+            <span>(rnrs io ports (6))</span>
+          </a>
+        </div>
+        <p node-type="paragraph">The <code node-type="code">(rnrs io ports (6))</code>library defines an I/O layer for
+conventional, imperative buffered input and output. A <i node-type="i">port</i> represents
+a buffered access object for a data sink or source or both simultaneously.
+The library allows ports to be created from arbitrary data sources and sinks.</p>
+        <p node-type="paragraph">The <code node-type="code">(rnrs io ports (6))</code> library distinguishes between _input ports_and <i node-type="i">output ports</i>. An input port is a source for data, whereas an output
+port is a sink for data. A port may be both an input port and an output port;
+such a port typically provides simultaneous read and write access to a file or
+other data.</p>
+        <p node-type="paragraph">The <code node-type="code">(rnrs io ports (6))</code> library also distinguishes between
+<i node-type="i">binary ports</i>, which are sources or sinks for uninterpreted bytes,
+and <i node-type="i">textual ports</i>, which are sources or sinks for characters and strings.</p>
+        <p node-type="paragraph">This section uses <i node-type="i">input-port</i>, <i node-type="i">output-port</i>, <i node-type="i">binary-port</i>,
+<i node-type="i">textual-port</i>, <i node-type="i">binary-input-port</i>, <i node-type="i">textual-input-port</i>,
+<i node-type="i">binary-output-port</i>, <i node-type="i">textual-output-port</i>, and <i node-type="i">port</i> as parameter
+names for arguments that must be input ports (or combined input/output ports),
+output ports (or combined input/output ports), binary ports, textual ports,
+binary input ports, textual input ports, binary output ports, textual output
+ports, or any kind of port, respectively.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Filename">Filename</a>
+          </h4>
+          <p node-type="paragraph">In this world, unfortunately there are a lot of operating systems. However, as
+far as I know there are only two file separators, one is Windows style back
+slash, the other is UNIX style slash. On Sagittarius both of it can be used as
+file path. Inside of the resolution of file path, Sagittarius replaces those
+file separators to OS specific one. Even though programmer does not have to care
+about it, I think it's better to use slash as file separator on script files.</p>
+          <p node-type="paragraph">A <i node-type="i">filename</i> parameter name means that the corresponding argument must be a
+file name.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="File-options">File options</a>
+          </h4>
+          <p node-type="paragraph">When opening a file, the various procedures in this library accept a
+<code node-type="code">file-options</code> object that encapsulates flags to specify how the file is to
+be opened. A <code node-type="code">file-options</code> object is an enum-set
+(see <a href="rnrs.enums.6.html#rnrs.enums.6">(rnrs enums (6))</a>) over the symbols constituting
+valid file options. A <i node-type="i">file-options</i> parameter name means that the
+corresponding argument must be a <i node-type="i">file-options</i> object.</p>
+          <div node-type="define" class="define">
+            <span>Macro</span>
+            <a name="file-options_19">
+              <span>file-options</span>
+              <span>
+                <i node-type="i">file-options-symbol</i>
+              </span>
+              <span>
+                <i node-type="i">...</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] Each <i node-type="i">file-option-symbol</i> must be a symbol. The
+<i node-type="i">file-options</i> macro returns a <i node-type="i">file-options</i> object that encapsulates
+the specified options.</p>
+          <p node-type="paragraph">When supplied to an operation that opens a file for output, the file-options
+object returned by <code node-type="code">(file-options)</code> specifies that the file is created if
+it does not exist and an exception with condition type
+<code node-type="code">&amp;i/o-file-already-exists</code> is raised if it does exist. The following
+standard options can be included to modify the default behaviour.</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph"><code node-type="code">no-create</code> If the file does not already exist, it is not created;
+instead, an exception with condition type <code node-type="code">&amp;i/o-file-does-not-exist</code> is
+raised. If the file already exists, the exception with condition type
+<code node-type="code">&amp;i/o-file-already-exists</code> is not raised and the file is truncated to zero
+length.</p>
+            </li>
+            <li>
+              <p node-type="paragraph"><code node-type="code">no-fail</code> If the file already exists, the exception with condition
+type <code node-type="code">&amp;i/o-file-already-exists</code> is not raised, even if <code node-type="code">no-create</code> is
+not included, and the file is truncated to zero length.</p>
+            </li>
+            <li>
+              <p node-type="paragraph"><code node-type="code">no-truncate</code> If the file already exists and the exception with
+condition type <code node-type="code">&amp;i/o-file-already-exists</code> has been inhibited by inclusion
+of <code node-type="code">no-create</code> or <code node-type="code">no-fail</code>, the file is not truncated, but the port's
+current position is still set to the beginning of the file.</p>
+            </li>
+            <li>
+              <p node-type="paragraph"><code node-type="code">append</code> Among with <code node-type="code">no-truncate</code>, set the opened port's
+position the end of the file. This is not a part of R6RS specification.</p>
+            </li>
+          </ul>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Buffer-modes">Buffer modes</a>
+          </h4>
+          <p node-type="paragraph">Each port has an associated buffer mode. For an output port, the buffer mode
+defines when an output operation flushes the buffer associated with the output
+port. For an input port, the buffer mode defines how much data will be read to
+satisfy read operations. The possible buffer modes are the symbols none for no
+buffering, line for flushing upon line endings and reading up to line endings,
+or other implementation-dependent behavior, and block for arbitrary buffering.
+This section uses the parameter name <i node-type="i">buffer-mode</i> for arguments that must
+be buffer-mode symbols.</p>
+          <p node-type="paragraph">If two ports are connected to the same mutable source, both ports are
+unbuffered, and reading a byte or character from that shared source via one of
+the two ports would change the bytes or characters seen via the other port, a
+lookahead operation on one port will render the peeked byte or character
+inaccessible via the other port, while a subsequent read operation on the
+peeked port will see the peeked byte or character even though the port is
+otherwise unbuffered.</p>
+          <p node-type="paragraph">In other words, the semantics of buffering is defined in terms of side effects
+on shared mutable sources, and a lookahead operation has the same side effect
+on the shared source as a read operation.</p>
+          <div node-type="define" class="define">
+            <span>Macro</span>
+            <a name="buffer-mode_102">
+              <span>buffer-mode</span>
+              <span>
+                <i node-type="i">buffer-mode-symbol</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Buffer-mode-symbol</i> must be a symbol whose name is one of
+<code node-type="code">none</code>, <code node-type="code">line</code>, and <code node-type="code">block</code>. The result is the corresponding
+symbol, and specifies the associated buffer mode.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="buffer-mode?_103">
+              <span>buffer-mode?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the argument is a valid buffer-mode symbol, and returns #f
+otherwise.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Transcoders">Transcoders</a>
+          </h4>
+          <p node-type="paragraph">Several different Unicode encoding schemes describe standard ways to encode
+characters and strings as byte sequences and to decode those sequences. Within
+this document, a codec is an immutable Scheme object that represents a Unicode
+or similar encoding scheme.</p>
+          <p node-type="paragraph">An <i node-type="i">end-of-line</i> style is a symbol that, if it is not none, describes how a
+textual port transcodes representations of line endings.</p>
+          <p node-type="paragraph">A <i node-type="i">transcoder</i> is an immutable Scheme object that combines a codec with an
+end-of-line style and a method for handling decoding errors. Each transcoder
+represents some specific bidirectional (but not necessarily lossless), possibly
+stateful translation between byte sequences and Unicode characters and strings.
+Every transcoder can operate in the input direction (bytes to characters) or in
+the output direction (characters to bytes). A <i node-type="i">transcoder</i> parameter name
+means that the corresponding argument must be a transcoder.</p>
+          <p node-type="paragraph">A <i node-type="i">binary port</i> is a port that supports binary I/O, does not have an
+associated transcoder and does not support textual I/O. A <i node-type="i">textual</i>
+port is a port that supports textual I/O, and does not support binary I/O.
+A textual port may or may not have an associated transcoder.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="latin-1-codec_1">
+              <span>latin-1-codec</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="utf-8-codec_32">
+              <span>utf-8-codec</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="utf-16-codec_31">
+              <span>utf-16-codec</span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] These are predefined codecs for the ISO 8859-1, UTF-8, and UTF-16
+encoding schemes.</p>
+          <p node-type="paragraph">A call to any of these procedures returns a value that is equal in the sense
+of <code node-type="code">eqv?</code> to the result of any other call to the same procedure.</p>
+          <div node-type="define" class="define">
+            <span>Macro</span>
+            <a name="eol-style_26">
+              <span>eol-style</span>
+              <span>
+                <i node-type="i">eol-style-symbol</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Eol-style-symbol</i> should be a symbol whose name is one of
+<code node-type="code">lf</code>, <code node-type="code">cr</code>, <code node-type="code">crlf</code>, <code node-type="code">nel</code>, <code node-type="code">crnel</code>, <code node-type="code">ls</code>, and
+<code node-type="code">none</code>. The form evaluates to the corresponding symbol. If the name of
+<i node-type="i">eol-style-symbol</i> is not one of these symbols, it still returns given
+symbol, however <code node-type="code">make-transcoder</code> does not accept it.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="native-eol-style_3">
+              <span>native-eol-style</span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns the default end-of-line style of the underlying platform.</p>
+          <div node-type="define" class="define">
+            <span>Condition Type</span>
+            <a name="&amp;i/o-decoding_15">
+              <span>&amp;i/o-decoding</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-i/o-decoding-error_185">
+              <span>make-i/o-decoding-error</span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="i/o-decoding-error?_0">
+              <span>i/o-decoding-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] An exception with this type is raised when one of the operations
+for textual input from a port encounters a sequence of bytes that cannot be
+translated into a character or string by the input direction of the port's
+transcoder.</p>
+          <p node-type="paragraph">When such an exception is raised, the port's position is past the invalid
+encoding.</p>
+          <div node-type="define" class="define">
+            <span>Condition Type</span>
+            <a name="&amp;i/o-encoding_16">
+              <span>&amp;i/o-encoding</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-i/o-encoding-error_186">
+              <span>make-i/o-encoding-error</span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="i/o-encoding-error?_1">
+              <span>i/o-encoding-error?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] An exception with this type is raised when one of the operations
+for textual output to a port encounters a character that cannot be translated
+into bytes by the output direction of the port's transcoder. Char is the
+character that could not be encoded.</p>
+          <div node-type="define" class="define">
+            <span>Macro</span>
+            <a name="error-handling-mode_34">
+              <span>error-handling-mode</span>
+              <span>
+                <i node-type="i">error-handling-mode-symbol</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Error-handling-mode-symbol</i> should be a symbol whose name is
+one of <code node-type="code">ignore</code>, <code node-type="code">raise</code>, and <code node-type="code">replace</code>. The form evaluates to
+the corresponding symbol.</p>
+          <p node-type="paragraph">The <code node-type="code">error-handling</code> mode of a transcoder specifies the behavior of textual
+I/O operations in the presence of encoding or decoding errors.</p>
+          <p node-type="paragraph">If a textual input operation encounters an invalid or incomplete character
+encoding, and the error-handling mode is <code node-type="code">ignore</code>, an appropriate number
+of bytes of the invalid encoding are ignored and decoding continues with the
+following bytes. If the error-handling mode is <code node-type="code">replace</code>, the replacement
+character U+FFFD is injected into the data stream, an appropriate number of
+bytes are ignored, and decoding continues with the following bytes. If the
+error-handling mode is <code node-type="code">raise</code>, an exception with condition type
+<code node-type="code">&amp;i/o-decoding</code> is raised.</p>
+          <p node-type="paragraph">If a textual output operation encounters a character it cannot encode, and the
+error-handling mode is <code node-type="code">ignore</code>, the character is ignored and encoding
+continues with the next character. If the error-handling mode is <code node-type="code">replace</code>,
+a codec-specific replacement character is emitted by the transcoder, and
+encoding continues with the next character. The replacement character is U+FFFD
+for transcoders whose codec is one of the Unicode encodings, but is the <code node-type="code">?</code>character for the Latin-1 encoding. If the error-handling mode is <code node-type="code">raise</code>,
+an exception with condition type <code node-type="code">&amp;i/o-encoding</code> is raised.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-transcoder_314">
+              <span>make-transcoder</span>
+              <span>
+                <i node-type="i">codec</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">eol-style</i>
+              </span>
+              <span>
+                <i node-type="i">handling-mode</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Codec</i> must be a codec; <i node-type="i">eol-style</i>, if present, an
+eol-style symbol; and <i node-type="i">handling-mode</i>, if present, an error-handling-mode
+symbol. <i node-type="i">Eol-style</i> may be omitted, in which case it defaults to the native
+end-of-line style of the underlying platform. <i node-type="i">Handling-mode</i> may be
+omitted, in which case it defaults to <code node-type="code">replace</code>. The result is a
+transcoder with the behaviour specified by its arguments.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="native-transcoder_4">
+              <span>native-transcoder</span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns platform dependent transcoder.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="transcoder-codec_103">
+              <span>transcoder-codec</span>
+              <span>
+                <i node-type="i">transcoder</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="transcoder-eol-style_104">
+              <span>transcoder-eol-style</span>
+              <span>
+                <i node-type="i">transcoder</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="transcoder-error-handlingmode_105">
+              <span>transcoder-error-handlingmode</span>
+              <span>
+                <i node-type="i">transcoder</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] These are accessors for transcoder objects; when applied to a
+transcoder returned by <code node-type="code">make-transcoder</code>, they return the <i node-type="i">codec</i>,
+<i node-type="i">eol-style</i>, and <i node-type="i">handling-mode</i> arguments, respectively.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="bytevector-&gt;string_119">
+              <span>bytevector-&gt;string</span>
+              <span>
+                <i node-type="i">bytevector</i>
+              </span>
+              <span>
+                <i node-type="i">transcoder</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] Returns the string that results from transcoding the
+<i node-type="i">bytevector</i> according to the input direction of the transcoder.</p>
+          <p node-type="paragraph">If the optional argument <i node-type="i">start</i> is given, the procedure converts given
+string from <i node-type="i">start</i> index (inclusive).</p>
+          <p node-type="paragraph">If the optional argument <i node-type="i">end</i> is given, the procedure converts given
+string to <i node-type="i">end</i> index (exclusive).</p>
+          <p node-type="paragraph">These optional arguments must be fixnum if it's given.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="string-&gt;bytevector_265">
+              <span>string-&gt;bytevector</span>
+              <span>
+                <i node-type="i">string</i>
+              </span>
+              <span>
+                <i node-type="i">transcoder</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">end</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns the bytevector that results from transcoding the
+<i node-type="i">string</i> according to the output direction of the transcoder.</p>
+          <p node-type="paragraph">If the optional argument <i node-type="i">start</i> is given, the procedure converts given
+string from <i node-type="i">start</i> index (inclusive).</p>
+          <p node-type="paragraph">If the optional argument <i node-type="i">end</i> is given, the procedure converts given
+string to <i node-type="i">end</i> index (exclusive).</p>
+          <p node-type="paragraph">These optional arguments must be fixnum if it's given.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="End-of-file-object">End-of-file object</a>
+          </h4>
+          <p node-type="paragraph">The end-of-file object is returned by various I/O procedures when they reach end
+of file.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="eof-object_24">
+              <span>eof-object</span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns the end-of-file object</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="eof-object?_25">
+              <span>eof-object?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if <i node-type="i">obj</i> is the end-of-file object, #f otherwise.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Input-and-output-ports">Input and output ports</a>
+          </h4>
+          <p node-type="paragraph">The operations described in this section are common to input and output ports,
+both binary and textual. A port may also have an associated <i node-type="i">position</i> that
+specifies a particular place within its data sink or source, and may also
+provide operations for inspecting and setting that place.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="port?_122">
+              <span>port?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the argument is a port, and returns #f otherwise.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="port-transcoder_121">
+              <span>port-transcoder</span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns the transcoder associated with <i node-type="i">port</i> if port is
+textual and has an associated transcoder, and returns #f if <i node-type="i">port</i> is
+binary or does not have an associated transcoder.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="textual-port?_12">
+              <span>textual-port?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-port?_22">
+              <span>binary-port?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] [R7RS] The <code node-type="code">textual-port?</code> procedure returns #t if _obj_is textual port, otherwise #f.</p>
+          <p node-type="paragraph">The <code node-type="code">binary-port?</code> procedure returns #t if <i node-type="i">obj</i> is binary port,
+otherwise #f.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="transcoded-port_102">
+              <span>transcoded-port</span>
+              <span>
+                <i node-type="i">binary-port</i>
+              </span>
+              <span>
+                <i node-type="i">transcoder</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] The <code node-type="code">transcoded-port</code> procedure returns a new textual port
+with the specified <i node-type="i">transcoder</i>. Otherwise the new textual port's state is
+largely the same as that of <i node-type="i">binary-port</i>. If <i node-type="i">binary-port</i> is an input
+port, the new textual port will be an input port and will transcode the bytes
+that have not yet been read from <i node-type="i">binary-port</i>. If <i node-type="i">binary-port</i> is an
+output port, the new textual port will be an output port and will transcode
+output characters into bytes that are written to the byte sink represented by
+<i node-type="i">binary-port</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="port-has-port-position?_117">
+              <span>port-has-port-position?</span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="port-position_119">
+              <span>port-position</span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] The <code node-type="code">port-has-port-position?</code> procedure returns #t if the
+<i node-type="i">port</i> supports the port-position operation, and #f otherwise.</p>
+          <p node-type="paragraph">The <i node-type="i">port-position</i> procedure returns the index of the position at which the
+next position would be read from or written to the port as an exact non-negative
+integer object.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="port-has-set-port-position!?_118">
+              <span>port-has-set-port-position!?</span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="set-port-position!_42">
+              <span>set-port-position!</span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+              <span>
+                <i node-type="i">pos</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(whence</i>
+              </span>
+              <span>
+                <i node-type="i">'begin)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] The <code node-type="code">port-has-set-port-position!?</code> procedure returns #t if the
+<i node-type="i">port</i> supports the <code node-type="code">set-port-position!</code> operation, and #f otherwise.</p>
+          <p node-type="paragraph">The <code node-type="code">set-port-position!</code> procedure raises an exception with condition type
+<code node-type="code">&amp;assertion</code> if the port does not support the operation, and an exception
+with condition type <code node-type="code">&amp;i/o-invalid-position</code> if pos is not in the range of
+valid positions of <i node-type="i">port</i>. Otherwise, it sets the current position of the
+<i node-type="i">port</i> to <i node-type="i">pos</i>. If <i node-type="i">port</i> is an output port,
+<i node-type="i">set-port-position!</i> first flushes <i node-type="i">port</i>.</p>
+          <p node-type="paragraph">The optional argument <i node-type="i">whence</i> must be one of the following symbols;</p>
+          <dl node-type="dlist">
+            <dt>
+              <code node-type="code">begin</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">Set position from the beginning of the given <i node-type="i">port</i>.</p>
+            </dd>
+            <dt>
+              <code node-type="code">current</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">Set position from the current position of the given <i node-type="i">port</i>.</p>
+            </dd>
+            <dt>
+              <code node-type="code">end</code>
+            </dt>
+            <dd>
+              <p node-type="paragraph">Set position from the end of the given <i node-type="i">port</i>.</p>
+            </dd>
+          </dl>
+          <p node-type="paragraph">NOTE: for R6RS custom port, the procedure doesn't accept the optional argument,
+so it will be always considered <code node-type="code">begin</code> even though user specified it
+as <code node-type="code">current</code> or <code node-type="code">end</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="close-port_111">
+              <span>close-port</span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Closes the <i node-type="i">port</i>, rendering the <i node-type="i">port</i> incapable of
+delivering or accepting data. If <i node-type="i">port</i> is an output port, it is flushed
+before being closed. This has no effect if the port has already been closed. A
+closed port is still a port. The <code node-type="code">close-port</code> procedure returns unspecified
+values.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="call-with-port_27">
+              <span>call-with-port</span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+              <span>
+                <i node-type="i">proc</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Proc</i> must accept one argument. The <code node-type="code">call-with-port</code>procedure calls <i node-type="i">proc</i> with <i node-type="i">port</i> as an argument. If _proc_returns, <i node-type="i">port</i> is closed automatically and the values returned by
+<i node-type="i">proc</i> are returned. If <i node-type="i">proc</i> does not return, <i node-type="i">port</i> is not
+closed automatically, except perhaps when it is possible to prove that
+<i node-type="i">port</i> will never again be used for an input or output operation.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Input-ports">Input ports</a>
+          </h4>
+          <p node-type="paragraph">An input port allows the reading of an infinite sequence of bytes or characters
+punctuated by end-of-file objects. An input port connected to a finite data
+source ends in an infinite sequence of end-of-file objects.</p>
+          <p node-type="paragraph">It is unspecified whether a character encoding consisting of several bytes may
+have an end of file between the bytes. If, for example, <code node-type="code">get-char</code> raises
+an <code node-type="code">&amp;i/o-decoding</code> exception because the character encoding at the port's
+position is incomplete up to the next end of file, a subsequent call to
+<code node-type="code">get-char</code> may successfully decode a character if bytes completing the
+encoding are available after the end of file.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="input-port?_63">
+              <span>input-port?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if the argument is an input port (or a combined input and
+output port), and returns #f otherwise.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="port-eof?_116">
+              <span>port-eof?</span>
+              <span>
+                <i node-type="i">input-port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns #t if the <code node-type="code">lookahead-u8</code> procedure (if
+<i node-type="i">input-port</i> is a binary port) or the <code node-type="code">lookahead-char</code> procedure (if
+<i node-type="i">input-port</i> is a textual port) would return the end-of-file object, and
+#f otherwise.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="open-file-input-port_42">
+              <span>open-file-input-port</span>
+              <span>
+                <i node-type="i">filename</i>
+              </span>
+              <span>
+                <i node-type="i">:optiona</i>
+              </span>
+              <span>
+                <i node-type="i">file-options</i>
+              </span>
+              <span>
+                <i node-type="i">buffer-mode</i>
+              </span>
+              <span>
+                <i node-type="i">maybe-transcoder</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Maybe-transcoder</i> must be either a transcoder or #f.</p>
+          <p node-type="paragraph">The <i node-type="i">file-options</i> argument, which may determine various aspects of the
+returned port, defaults to the value of <code node-type="code">(file-options)</code>.</p>
+          <p node-type="paragraph">The <i node-type="i">buffer-mode</i> argument, if supplied, must be one of the symbols that
+name a buffer mode. The <i node-type="i">buffer-mode</i> argument defaults to <code node-type="code">block</code>.</p>
+          <p node-type="paragraph">If <i node-type="i">maybe-transcoder</i> is a transcoder, it becomes the transcoder associated
+with the returned port.</p>
+          <p node-type="paragraph">If <i node-type="i">maybe-transcoder</i> is #f or absent, the port will be a binary port,
+otherwise the port will be textual port.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="open-bytevector-input-port_38">
+              <span>open-bytevector-input-port</span>
+              <span>
+                <i node-type="i">bytevector</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(transcoder</i>
+              </span>
+              <span>
+                <i node-type="i">#f)</i>
+              </span>
+              <span> _</span>
+            </a>
+          </div>
+          <p node-type="paragraph">_ <i node-type="i">(start</i> <i node-type="i">0)</i> <i node-type="i">(end</i> <i node-type="i">(bytevector-length</i> <i node-type="i">bytevector))</i></p>
+          <p node-type="paragraph">[R6RS+] <i node-type="i">transcoder</i> must be either a transcoder or #f.
+The <code node-type="code">open-bytevector-input-port</code> procedure returns an input port whose
+bytes are drawn from <i node-type="i">bytevector</i>. If <i node-type="i">transcoder</i> is specified, it
+becomes the transcoder associated with the returned port.</p>
+          <p node-type="paragraph">If <i node-type="i">transcoder</i> is #f or absent, the port will be a binary port,
+otherwise the port will be textual port.</p>
+          <p node-type="paragraph">Optional arguments <i node-type="i">start</i> and <i node-type="i">end</i> restricts the range of
+input bytevector. It is almost the same as following code but doesn't
+allocate extra memory;
+<pre lang="" node-type="snipet"><code>(open-bytevector-input-port (bytevector-copy bytevector start end))</code></pre></p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="open-string-input-port_57">
+              <span>open-string-input-port</span>
+              <span>
+                <i node-type="i">string</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(start</i>
+              </span>
+              <span>
+                <i node-type="i">0)</i>
+              </span>
+              <span>
+                <i node-type="i">(end</i>
+              </span>
+              <span>
+                <i node-type="i">(string-length</i>
+              </span>
+              <span>
+                <i node-type="i">string))</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] Returns a textual input port whose characters are drawn from
+<i node-type="i">string</i>.</p>
+          <p node-type="paragraph">Optional arguments <i node-type="i">start</i> and <i node-type="i">end</i> restricts the range of
+input string. It is almost the same as following code but doesn't
+allocate extra memory;
+<pre lang="" node-type="snipet"><code>(open-string-input-port (substring string start end))</code></pre></p>
+          <p node-type="paragraph">These procedures reuse the given arguments, thus if <i node-type="i">bytevector</i> is modified
+after <code node-type="code">open-bytevector-input-port</code> has been called, it affects the result
+of the port. So does <code node-type="code">open-string-input-port</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="standard-input-port_254">
+              <span>standard-input-port</span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns a fresh binary input port connected to standard input.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="current-input-port_189">
+              <span>current-input-port</span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] If <i node-type="i">port</i> is given, the <code node-type="code">current-input-port</code> sets the
+<i node-type="i">port</i> as a default port for input. Otherwise it returns a default input
+port.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-custom-binary-input-port_77">
+              <span>make-custom-binary-input-port</span>
+              <span>
+                <i node-type="i">id</i>
+              </span>
+              <span>
+                <i node-type="i">read!</i>
+              </span>
+              <span>
+                <i node-type="i">get-position</i>
+              </span>
+              <span>
+                <i node-type="i">set-position!</i>
+              </span>
+              <span>
+                <i node-type="i">close</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(ready</i>
+              </span>
+              <span>
+                <i node-type="i">#f)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] Returns a newly created binary input port whose byte source is an
+arbitrary algorithm represented by the read! procedure. <i node-type="i">Id</i> must be a
+string naming the new port, provided for informational purposes only.
+<i node-type="i">Read!</i> must be a procedure and should behave as specified below; it will
+be called by operations that perform binary input.</p>
+          <p node-type="paragraph">Each of the remaining arguments may be #f; if any of those arguments is not #f,
+it must be a procedure and should behave as specified below.</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">(<i node-type="i">read!</i> <i node-type="i">bytevector</i> <i node-type="i">start</i> <i node-type="i">count</i>)
+<i node-type="i">Start</i> will be a non-negative exact integer object, <i node-type="i">count</i> will be
+a positive exact integer object, and <i node-type="i">bytevector</i> will be a bytevector whose
+length is at least <i node-type="i">start</i> + <i node-type="i">count</i>. The <i node-type="i">read!</i> procedure should
+obtain up to <i node-type="i">count</i> bytes from the byte source, and should write those
+bytes into <i node-type="i">bytevector</i> starting at index <i node-type="i">start</i>. The _read!_procedure should return an exact integer object. This integer object should
+represent the number of bytes that it has read. To indicate an end of file, the
+<i node-type="i">read!</i> procedure should write no bytes and return 0.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">(<i node-type="i">get-position</i>)
+The <i node-type="i">get-position</i> procedure (if supplied) should return an exact integer
+object representing the current position of the input port. If not supplied, the
+custom port will not support the <code node-type="code">port-position</code> operation.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">(<i node-type="i">set-position!</i> <i node-type="i">pos</i>)
+<i node-type="i">Pos</i> will be a non-negative exact integer object. The
+<i node-type="i">set-position!</i> procedure (if supplied) should set the position of the
+input port to <i node-type="i">pos</i>. If not supplied, the custom port will not support the
+<i node-type="i">set-port-position!</i> operation.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">(<i node-type="i">close</i>)
+The <i node-type="i">close</i> procedure (if supplied) should perform any actions that are
+necessary when the input port is closed.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">(<i node-type="i">ready</i>)
+The <i node-type="i">ready</i> procedure (if supplied) should indicate the port data are
+ready or not.</p>
+            </li>
+          </ul>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-custom-textual-input-port_82">
+              <span>make-custom-textual-input-port</span>
+              <span>
+                <i node-type="i">id</i>
+              </span>
+              <span>
+                <i node-type="i">read!</i>
+              </span>
+              <span>
+                <i node-type="i">get-position</i>
+              </span>
+              <span>
+                <i node-type="i">set-position!</i>
+              </span>
+              <span>
+                <i node-type="i">close</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(ready</i>
+              </span>
+              <span>
+                <i node-type="i">#f)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] Returns a newly created textual input port whose character source
+is an arbitrary algorithm represented by the <i node-type="i">read!</i> procedure. _Id_must be a string naming the new port, provided for informational purposes only.
+<i node-type="i">Read!</i> must be a procedure and should behave as specified below; it will be
+called by operations that perform textual input.</p>
+          <p node-type="paragraph">Each of the remaining arguments may be #f; if any of those arguments is not #f,
+it must be a procedure and should behave as specified below.</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">(<i node-type="i">read!</i> <i node-type="i">string</i> <i node-type="i">start</i> <i node-type="i">count</i>)
+<i node-type="i">Start</i> will be a non-negative exact integer object, <i node-type="i">count</i> will be
+a positive exact integer object, and <i node-type="i">string</i> will be a string whose length
+is at least <i node-type="i">start</i> + <i node-type="i">count</i>. The <i node-type="i">read!</i> procedure should obtain
+up to <i node-type="i">count</i> characters from the character source, and should write those
+characters into <i node-type="i">string</i> starting at index <i node-type="i">start</i>. The _read!_procedure should return an exact integer object representing the number of
+characters that it has written. To indicate an end of file, the _read!_procedure should write no bytes and return 0.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">(<i node-type="i">get-position</i>)
+The <i node-type="i">get-position</i> procedure (if supplied) should return a single value.
+The return value should represent the current position of the input port. If not
+supplied, the custom port will not support the <code node-type="code">port-position</code> operation.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">(<i node-type="i">set-position!</i> <i node-type="i">pos</i>)
+The <i node-type="i">set-position!</i> procedure (if supplied) should set the position of
+the input port to <i node-type="i">pos</i> if <i node-type="i">pos</i> is the return value of a call to
+<i node-type="i">get-position</i>. If not supplied, the custom port will not support the
+<code node-type="code">set-port-position!</code> operation.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">(<i node-type="i">close</i>)
+The <i node-type="i">close</i> procedure (if supplied) should perform any actions that are
+necessary when the input port is closed.</p>
+            </li>
+            <li>
+              <p node-type="paragraph">(<i node-type="i">ready</i>)
+The <i node-type="i">ready</i> procedure (if supplied) should indicate the port characters
+are ready or not.</p>
+            </li>
+          </ul>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Binary-input">Binary input</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-u8_67">
+              <span>get-u8</span>
+              <span>
+                <i node-type="i">binary-input-port</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">reckless</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Reads from <i node-type="i">binary-input-port</i>, blocking as necessary, until a
+byte is available from <i node-type="i">binary-input-port</i> or until an end of file is
+reached.</p>
+          <p node-type="paragraph">If a byte becomes available, <code node-type="code">get-u8</code> returns the byte as an octet and
+updates <i node-type="i">binary-input-port</i> to point just past that byte. If no input byte
+is seen before an end of file is reached, the end-of-file object is returned.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="lookahead-u8_73">
+              <span>lookahead-u8</span>
+              <span>
+                <i node-type="i">binary-input-port</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">reckless</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] The <code node-type="code">lookahead-u8</code> procedure is like <code node-type="code">get-u8</code>, but it
+does not update <i node-type="i">binary-input-port</i> to point past the byte.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-bytevector-n_32">
+              <span>get-bytevector-n</span>
+              <span>
+                <i node-type="i">binary-input-port</i>
+              </span>
+              <span>
+                <i node-type="i">count</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">reckless</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] <i node-type="i">Count</i> must be an exact, non-negative integer object
+representing the number of bytes to be read.</p>
+          <p node-type="paragraph">The <code node-type="code">get-bytevector-n</code> procedure reads from <i node-type="i">binary-input-port</i>,
+blocking as necessary, until <i node-type="i">count</i> bytes are available from
+<i node-type="i">binary-input-port</i> or until an end of file is reached. If _count_bytes are available before an end of file, <code node-type="code">get-bytevector-n</code> returns a
+bytevector of size <i node-type="i">count</i>.</p>
+          <p node-type="paragraph">If fewer bytes are available before an end of file, <code node-type="code">get-bytevector-n</code>returns a bytevector containing those bytes. In either case, the input port is
+updated to point just past the bytes read. If an end of file is reached before
+any bytes are available, <code node-type="code">get-bytevector-n</code> returns the end-of-file object.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-bytevector-n!_33">
+              <span>get-bytevector-n!</span>
+              <span>
+                <i node-type="i">binary-input-port</i>
+              </span>
+              <span>
+                <i node-type="i">bytevector</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">count</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">reckless</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] <i node-type="i">Count</i> must be an exact, non-negative integer object,
+representing the number of bytes to be read. <i node-type="i">bytevector</i> must be a
+bytevector with at least <i node-type="i">start</i> + <i node-type="i">count</i> elements.</p>
+          <p node-type="paragraph">The <code node-type="code">get-bytevector-n!</code> procedure reads from <i node-type="i">binary-input-port</i>,
+blocking as necessary, until <i node-type="i">count</i> bytes are available from
+<i node-type="i">binary-input-port</i> or until an end of file is reached. If <i node-type="i">count</i> bytes
+are available before an end of file, they are written into _bytevector_starting at index <i node-type="i">start</i>, and the result is <i node-type="i">count</i>. If fewer bytes are
+available before the next end of file, the available bytes are written into
+<i node-type="i">bytevector</i> starting at index <i node-type="i">start</i>, and the result is a number object
+representing the number of bytes actually read. In either case, the input port is
+updated to point just past the bytes read. If an end of file is reached before
+any bytes are available, <code node-type="code">get-bytevector-n!</code> returns the end-of-file object.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-bytevector-some_34">
+              <span>get-bytevector-some</span>
+              <span>
+                <i node-type="i">binary-input-port</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">reckless</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] Reads from <i node-type="i">binary-input-port</i>, blocking as necessary, until
+bytes are available from <i node-type="i">binary-input-port</i> or until an end of file is
+reached. If bytes become available, <code node-type="code">get-bytevector-some</code> returns a freshly
+allocated bytevector containing the initial available bytes (at least one and
+maximum 512 bytes), and it updates <i node-type="i">binary-input-port</i> to point just past
+these bytes. If no input bytes are seen before an end of file is reached, the
+end-of-file object is returned.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-bytevector-all_31">
+              <span>get-bytevector-all</span>
+              <span>
+                <i node-type="i">binary-input-port</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">reckless</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] Attempts to read all bytes until the next end of file, blocking
+as necessary. If one or more bytes are read, <code node-type="code">get-bytevector-all</code> returns a
+bytevector containing all bytes up to the next end of file. Otherwise,
+<code node-type="code">get-bytevector-all</code> returns the end-of-file object.</p>
+          <p node-type="paragraph">These procedures can take optional argument <i node-type="i">reckless</i>. If this is given,
+these procedures can read bytes from textual port. This optional argument is for
+socket programming. Users needs to make sure that the given port can be read as
+textual port after reading port recklessly.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Textual-input">Textual input</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-char_35">
+              <span>get-char</span>
+              <span>
+                <i node-type="i">textual-input-port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Reads from <i node-type="i">textual-input-port</i>, blocking as necessary, until a
+complete character is available from <i node-type="i">textual-input-port</i>, or until an end
+of file is reached.</p>
+          <p node-type="paragraph">If a complete character is available before the next end of file, <code node-type="code">get-char</code>returns that character and updates the input port to point past the character.
+If an end of file is reached before any character is read, <code node-type="code">get-char</code>returns the end-of-file object.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="lookahead-char_72">
+              <span>lookahead-char</span>
+              <span>
+                <i node-type="i">textual-input-port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] The <code node-type="code">lookahead-char</code> procedure is like <code node-type="code">get-char</code>, but it
+does not update <i node-type="i">textual-input-port</i> to point past the character.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-string-n_59">
+              <span>get-string-n</span>
+              <span>
+                <i node-type="i">textual-input-port</i>
+              </span>
+              <span>
+                <i node-type="i">count</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Count</i> must be an exact, non-negative integer object,
+representing the number of characters to be read.</p>
+          <p node-type="paragraph">The <code node-type="code">get-string-n</code> procedure reads from <i node-type="i">textual-input-port</i>, blocking
+as necessary, until <i node-type="i">count</i> characters are available, or until an end of
+file is reached.</p>
+          <p node-type="paragraph">If <i node-type="i">count</i> characters are available before end of file, <code node-type="code">get-string-n</code>returns a string consisting of those <i node-type="i">count</i> characters. If fewer characters
+are available before an end of file, but one or more characters can be read,
+<code node-type="code">get-string-n</code> returns a string containing those characters. In either case,
+the input port is updated to point just past the characters read. If no characters
+can be read before an end of file, the end-of-file object is returned.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-string-n!_60">
+              <span>get-string-n!</span>
+              <span>
+                <i node-type="i">textual-input-port</i>
+              </span>
+              <span>
+                <i node-type="i">string</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">count</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Start</i> and <i node-type="i">count</i> must be exact, non-negative integer
+objects, with <i node-type="i">count</i> representing the number of characters to be read.
+<i node-type="i">String</i> must be a string with at least <i node-type="i">start</i> + <i node-type="i">count</i> characters.</p>
+          <p node-type="paragraph">The <code node-type="code">get-string-n!</code> procedure reads from <i node-type="i">textual-input-port</i> in the
+same manner as <code node-type="code">get-string-n</code>. If <i node-type="i">count</i> characters are available before
+an end of file, they are written into <i node-type="i">string</i> starting at index <i node-type="i">start</i>,
+and <i node-type="i">count</i> is returned. If fewer characters are available before an end of
+file, but one or more can be read, those characters are written into string
+starting at index <i node-type="i">start</i> and the number of characters actually read is
+returned as an exact integer object. If no characters can be read before an end
+of file, the end-of-file object is returned.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-string-all_58">
+              <span>get-string-all</span>
+              <span>
+                <i node-type="i">textual-input-port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Reads from <i node-type="i">textual-input-port</i> until an end of file, decoding
+characters in the same manner as <code node-type="code">get-string-n</code> and <code node-type="code">get-string-n!</code>.</p>
+          <p node-type="paragraph">If characters are available before the end of file, a string containing all the
+characters decoded from that data are returned. If no character precedes the end
+of file, the end-of-file object is returned.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-line_45">
+              <span>get-line</span>
+              <span>
+                <i node-type="i">textual-input-port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Reads from <i node-type="i">textual-input-port</i> up to and including the linefeed
+character or end of file, decoding characters in the same manner as
+<code node-type="code">get-string-n</code> and <code node-type="code">get-string-n!</code>.</p>
+          <p node-type="paragraph">If a linefeed character is read, a string containing all of the text up to (but
+not including) the linefeed character is returned, and the port is updated to
+point just past the linefeed character. If an end of file is encountered before
+any linefeed character is read, but some characters have been read and decoded
+as characters, a string containing those characters is returned. If an end of
+file is encountered before any characters are read, the end-of-file object is
+returned.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="get-datum_37">
+              <span>get-datum</span>
+              <span>
+                <i node-type="i">textual-input-port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Reads an external representation from <i node-type="i">textual-input-port</i> and
+returns the datum it represents. The <code node-type="code">get-datum</code> procedure returns the next
+datum that can be parsed from the given <i node-type="i">textual-input-port</i>, updating
+<i node-type="i">textual-input-port</i> to point exactly past the end of the external
+representation of the object.</p>
+          <p node-type="paragraph">If a character inconsistent with an external representation is encountered in
+the input, an exception with condition types <code node-type="code">&amp;lexical</code> and <code node-type="code">&amp;i/o-read</code>is raised. Also, if the end of file is encountered after the beginning of an
+external representation, but the external representation is incomplete and
+therefore cannot be parsed, an exception with condition types <code node-type="code">&amp;lexical</code>and <code node-type="code">&amp;i/o-read</code> is raised.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Output-ports">Output ports</a>
+          </h4>
+          <p node-type="paragraph">An output port is a sink to which bytes or characters are written. The written
+data may control external devices or may produce files and other objects that
+may subsequently be opened for input.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="output-port?_62">
+              <span>output-port?</span>
+              <span>
+                <i node-type="i">obj</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns #t if <i node-type="i">obj</i> is an output port (or a combined input and
+output port), #f otherwise.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="flush-output-port_92">
+              <span>flush-output-port</span>
+              <span>
+                <i node-type="i">output-port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+][R7RS] Flushes any buffered output from the buffer of
+<i node-type="i">output-port</i> to the underlying file, device, or object. The
+<code node-type="code">flush-output-port</code> procedure returns unspecified values.</p>
+          <p node-type="paragraph">If the optional argument is omitted then <code node-type="code">(current-output-port)</code> will be
+used.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="output-port-buffer-mode_60">
+              <span>output-port-buffer-mode</span>
+              <span>
+                <i node-type="i">output-port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns the symbol that represents the buffer mode of
+<i node-type="i">output-port</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="open-file-output-port_44">
+              <span>open-file-output-port</span>
+              <span>
+                <i node-type="i">filename</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">file-options</i>
+              </span>
+              <span>
+                <i node-type="i">buffer-mode</i>
+              </span>
+              <span>
+                <i node-type="i">maybe-transcoder</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Maybe-transcoder</i> must be either a transcoder or #f.</p>
+          <p node-type="paragraph">The <code node-type="code">open-file-output-port</code> procedure returns an output port for the named
+file.</p>
+          <p node-type="paragraph">The <i node-type="i">file-options</i> argument, which may determine various aspects of the
+returned port, defaults to the value of <code node-type="code">(file-options)</code>.</p>
+          <p node-type="paragraph">The <i node-type="i">buffer-mode</i> argument, if supplied, must be one of the symbols that
+name a buffer mode. The <i node-type="i">buffer-mode</i> argument defaults to <code node-type="code">block</code>.</p>
+          <p node-type="paragraph">If <i node-type="i">maybe-transcoder</i> is a transcoder, it becomes the transcoder associated
+with the port.</p>
+          <p node-type="paragraph">If <i node-type="i">maybe-transcoder</i> is #f or absent, the port will be a binary port,
+otherwise the port will be textual port.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="open-bytevector-output-port_39">
+              <span>open-bytevector-output-port</span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">maybe-transcoder</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Maybe-transcoder</i> must be either a transcoder or #f.</p>
+          <p node-type="paragraph">The <code node-type="code">open-bytevector-output-port</code> procedure returns two values: an output
+port and an extraction procedure. The output port accumulates the bytes written
+to it for later extraction by the procedure.</p>
+          <p node-type="paragraph">If <i node-type="i">maybe-transcoder</i> is a transcoder, it becomes the transcoder associated
+with the port. If <i node-type="i">maybe-transcoder</i> is #f or absent, the port will be a
+binary port, otherwise the port will be textual port.</p>
+          <p node-type="paragraph">The extraction procedure takes no arguments. When called, it returns a bytevector
+consisting of all the port's accumulated bytes (regardless of the port's current
+position), removes the accumulated bytes from the port, and resets the port's
+position.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="call-with-bytevector-output-port_15">
+              <span>call-with-bytevector-output-port</span>
+              <span>
+                <i node-type="i">proc</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">maybe-transcoder</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Proc</i> must accept one argument. <i node-type="i">Maybe-transcoder</i> must be
+either a transcoder or #f.</p>
+          <p node-type="paragraph">The <code node-type="code">call-with-bytevector-output-port</code> procedure creates an output port that
+accumulates the bytes written to it and calls <i node-type="i">proc</i> with that output port as
+an argument. Whenever <i node-type="i">proc</i> returns, a bytevector consisting of all of the
+port's accumulated bytes (regardless of the port's current position) is returned
+and the port is closed.</p>
+          <p node-type="paragraph">The transcoder associated with the output port is determined as for a call to
+<code node-type="code">open-bytevector-output-port</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="open-string-output-port_58">
+              <span>open-string-output-port</span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns two values: a textual output port and an extraction procedure.
+The output port accumulates the characters written to it for later extraction by
+the procedure.</p>
+          <p node-type="paragraph">The extraction procedure takes no arguments. When called, it returns a string
+consisting of all of the port's accumulated characters (regardless of the current
+position), removes the accumulated characters from the port, and resets the port's
+position.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="call-with-string-output-port_31">
+              <span>call-with-string-output-port</span>
+              <span>
+                <i node-type="i">proc</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Proc</i> must accept one argument.</p>
+          <p node-type="paragraph">The <code node-type="code">call-with-string-output-port</code> procedure creates a textual output port
+that accumulates the characters written to it and calls <i node-type="i">proc</i> with that
+output port as an argument. Whenever proc returns, a string consisting of all of
+the port's accumulated characters (regardless of the port's current position) is
+returned and the port is closed.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="standard-output-port_255">
+              <span>standard-output-port</span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="standard-error-port_253">
+              <span>standard-error-port</span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns a fresh binary output port connected to the standard output
+or standard error respectively.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="current-output-port_191">
+              <span>current-output-port</span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="current-error-port_188">
+              <span>current-error-port</span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">port</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] If <i node-type="i">port</i> is given, these procedures set the <i node-type="i">port</i> as a
+default port for output and error. These return default ports for regular output
+and error output.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-custom-binary-output-port_79">
+              <span>make-custom-binary-output-port</span>
+              <span>
+                <i node-type="i">id</i>
+              </span>
+              <span>
+                <i node-type="i">write!</i>
+              </span>
+              <span>
+                <i node-type="i">get-position</i>
+              </span>
+              <span>
+                <i node-type="i">set-position!</i>
+              </span>
+              <span>
+                <i node-type="i">close</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns a newly created binary output port whose byte sink is an
+arbitrary algorithm represented by the <i node-type="i">write!</i> procedure. <i node-type="i">Id</i> must be
+a string naming the new port, provided for informational purposes only. _Write!_must be a procedure and should behave as specified below; it will be called by
+operations that perform binary output.</p>
+          <p node-type="paragraph">Each of the remaining arguments may be #f; if any of those arguments is not #f,
+it must be a procedure and should behave as specified in the description of
+<code node-type="code">make-custom-binary-input-port</code>.</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">(<i node-type="i">write!</i> <i node-type="i">bytevector</i> <i node-type="i">start</i> <i node-type="i">count</i>)
+<i node-type="i">Start</i> and <i node-type="i">count</i> will be non-negative exact integer objects, and
+<i node-type="i">bytevector</i> will be a bytevector whose length is at least <i node-type="i">start</i> +
+<i node-type="i">count</i>. The <i node-type="i">write!</i> procedure should write up to <i node-type="i">count</i> bytes
+from <i node-type="i">bytevector</i> starting at index <i node-type="i">start</i> to the byte sink. If
+<i node-type="i">count</i> is 0, the <i node-type="i">write!</i> procedure should have the effect of passing
+an end-of-file object to the byte sink. In any case, the <i node-type="i">write!</i> procedure
+should return the number of bytes that it wrote, as an exact integer object.</p>
+            </li>
+          </ul>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-custom-string-output-port_81">
+              <span>make-custom-string-output-port</span>
+              <span>
+                <i node-type="i">id</i>
+              </span>
+              <span>
+                <i node-type="i">write!</i>
+              </span>
+              <span>
+                <i node-type="i">get-position</i>
+              </span>
+              <span>
+                <i node-type="i">set-position!</i>
+              </span>
+              <span>
+                <i node-type="i">close</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns a newly created textual output port whose byte sink is an
+arbitrary algorithm represented by the <i node-type="i">write!</i> procedure. <i node-type="i">Id</i> must be
+a string naming the new port, provided for informational purposes only. _Write!_must be a procedure and should behave as specified below; it will be called by
+operations that perform textual output.</p>
+          <p node-type="paragraph">Each of the remaining arguments may be #f; if any of those arguments is not #f,
+it must be a procedure and should behave as specified in the description of
+<code node-type="code">make-custom-textual-input-port</code>.</p>
+          <ul node-type="bullet-list">
+            <li>
+              <p node-type="paragraph">(<i node-type="i">write!</i> <i node-type="i">string</i> <i node-type="i">start</i> <i node-type="i">count</i>)
+<i node-type="i">Start</i> and <i node-type="i">count</i> will be non-negative exact integer objects, and
+<i node-type="i">string</i> will be a string whose length is at least <i node-type="i">start</i> + <i node-type="i">count</i>.
+The <i node-type="i">write!</i> procedure should write up to <i node-type="i">count</i> characters from
+<i node-type="i">string</i> starting at index <i node-type="i">start</i> to the character sink. If _count_is 0, the <i node-type="i">write!</i> procedure should have the effect of passing an end-of-file
+object to the character sink. In any case, the <i node-type="i">write!</i> procedure should
+return the number of characters that it wrote, as an exact integer object.</p>
+            </li>
+          </ul>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Binary-output">Binary output</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="put-u8_184">
+              <span>put-u8</span>
+              <span>
+                <i node-type="i">binary-output-port</i>
+              </span>
+              <span>
+                <i node-type="i">octet</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Writes <i node-type="i">octet</i> to the output port and returns unspecified values.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="put-bytevector_168">
+              <span>put-bytevector</span>
+              <span>
+                <i node-type="i">binary-output-port</i>
+              </span>
+              <span>
+                <i node-type="i">bytevector</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">count</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Start</i> and <i node-type="i">count</i> must be non-negative exact integer
+objects that default to 0 and <code node-type="code">(bytevector-length _bytevector_)</code> - <i node-type="i">start</i>,
+respectively. <i node-type="i">Bytevector</i> must have a length of at least <i node-type="i">start</i> + <i node-type="i">count</i>.
+The <code node-type="code">put-bytevector</code> procedure writes the <i node-type="i">count</i> bytes of the bytevector
+<i node-type="i">bytevector</i> starting at index <i node-type="i">start</i> to the output port. The
+<code node-type="code">put-bytevector</code> procedure returns unspecified values.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Textual-output">Textual output</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="put-char_169">
+              <span>put-char</span>
+              <span>
+                <i node-type="i">textual-output-port</i>
+              </span>
+              <span>
+                <i node-type="i">char</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Writes <i node-type="i">char</i> to the port and returns unspecified values.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="put-string_178">
+              <span>put-string</span>
+              <span>
+                <i node-type="i">textual-output-port</i>
+              </span>
+              <span>
+                <i node-type="i">string</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">count</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Start</i> and <i node-type="i">count</i> must be non-negative exact integer
+objects. <i node-type="i">String</i> must have a length of at least <i node-type="i">start</i> + <i node-type="i">count</i>.
+<i node-type="i">Start</i> defaults to 0. <i node-type="i">Count</i> defaults to
+<code node-type="code">(string-length _string_)</code> - <i node-type="i">start</i>. The <code node-type="code">put-string</code> procedure
+writes the count characters of <i node-type="i">string</i> starting at index <i node-type="i">start</i> to the
+port. The <code node-type="code">put-string</code> procedure returns unspecified values.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="put-datum_170">
+              <span>put-datum</span>
+              <span>
+                <i node-type="i">textual-output-port</i>
+              </span>
+              <span>
+                <i node-type="i">datum</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] <i node-type="i">Datum</i> should be a datum value. The <code node-type="code">put-datum</code> procedure
+writes an external representation of <i node-type="i">datum</i> to <i node-type="i">textual-output-port</i>.</p>
+        </section>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Inputoutput-ports">Input/output ports</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="open-file-input/output-port_43">
+              <span>open-file-input/output-port</span>
+              <span>
+                <i node-type="i">filename</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">file-options</i>
+              </span>
+              <span>
+                <i node-type="i">buffer-mode</i>
+              </span>
+              <span>
+                <i node-type="i">transcoder</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS] Returns a single port that is both an input port and an output port
+for the named file. The optional arguments default as described in the
+specification of <code node-type="code">open-file-output-port</code>. If the input/output port supports
+<code node-type="code">port-position</code> and/or <code node-type="code">set-port-position!</code>, the same port position
+is used for both input and output.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-custom-binary-input/output-port_78">
+              <span>make-custom-binary-input/output-port</span>
+              <span>
+                <i node-type="i">id</i>
+              </span>
+              <span>
+                <i node-type="i">read!</i>
+              </span>
+              <span>
+                <i node-type="i">write!</i>
+              </span>
+              <span>
+                <i node-type="i">get-position</i>
+              </span>
+              <span>
+                <i node-type="i">set-position!</i>
+              </span>
+              <span>
+                <i node-type="i">close</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(ready</i>
+              </span>
+              <span>
+                <i node-type="i">#f)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] Returns a newly created binary input/output port whose byte source
+and sink are arbitrary algorithms represented by the <i node-type="i">read!</i> and
+<i node-type="i">write!</i> procedures. <i node-type="i">Id</i> must be a string naming the new port,
+provided for informational purposes only. <i node-type="i">Read!</i> and <i node-type="i">write!</i> must
+be procedures, and should behave as specified for the
+<code node-type="code">make-custom-binary-input-port</code> and
+<code node-type="code">make-custom-binary-output-port</code> procedures.</p>
+          <p node-type="paragraph">Each of the remaining arguments may be #f; if any of those arguments is not #f,
+it must be a procedure and should behave as specified in the description of
+<code node-type="code">make-custom-binary-input-port</code>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="make-custom-textual-input/output-port_83">
+              <span>make-custom-textual-input/output-port</span>
+              <span>
+                <i node-type="i">id</i>
+              </span>
+              <span>
+                <i node-type="i">read!</i>
+              </span>
+              <span>
+                <i node-type="i">write!</i>
+              </span>
+              <span>
+                <i node-type="i">get-position</i>
+              </span>
+              <span>
+                <i node-type="i">set-position!</i>
+              </span>
+              <span>
+                <i node-type="i">close</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">(ready</i>
+              </span>
+              <span>
+                <i node-type="i">#f)</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">[R6RS+] Returns a newly created textual input/output port whose byte
+source and sink are arbitrary algorithms represented by the _read!_and <i node-type="i">write!</i> procedures. <i node-type="i">Id</i> must be a string naming the new port,
+provided for informational purposes only. <i node-type="i">Read!</i> and <i node-type="i">write!</i> must
+be procedures, and should behave as specified for the
+<code node-type="code">make-custom-textual-input-port</code> and
+<code node-type="code">make-custom-textual-output-port</code> procedures.</p>
+          <p node-type="paragraph">Each of the remaining arguments may be #f; if any of those arguments is not #f,
+it must be a procedure and should behave as specified in the description of
+<code node-type="code">make-custom-textual-input-port</code>.</p>
+        </section>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="rnrs.io.simple.6">Simple I/O</a>
+        </h3>
+        <p node-type="paragraph">This section describes the <code node-type="code">(rnrs io simple (6))</code>library, which provides
+a somewhat more convenient interface for performing textual I/O on ports.</p>
+        <div node-type="define" class="define">
+          <span>Library</span>
+          <a name="(rnrs io simple (6))_71">
+            <span>(rnrs io simple (6))</span>
+          </a>
+        </div>
+        <p node-type="paragraph">This library also exports the same procedures as
+<code node-type="code">(rnrs io posts (6))</code> library. I do not write the documentation of it, if
+you want to import only this library, make sure which procedures are exported.
+You can see it on R6RS.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-input-file_20">
+            <span>call-with-input-file</span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="call-with-output-file_25">
+            <span>call-with-output-file</span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+            <span>
+              <i node-type="i">proc</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] <i node-type="i">Proc</i> should accept one argument.</p>
+        <p node-type="paragraph">These procedures open the file named by <i node-type="i">filename</i> for input or for output,
+with no specified file options, and call <i node-type="i">proc</i> with the obtained port as
+an argument. If <i node-type="i">proc</i> returns, the port is closed automatically and the
+values returned by <i node-type="i">proc</i> are returned. If <i node-type="i">proc</i> does not return, the
+port is not closed automatically, unless it is possible to prove that the port
+will never again be used for an I/O operation.</p>
+        <p node-type="paragraph">NOTE: <i node-type="i">opt</i> will be passed to <code node-type="code">open-input-file</code> or
+<code node-type="code">open-output-file</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="with-input-from-file_51">
+            <span>with-input-from-file</span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+            <span>
+              <i node-type="i">thunk</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="with-output-to-file_55">
+            <span>with-output-to-file</span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+            <span>
+              <i node-type="i">thunk</i>
+            </span>
+            <span>
+              <i node-type="i">.</i>
+            </span>
+            <span>
+              <i node-type="i">opt</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] <i node-type="i">Thunk</i> must be a procedure and must accept zero arguments.</p>
+        <p node-type="paragraph">The file is opened for input or output using empty file options, and _thunk_is called with no arguments. These procedure replace current input/output port
+during <i node-type="i">thunk</i> is being called. When <i node-type="i">thunk</i> returns, the port is closed
+automatically. The values returned by thunk are returned.</p>
+        <p node-type="paragraph">NOTE: <i node-type="i">opt</i> will be passed to <code node-type="code">open-input-file</code> or
+<code node-type="code">open-output-file</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-input-file_48">
+            <span>open-input-file</span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">(native-transcoder))</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-output-file_52">
+            <span>open-output-file</span>
+            <span>
+              <i node-type="i">filename</i>
+            </span>
+            <span>
+              <i node-type="i">:key</i>
+            </span>
+            <span>
+              <i node-type="i">(transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">(native-transcoder))</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS+] Opens <i node-type="i">filename</i> for input/output, with empty file options,
+and returns the obtained port.</p>
+        <p node-type="paragraph">If keyword argument <i node-type="i">transcoder</i> is given, it must be an transcoder or
+#f and will be used to specify the transcoder to open input/output port. If it
+is #f, then returned port will be binary port.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="close-input-file_108">
+            <span>close-input-file</span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="close-output-file_110">
+            <span>close-output-file</span>
+            <span>
+              <i node-type="i">port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Closes <i node-type="i">input-port</i> or <i node-type="i">output-port</i>, respectively.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read-char_30">
+            <span>read-char</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">textual-input-port</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="peak-char_64">
+            <span>peak-char</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">textual-input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] These work the same as <code node-type="code">get-char</code> and <code node-type="code">lookahead-char</code>.
+If <i node-type="i">textual-input-port</i> is omitted, it defaults to the value returned by
+<code node-type="code">current-input-port</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="read_26">
+            <span>read</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">textual-input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Reads an external representation from _textual-input-port_and returns the datum it represents. The read procedure operates in the same
+way as <i node-type="i">get-datum</i>.</p>
+        <p node-type="paragraph">If <i node-type="i">textual-input-port</i> is omitted, it defaults to the value returned by
+<code node-type="code">current-input-port</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="write-char_64">
+            <span>write-char</span>
+            <span>
+              <i node-type="i">char</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">textual-input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Writes an encoding of the character char to the
+<i node-type="i">textual-output-port</i>, and returns unspecified values.</p>
+        <p node-type="paragraph">If <i node-type="i">textual-output-port</i> is omitted, it defaults to the value returned by
+<code node-type="code">current-output-port</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="newline_6">
+            <span>newline</span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">textual-input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] This is equivalent to using <code node-type="code">write-char</code> to write
+<code node-type="code">#\linefeed</code> to <i node-type="i">textual-output-port</i>.</p>
+        <p node-type="paragraph">If <i node-type="i">textual-output-port</i> is omitted, it defaults to the value returned by
+<code node-type="code">current-output-port</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="display_146">
+            <span>display</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">textual-input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Writes a representation of <i node-type="i">obj</i> to the given
+<i node-type="i">textual-output-port</i>. Strings that appear in the written representation
+are not enclosed in double quotes, and no characters are escaped within those
+strings. Character objects appear in the representation as if written by
+<i node-type="i">write-char</i> instead of by <i node-type="i">write</i>. The display procedure returns
+unspecified values.</p>
+        <p node-type="paragraph">If <i node-type="i">textual-output-port</i> is omitted, it defaults to the value returned by
+<code node-type="code">current-output-port</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="write_62">
+            <span>write</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">textual-input-port</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">[R6RS] Writes the external representation of <i node-type="i">obj</i> to
+<i node-type="i">textual-output-port</i>. The <code node-type="code">write</code> procedure operates in the same way
+as <code node-type="code">put-datum</code>.</p>
+        <p node-type="paragraph">If <i node-type="i">textual-output-port</i> is omitted, it defaults to the value returned by
+<code node-type="code">current-output-port</code>.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rnrs.conditions.6.html">Conditions</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.files.6.html">File system</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

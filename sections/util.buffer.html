@@ -1,0 +1,635 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./util.binary.pack.html">(binary pack) - Packing binary data</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.bytevector.html">(util bytevector) - Bytevector utility library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="util.buffer">(util buffer) - Buffer utilities</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(util buffer)_183">
+          <span>(util buffer)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides buffer utitlities. Currently, it only provides
+pre-allocated buffer and its procedures.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Pre-allocated-buffer">Pre-allocated buffer</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Record Type</span>
+          <a name="<pre-allocated-buffer&gt;_54">
+            <span>&lt;pre-allocated-buffer&gt;</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Parent type of pre-allocated buffer. This library doesn't expose
+the record constructor for this type.</p>
+        <p node-type="paragraph">This type contains <code node-type="code">buffer</code> and <code node-type="code">size</code> fields.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pre-allocated-buffer?_130">
+            <span>pre-allocated-buffer?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is a pre-allocated buffer. Otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pre-allocated-buffer-buffer_125">
+            <span>pre-allocated-buffer-buffer</span>
+            <span>
+              <i node-type="i">buffer</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns value of <code node-type="code">buffer</code> field of given <i node-type="i">buffer</i>.</p>
+        <p node-type="paragraph">The type of <code node-type="code">buffer</code> field is implementation specific.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pre-allocated-buffer-size_129">
+            <span>pre-allocated-buffer-size</span>
+            <span>
+              <i node-type="i">buffer</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns value of <code node-type="code">size</code> field of given <i node-type="i">buffer</i>.</p>
+        <p node-type="paragraph">The returning value shall represents how much buffer of the given _buffer_is consumed.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pre-allocated-buffer-reset!_128">
+            <span>pre-allocated-buffer-reset!</span>
+            <span>
+              <i node-type="i">buffer</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Sets 0 to the <code node-type="code">size</code> field of given <code node-type="code">buffer</code>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Conditions">Conditions</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Condition</span>
+          <a name="&amp;pre-allocated-buffer-overflow_36">
+            <span>&amp;pre-allocated-buffer-overflow</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Buffer overflow condition. This is raised when an operation tries
+to put data exceed the buffer size.</p>
+        <p node-type="paragraph">This condition have <code node-type="code">data</code> field which contains overflowing data.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pre-allocated-buffer-overflow?_127">
+            <span>pre-allocated-buffer-overflow?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is <code node-type="code">&amp;pre-allocated-buffer-overflow</code>condition, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="pre-allocated-buffer-overflow-data_126">
+            <span>pre-allocated-buffer-overflow-data</span>
+            <span>
+              <i node-type="i">condition</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Retrieves <code node-type="code">data</code> field value of <i node-type="i">condition</i>.</p>
+        <p node-type="paragraph">The <i node-type="i">condition</i> must be a <code node-type="code">&amp;pre-allocated-buffer-overflow</code> condition.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Binary-pre-allocated-buffer">Binary pre-allocated buffer</a>
+        </h3>
+        <p node-type="paragraph">Binary pre-allocated buffer can be used when users don't want to allocate
+bytevector number of times. This buffer can be used like a bytevector.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-binary-pre-allocated-buffer_53">
+            <span>make-binary-pre-allocated-buffer</span>
+            <span>
+              <i node-type="i">bv</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates pre-allocated buffer with given bytevector <i node-type="i">bv</i>.</p>
+        <p node-type="paragraph">The returning value is a subtype of <code node-type="code">&lt;pre-allocated-buffer&gt;</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="binary-pre-allocated-buffer?_48">
+            <span>binary-pre-allocated-buffer?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #t if given <i node-type="i">obj</i> is binary pre-allocated buffer,
+otherwise #f.</p>
+        <section node-type="section">
+          <h4 node-type="header-4">
+            <a name="Operations">Operations</a>
+          </h4>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-u8!_35">
+              <span>binary-pre-allocated-buffer-put-u8!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">u8</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-u16!_32">
+              <span>binary-pre-allocated-buffer-put-u16!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">u16</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-u32!_33">
+              <span>binary-pre-allocated-buffer-put-u32!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">u32</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-u64!_34">
+              <span>binary-pre-allocated-buffer-put-u64!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">u64</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-s8!_31">
+              <span>binary-pre-allocated-buffer-put-s8!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">s8</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-s16!_28">
+              <span>binary-pre-allocated-buffer-put-s16!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">s16</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-s32!_29">
+              <span>binary-pre-allocated-buffer-put-s32!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">s32</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-s64!_30">
+              <span>binary-pre-allocated-buffer-put-s64!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">s64</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-f32!_26">
+              <span>binary-pre-allocated-buffer-put-f32!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">f32</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-f64!_27">
+              <span>binary-pre-allocated-buffer-put-f64!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">f64</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Appending given integer or flonum to <i node-type="i">binary-buffer</i>. Setting
+given values uses the following procedures, respectively:</p>
+          <p node-type="paragraph"><code node-type="code">bytevector-u8-set!``bytevector-u16-set!``bytevector-u32-set!``bytevector-u64-set!``bytevector-s8-set!``bytevector-s16-set!``bytevector-s32-set!``bytevector-s64-set!``bytevector-ieee-single-set!``bytevector-ieee-double-set!</code>The <i node-type="i">endianness</i> is passed to the above procedures if required.</p>
+          <p node-type="paragraph">This procedure also updates the <code node-type="code">size</code> field of <i node-type="i">binary-buffer</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-put-bytevector!_25">
+              <span>binary-pre-allocated-buffer-put-bytevector!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">count</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Appending given bytevector <i node-type="i">bv</i> to <i node-type="i">binary-buffer</i>.</p>
+          <p node-type="paragraph">Optional arguments <i node-type="i">start</i> and <i node-type="i">count</i> specifies from where of
+<i node-type="i">bv</i> and how much bytes need to be put. By default, <i node-type="i">start</i> is 0
+and <i node-type="i">count</i> is <code node-type="code">(- (bytevector-length _bv_) _start_)</code>.</p>
+          <p node-type="paragraph">This procedure also updates the <code node-type="code">size</code> field of <i node-type="i">binary-buffer</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-u8!_46">
+              <span>binary-pre-allocated-buffer-set-u8!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">u8</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-u16!_43">
+              <span>binary-pre-allocated-buffer-set-u16!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">u16</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-u32!_44">
+              <span>binary-pre-allocated-buffer-set-u32!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">u32</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-u64!_45">
+              <span>binary-pre-allocated-buffer-set-u64!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">u64</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-s8!_42">
+              <span>binary-pre-allocated-buffer-set-s8!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">s8</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-s16!_39">
+              <span>binary-pre-allocated-buffer-set-s16!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">s16</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-s32!_40">
+              <span>binary-pre-allocated-buffer-set-s32!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">s32</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-s64!_41">
+              <span>binary-pre-allocated-buffer-set-s64!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">s64</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-f32!_37">
+              <span>binary-pre-allocated-buffer-set-f32!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">f32</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-f64!_38">
+              <span>binary-pre-allocated-buffer-set-f64!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">f64</i>
+              </span>
+              <span>
+                <i node-type="i">endianness</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Setting given integer/flonum to <i node-type="i">binary-buffer</i>. These procedures
+are anology of the following procedures, respectively:</p>
+          <p node-type="paragraph"><code node-type="code">bytevector-u8-set!``bytevector-s8-set!``bytevector-u16-set!``bytevector-u32-set!``bytevector-u64-set!``bytevector-s16-set!``bytevector-s32-set!``bytevector-s64-set!``bytevector-ieee-single-set!``bytevector-ieee-double-set!</code>The <i node-type="i">endianness</i> is passed to the above procedures if required.</p>
+          <p node-type="paragraph">This procedure updates the <code node-type="code">size</code> field of <i node-type="i">binary-buffer</i> if
+sum of given <i node-type="i">index</i> and number of bytes set in the buffer exceeds
+the size of the buffer.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-set-bytevector!_36">
+              <span>binary-pre-allocated-buffer-set-bytevector!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">index</i>
+              </span>
+              <span>
+                <i node-type="i">bv</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">start</i>
+              </span>
+              <span>
+                <i node-type="i">count</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Sets the given <i node-type="i">bv</i> to <i node-type="i">binary-buffer</i> at position of
+<i node-type="i">index</i>.</p>
+          <p node-type="paragraph">Optional arguments <i node-type="i">start</i> and <i node-type="i">count</i> specifies from where of
+<i node-type="i">bv</i> and how much bytes need to be put. By default, <i node-type="i">start</i> is 0
+and <i node-type="i">count</i> is <code node-type="code">(- (bytevector-length _bv_) _start_)</code>.</p>
+          <p node-type="paragraph">This procedure updates the <code node-type="code">size</code> field of <i node-type="i">binary-buffer</i> if
+sum of given <i node-type="i">index</i> and number of bytes set in the buffer exceeds
+the size of the buffer.</p>
+          <p node-type="paragraph">All above operations may raises an <code node-type="code">&amp;pre-allocated-buffer-overflow</code>,
+when it tries to exceed the pre-allocated buffer.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-can-store?_23">
+              <span>binary-pre-allocated-buffer-can-store?</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">count</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">position</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns #t if <i node-type="i">binary-buffer</i> can store <i node-type="i">count</i> bytes.</p>
+          <p node-type="paragraph">If optional argument <i node-type="i">position</i> is given, then the procedure check
+from the <i node-type="i">position</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-swap!_47">
+              <span>binary-pre-allocated-buffer-swap!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">new-buf</i>
+              </span>
+              <span>
+                <i node-type="i">new-size</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Swaps the buffer of <i node-type="i">binary-buffer</i> with _new-buf_and <i node-type="i">new-size</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="binary-pre-allocated-buffer-get-bytevector-n!_24">
+              <span>binary-pre-allocated-buffer-get-bytevector-n!</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+              <span>
+                <i node-type="i">input-port</i>
+              </span>
+              <span>
+                <i node-type="i">n</i>
+              </span>
+              <span>
+                <i node-type="i">:optional</i>
+              </span>
+              <span>
+                <i node-type="i">position</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Reads <i node-type="i">n</i> bytes from given <i node-type="i">input-port</i> and store it to
+<i node-type="i">binary-buffer</i>.</p>
+          <p node-type="paragraph">If optional argument <i node-type="i">position</i> is given, then the procedure stores
+from the <i node-type="i">position</i>.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="crop-binary-buffer_174">
+              <span>crop-binary-buffer</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Returns newly allocated bytevector which contains range of
+0 to <code node-type="code">size</code> field value of <code node-type="code">buffer</code> field.</p>
+          <div node-type="define" class="define">
+            <span>Function</span>
+            <a name="-&gt;binary-pre-allocated-buffer-output-port_5">
+              <span>-&gt;binary-pre-allocated-buffer-output-port</span>
+              <span>
+                <i node-type="i">binary-buffer</i>
+              </span>
+            </a>
+          </div>
+          <p node-type="paragraph">Converts the given <i node-type="i">binary-buffer</i> to binary output port.</p>
+          <p node-type="paragraph">If port operations try to exceed the pre-allocated buffer, then
+it raises <code node-type="code">&amp;pre-allocated-buffer-overflow</code>.</p>
+        </section>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./util.binary.pack.html">(binary pack) - Packing binary data</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./util.bytevector.html">(util bytevector) - Bytevector utility library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

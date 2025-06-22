@@ -1,0 +1,896 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.record.html">(sagittarius record) - Extra record inspection library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.socket.html">(sagittarius socket) - socket library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.regex">(sagittarius regex) - regular expression library</a>
+      </h2>
+      <p node-type="paragraph">As most of script language have own regular expression mechanism, Sagittarius
+also has own regular expression library. It is influenced by Java's regular
+expression, so there are a lot of differences between the most famous Perl
+regular expression(perlre).</p>
+      <p node-type="paragraph">This feature may be changed, if R7RS large requires Perl like regular
+expression.</p>
+      <p node-type="paragraph">Following examples show how to use Sagittarius's regular expression.</p>
+      <div node-type="block" class="codeblock">
+        <pre lang="scheme" node-type="block"><code>;; For Perl like
+(cond ((looking-at (regex "^hello\\s*(.+)") "hello world!")
+        =&gt; (lambda (m) (m 1))))
+</code></pre>
+        <span />
+        <span>world!</span>
+      </div>
+      <p node-type="paragraph" />
+      <pre lang="scheme" node-type="block"><code>;; For Java like
+(cond ((matches (regex "(\\w+?)\\s*(.+)") "123hello world!")) ;; this won't match
+      (else "incovenient eh?"))
+</code></pre>
+      <p node-type="paragraph">The <code node-type="code">matches</code> procedure is total match, so it ignores boundary matcher
+<code node-type="code">'^'</code> and <code node-type="code">'$'</code>. The <code node-type="code">looking-at</code> procedure is partial match, so
+it works as if perlre.</p>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius regex)_110">
+          <span>(sagittarius regex)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides Sagittarius regular expression procedures.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="User-level-APIs-for-regular-expression">User level APIs for regular expression</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex_86">
+            <span>regex</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">flags</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">String</i> must be regular expression. Returns compiled regular
+expression. <i node-type="i">Flags</i>' descriptions are the end of this section. The following
+table is the supported regular expression constructs.</p>
+        <table node-type="table">
+          <tr>
+            <th>Construct</th>
+            <th>Matches</th>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Characters</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">x</code>
+            </td>
+            <td>The character x</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\\</code>
+            </td>
+            <td>The backslash character</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\0n</code>
+            </td>
+            <td>The character with octal value 0n (0 &lt;= n &lt;= 7)</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\0nn</code>
+            </td>
+            <td>The character with octal value 0nn (0 &lt;= n &lt;= 7)</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\0mnn</code>
+            </td>
+            <td>The character with octal value 0mnn (0 &lt;= m &lt;= 3, 0 &lt;= n &lt;= 7)</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\xhh</code>
+            </td>
+            <td>The character with hexadecimal value 0xhh</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\uhhhh</code>
+            </td>
+            <td>The character with hexadecimal value 0xhhhh</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\Uhhhhhhhh</code>
+            </td>
+            <td>The character with hexadecimal value<br>0xhhhhhhhh. If the value exceed the maxinum fixnum value it rases an error.</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\t</code>
+            </td>
+            <td>The tab character ('\u0009')</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\n</code>
+            </td>
+            <td>The newline (line feed) character ('\u000A')</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\r</code>
+            </td>
+            <td>The carriage-return character ('\u000D')</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\f</code>
+            </td>
+            <td>The form-feed character ('\u000C')</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\a</code>
+            </td>
+            <td>The alert (bell) character ('\u0007')</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\e</code>
+            </td>
+            <td>The escape character ('\u001B')</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\cx</code>
+            </td>
+            <td>The control character corresponding to x</td>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Character classes</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">[abc]</code>
+            </td>
+            <td>a, b, or c (simple class)</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">[^abc]</code>
+            </td>
+            <td>Any character except a, b, or c (negation)</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">[a-zA-Z]</code>
+            </td>
+            <td>a through z or A through Z, inclusive (range)</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">[a-d[m-p]]</code>
+            </td>
+            <td>a through d, or m through p: [a-dm-p] (union)</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">[a-z&amp;&amp;[def]]</code>
+            </td>
+            <td>d, e, or f (intersection)</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">[a-z&amp;&amp;[^bc]]</code>
+            </td>
+            <td>a through z, except for b and c: [ad-z] (subtraction)</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">[a-z&amp;&amp;[^m-p]]</code>
+            </td>
+            <td>a through z, and not m through p: <a href="subtraction">a-lq-z</a></td>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Predefined character classes</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">.</code>
+            </td>
+            <td>Any character (may or may not match line terminators)</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\d</code>
+            </td>
+            <td>A digit: [0-9]</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\D</code>
+            </td>
+            <td>A non-digit: [^0-9]</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\s</code>
+            </td>
+            <td>A whitespace character: [ \t\n\x0B\f\r]</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\S</code>
+            </td>
+            <td>A non-whitespace character: [^\s]</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\w</code>
+            </td>
+            <td>A word character: [a-zA-Z_0-9]</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\W</code>
+            </td>
+            <td>A non-word character: [^\w]</td>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Boundary matchers</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">^</code>
+            </td>
+            <td>The beginning of a line</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">$</code>
+            </td>
+            <td>The end of a line</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\b</code>
+            </td>
+            <td>A word boundary</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\B</code>
+            </td>
+            <td>A non-word boundary</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\A</code>
+            </td>
+            <td>The beginning of the input</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\G</code>
+            </td>
+            <td>The end of the previous match</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\Z</code>
+            </td>
+            <td>The end of the input but for the final terminator, if any</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\z</code>
+            </td>
+            <td>The end of the input</td>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Greedy quantifiers</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X?</code>
+            </td>
+            <td>X, once or not at all</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X*</code>
+            </td>
+            <td>X, zero or more times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X+</code>
+            </td>
+            <td>X, one or more times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X{n}</code>
+            </td>
+            <td>X, exactly n times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X{n,}</code>
+            </td>
+            <td>X, at least n times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X{n,m}</code>
+            </td>
+            <td>X, at least n but not more than m times</td>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Reluctant quantifiers</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X??</code>
+            </td>
+            <td>X, once or not at all</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X*?</code>
+            </td>
+            <td>X, zero or more times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X+?</code>
+            </td>
+            <td>X, one or more times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X{n}?</code>
+            </td>
+            <td>X, exactly n times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X{n,}?</code>
+            </td>
+            <td>X, at least n times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X{n,m}?</code>
+            </td>
+            <td>X, at least n but not more than m times</td>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Possessive quantifiers</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X?+</code>
+            </td>
+            <td>X, once or not at all</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X*+</code>
+            </td>
+            <td>X, zero or more times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X++</code>
+            </td>
+            <td>X, one or more times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X{n}+</code>
+            </td>
+            <td>X, exactly n times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X{n,}+</code>
+            </td>
+            <td>X, at least n times</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X{n,m}+</code>
+            </td>
+            <td>X, at least n but not more than m times</td>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Logical operators</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">XY</code>
+            </td>
+            <td>X followed by Y</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">X|Y</code>
+            </td>
+            <td>Either X or Y</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">(X)</code>
+            </td>
+            <td>X, as a capturing group</td>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Back references</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\n</code>
+            </td>
+            <td>Whatever the nth capturing group matched</td>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Quotation</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\</code>
+            </td>
+            <td>Nothing, but quotes the following character</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\Q</code>
+            </td>
+            <td>Nothing, but quotes all characters until \E</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">\E</code>
+            </td>
+            <td>Nothing, but ends quoting started by \Q</td>
+          </tr>
+          <tr>
+            <td>
+              <strong node-type="strong">Special constructs (non-capturing)</strong>
+            </td>
+            <td>&lt;</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">(?:X)</code>
+            </td>
+            <td>X, as a non-capturing group</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">(?imsux-imsux)</code>
+            </td>
+            <td>Nothing, but turns match flags on - off</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">(?imsux-imsux:X)</code>
+            </td>
+            <td>X, as a non-capturing group with the given flags on - off</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">(?=X)</code>
+            </td>
+            <td>X, via zero-width positive lookahead</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">(?!X)</code>
+            </td>
+            <td>X, via zero-width negative lookahead</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">(?&lt;=X)</code>
+            </td>
+            <td>X, via zero-width positive lookbehind</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">(?&lt;!X)</code>
+            </td>
+            <td>X, via zero-width negative lookbehind</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">(?&gt;X)</code>
+            </td>
+            <td>X, as an independent, non-capturing group</td>
+          </tr>
+          <tr>
+            <td>
+              <code node-type="code">(?#...)</code>
+            </td>
+            <td>comment.</td>
+          </tr>
+        </table>
+        <p node-type="paragraph">Since version 0.2.3, <code node-type="code">\p</code> and <code node-type="code">\P</code> are supported. It is cooporated
+with SRFI-14 charset. However it is kind of tricky. For example regex parser
+can reads <code node-type="code">\p{InAscii}</code> or <code node-type="code">\p{IsAscii}</code> and search charset named
+<code node-type="code">char-set:ascii</code> from current library. It must have <code node-type="code">In</code> or <code node-type="code">Is</code>as its prefix.</p>
+        <div node-type="define" class="define">
+          <span>Reader Macro</span>
+          <a name="#/-reader_0">
+            <span>#/-reader</span>
+          </a>
+        </div>
+        <p node-type="paragraph">This reader macro provides Perl like regular expression syntax.
+It allows you to write regular expression like this <code node-type="code">#/\w+?/i</code> instead of
+like this <code node-type="code">(regex "\\w+?" CASE-INSENSITIVE)</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="looking-at_74">
+            <span>looking-at</span>
+            <span>
+              <i node-type="i">regex</i>
+            </span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Regex</i> must be regular expression object. Returns closure if
+<i node-type="i">regex</i> matches input <i node-type="i">string</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">matches</code> procedure attempts to match the entire input string against
+the pattern of <i node-type="i">regex</i>.</p>
+        <p node-type="paragraph">The <code node-type="code">looking-at</code> procedure attempts to match the input string against the
+pattern of <i node-type="i">regex</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-replace-first_98">
+            <span>regex-replace-first</span>
+            <span>
+              <i node-type="i">pattern</i>
+            </span>
+            <span>
+              <i node-type="i">text</i>
+            </span>
+            <span>
+              <i node-type="i">replacement</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-replace-first_97">
+            <span>regex-replace-first</span>
+            <span>
+              <i node-type="i">matcher</i>
+            </span>
+            <span>
+              <i node-type="i">replacement</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-replace-all_96">
+            <span>regex-replace-all</span>
+            <span>
+              <i node-type="i">pattern</i>
+            </span>
+            <span>
+              <i node-type="i">text</i>
+            </span>
+            <span>
+              <i node-type="i">replacement</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-replace-all_95">
+            <span>regex-replace-all</span>
+            <span>
+              <i node-type="i">matcher</i>
+            </span>
+            <span>
+              <i node-type="i">replacement</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Pattern</i> must be pattern object.</p>
+        <p node-type="paragraph">The first form of these procedures are for convenience. It is implemented like
+this;</p>
+        <pre lang="scheme" node-type="block"><code>(define (regex-replace-all pattern text replacement)
+  (regex-replace-all (regex-matcher pattern text) replacement))
+</code></pre>
+        <p node-type="paragraph"><i node-type="i">Text</i> must be string.</p>
+        <p node-type="paragraph"><i node-type="i">Replacement</i> must be either string or procedure which takes matcher object
+and string port as its arguments respectively.</p>
+        <p node-type="paragraph">Replaces part of <i node-type="i">text</i> where <i node-type="i">regex</i> matches with <i node-type="i">replacement</i>.</p>
+        <p node-type="paragraph">If <i node-type="i">replacement</i> is a string, the procedure replace <i node-type="i">text</i> with given
+string. <i node-type="i">Replacement</i> can refer the match result with `<code node-type="code">$_n_</code>`.
+<i node-type="i">n</i> must be group number of given <i node-type="i">pattern</i> or <i node-type="i">matcher</i>.</p>
+        <p node-type="paragraph">If <i node-type="i">replacement</i> is a procedure, then it must accept either one or two
+arguments. This is for backward compatibility.</p>
+        <p node-type="paragraph">The first argument is always current matcher.</p>
+        <p node-type="paragraph">If the procedure only accepts one argument, then it must return a string which
+will be used for replacement value.</p>
+        <p node-type="paragraph">If the procedure accepts two arguments, then the second one is string output
+port. User may write string to the given port and will be the replacement
+string.</p>
+        <p node-type="paragraph">The <code node-type="code">regex-replace-first</code> procedure replaces the first match.</p>
+        <p node-type="paragraph">The <code node-type="code">regex-replace-all</code> procedure replaces the all matches.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="string-split_304">
+            <span>string-split</span>
+            <span>
+              <i node-type="i">text</i>
+            </span>
+            <span>
+              <i node-type="i">pattern</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">text</i> must be a string.</p>
+        <p node-type="paragraph"><i node-type="i">pattern</i> must be a string or regex-pattern object.</p>
+        <p node-type="paragraph">Split <i node-type="i">text</i> accoding to <i node-type="i">pattern</i>.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Low-level-APIs-for-regular-expression">Low level APIs for regular expression</a>
+        </h3>
+        <p node-type="paragraph">The above procedures are wrapped User level API. However, you might want to use
+low level API directory when you re-use matcher and recursively find pattern from
+input. For that purpose, you need to use low level APIs directly.</p>
+        <p node-type="paragraph">NOTE: This API might be changed in future depending on R7RS large.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-pattern?_94">
+            <span>regex-pattern?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #f if <i node-type="i">obj</i> is regular expression object, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-matcher?_92">
+            <span>regex-matcher?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns #f if <i node-type="i">obj</i> is matcher object, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="compile-regex_122">
+            <span>compile-regex</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">flags</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">The same as <code node-type="code">regex</code> procedure.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-matcher_91">
+            <span>regex-matcher</span>
+            <span>
+              <i node-type="i">regex</i>
+            </span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Regex</i> must be regular expression object. Returns matcher object.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-matches_93">
+            <span>regex-matches</span>
+            <span>
+              <i node-type="i">matcher</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Matcher</i> must be matcher object. Returns #t if <i node-type="i">matcher</i> matches
+the entire input string against input pattern, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-looking-at_90">
+            <span>regex-looking-at</span>
+            <span>
+              <i node-type="i">matcher</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Matcher</i> must be matcher object. Returns #t if <i node-type="i">matcher</i> matches
+the input string against input pattern, otherwise #f.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-find_88">
+            <span>regex-find</span>
+            <span>
+              <i node-type="i">matcher</i>
+            </span>
+            <span>
+              <i node-type="i">:optional</i>
+            </span>
+            <span>
+              <i node-type="i">start</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Matcher</i> must be matcher object. Resets <i node-type="i">matcher</i> and then
+attempts to find the next subsequence of the input string that matches the
+pattern, starting at the specified index if optional argument is given
+otherwise from the beginning.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-group_89">
+            <span>regex-group</span>
+            <span>
+              <i node-type="i">matcher</i>
+            </span>
+            <span>
+              <i node-type="i">index</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Matcher</i> must be matcher object. <i node-type="i">Index</i> must be non negative
+exact integer.</p>
+        <p node-type="paragraph">Retrieve captured group value from <i node-type="i">matcher</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="regex-capture-count_87">
+            <span>regex-capture-count</span>
+            <span>
+              <i node-type="i">matcher</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">Matcher</i> must be matcher object.</p>
+        <p node-type="paragraph">Returns number of captured groups.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Regular-expression-flags">Regular expression flags</a>
+        </h3>
+        <p node-type="paragraph">Regular expression compiler can take following flags.</p>
+        <dl node-type="dlist">
+          <dt>CASE-INSENSITIVE</dt>
+          <dd>
+            <p node-type="paragraph">Enables case-insensitive matching. <code node-type="code">i</code> as a
+flag</p>
+          </dd>
+          <dt>COMMENTS</dt>
+          <dd>
+            <p node-type="paragraph">Permits whitespace and comments in pattern. <code node-type="code">x</code> as a
+flag</p>
+          </dd>
+          <dt>MULTILINE</dt>
+          <dd>
+            <p node-type="paragraph">Enables multiline mode. <code node-type="code">m</code> as a flag</p>
+          </dd>
+          <dt>LITERAL</dt>
+          <dd>
+            <p node-type="paragraph">Enables literal parsing of the pattern.</p>
+          </dd>
+          <dt>DOTAIL</dt>
+          <dd>
+            <p node-type="paragraph">Enables dotall mode. <code node-type="code">s</code> as a flag</p>
+          </dd>
+          <dt>UNICODE</dt>
+          <dd>
+            <p node-type="paragraph">Enables Unicode-aware case folding and pre defined charset.
+<code node-type="code">u</code> as a flag.
+NOTE: when this flag is set then pre defined charset, such as <code node-type="code">\d</code> or
+<code node-type="code">\w</code>, expand it's content to Unicode characters. Following properties
+are applied to charsets.
+[[:lower:]]</p>
+            <p node-type="paragraph">The lower case charset contains <code node-type="code">Ll</code> and <code node-type="code">Other_Lowercase</code>.
+[[:upper:]]</p>
+            <p node-type="paragraph">The upper case charset contains <code node-type="code">Lu</code> and <code node-type="code">Other_Uppercase</code>.
+[[:title:]]</p>
+            <p node-type="paragraph">The upper case charset contains <code node-type="code">Lt</code>.
+[[:alpha:]]</p>
+            <p node-type="paragraph">The upper case charset contains <code node-type="code">L</code>, <code node-type="code">Nl</code> and
+<code node-type="code">Other_Alphabetic</code>.
+[[:numeric:]]</p>
+            <p node-type="paragraph">The upper case charset contains <code node-type="code">Nd</code>.
+[[:punct:]]</p>
+            <p node-type="paragraph">The upper case charset contains <code node-type="code">P</code>.
+symbol</p>
+            <p node-type="paragraph">The upper case charset contains <code node-type="code">Sm</code>, <code node-type="code">Sc</code>, <code node-type="code">Sk</code> and
+<code node-type="code">So</code>.
+[[:space:]]</p>
+            <p node-type="paragraph">The upper case charset contains <code node-type="code">Zs</code>, <code node-type="code">Zl</code> and <code node-type="code">Zp</code>.
+[[:cntrl:]]</p>
+            <p node-type="paragraph">The upper case charset contains <code node-type="code">Cc</code>, <code node-type="code">Cf</code>, <code node-type="code">Co</code>, <code node-type="code">Cs</code>,
+and <code node-type="code">Cn</code>.</p>
+          </dd>
+        </dl>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Regular-expression-for-bytevectors">Regular expression for bytevectors</a>
+        </h3>
+        <p node-type="paragraph">Above APIs can be used bytevectors as well. In this case, the regular
+expression engine treats given bytevectors as if it's ASCII strings.
+If users want to use this feature, users must give bytevectors instead
+of strings.</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.record.html">(sagittarius record) - Extra record inspection library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.socket.html">(sagittarius socket) - socket library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

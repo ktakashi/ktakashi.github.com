@@ -1,0 +1,342 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./security.keystore.html">(security keystore) - Generic Keystore Access</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./text.csv.html">(text csv) - Comma separated values parser library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="security.policy">(security password) - Password policy</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(security password)_159">
+          <span>(security password)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Strong password is a base component for strong security. This library
+provides a password policies, validator and generator.</p>
+      <p node-type="paragraph">This example shows how to validate if the given password is compliant
+to the given password policy.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (security password))
+
+;; Password requires
+;; - at least length of 16 characters,
+;; - at least one lower char (a-z)
+;; - at least one upper char (A-Z)
+;; - at least one digit char (0-9)
+;; - at least one symbol char ($#!)
+(define policy (password-policies
+                (make-length-policy 16)
+                (make-lower-case-policy 1)
+                (make-upper-case-policy 1)
+                (make-digit-policy 1)
+                (make-symbol-policy 1)))
+
+(password-policy-compliant? policy "password")         ;; -&gt; #f
+(password-policy-compliant? policy "password12345678") ;; -&gt; #f
+(password-policy-compliant? policy "pa$$word12345678") ;; -&gt; #f
+(password-policy-compliant? policy "Pa$$word12345678") ;; -&gt; #t
+</code></pre>
+      <p node-type="paragraph">And this example shows how to generate a password which is compliant
+to the given password policy.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (security password))
+
+;; Password requires
+;; - at least length of 16 characters,
+;; - at least one lower char (a-z)
+;; - at least one upper char (A-Z)
+;; - at least one digit char (0-9)
+;; - at least one symbol char ($#!)
+(define policy (password-policies
+                (make-length-policy 16)
+                (make-lower-case-policy 1)
+                (make-upper-case-policy 1)
+                (make-digit-policy 1)
+                (make-symbol-policy 1)))
+
+(generate-password policy) ;; -&gt; "1uI#tfUzL_]H-&lt;$%" (as an example)
+</code></pre>
+      <p node-type="paragraph">The password generation is based on a random seed, so the result
+may differ on every invocation.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Password-policy-operations">Password policy operations</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="password-policy?_50">
+            <span>password-policy?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a password policy, otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="password-policies_43">
+            <span>password-policies</span>
+            <span> (</span>
+            <span>
+              <i node-type="i">policy</i>
+            </span>
+            <span>
+              <code node-type="code">password-policy?</code>
+            </span>
+            <span>) </span>
+            <span>
+              <i node-type="i">...</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Construct a composite password policy which contains <i node-type="i">policies</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="password-policy-compliant?_47">
+            <span>password-policy-compliant?</span>
+            <span> (</span>
+            <span>
+              <i node-type="i">policy</i>
+            </span>
+            <span>
+              <code node-type="code">password-policy?</code>
+            </span>
+            <span>) (</span>
+            <span>
+              <i node-type="i">password</i>
+            </span>
+            <span>
+              <code node-type="code">string?</code>
+            </span>
+            <span>)</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">password</i> is compliant to the given <i node-type="i">policy</i>,
+otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="length-policy?_5">
+            <span>length-policy?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a length policy, otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-length-policy_212">
+            <span>make-length-policy</span>
+            <span>
+              <i node-type="i">n</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a length policy of length <i node-type="i">n</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="password-policy-length_49">
+            <span>password-policy-length</span>
+            <span>
+              <i node-type="i">policy</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns length of the policy, iff <i node-type="i">policy</i> is a length policy or
+a composite policy which contains length policy, otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="character-policy?_71">
+            <span>character-policy?</span>
+            <span>
+              <i node-type="i">obj</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is a character policy, otherwise <code node-type="code">#f</code>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-character-policy_62">
+            <span>make-character-policy</span>
+            <span> (</span>
+            <span>
+              <i node-type="i">cset</i>
+            </span>
+            <span>
+              <code node-type="code">char-set?</code>
+            </span>
+            <span>) </span>
+            <span>
+              <i node-type="i">at-least</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a character policy of from <i node-type="i">cset</i> which requires at least <i node-type="i">at-least</i>
+characters.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="password-policy-char-set_46">
+            <span>password-policy-char-set</span>
+            <span>
+              <i node-type="i">policy</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Returns charset of the policy, iff <i node-type="i">policy</i> is a character policy or
+a composite policy which contains character policy, otherwise <code node-type="code">#f</code>.</p>
+        <p node-type="paragraph">If the <i node-type="i">policy</i> contains multiple character policy, then the returning
+charset is a unioned charset.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-lower-case-policy_218">
+            <span>make-lower-case-policy</span>
+            <span>
+              <i node-type="i">at-least</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a character policy of <code node-type="code">[a-z]</code> requires at least <i node-type="i">at-least</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-upper-case-policy_317">
+            <span>make-upper-case-policy</span>
+            <span>
+              <i node-type="i">at-least</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a character policy of <code node-type="code">[A-Z]</code> requires at least <i node-type="i">at-least</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-symbol-policy_304">
+            <span>make-symbol-policy</span>
+            <span>
+              <i node-type="i">at-least</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a character policy of ASCII symbols requires at least <i node-type="i">at-least</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-digit-policy_143">
+            <span>make-digit-policy</span>
+            <span>
+              <i node-type="i">at-least</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a character policy of <code node-type="code">[0-9]</code> requires at least <i node-type="i">at-least</i>.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="generate-password_18">
+            <span>generate-password</span>
+            <span>
+              <i node-type="i">policy</i>
+            </span>
+            <span> :key </span>
+            <span>
+              <i node-type="i">prng</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Generates a password which is compliant to <i node-type="i">policy</i>.</p>
+        <p node-type="paragraph">If the keyword argument <i node-type="i">prng</i> is specified, then it must be a
+<code node-type="code">peudo-random-generator</code> defined in <code node-type="code">(sagittarius crypto random)</code>.</p>
+        <p node-type="paragraph">NOTE: using weak PRNG is not recommended. By default, the procedure
+uses ChaCha20</p>
+        <p node-type="paragraph">The procedure uses below parameter if the given <i node-type="i">policy</i> doesn't
+contain some policies.</p>
+        <div node-type="define" class="define">
+          <span>Parameter</span>
+          <a name="*password-policy:default-length*_176">
+            <span>*password-policy:default-length*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Default password length, if the policy doesn't contain length policy.</p>
+        <div node-type="define" class="define">
+          <span>Parameter</span>
+          <a name="*password-policy:default-char-set*_175">
+            <span>*password-policy:default-char-set*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Default password charset, if the policy doesn't contain character policy.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="password-policy-entropy_48">
+            <span>password-policy-entropy</span>
+            <span>
+              <i node-type="i">policy</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Calculates password entropy of the given <i node-type="i">policy</i>.</p>
+        <p node-type="paragraph">The calculation formula: <code node-type="code">log(expt(cs, l) 2)</code> where <code node-type="code">cs</code> is the
+number of possible characters of the <i node-type="i">policy</i>, and <code node-type="code">l</code> is the
+length of the password.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="password-policy-&gt;predicate_45">
+            <span>password-policy-&gt;predicate</span>
+            <span>
+              <i node-type="i">policy</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">A convenient procedure. Returns a predicate which accepts a string
+and check if the given string is a compliant password or not.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Generator-integration">Generator integration</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="password-policy-&gt;generator_44">
+            <span>password-policy-&gt;generator</span>
+            <span>
+              <i node-type="i">policy</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates a generator which generates string. Generated strings are
+compliant to the given <i node-type="i">policy</i>.</p>
+        <p node-type="paragraph">This procedure can be used with <code node-type="code">(sagittarius generators)</code> library.
+Suppose, you want to generate 5 random password which are compliant
+to your password policy, then it can be written like this</p>
+        <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (security password))
+
+(define policy (password-policies
+                (make-length-policy 16)
+                (make-lower-case-policy 1)
+                (make-upper-case-policy 1)
+                (make-digit-policy 1)
+                (make-symbol-policy 1)))
+
+(let ((g (gtake (password-policy-&gt;generator policy) 5)))
+  (generator-&gt;list g))
+;; a list containing 5 elements, all of them are compliant to policy
+</code></pre>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./security.keystore.html">(security keystore) - Generic Keystore Access</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./text.csv.html">(text csv) - Comma separated values parser library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,701 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.html">(sagittarius) - builtin library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.ffi.html">(sagittarius ffi) - Foreign Function Interface</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.control">(sagittarius control) - control library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius control)_88">
+          <span>(sagittarius control)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides some useful macros using Sagittarius specific
+functions.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-macro_81">
+          <span>define-macro</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <i node-type="i">procedure</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-macro_80">
+          <span>define-macro</span>
+          <span>
+            <i node-type="i">(name</i>
+          </span>
+          <span>
+            <i node-type="i">.</i>
+          </span>
+          <span>
+            <i node-type="i">formals)</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Defines <i node-type="i">name</i> to be a macro whose transformer is <i node-type="i">procedure</i>.
+The second form is a shorthand notation of the following form:</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(define-macro _name_ (lambda _formals_ _body_ ...))</code></pre>
+      </p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="let-optionals*_15">
+          <span>let-optionals*</span>
+          <span>
+            <i node-type="i">restargs</i>
+          </span>
+          <span>
+            <i node-type="i">(var-spec</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="let-optionals*_14">
+          <span>let-optionals*</span>
+          <span>
+            <i node-type="i">restargs</i>
+          </span>
+          <span>
+            <i node-type="i">(var-spec</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">.</i>
+          </span>
+          <span>
+            <i node-type="i">restvar)</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Given a list of values <i node-type="i">restargs</i>, binds variables according to
+<i node-type="i">var-spec</i>, then evaluates <i node-type="i">body</i>.</p>
+      <p node-type="paragraph"><i node-type="i">Var-spec</i> can be either a symbol, or a list of two elements and its car is
+a symbol. The symbol is the bound variable name. The values in _restargs_are bound to the symbol in order. If there are not as many values in restargs as
+<i node-type="i">var-spec</i>, the rest of symbols are bound to the default values, determined
+as follows:</p>
+      <p node-type="paragraph">If <i node-type="i">var-spec</i> is just a symbol, the default value is undefined.</p>
+      <p node-type="paragraph">If <i node-type="i">var-spec</i> is a list, the default value is the result of evaluation of
+the second element of the list.</p>
+      <p node-type="paragraph">In the latter case the second element is only evaluated when there are not
+enough arguments. The binding proceeds in the order of <i node-type="i">var-spec</i>, so the
+second element may refer to the bindings of previous <i node-type="i">var-spec</i>.</p>
+      <p node-type="paragraph">In the second form, <i node-type="i">restvar</i> must be a symbol and bound to the list of
+values whatever left from <i node-type="i">restargs</i> after binding to <i node-type="i">var-spec</i>.</p>
+      <p node-type="paragraph">It is not an error if <i node-type="i">restarg</i> has more values than <i node-type="i">var-specs</i>. The
+extra values are simply ignored in the first form.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="get-optionals_49">
+          <span>get-optionals</span>
+          <span>
+            <i node-type="i">restargs</i>
+          </span>
+          <span>
+            <i node-type="i">default</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="get-optionals_48">
+          <span>get-optionals</span>
+          <span>
+            <i node-type="i">restargs</i>
+          </span>
+          <span>
+            <i node-type="i">default</i>
+          </span>
+          <span>
+            <i node-type="i">test</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This is a short version of <code node-type="code">let-optionals*</code> where you have only one
+optional argument. Given the optional argument list <i node-type="i">restargs</i>, this macro
+returns the value of optional argument if one is given, or the result of
+<i node-type="i">default</i> otherwise.</p>
+      <p node-type="paragraph">If latter form is used, <i node-type="i">test</i> must be procedure which takes one argument
+and it will be called to test the given argument. If the test failed, it raises
+<code node-type="code">&amp;error</code> condition.</p>
+      <p node-type="paragraph"><i node-type="i">Default</i> is not evaluated unless restargs is an empty list.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="let-keywords_11">
+          <span>let-keywords</span>
+          <span>
+            <i node-type="i">restargs</i>
+          </span>
+          <span>
+            <i node-type="i">(var-spec</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="let-keywords_10">
+          <span>let-keywords</span>
+          <span>
+            <i node-type="i">restargs</i>
+          </span>
+          <span>
+            <i node-type="i">(var-spec</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">.</i>
+          </span>
+          <span>
+            <i node-type="i">restvar)</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This macro is for keyword arguments. <i node-type="i">Var-spec</i> can be one of the
+following forms:</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(_symbol_ _expr_)</code></pre>
+      </p>
+      <p node-type="paragraph">If the <i node-type="i">restrag</i> contains keyword which has the same name as <i node-type="i">symbol</i>,
+binds symbol to the corresponding value. If such a keyword doesn't appear in
+<i node-type="i">restarg</i>, binds symbol to the result of <i node-type="i">expr</i>.</p>
+      <p node-type="paragraph">
+        <pre lang="" node-type="snipet"><code>(_symbol_ _keyword_ _expr_)</code></pre>
+      </p>
+      <p node-type="paragraph">If the <i node-type="i">restarg</i> contains keyword <i node-type="i">keyword</i>, binds symbol to the
+corresponding value. If such a keyword doesn't appear in restarg, binds symbol
+to the result of <i node-type="i">expr</i>.</p>
+      <p node-type="paragraph">The default value <i node-type="i">expr</i> is only evaluated when the keyword is not given to
+the <i node-type="i">restarg</i>.</p>
+      <p node-type="paragraph">If you use the first form, <code node-type="code">let-keyword</code> raises <code node-type="code">&amp;error</code> condition
+when <i node-type="i">restarg</i> contains a keyword argument that is not listed in
+<i node-type="i">var-specs</i>. When you want to allow keyword arguments other than listed in
+<i node-type="i">var-specs</i>, use the second form.</p>
+      <p node-type="paragraph">In the second form, <i node-type="i">restvar</i> must be either a symbol or #f. If it is a
+symbol, it is bound to a list of keyword arguments that are not processed by
+<i node-type="i">var-specs</i>. If it is #f, such keyword arguments are just ignored.</p>
+      <pre lang="scheme" node-type="block"><code>(define (proc x . options)
+  (let-keywords options ((a 'a)
+                         (b :beta 'b)
+                         (c 'c)
+                         . rest)
+    (list x a b c rest)))
+</code></pre>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(proc 0)</code></pre>
+          <span />
+          <span>(0 a b c ())</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(proc 0 :a 1)</code></pre>
+          <span />
+          <span>(0 1 b c ())</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(proc 0 :beta 1)</code></pre>
+          <span />
+          <span>(0 a 1 c ())</span>
+        </div>
+      </p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(proc 0 :beta 1 :c 3 :unknown 4)</code></pre>
+          <span />
+          <span>(0 a 1 3 (unknown 4))</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="let-keywords*_13">
+          <span>let-keywords*</span>
+          <span>
+            <i node-type="i">restargs</i>
+          </span>
+          <span>
+            <i node-type="i">(var-spec</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">)</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="let-keywords*_12">
+          <span>let-keywords*</span>
+          <span>
+            <i node-type="i">restargs</i>
+          </span>
+          <span>
+            <i node-type="i">(var-spec</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+          <span>
+            <i node-type="i">.</i>
+          </span>
+          <span>
+            <i node-type="i">restvar)</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Like <code node-type="code">let-keywords</code>, but the binding is done in the order of
+<i node-type="i">var-specs</i>. So each <i node-type="i">expr</i> can refer to the variables bound by
+preceding <i node-type="i">var-specs</i>.</p>
+      <p node-type="paragraph">These let-keywords and let-keywords* are originally from Gauche.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-with-key_97">
+          <span>define-with-key</span>
+          <span>
+            <i node-type="i">variable</i>
+          </span>
+          <span>
+            <i node-type="i">expression</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-with-key_96">
+          <span>define-with-key</span>
+          <span>
+            <i node-type="i">variable</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-with-key_95">
+          <span>define-with-key</span>
+          <span>
+            <i node-type="i">(variable</i>
+          </span>
+          <span>
+            <i node-type="i">formals)</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="define-with-key_94">
+          <span>define-with-key</span>
+          <span>
+            <i node-type="i">(variable</i>
+          </span>
+          <span>
+            <i node-type="i">.</i>
+          </span>
+          <span>
+            <i node-type="i">formals)</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">The <code node-type="code">define-with-key</code> is synonym of <code node-type="code">define</code>.</p>
+      <p node-type="paragraph">See more detail
+<a href="rnrs.base.6.html#rnrs.base.6.variable.definitions">Variable definitions</a>.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="begin0_20">
+          <span>begin0</span>
+          <span>
+            <i node-type="i">exp0</i>
+          </span>
+          <span>
+            <i node-type="i">exp1</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Evaluate <i node-type="i">exp0</i>, <i node-type="i">exp1</i>, ..., then returns the result(s) of
+<i node-type="i">exp0</i>.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="let1_19">
+          <span>let1</span>
+          <span>
+            <i node-type="i">var</i>
+          </span>
+          <span>
+            <i node-type="i">expr</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">A convenient macro when you have only one variable. Expanded as follows:
+<pre lang="" node-type="snipet"><code>(let ((_var_ _expr_)) _body_ ...)</code></pre></p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="rlet1_139">
+          <span>rlet1</span>
+          <span>
+            <i node-type="i">var</i>
+          </span>
+          <span>
+            <i node-type="i">expr</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">A convenient macro when you have only one variable and is the returning
+value. Expanded as follows:
+<pre lang="" node-type="snipet"><code>(let ((_var_ _expr_)) _body_ ... _var_)</code></pre></p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="dotimes_156">
+          <span>dotimes</span>
+          <span>
+            <i node-type="i">(variable</i>
+          </span>
+          <span>
+            <i node-type="i">limit</i>
+          </span>
+          <span>
+            <i node-type="i">[result])</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="dolist_155">
+          <span>dolist</span>
+          <span>
+            <i node-type="i">(variable</i>
+          </span>
+          <span>
+            <i node-type="i">lexpr</i>
+          </span>
+          <span>
+            <i node-type="i">[result])</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Imported from Common List. These are equivalent to the following forms,
+respectively.</p>
+      <pre lang="scheme" node-type="block"><code>(dotimes (variable limit result) body ...)
+</code></pre>
+      <p node-type="paragraph">=&gt;</p>
+      <pre lang="scheme" node-type="block"><code>(do ((tlimit limit)
+     (variable 0 (+ variable 1)))
+    ((&gt;= variable tlimit) result)
+  body ...)
+</code></pre>
+      <pre lang="scheme" node-type="block"><code>(dolist (variable lexpr result) body ...)
+</code></pre>
+      <p node-type="paragraph">=&gt;</p>
+      <pre lang="scheme" node-type="block"><code>(begin
+  (for-each (lambda (variable) body ...) lexpr)
+  (let ((variable '())) result))
+</code></pre>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="push!_165">
+          <span>push!</span>
+          <span>
+            <i node-type="i">place</i>
+          </span>
+          <span>
+            <i node-type="i">item</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Conses <i node-type="i">item</i> and the value of <i node-type="i">place</i>. The <i node-type="i">place</i> must be
+either a variable or a form <i node-type="i">(proc arg ...)</i>, as the second argument of
+<code node-type="code">set!</code>. The result will be the same as <code node-type="code">set!</code>.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="pop!_110">
+          <span>pop!</span>
+          <span>
+            <i node-type="i">place</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Retrieves the value of <i node-type="i">place</i>, sets its cde back to <i node-type="i">place</i>.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="check-arg_72">
+          <span>check-arg</span>
+          <span>
+            <i node-type="i">pred</i>
+          </span>
+          <span>
+            <i node-type="i">val</i>
+          </span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Check the given <i node-type="i">val</i> satisfies <i node-type="i">pred</i>. If the <i node-type="i">pred</i> returns
+#f then <code node-type="code">&amp;assertion</code> is raised.</p>
+      <p node-type="paragraph">The <i node-type="i">proc</i> should be the procedure name which uses this macro and is for
+debugging purpose.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="with-library_54">
+          <span>with-library</span>
+          <span>
+            <i node-type="i">library</i>
+          </span>
+          <span>
+            <i node-type="i">exprs</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph"><i node-type="i">library</i> must be a library name. ex. (srfi :1 lists)</p>
+      <p node-type="paragraph"><i node-type="i">exprs</i> must be expressions.</p>
+      <p node-type="paragraph">Evaluate given expressions one by one in the specified library and returns the
+last result of the expressions.</p>
+      <p node-type="paragraph">This should not be used casually however you want to use some procedures or
+variables which are not exported, such as a procedure written in C but not
+exported or non exported record accessor. For thoese purpose, this might be a
+quick solution.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="unwind-protect_18">
+          <span>unwind-protect</span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">cleanups</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Execute <i node-type="i">body</i> then execute <i node-type="i">cleanups</i> and returns the result(s)
+of <i node-type="i">body</i>.</p>
+      <p node-type="paragraph">It is not guaranteed to invoke the <i node-type="i">cleanups</i> only once if a continuation is
+captured in <i node-type="i">body</i> and call it.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="datum_2">
+          <span>datum</span>
+          <span>
+            <i node-type="i">x</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Short form of <code node-type="code">syntax-&gt;datum</code>.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="with-syntax*_59">
+          <span>with-syntax*</span>
+          <span>
+            <i node-type="i">((p</i>
+          </span>
+          <span>
+            <i node-type="i">e0)</i>
+          </span>
+          <span>
+            <i node-type="i">...)</i>
+          </span>
+          <span>
+            <i node-type="i">e1</i>
+          </span>
+          <span>
+            <i node-type="i">e2</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">The macro is similar with <code node-type="code">with-syntax</code>, the only difference is
+that this macro can refer previous pattern of <i node-type="i">p</i> as if <code node-type="code">let*</code> can.</p>
+      <p node-type="paragraph">This can reduce nest level when users need to write multiple
+<code node-type="code">with-syntax</code> to refer bound syntax object.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="^_0">
+          <span>^</span>
+          <span>
+            <i node-type="i">formals</i>
+          </span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">The alias of <code node-type="code">lambda</code>.</p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="^c_1">
+          <span>^c</span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Shortened notation of <code node-type="code">(lambda (c) body ...)</code>. Where <code node-type="code">c</code>can be any character of lower case of ASCII alphabet.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(map (^z (* z z)) '(1 2 3 4 5))</code></pre>
+          <span />
+          <span>(1 4 9 16 25)</span>
+        </div>
+      </p>
+      <div node-type="define" class="define">
+        <span>Macro</span>
+        <a name="^c*_2">
+          <span>^c*</span>
+          <span>
+            <i node-type="i">body</i>
+          </span>
+          <span>
+            <i node-type="i">...</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Shortened notation of <code node-type="code">(lambda c body ...)</code>. Where <code node-type="code">c</code>can be any character of lower case of ASCII alphabet.</p>
+      <p node-type="paragraph">
+        <div node-type="snipet" class="snipet">
+          <pre lang="" node-type="snipet"><code>(map (^z* z*) '(1 2 3 4 5))</code></pre>
+          <span />
+          <span>((1) (2) (3) (4) (5))</span>
+        </div>
+      </p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.html">(sagittarius) - builtin library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.ffi.html">(sagittarius ffi) - Foreign Function Interface</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,134 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rnrs.lists.6.html">List utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.control.6.html">Control structures</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rnrs.sorting.6">Sorting</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rnrs sorting (6))_80">
+          <span>(rnrs sorting (6))</span>
+        </a>
+      </div>
+      <p node-type="paragraph">The <code node-type="code">(rnrs sorting (6))</code>library provides procedures for sorting lists
+and vectors.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="list-sort_38">
+          <span>list-sort</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">list</i>
+          </span>
+        </a>
+      </div>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="vector-sort_35">
+          <span>vector-sort</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">vector</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(start</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+          <span>
+            <i node-type="i">(end</i>
+          </span>
+          <span>
+            <i node-type="i">(vector-length</i>
+          </span>
+          <span>
+            <i node-type="i">vector))</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS+][SRFI-132] <i node-type="i">Proc</i> should accept any two elements of
+<i node-type="i">list</i> or <i node-type="i">vector</i>. <i node-type="i">Proc</i> should return a true value when
+its first argument is strictly less than its second, and #f otherwise.</p>
+      <p node-type="paragraph">The <code node-type="code">list-sort</code> and <code node-type="code">vector-sort</code> procedures perform a stable sort
+of <i node-type="i">list</i> or <i node-type="i">vector</i> in ascending order according to <i node-type="i">proc</i>, without
+changing <i node-type="i">list</i> or <i node-type="i">vector</i> in any way. The <code node-type="code">list-sort</code> procedure
+returns a list, and <code node-type="code">vector-sort</code> returns a vector. The results may be
+<code node-type="code">eq?</code> to the argument when the argument is already sorted, and the result
+of <code node-type="code">list-sort</code> may share structure with a tail of the original list. The
+sorting algorithm performs O(n lg n) calls to <i node-type="i">proc</i> where n is the length
+of <i node-type="i">list</i> or <i node-type="i">vector</i>, and all arguments passed to <i node-type="i">proc</i> are
+elements of the <i node-type="i">list</i> or <i node-type="i">vector</i> being sorted, but the pairing of
+arguments and the sequencing of calls to <i node-type="i">proc</i> are not specified. If
+multiple returns occur from <code node-type="code">list-sort</code> or <code node-type="code">vector-sort</code>, the
+return values returned by earlier returns are not mutated.</p>
+      <p node-type="paragraph">If the optional argument <i node-type="i">start</i> and <i node-type="i">end</i> for <code node-type="code">vector-sort</code>is specified, then the sorting range is restricted by the given <i node-type="i">start</i>(inclusive) and <i node-type="i">end</i> (exclusive).</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="vector-sort!_36">
+          <span>vector-sort!</span>
+          <span>
+            <i node-type="i">proc</i>
+          </span>
+          <span>
+            <i node-type="i">vector</i>
+          </span>
+          <span>
+            <i node-type="i">:optional</i>
+          </span>
+          <span>
+            <i node-type="i">(start</i>
+          </span>
+          <span>
+            <i node-type="i">0)</i>
+          </span>
+          <span>
+            <i node-type="i">(end</i>
+          </span>
+          <span>
+            <i node-type="i">(vector-length</i>
+          </span>
+          <span>
+            <i node-type="i">vector))</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">[R6RS+][SRFI-132] <i node-type="i">Proc</i> should accept any two elements of
+the <i node-type="i">vector</i>, and should not have any side effects. <i node-type="i">Proc</i>
+should return a true value when its first argument is strictly less
+than its second, and #f otherwise.</p>
+      <p node-type="paragraph">The <code node-type="code">vector-sort!</code> procedure destructively sorts vector in
+ascending order according to <i node-type="i">proc</i>.</p>
+      <p node-type="paragraph">If the optional argument <i node-type="i">start</i> and <i node-type="i">end</i> is specified, then
+the sorting range is restricted by the given <i node-type="i">start</i> (inclusive)
+and <i node-type="i">end</i> (exclusive).</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rnrs.lists.6.html">List utilities</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rnrs.control.6.html">Control structures</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>

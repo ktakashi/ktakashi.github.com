@@ -1,0 +1,515 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rfc.5322.html">(rfc :5322) - Internet message format library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rfc.base64.html">(rfc base64) - Base 64 encode and decode library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="rfc.base32">(rfc base32) - Base 32 encode and decode library</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(rfc base32)_33">
+          <span>(rfc base32)</span>
+          <span>
+            <since node-type="since">
+              <span node-type="since-version" version="0.9.12">0.9.12</span>
+            </since>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides Base 64 encoding and decoding procedures.</p>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Encoding-procedures">Encoding procedures</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base32-encode_3">
+            <span>base32-encode</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span> . </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base32hex-encode_7">
+            <span>base32hex-encode</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span> . </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">in</i> must be either a bytevector or binary input port.</p>
+        <p node-type="paragraph">Encodes given input <i node-type="i">in</i> to Base 64 encoded bytevector.</p>
+        <p node-type="paragraph">The <code node-type="code">base32hex-encode</code> encodes the given input to Base 32 Hex
+encoded bytevector.</p>
+        <p node-type="paragraph">The <i node-type="i">keyword-options</i> will be passed to the encoder. See <code node-type="code">make-base32-encoder</code>
+procedure for more detail.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base32-encode-string_4">
+            <span>base32-encode-string</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span> :key </span>
+            <span>
+              <i node-type="i">transcoder</i>
+            </span>
+            <span> :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base32hex-encode-string_8">
+            <span>base32hex-encode-string</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span> :key </span>
+            <span>
+              <i node-type="i">transcoder</i>
+            </span>
+            <span> :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Convenient procedure for string.</p>
+        <p node-type="paragraph">Encodes given <i node-type="i">string</i> to Base 64 encoded string.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">transcoder</i> is used to convert given string to
+bytevector. The converted bytevector will be passed to the <code node-type="code">base32-encode</code>procedure. The default value is a transcoder with UTF-8 codec with EOL
+style none.</p>
+        <p node-type="paragraph">The <code node-type="code">base32hex-encode-string</code> encodes the given input to Base 32 Hex
+encoded bytevector.</p>
+        <p node-type="paragraph">The <i node-type="i">keyword-options</i> will be passed to the encoder. See <code node-type="code">make-base32-encoder</code>
+procedure for more detail.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base32-encode-input-port_22">
+            <span>open-base32-encode-input-port</span>
+            <span>
+              <i node-type="i">source</i>
+            </span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">owner?</i>
+            </span>
+            <span> #f) :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base32-encode-output-port_23">
+            <span>open-base32-encode-output-port</span>
+            <span>
+              <i node-type="i">sink</i>
+            </span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">owner?</i>
+            </span>
+            <span> #f) :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base32hex-encode-input-port_26">
+            <span>open-base32hex-encode-input-port</span>
+            <span>
+              <i node-type="i">source</i>
+            </span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">owner?</i>
+            </span>
+            <span> #f) :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base32hex-encode-output-port_27">
+            <span>open-base32hex-encode-output-port</span>
+            <span>
+              <i node-type="i">sink</i>
+            </span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">owner?</i>
+            </span>
+            <span> #f) :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates binary Base32 encode input and output port, respectively.</p>
+        <p node-type="paragraph"><i node-type="i">source</i> must be binary inpurt port.</p>
+        <p node-type="paragraph">The input port reads bytes from <i node-type="i">source</i> and returns Base32 encoded
+result.</p>
+        <p node-type="paragraph"><i node-type="i">sink</i> must be binary inpurt port.</p>
+        <p node-type="paragraph">The output port puts encoded bytes to <i node-type="i">sink</i>. The port must be closed
+to finish the encoding process properly.</p>
+        <p node-type="paragraph">The <code node-type="code">open-base32hex-encode-input-port</code> and
+<code node-type="code">open-base32hex-encode-output-port</code> encode to Base32 Hex encode.</p>
+        <p node-type="paragraph">The <i node-type="i">keyword-options</i> will be passed to the encoder. See <code node-type="code">make-base32-encoder</code>
+procedure for more detail.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Decoding-procedures">Decoding procedures</a>
+        </h3>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base32-decode_1">
+            <span>base32-decode</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span> . </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base32hex-decode_5">
+            <span>base32hex-decode</span>
+            <span>
+              <i node-type="i">in</i>
+            </span>
+            <span> . </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">in</i> must be a bytevector or binary input port.</p>
+        <p node-type="paragraph">Decode Base 64 encoded input <i node-type="i">in</i> to original bytevector.</p>
+        <p node-type="paragraph">The <code node-type="code">base32hex-decode</code> decodes Base32 Hex encoded value.</p>
+        <p node-type="paragraph">The <i node-type="i">keyword-options</i> will be passed to the encoder. See <code node-type="code">make-base32-decoder</code>
+procedure for more detail.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base32-decode-string_2">
+            <span>base32-decode-string</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span> :key </span>
+            <span>
+              <i node-type="i">(transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">(native-transcoder))</i>
+            </span>
+            <span> :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="base32hex-decode-string_6">
+            <span>base32hex-decode-string</span>
+            <span>
+              <i node-type="i">string</i>
+            </span>
+            <span> :key </span>
+            <span>
+              <i node-type="i">(transcoder</i>
+            </span>
+            <span>
+              <i node-type="i">(native-transcoder))</i>
+            </span>
+            <span> :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Convenient procedure.</p>
+        <p node-type="paragraph">Decode Base 64 encoded string to original string. The procedure is using
+<code node-type="code">base32-decode</code>.</p>
+        <p node-type="paragraph">The keyword argument specifies how to convert the decoded bytevector to string.
+If this is #f, the procedure returns raw bytevector.</p>
+        <p node-type="paragraph">The <code node-type="code">base32hex-decode-string</code> decodes Base32 Hex safe encoded value.</p>
+        <p node-type="paragraph">The <i node-type="i">keyword-options</i> will be passed to the encoder. See <code node-type="code">make-base32-decoder</code>
+procedure for more detail.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base32-decode-input-port_20">
+            <span>open-base32-decode-input-port</span>
+            <span>
+              <i node-type="i">source</i>
+            </span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">owner?</i>
+            </span>
+            <span> #f) :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base32-decode-output-port_21">
+            <span>open-base32-decode-output-port</span>
+            <span>
+              <i node-type="i">sink</i>
+            </span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">owner?</i>
+            </span>
+            <span> #f) :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base32hex-decode-input-port_24">
+            <span>open-base32hex-decode-input-port</span>
+            <span>
+              <i node-type="i">source</i>
+            </span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">owner?</i>
+            </span>
+            <span> #f) :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="open-base32hex-decode-output-port_25">
+            <span>open-base32hex-decode-output-port</span>
+            <span>
+              <i node-type="i">sink</i>
+            </span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">owner?</i>
+            </span>
+            <span> #f) :allow-other-keys </span>
+            <span>
+              <i node-type="i">keyword-options</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Creates binary Base32 decode input and output port, respectively.</p>
+        <p node-type="paragraph"><i node-type="i">source</i> must be binary inpurt port.</p>
+        <p node-type="paragraph">The input port reads Base32 encoded bytes from <i node-type="i">source</i> and returns
+decoded results.</p>
+        <p node-type="paragraph"><i node-type="i">sink</i> must be binary inpurt port.</p>
+        <p node-type="paragraph">The output port puts decoded bytes to <i node-type="i">sink</i>. The port must be closed
+to finish the encoding process properly.</p>
+        <p node-type="paragraph">The <code node-type="code">open-base32hex-decode-input-port</code> and
+<code node-type="code">open-base32hex-decode-output-port</code> decode Base32 Hex safe encoded
+value.</p>
+        <p node-type="paragraph">The <i node-type="i">keyword-options</i> will be passed to the encoder. See <code node-type="code">make-base32-decoder</code>
+procedure for more detail.</p>
+      </section>
+      <section node-type="section">
+        <h3 node-type="header-3">
+          <a name="Low-level-APIs">Low level APIs</a>
+        </h3>
+        <p node-type="paragraph">Both encode and decode procedures are using encoder and decoder. Both
+encoder and decoder are just a procedure which takes 2 arguments
+<i node-type="i">get</i> and <i node-type="i">put</i> and not reentrant as they have own internal
+buffer to process the input.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-base32-encoder_41">
+            <span>make-base32-encoder</span>
+            <span>  :key (</span>
+            <span>
+              <i node-type="i">encode-table</i>
+            </span>
+            <span>
+              <code node-type="code">*base32-encode-table*</code>
+            </span>
+            <span>) (</span>
+            <span>
+              <i node-type="i">line-width</i>
+            </span>
+            <span> 76) (</span>
+            <span>
+              <i node-type="i">padding?</i>
+            </span>
+            <span> #t) (</span>
+            <span>
+              <i node-type="i">linefeeds</i>
+            </span>
+            <span> #f)</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-base32hex-encoder_43">
+            <span>make-base32hex-encoder</span>
+            <span>  :key (</span>
+            <span>
+              <i node-type="i">encode-table</i>
+            </span>
+            <span>
+              <code node-type="code">*base32hex-encode-table*</code>
+            </span>
+            <span>) (</span>
+            <span>
+              <i node-type="i">line-width</i>
+            </span>
+            <span> 76) (</span>
+            <span>
+              <i node-type="i">padding?</i>
+            </span>
+            <span> #t) (</span>
+            <span>
+              <i node-type="i">linefeeds</i>
+            </span>
+            <span> #f)</span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">encode-table</i> must be a valid Base 32 encode table.<br><i node-type="i">line-width</i> must be either <code node-type="code">#f</code> or integer.<br><i node-type="i">padding?</i> must be a boolean value.<br><i node-type="i">linefeeds</i> must be <code node-type="code">#f</code> or u8 list reporesents end of line.__</p>
+        <p node-type="paragraph">Creates a Base32 encoder. An encoder is a procedure which takes 2
+arguments <i node-type="i">get</i> and <i node-type="i">put</i>.</p>
+        <p node-type="paragraph"><i node-type="i">get</i> must be a procedure takes 0 argument and it must return one
+of the followings; a fixnum of range 0 to 255, EOF object, or negative
+integer. The fixnum value is treated as an input of the encoding
+value. The negative integer value is treated as a continue
+marker. When the encoder receives this value, then it won't encode
+until the next value is available.</p>
+        <p node-type="paragraph"><i node-type="i">put</i> must be a procedure takes 1 argument which is either a
+fixnum of range 0 to 255 or <code node-type="code">#f</code>. The fixnum is the encoded value
+of the input. <code node-type="code">#f</code> indicates line break point, so user can
+determine which line break this encoder should use.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">encode-table</i> specifies the encoding rule.
+The procedure name represents the default value of the rule, however
+if you specify the other table, then it can encode the value according
+to the given value.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">line-width</i> specifies where the encode procedure
+should put linefeed. If this is less than 1 or #f, encoder does not put
+linefeed.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">padding?</i> controls if the result encoded value
+contains padding character <code node-type="code">#\=</code> or not. If this is #f, then the result
+value won't contain padding character.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">linefeeds</i> controls the end of line. By default,
+it emits <code node-type="code">LF (0x0a)</code>. If you want to put CRLF, then you can specify this
+value with <code node-type="code">(#x0d #x0a)</code></p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-base32-decoder_40">
+            <span>make-base32-decoder</span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">decode-table</i>
+            </span>
+            <span>
+              <code node-type="code">*base32-decode-table*</code>
+            </span>
+            <span>)</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="make-base32hex-decoder_42">
+            <span>make-base32hex-decoder</span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">decode-table</i>
+            </span>
+            <span>
+              <code node-type="code">*base32hex-decode-table*</code>
+            </span>
+            <span>)</span>
+          </a>
+        </div>
+        <p node-type="paragraph"><i node-type="i">decode-table</i> must be a valid Base 32 decode table.</p>
+        <p node-type="paragraph">Creates a Base32 decoder. A decoder is a procedure which takes 2
+arguments <i node-type="i">get</i> and <i node-type="i">put</i>.</p>
+        <p node-type="paragraph"><i node-type="i">get</i> is the same as the one from encoder.</p>
+        <p node-type="paragraph"><i node-type="i">put</i> must be a procedure takes 1 arguments which is a fixnm of
+range 0 to 255. The value is always a decoded byte.</p>
+        <p node-type="paragraph">The keyword argument <i node-type="i">decode-table</i> specifies the decoding rule.
+The procedure name represents the default value of the rule, however
+if you specify the other table, then it can decode the value according
+to the given value.</p>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="*base32-encode-table*_3">
+            <span>*base32-encode-table*</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="*base32-decode-table*_2">
+            <span>*base32-decode-table*</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="*base32hex-encode-table*_5">
+            <span>*base32hex-encode-table*</span>
+          </a>
+        </div>
+        <div node-type="define" class="define">
+          <span>Constant</span>
+          <a name="*base32hex-decode-table*_4">
+            <span>*base32hex-decode-table*</span>
+          </a>
+        </div>
+        <p node-type="paragraph">Default encode or decode tables. If the name contains <code node-type="code">url</code>, then it
+is suitable for "base32hex".</p>
+      </section>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./rfc.5322.html">(rfc :5322) - Internet message format library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./rfc.base64.html">(rfc base64) - Base 64 encode and decode library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+    </div>
+  </body>
+</html>
