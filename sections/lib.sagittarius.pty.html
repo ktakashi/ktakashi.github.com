@@ -1,0 +1,242 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.process.html">(sagittarius process) - Process  library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.reader.html">(sagittarius reader) - reader macro library</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.pty">(sagittarius pty) - Pseudo Terminal</a>
+      </h2>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius pty)_109">
+          <span>(sagittarius pty)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">This library provides pseudo terminal capabilities.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pty?_176">
+          <span>pty?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the <i node-type="i">obj</i> is pty object, otherwise <code node-type="code">#f</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="make-pty_248">
+          <span>make-pty</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Creates PTY object.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pty-closed?_168">
+          <span>pty-closed?</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pty</i>
+          </span>
+          <span>
+            <code node-type="code">pty?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the <i node-type="i">pty</i> is closed, otherwise <code node-type="code">#f</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pty-spawn!_173">
+          <span>pty-spawn!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pty</i>
+          </span>
+          <span>
+            <code node-type="code">pty?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">name</i>
+          </span>
+          <span>
+            <code node-type="code">string?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">args</i>
+          </span>
+          <span>
+            <code node-type="code">list?</code>
+          </span>
+          <span>) :key (</span>
+          <span>
+            <i node-type="i">directory</i>
+          </span>
+          <span>
+            <code node-type="code">#f</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">user</i>
+          </span>
+          <span>
+            <code node-type="code">#f</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Spawn a process of <i node-type="i">name</i> command with <i node-type="i">args</i> in the <i node-type="i">pty</i>.</p>
+      <p node-type="paragraph"><i node-type="i">directory</i> keyword argument specifies the process's working directory.<br><i node-type="i">user</i> keyword argument specifies the owner process.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pty-close!_167">
+          <span>pty-close!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pty</i>
+          </span>
+          <span>
+            <code node-type="code">pty?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Closes the given <i node-type="i">pty</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pty-resize!_172">
+          <span>pty-resize!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pty</i>
+          </span>
+          <span>
+            <code node-type="code">pty?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">cols</i>
+          </span>
+          <span>
+            <code node-type="code">fixnum?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">rows</i>
+          </span>
+          <span>
+            <code node-type="code">fixnum?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Resize the <i node-type="i">pty</i> with <i node-type="i">cols</i> and <i node-type="i">rows</i> value.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pty-input-port_169">
+          <span>pty-input-port</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pty</i>
+          </span>
+          <span>
+            <code node-type="code">pty?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the binary input port of the <i node-type="i">pty</i>.</p>
+      <p node-type="paragraph">Putting a value into this port means sending standard input value to the
+underlying process of the <i node-type="i">pty</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pty-output-port_170">
+          <span>pty-output-port</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pty</i>
+          </span>
+          <span>
+            <code node-type="code">pty?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns the binary output port of the <i node-type="i">pty</i>.</p>
+      <p node-type="paragraph">Reading value from this port means, recieving standard out value from the
+underlying process of the <i node-type="i">pty</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pty-pid_171">
+          <span>pty-pid</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pty</i>
+          </span>
+          <span>
+            <code node-type="code">pty?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns PID of the <i node-type="i">pty</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pty-tcsetattr!_174">
+          <span>pty-tcsetattr!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pty</i>
+          </span>
+          <span>
+            <code node-type="code">pty?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">termios</i>
+          </span>
+          <span>
+            <code node-type="code">termios?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Sets the <i node-type="i">termios</i> into the <i node-type="i">pty</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pty-termios_175">
+          <span>pty-termios</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pty</i>
+          </span>
+          <span>
+            <code node-type="code">pty?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Retrieves the termios from the <i node-type="i">pty</i>.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.process.html">(sagittarius process) - Process  library</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./lib.sagittarius.reader.html">(sagittarius reader) - reader macro library</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-12-25T00:11:50Z</i></p>
+    </div>
+  </body>
+</html>

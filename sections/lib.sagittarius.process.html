@@ -9,7 +9,7 @@
     <p node-type="paragraph" class="navigation-container">
       <a href="./lib.sagittarius.object.html">(sagittarius object) - Convenient refs and coercion procedures</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./lib.sagittarius.reader.html">(sagittarius reader) - reader macro library</a>
+      <a href="./lib.sagittarius.pty.html">(sagittarius pty) - Pseudo Terminal</a>
     </p>
     <section node-type="section">
       <h2 node-type="header-2">
@@ -24,7 +24,7 @@ purpose.</p>
       <p node-type="paragraph">This section describe from top to down.</p>
       <div node-type="define" class="define">
         <span>Library</span>
-        <a name="(sagittarius process)_107">
+        <a name="(sagittarius process)_108">
           <span>(sagittarius process)</span>
         </a>
       </div>
@@ -43,9 +43,7 @@ purpose.</p>
             <span>
               <i node-type="i">arg1</i>
             </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
+            <span> ...</span>
           </a>
         </div>
         <div node-type="define" class="define">
@@ -58,9 +56,7 @@ purpose.</p>
             <span>
               <i node-type="i">arg1</i>
             </span>
-            <span>
-              <i node-type="i">...</i>
-            </span>
+            <span> ...</span>
           </a>
         </div>
         <p node-type="paragraph"><i node-type="i">name</i> must be string and indicate the process name be called.</p>
@@ -88,10 +84,44 @@ If you need to finish the process, make sure you call the <code node-type="code"
             <span>
               <i node-type="i">args</i>
             </span>
-            <span> _</span>
+            <span> :key (</span>
+            <span>
+              <i node-type="i">stdout</i>
+            </span>
+            <span>
+              <code node-type="code">#f</code>
+            </span>
+            <span>) (</span>
+            <span>
+              <i node-type="i">stderr</i>
+            </span>
+            <span>
+              <code node-type="code">#f</code>
+            </span>
+            <span>) (</span>
+            <span>
+              <i node-type="i">call?</i>
+            </span>
+            <span>
+              <code node-type="code">#t</code>
+            </span>
+            <span>) reader (</span>
+            <span>
+              <i node-type="i">transcoder</i>
+            </span>
+            <span>
+              <code node-type="code">#f</code>
+            </span>
+            <span>) (</span>
+            <span>
+              <i node-type="i">user</i>
+            </span>
+            <span>
+              <code node-type="code">#f</code>
+            </span>
+            <span>)</span>
           </a>
         </div>
-        <p node-type="paragraph">_ <i node-type="i">:key</i> <i node-type="i">(stdout</i> <i node-type="i">#f)</i> <i node-type="i">(stderr</i> <i node-type="i">#f)</i> <i node-type="i">(call?</i> <i node-type="i">#t)</i> <i node-type="i">reader</i> <i node-type="i">(transcoder</i> <i node-type="i">#f)</i></p>
         <p node-type="paragraph"><i node-type="i">name</i> must be string and indicate a process name.</p>
         <p node-type="paragraph"><i node-type="i">args</i> must be list of string will be passed to the process.</p>
         <p node-type="paragraph">The <code node-type="code">create-process</code> procedure creates and invokes a process indicated
@@ -118,9 +148,19 @@ replace the default behaviour, make sure you must read the output from the
 process, otherwise it can cause deat lock.</p>
         <p node-type="paragraph"><i node-type="i">transcoder</i> keyword argument must be transcoder or #f. This can be used in
 the procedure which specified <i node-type="i">reader</i> keyword argument.</p>
+        <p node-type="paragraph"><i node-type="i">user</i> keyword argument must be auth token, passwrd or #f. If this
+keyword is specified then the creating process will be executed under
+the user of the <i node-type="i">user</i>.</p>
         <p node-type="paragraph">The procedure <code node-type="code">create-process</code> creates a process and call it. The
-returning value is depending on the above keyword parameters. If _reader_and <i node-type="i">stdout</i> is provided, then the result value is the value returned from
-<i node-type="i">reader</i> procedure. Otherwise the created process object.</p>
+returning value is depending on the above keyword parameters. If
+_reader_and <i node-type="i">stdout</i> is provided, then the result value is the value
+returned from <i node-type="i">reader</i> procedure. Otherwise the created process
+object.</p>
+        <p node-type="paragraph"><strong node-type="strong">CAVEAT</strong><br><i node-type="i">user</i> will platform specific system call, e.g. <code node-type="code">setuid</code>, <code node-type="code">setusercontext</code><br>or <code node-type="code">CreateProcessWithToken</code>. Even the <i node-type="i">user</i> is authenticated via PAM
+module, the call may fail.</p>
+        <p node-type="paragraph">Also please not that, <i node-type="i">user</i> token must be auth token on Windows, as
+it doesn't have any capability to invoke a process on behalf of the
+user without having credential.</p>
         <div node-type="define" class="define">
           <span>Function</span>
           <a name="async-process-read_86">
@@ -144,7 +184,7 @@ ouput and standard error. The reader returns immediately after the threads are
 executed.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sync-process-read_367">
+          <a name="sync-process-read_370">
             <span>sync-process-read</span>
             <span>
               <i node-type="i">process</i>
@@ -172,7 +212,7 @@ finished.</p>
 if you use <code node-type="code">call</code> described above.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="process?_155">
+          <a name="process?_162">
             <span>process?</span>
             <span>
               <i node-type="i">obj</i>
@@ -199,7 +239,7 @@ process.</p>
         <p node-type="paragraph">Creates a process object.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="process-input-port_150">
+          <a name="process-input-port_157">
             <span>process-input-port</span>
             <span>
               <i node-type="i">process</i>
@@ -211,7 +251,7 @@ process.</p>
 standard input.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="process-output-port_152">
+          <a name="process-output-port_159">
             <span>process-output-port</span>
             <span>
               <i node-type="i">process</i>
@@ -223,7 +263,7 @@ standard input.</p>
 standard output.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="process-error-port_149">
+          <a name="process-error-port_156">
             <span>process-error-port</span>
             <span>
               <i node-type="i">process</i>
@@ -235,7 +275,7 @@ standard output.</p>
 standard error.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="process-run_153">
+          <a name="process-run_160">
             <span>process-run</span>
             <span>
               <i node-type="i">process</i>
@@ -247,7 +287,7 @@ standard error.</p>
         <p node-type="paragraph">On POSIX envionment this procesure returns the result status of the process.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="process-call_148">
+          <a name="process-call_155">
             <span>process-call</span>
             <span>
               <i node-type="i">process</i>
@@ -258,7 +298,7 @@ standard error.</p>
         <p node-type="paragraph">Invokes the <i node-type="i">process</i> and continue the Scheme program.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="process-wait_154">
+          <a name="process-wait_161">
             <span>process-wait</span>
             <span>
               <i node-type="i">process</i>
@@ -288,7 +328,7 @@ process is created by <code node-type="code">pid-&gt;process</code>, then it rai
 <code node-type="code">ECHILD</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="process-kill_151">
+          <a name="process-kill_158">
             <span>process-kill</span>
             <span>
               <i node-type="i">process</i>
@@ -310,7 +350,7 @@ is not the same between Windows and POSIX. On Windows, the process seeks all
 possible child processes. On POSIX, it simply calls <code node-type="code">killpg (2)</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="process-active?_147">
+          <a name="process-active?_154">
             <span>process-active?</span>
             <span>
               <i node-type="i">process</i>
@@ -326,7 +366,7 @@ return #t even if the process itself is already terminated.</p>
 existance of the process.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="getpid_69">
+          <a name="getpid_70">
             <span>getpid</span>
           </a>
         </div>
@@ -334,7 +374,7 @@ existance of the process.</p>
 is an integer.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="pid-&gt;process_67">
+          <a name="pid-&gt;process_74">
             <span>pid-&gt;process</span>
             <span>
               <i node-type="i">pid</i>
@@ -354,7 +394,7 @@ using socket. <code node-type="code">(sagittarius process)</code> provides share
 simple IPC.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="shared-memory?_72">
+          <a name="shared-memory?_75">
             <span>shared-memory?</span>
             <span>
               <i node-type="i">obj</i>
@@ -408,7 +448,7 @@ until the OS is restarted. To avoid it, users need to call this procedure.</p>
 <code node-type="code">shared-memory-&gt;bytevector</code> will be 0 length bytevector.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="shared-memory-&gt;bytevector_71">
+          <a name="shared-memory-&gt;bytevector_74">
             <span>shared-memory-&gt;bytevector</span>
             <span>
               <i node-type="i">shared-memory</i>
@@ -424,11 +464,11 @@ until the OS is restarted. To avoid it, users need to call this procedure.</p>
     <p node-type="paragraph" class="navigation-container">
       <a href="./lib.sagittarius.object.html">(sagittarius object) - Convenient refs and coercion procedures</a>
       <a href="../sagittarius-online-ref.html">Top</a>
-      <a href="./lib.sagittarius.reader.html">(sagittarius reader) - reader macro library</a>
+      <a href="./lib.sagittarius.pty.html">(sagittarius pty) - Pseudo Terminal</a>
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-12-25T00:11:50Z</i></p>
     </div>
   </body>
 </html>

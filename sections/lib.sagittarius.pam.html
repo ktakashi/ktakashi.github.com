@@ -1,0 +1,313 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-eqiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="../lib/style.css">
+    <title>Sagittarius Users' Reference</title>
+  </head>
+  <body>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.atomic.html">(sagittarius atomic) - Atomic operation</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./utils.html">Utility libraries</a>
+    </p>
+    <section node-type="section">
+      <h2 node-type="header-2">
+        <a name="lib.sagittarius.pam">(sagittarius pam) - Privileged Access Module</a>
+      </h2>
+      <p node-type="paragraph">This library provides a wrapper layer of, Linux PAM, Open PAM,
+Windows <code node-type="code">LogonUser</code> and BSD Auth.</p>
+      <p node-type="paragraph">This example shows how to authenticate a user.</p>
+      <pre lang="scheme" node-type="block"><code>(import (rnrs)
+        (sagittarius pam)
+        (sagittarius stty))
+
+(define (prompts-handler prompts)
+  (define (prompt-handler prompt)
+    (display (cdr prompt)) (flush-output-port (current-output-port))
+    (if (eq? (car prompt) 'echo-off)
+        (with-stty '((not echo) echonl) 
+         (lambda () (get-line (current-input-port))))
+        (get-line (current-input-port))))
+  (vector-map prompt-handler prompts))
+
+(cond ((pam-authenticate "login" "username" prompts-handler) =&gt;
+       (lambda (token)
+         ;; do whatever with the token
+         (pam-invalidate-token! token)))
+      (else 
+        ;; handle authentication error
+       ))
+</code></pre>
+      <h3 node-type="header-3">
+        <a name="CAVEAT">CAVEAT</a>
+      </h3>
+      <p node-type="paragraph">This module interacts with platform specific authentication mechanis.
+It doesn't change the required configuration. Below are known limitation
+per platform.</p>
+      <h4 node-type="header-4">
+        <a name="Linux-PAM--Open-PAM">Linux PAM / Open PAM</a>
+      </h4>
+      <p node-type="paragraph">Authenticating the logged on user may not invoke prompt, but simply
+return the authenticate token, depending on the PAM
+(Pluggable Authentication Module) configuration.</p>
+      <p node-type="paragraph">Also, authenticating other users on behalf may require root / <code node-type="code">sudo</code>
+permission.</p>
+      <h4 node-type="header-4">
+        <a name="Windows">Windows</a>
+      </h4>
+      <p node-type="paragraph">The <code node-type="code">service</code> argument is used only if UPN format is used for username,
+i.e. <code node-type="code">username@domain</code>. And the value is passed to <code node-type="code">LogonUser</code> as domain
+argument.
+Otherwise, the domain argument is extracted from the passwd name, which
+is constructed <code node-type="code">domain\name</code> format.</p>
+      <h4 node-type="header-4">
+        <a name="BSD-Auth">BSD Auth</a>
+      </h4>
+      <p node-type="paragraph">BSD Auth requires access to <code node-type="code">/usr/libexec/auth</code> directory to execute
+authentication. The directory is usually not accessible other than
+<code node-type="code">root</code>. So, to run the authentication, the process must be executed
+by root permission.</p>
+      <div node-type="define" class="define">
+        <span>Library</span>
+        <a name="(sagittarius pam)_107">
+          <span>(sagittarius pam)</span>
+          <span>
+            <since node-type="since">
+              <span node-type="since-version" version="0.9.14">0.9.14</span>
+            </since>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Provising platform user authentication mechanism.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="passwd?_49">
+          <span>passwd?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is passwd object, otherwise <code node-type="code">#f</code>.</p>
+      <p node-type="paragraph">The passwd object represents <code node-type="code">struct passwd</code> in C.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="get-passwd_52">
+          <span>get-passwd</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">user</i>
+          </span>
+          <span>
+            <code node-type="code">string?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Retrieves information of <i node-type="i">user</i>, if the <i node-type="i">user</i> doesn't exists,
+then returns <code node-type="code">#f</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="passwd-name_47">
+          <span>passwd-name</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pw</i>
+          </span>
+          <span>
+            <code node-type="code">passwd?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns associated user name of the <i node-type="i">pw</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="passwd-gecos_46">
+          <span>passwd-gecos</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pw</i>
+          </span>
+          <span>
+            <code node-type="code">passwd?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns associated full user name of the <i node-type="i">pw</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="passwd-dir_45">
+          <span>passwd-dir</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pw</i>
+          </span>
+          <span>
+            <code node-type="code">passwd?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns associated home directory of the <i node-type="i">pw</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="passwd-shell_48">
+          <span>passwd-shell</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">pw</i>
+          </span>
+          <span>
+            <code node-type="code">passwd?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Returns associated shell of the <i node-type="i">pw</i>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="auth-token?_135">
+          <span>auth-token?</span>
+          <span>
+            <i node-type="i">obj</i>
+          </span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return <code node-type="code">#t</code> if the given <i node-type="i">obj</i> is auth token, otherwise <code node-type="code">#f</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="auth-token-passwd_134">
+          <span>auth-token-passwd</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">token</i>
+          </span>
+          <span>
+            <code node-type="code">auth-token?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Return passwd object associated to this auth token.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pam-authenticate_8">
+          <span>pam-authenticate</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">service</i>
+          </span>
+          <span>
+            <code node-type="code">string?</code>
+          </span>
+          <span>) (</span>
+          <span>
+            <i node-type="i">user</i>
+          </span>
+          <span> (or </span>
+          <span>
+            <code node-type="code">string?</code>
+          </span>
+          <span>
+            <code node-type="code">passwd?</code>
+          </span>
+          <span>)) (</span>
+          <span>
+            <i node-type="i">conversation</i>
+          </span>
+          <span>
+            <code node-type="code">procedure?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Invokes the underlying platform authentication mechanism.</p>
+      <p node-type="paragraph">For Linux / Open PAM, the <i node-type="i">service</i> argument must be one of the
+names configured under <code node-type="code">/etc/pam.d</code> directory. e.g. <code node-type="code">login</code> or
+<code node-type="code">passwd</code>.</p>
+      <p node-type="paragraph">For BSD Auth, the <i node-type="i">service</i> argument must be one of the names
+configured in <code node-type="code">/etc/login.conf</code>. e.g. <code node-type="code">passwd</code>.</p>
+      <p node-type="paragraph">For Windows, the <i node-type="i">service</i> argument must be domain or empty string when
+the <i node-type="i">user</i> is UPN format. For local machine login, this argument can be
+<code node-type="code">"."</code>.</p>
+      <p node-type="paragraph">The <i node-type="i">user</i> argument is the username or passwd to authenticate.<br>If the <i node-type="i">user</i> is string, and the user is not found, then the procedure
+returns <code node-type="code">#f</code> without trying to do authentication.</p>
+      <p node-type="paragraph">The <i node-type="i">conversation</i> argument must accept one argument, a vector and
+must return a vector of string, the size of the vector must be the
+size of the input vector.</p>
+      <p node-type="paragraph">The argument of <i node-type="i">conversation</i> procedure contains a pair of prompt.
+A prompt format is below</p>
+      <p node-type="paragraph">
+        <code node-type="code">(type . message)</code>
+      </p>
+      <p node-type="paragraph"><i node-type="i">type</i> is a symbol of one of the followings</p>
+      <dl node-type="dlist">
+        <dt>
+          <code node-type="code">echo-off</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Show the <code node-type="code">message</code> and recieve user input without echoing, then
+return the value</p>
+        </dd>
+        <dt>
+          <code node-type="code">echo-on</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Show the <code node-type="code">message</code> and recieve user input, then return the value</p>
+        </dd>
+        <dt>
+          <code node-type="code">error</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Show the <code node-type="code">message</code> on error output</p>
+        </dd>
+        <dt>
+          <code node-type="code">text</code>
+        </dt>
+        <dd>
+          <p node-type="paragraph">Show the <code node-type="code">message</code></p>
+        </dd>
+      </dl>
+      <p node-type="paragraph">If the authentication succeeds, then the procedure returns auth token,
+otherwise <code node-type="code">#f</code>.</p>
+      <div node-type="define" class="define">
+        <span>Function</span>
+        <a name="pam-invalidate-token!_9">
+          <span>pam-invalidate-token!</span>
+          <span> (</span>
+          <span>
+            <i node-type="i">token</i>
+          </span>
+          <span>
+            <code node-type="code">auth-token?</code>
+          </span>
+          <span>)</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Invalidates the given <i node-type="i">token</i>.</p>
+      <div node-type="define" class="define">
+        <span>Parameter</span>
+        <a name="*pam:conversation-error-handler*!_175">
+          <span>*pam:conversation-error-handler*!</span>
+        </a>
+      </div>
+      <p node-type="paragraph">Error handler when <i node-type="i">conversation</i> argument of the <code node-type="code">pam-authenticate</code>
+raises an error. The result of the handler procedure will be ignored,
+this is only for diagnosis purpose.</p>
+      <p node-type="paragraph">A error handler must be a procedure which accepts exactly one argument,
+which is the raised condition.</p>
+    </section>
+    <p node-type="paragraph" class="navigation-container">
+      <a href="./lib.sagittarius.atomic.html">(sagittarius atomic) - Atomic operation</a>
+      <a href="../sagittarius-online-ref.html">Top</a>
+      <a href="./utils.html">Utility libraries</a>
+    </p>
+    <div node-type="section">
+      <hr>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-12-25T00:11:50Z</i></p>
+    </div>
+  </body>
+</html>

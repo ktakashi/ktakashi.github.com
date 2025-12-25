@@ -23,11 +23,13 @@
       </div>
       <p node-type="paragraph">This library provides SFTP programmatic operations.</p>
       <p node-type="paragraph">Following example code describes how to use in high level.</p>
-      <pre lang="scheme" node-type="block"><code>(import (rfc sftp) (pp) (srfi :26))
+      <details node-type="expansion" source="../../../example/sftp/sftp.scm">
+        <summary>Example SFTP</summary>
+        <pre lang="scheme" node-type="block"><code>(import (rnrs) (rfc sftp) (pp) (srfi :26))
 
 (call-with-sftp-connection 
   "localhost"    ;; hostname
-  "23"           ;; port number
+  "22"           ;; port number
   (lambda (conn)
     ;; read directory
     (pp (sftp-readdir conn "."))
@@ -41,7 +43,7 @@
                                     (sftp-binary-receiver))))
     ;; store a file to local file directly
     (sftp-read conn "/a/file/path"
-	(sftp-file-receiver "where/to/store" :options (file-options no-fail)))
+        (sftp-file-receiver "where/to/store" :options (file-options no-fail)))
 
     ;; upload a file
     (let ((handle (sftp-open conn "boo" 
@@ -64,8 +66,9 @@
     (pp (sftp-readlink conn "tmp"))
     ;; get a real path. (usually an absolute path)
     (pp (sftp-realpath conn "../")))
-  :username "username" :password "password")
+  :authenticate (sftp-keyboard-interactive-authentication "username"))
 </code></pre>
+      </details>
       <section node-type="section">
         <h3 node-type="header-3">
           <a name="High-level-APIs">High level APIs</a>
@@ -96,10 +99,10 @@ port number/service name respectively.
 <i node-type="i">proc</i> must accept one argument.</p>
         <p node-type="paragraph">Creates a SFTP connection, executes given <i node-type="i">proc</i> with the connection
 and closes it after the execution.</p>
-        <p node-type="paragraph">The <i node-type="i">opts</i> will be passed to <code node-type="code">make-client-sftp-connection</code>.</p>
+        <p node-type="paragraph">The <i node-type="i">opts</i> will be passed to <code node-type="code">open-client-sftp-connection!</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-open_49">
+          <a name="sftp-open_50">
             <span>sftp-open</span>
             <span>
               <i node-type="i">conn</i>
@@ -177,7 +180,7 @@ must be specified as well.</p>
         <p node-type="paragraph">Closes given <i node-type="i">handle</i> created by <code node-type="code">sftp-open</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-read_52">
+          <a name="sftp-read_55">
             <span>sftp-read</span>
             <span>
               <i node-type="i">conn</i>
@@ -251,7 +254,7 @@ one is result value. Following is the <i node-type="i">sftp-binary-receiver</i> 
 By default no option.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-oport-receiver_51">
+          <a name="sftp-oport-receiver_52">
             <span>sftp-oport-receiver</span>
             <span>
               <i node-type="i">output-port</i>
@@ -262,7 +265,7 @@ By default no option.</p>
         <p node-type="paragraph">Creates a output port receiver for <code node-type="code">sftp-read</code>.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-write!_59">
+          <a name="sftp-write!_62">
             <span>sftp-write!</span>
             <span>
               <i node-type="i">conn</i>
@@ -317,7 +320,7 @@ problem with writing a file, consider to change this size.</p>
         <p node-type="paragraph">Checks if the given <i node-type="i">filename</i> exists.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-remove!_56">
+          <a name="sftp-remove!_59">
             <span>sftp-remove!</span>
             <span>
               <i node-type="i">conn</i>
@@ -334,7 +337,7 @@ or user doesn't have proper permission to remove.</p>
         <p node-type="paragraph">The result value is raw SFTP status object.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-rename!_57">
+          <a name="sftp-rename!_60">
             <span>sftp-rename!</span>
             <span>
               <i node-type="i">conn</i>
@@ -354,7 +357,7 @@ file doesn't exist or user doesn't have proper permission to rename.</p>
         <p node-type="paragraph">The result value is raw SFTP status object.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-mkdir!_48">
+          <a name="sftp-mkdir!_49">
             <span>sftp-mkdir!</span>
             <span>
               <i node-type="i">conn</i>
@@ -371,7 +374,7 @@ directory exists or user doesn't have proper permission to create.</p>
         <p node-type="paragraph">The result value is raw SFTP status object.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-rmdir!_58">
+          <a name="sftp-rmdir!_61">
             <span>sftp-rmdir!</span>
             <span>
               <i node-type="i">conn</i>
@@ -389,7 +392,7 @@ the directory isn't empty.</p>
         <p node-type="paragraph">The result value is raw SFTP status object.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-opendir_50">
+          <a name="sftp-opendir_51">
             <span>sftp-opendir</span>
             <span>
               <i node-type="i">conn</i>
@@ -404,7 +407,7 @@ the directory isn't empty.</p>
         <p node-type="paragraph">Opens the given <i node-type="i">path</i> directory and returns its handle.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-readdir_53">
+          <a name="sftp-readdir_56">
             <span>sftp-readdir</span>
             <span>
               <i node-type="i">conn</i>
@@ -421,7 +424,7 @@ a string indicating existing path.</p>
 is an object of <code node-type="code">&lt;sftp-name&gt;</code> which has <code node-type="code">filename</code>, <code node-type="code">longname</code>and <code node-type="code">attribute</code> slots.</p>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-readdir-as-filenames_54">
+          <a name="sftp-readdir-as-filenames_57">
             <span>sftp-readdir-as-filenames</span>
             <span>
               <i node-type="i">conn</i>
@@ -433,7 +436,7 @@ is an object of <code node-type="code">&lt;sftp-name&gt;</code> which has <code 
         </div>
         <div node-type="define" class="define">
           <span>Function</span>
-          <a name="sftp-readdir-as-longnames_55">
+          <a name="sftp-readdir-as-longnames_58">
             <span>sftp-readdir-as-longnames</span>
             <span>
               <i node-type="i">conn</i>
@@ -487,6 +490,51 @@ compatible, so if you are using 0.7.7 API and move to 0.7.8, please be aware.</p
             </span>
           </a>
         </div>
+        <p node-type="paragraph">Opens the SFTP connection.</p>
+        <p node-type="paragraph">If the keyword argument <code node-type="code">authenticate</code> is specified, then it must be a
+procedure which accepts one argument.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-password-authentication_53">
+            <span>sftp-password-authentication</span>
+            <span>
+              <i node-type="i">username</i>
+            </span>
+            <span>
+              <i node-type="i">password</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Provides a procedure which is suitable for username and password
+authentication by using the given <i node-type="i">username</i> and <i node-type="i">password</i>.</p>
+        <p node-type="paragraph">NOTE: a lot of SSH server may not support this by default.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-public-key-authentication_54">
+            <span>sftp-public-key-authentication</span>
+            <span>
+              <i node-type="i">username</i>
+            </span>
+            <span>
+              <i node-type="i">private-key</i>
+            </span>
+            <span>
+              <i node-type="i">public-key</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Provides a procedure which is suitable for public key authentication.
+The <i node-type="i">public-key</i> must be listed on the server's authorized key.</p>
+        <div node-type="define" class="define">
+          <span>Function</span>
+          <a name="sftp-keyboard-interactive-authentication_48">
+            <span>sftp-keyboard-interactive-authentication</span>
+            <span>
+              <i node-type="i">username</i>
+            </span>
+          </a>
+        </div>
+        <p node-type="paragraph">Provides a procedure which is suitable for keyboard interactive authentication.</p>
       </section>
     </section>
     <p node-type="paragraph" class="navigation-container">
@@ -496,7 +544,7 @@ compatible, so if you are using 0.7.7 API and move to 0.7.8, please be aware.</p
     </p>
     <div node-type="section">
       <hr>
-      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-06-20T16:07:29+0200</i></p>
+      <p node-type="paragraph" class="author footer">This document was generated by <i node-type="i">Takashi Kato</i> with Sagittarius gendoc.<br>Generated date: <i node-type="i">2025-12-25T00:11:50Z</i></p>
     </div>
   </body>
 </html>
